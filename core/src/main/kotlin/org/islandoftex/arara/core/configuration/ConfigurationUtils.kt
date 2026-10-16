@@ -7,9 +7,9 @@ import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
 
-actual object ConfigurationUtils {
+object ConfigurationUtils {
     @JvmStatic
-    actual val defaultFileTypePatterns = mapOf(
+    val defaultFileTypePatterns = mapOf(
         "tex" to "^\\s*%\\s*",
         "dtx" to "^\\s*%\\s*",
         "ltx" to "^\\s*%\\s*",
@@ -18,7 +18,7 @@ actual object ConfigurationUtils {
     )
 
     @JvmStatic
-    actual val defaultFileTypes: List<FileType> by lazy {
+    val defaultFileTypes: List<FileType> by lazy {
         defaultFileTypePatterns
             .map { (extension, pattern) ->
                 org.islandoftex.arara.core.files.FileType(extension, pattern)
@@ -26,7 +26,7 @@ actual object ConfigurationUtils {
     }
 
     @JvmStatic
-    actual val applicationPath: MPPPath
+    val applicationPath: MPPPath
         @Throws(AraraException::class)
         get() = kotlin.runCatching {
             val codeLocation = requireNotNull(this::class.java.protectionDomain.codeSource?.location?.toURI()?.path)

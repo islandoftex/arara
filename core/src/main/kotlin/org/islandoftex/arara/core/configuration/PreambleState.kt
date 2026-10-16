@@ -1,25 +1,32 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.configuration
 
-/** Preambles shared by both rule engines; the CLI restores them between projects and invocations. */
+/**
+ * Holds the preamble configuration the local configuration files
+ * accumulate over a run: the named preambles they define, the
+ * default one to apply when nothing else asks for a name, and
+ * the policy deciding where the default applies. A preamble is
+ * plain directive text evaluated by whichever engine runs it, so
+ * the state is engine-independent and lives with the
+ * configuration model rather than with any rule dialect.
+ */
 object PreambleState {
     /**
-     * Save the available preambles from the configuration file.
+     * The named directive lists the configuration files provide,
+     * mapped from preamble name to its directives.
      */
     val preambles: MutableMap<String, String> = mutableMapOf()
 
     /**
-     * Specify the default preamble to pick if there is neither a preamble
-     * nor directives specified.
+     * The preamble applied when nothing else asks for one by
+     * name.
      */
     var defaultPreamble: String? = null
 
     /**
-     * Whether to prepend preamble directives even if there are directives
-     * in the document. Useful for enabling preambles only for documents
-     * without preambles.
-     *
-     * Set to `true` for reasons of backward compatibility.
+     * Whether the default preamble is applied to all files, the
+     * historical behaviour, or only to the files that carry no
+     * directives of their own.
      */
     var prependPreambleIfDirectivesGiven: Boolean = true
 }

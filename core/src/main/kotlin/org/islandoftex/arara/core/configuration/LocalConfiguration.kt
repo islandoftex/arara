@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.configuration
 
+import com.charleskorn.kaml.Yaml
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionOptions
-import org.islandoftex.arara.api.configuration.LogFormat
 import org.islandoftex.arara.api.configuration.LoggingOptions
 import org.islandoftex.arara.api.configuration.UserInterfaceOptions
 import org.islandoftex.arara.api.files.MPPPath
@@ -17,33 +17,90 @@ import org.islandoftex.arara.core.session.Environment
 /**
  * A local configuration which resembles configuration files in the working
  * directory.
- *
- * @author Island of TeX
- * @version 5.0
- * @since 4.0
  */
 @Serializable
 data class LocalConfiguration(
+    /**
+     * The directories rules are looked up in, as the
+     * configuration names them.
+     */
     private val paths: List<String> = emptyList(),
+    /**
+     * The file types the configuration declares, mapped from
+     * extension to pattern.
+     */
     private val filetypes: List<SerialFileType> = emptyList(),
+    /**
+     * The language tag the configuration asks the console to
+     * speak, if any.
+     */
     private val language: String? = null,
-    private val console: String? = null,
+    /**
+     * The maximum number of loops a looping directive may take,
+     * if the configuration caps them.
+     */
     private val loops: Int? = null,
+    /**
+     * Whether the tool output echoes live, if the configuration
+     * says so.
+     */
     private val verbose: Boolean? = null,
+    /**
+     * Whether the run writes its log file, if the configuration
+     * says so.
+     */
+    private val logging: Boolean? = null,
+    /**
+     * Whether the directive extraction reads the header alone
+     * (the default) or, when false, the whole file, if the
+     * configuration says so.
+     */
     private val header: Boolean? = null,
-    private val warnDeprecatedYaml: Boolean? = null,
+    /**
+     * The name of the file database, if the configuration
+     * renames it.
+     */
     private val dbname: String? = null,
+    /**
+     * The name of the log file, if the configuration renames it.
+     */
     private val logname: String? = null,
-    private val logformat: String? = null,
-    /** Named directive snippets available to project files. */
+    /**
+     * The console presentation the configuration selects, by name; the
+     * command line wins over this value, which wins over the plain
+     * default.
+     */
+    val console: String? = null,
+
+    /**
+     * The key that silences the live feedback for those who
+     * prefer stillness. The breath is on by default.
+     */
+    val animations: Boolean? = null,
+    /**
+     * The named directive lists the configuration provides, mapped from
+     * preamble name to its directives.
+     */
     val preambles: Map<String, String> = mapOf(),
-    /** Name of the preamble selected when no explicit preamble was requested. */
+    /**
+     * The preamble applied when no other is requested.
+     */
     val defaultPreamble: String? = null,
-    /** Whether the default preamble also applies to files that already contain directives. */
+    /**
+     * Whether the default preamble is applied to all files, the
+     * historical behaviour, or only to the files that carry no
+     * directives of their own.
+     */
     val prependPreambleIfDirectivesGiven: Boolean = true,
-    @Transient private val expandPathTokens: Boolean = true,
-    private val animations: Boolean? = null,
-    private val terminalWidth: Int? = null
+    /**
+     * Whether the paths are expanded for engine tokens; a
+     * script-based configuration computes its paths with the
+     * values in scope to the script, so no tokens remain to
+     * expand. The flag stays out of the serialized format on
+     * purpose.
+     */
+    @Transient
+    private val expandPathTokens: Boolean = true
 ) {
     /**
      * Convert the relevant properties of the configuration to execution
@@ -60,18 +117,24 @@ data class LocalConfiguration(
         val preprocessedPaths = paths.asSequence()
             .map { it.trim() }
             .map { input ->
-                if (!expandPathTokens) input else input.replace(
-                    "@{user.home}",
-                    Environment.getSystemPropertyOrNull("user.home") ?: ""
-                )
-                    .replace(
-                        "@{user.name}",
-                        Environment.getSystemPropertyOrNull("user.name") ?: ""
+                if (expandPathTokens) {
+                    input.replace(
+                        "@{user.home}",
+                        Environment.getSystemPropertyOrNull("user.home") ?: ""
                     )
-                    .replace(
-                        "@{application.workingDirectory}",
-                        currentProject.workingDirectory.normalize().toString()
-                    )
+                        .replace(
+                            "@{user.name}",
+                            Environment.getSystemPropertyOrNull("user.name") ?: ""
+                        )
+                        .replace(
+                            "@{application.workingDirectory}",
+                            currentProject.workingDirectory.normalize().toString()
+                        )
+                } else {
+                    // the script configuration already computed its
+                    // paths; there are no tokens to expand
+                    input
+                }
             }
             .map { MPPPath(it) }
             .map { path ->
@@ -82,15 +145,13 @@ data class LocalConfiguration(
             }
             .map { it.normalize() }
             .toSet()
-        val databaseName = dbname?.let { name ->
-            if (name.isBlank()) throw AraraException(
-                LanguageController.messages.errorScriptNonblank("dbname/database")
-            )
-            runCatching { currentProject.workingDirectory.resolve(name.trim()).normalize() }.getOrElse {
-                throw AraraException(LanguageController.messages.errorConfigurationGenericError,
-                    it as? Exception ?: RuntimeException(it))
-            }
-        } ?: baseOptions.databaseName
+        // the database name honors the configured path the same way
+        // the log file always has: the value names the file, and a
+        // relative path resolves against the working directory when
+        // the database is opened - never silently discarding the
+        // user's intent
+        val databaseName = dbname?.let { MPPPath(it.trim()) }
+            ?: baseOptions.databaseName
         val maxLoops = loops?.let {
             if (loops > 0) {
                 loops
@@ -111,8 +172,7 @@ data class LocalConfiguration(
                     .plus(baseOptions.fileTypes),
                 rulePaths = preprocessedPaths
                     .plus(baseOptions.rulePaths),
-                parseOnlyHeader = header ?: baseOptions.parseOnlyHeader,
-                warnDeprecatedYaml = warnDeprecatedYaml ?: baseOptions.warnDeprecatedYaml
+                parseOnlyHeader = header ?: baseOptions.parseOnlyHeader
             )
     }
 
@@ -129,16 +189,12 @@ data class LocalConfiguration(
         val logName = logname?.let { MPPPath(it) }
             ?: baseOptions.logFile
         return org.islandoftex.arara.core.configuration.LoggingOptions(
+            enableLogging = logging ?: baseOptions.enableLogging,
             logFile = logName,
-            format = when (logformat) {
-                null -> baseOptions.format
-                "none" -> LogFormat.NONE
-                "text" -> LogFormat.TEXT
-                "json" -> LogFormat.JSON
-                else -> throw AraraException(
-                    LanguageController.messages.errorLogFormatUnknown(logformat)
-                )
-            }
+            // the append mode belongs to the caller's standing
+            // choice: the configuration never speaks for it, so
+            // the base carries it instead of silently resetting
+            appendLog = baseOptions.appendLog
         )
     }
 
@@ -152,20 +208,42 @@ data class LocalConfiguration(
     fun toUserInterfaceOptions(
         baseOptions: UserInterfaceOptions = org.islandoftex.arara.core.configuration.UserInterfaceOptions()
     ): UserInterfaceOptions {
-        val width = terminalWidth?.also {
-            if (it < org.islandoftex.arara.core.configuration.UserInterfaceOptions.MINIMUM_TERMINAL_WIDTH)
-                throw AraraException(LanguageController.messages.errorTerminalWidthInvalid(
-                    org.islandoftex.arara.core.configuration.UserInterfaceOptions.MINIMUM_TERMINAL_WIDTH
-                ))
-        }
         return org.islandoftex.arara.core.configuration.UserInterfaceOptions(
             locale = language?.let { MPPLocale(it) }
                 ?: baseOptions.locale,
-            terminalOutputWidth = width ?: baseOptions.terminalOutputWidth,
-            terminalOutputWidthLimit = width ?: baseOptions.terminalOutputWidthLimit,
-            consoleMode = console ?: baseOptions.consoleMode,
-            enableAnimations = animations ?: baseOptions.enableAnimations
+            enableAnimations = animations
+                ?: baseOptions.enableAnimations,
+            // the width belongs to the caller's standing choice: the
+            // configuration never speaks for it, so the base
+            // carries it instead of silently resetting
+            terminalOutputWidth = baseOptions.terminalOutputWidth
         )
     }
 
+    /**
+     * Holds the YAML loader of the configuration format.
+     */
+    companion object {
+        /**
+         * Validates the configuration file.
+         *
+         * @param file The configuration file.
+         * @return The configuration file as a resource.
+         * @throws AraraException Something wrong happened, to be caught in the
+         * higher levels.
+         */
+        @Throws(AraraException::class)
+        fun load(file: MPPPath): LocalConfiguration =
+            file.runCatching {
+                val text = file.readText()
+                if (!text.startsWith("!config"))
+                    throw AraraException("Configuration should start with !config")
+                Yaml.default.decodeFromString(serializer(), text)
+            }.getOrElse {
+                throw AraraException(
+                    LanguageController.messages.errorConfigurationGenericError,
+                    it
+                )
+            }
+    }
 }

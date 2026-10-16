@@ -7,34 +7,64 @@ import org.islandoftex.arara.api.configuration.ExecutionOptions
 import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.MPPPath
 
-/** Runtime execution settings with defaults for a single sequential run. */
+/**
+ * Implements the execution options model, i.e. the knobs controlling how
+ * arara runs: loop caps, timeouts, rule paths, file types, the execution
+ * mode and the file database settings.
+ */
 data class ExecutionOptions(
-    /** Maximum iterations of a while or until conditional. */
+    /**
+     * The maximum number of loops `while` and `until` conditionals may
+     * take.
+     */
     override val maxLoops: Int = 10,
-    /** Wall-clock limit per system command; [Duration.ZERO] disables the timeout. */
+    /**
+     * The wall clock span after which a running system command is
+     * aborted.
+     */
     override val timeoutValue: Duration = Duration.ZERO,
-    /** Whether parallel execution is requested; the linear executor rejects this option. */
+    /**
+     * Whether projects may run their files in parallel.
+     */
     override val parallelExecution: Boolean = false,
-    /** Whether execution stops after an unsuccessful task or file. */
+    /**
+     * Whether an unsuccessful command halts the whole run.
+     */
     override val haltOnErrors: Boolean = true,
-    /** Database path, resolved from the process working directory when relative. */
-    override val databaseName: MPPPath = MPPPath("arara.yaml"),
-    /** Whether subprocess output is echoed to the terminal. */
+    /**
+     * The file the database is kept in - the value names the file
+     * exactly, and a relative name resolves against the working
+     * directory.
+     */
+    override val databaseName: MPPPath = MPPPath("arara.db"),
+    /**
+     * Whether the terminal echoes the output of system commands live.
+     */
     override val verbose: Boolean = false,
-    /** Normal, dry-run or safe execution. */
+    /**
+     * The mode arara runs in: the normal run, the dry run or the safe
+     * run.
+     */
     override val executionMode: ExecutionMode = ExecutionMode.NORMAL_RUN,
-    /** Directories searched for rules, in iteration order. */
+    /**
+     * The directories rules are looked up in, in order of priority.
+     */
     override val rulePaths: Set<MPPPath> = setOf(
-        ConfigurationUtils.applicationPath / "rules"
+        DefaultConfiguration.applicationPath / "rules"
     ),
-    /** Recognized extensions and their directive comment patterns. */
-    override val fileTypes: List<FileType> = ConfigurationUtils.defaultFileTypes,
-    /** Whether directive extraction stops at the first line outside the comment pattern. */
-    override val parseOnlyHeader: Boolean = true,
-    /** Whether deprecated YAML/MVEL rule usage is reported in logs and the summary. */
-    override val warnDeprecatedYaml: Boolean = true
+    /**
+     * The known file types, mapped by extension and pattern.
+     */
+    override val fileTypes: List<FileType> = DefaultConfiguration.defaultFileTypes,
+    /**
+     * Whether directives are extracted from the header only, instead
+     * of the whole file.
+     */
+    override val parseOnlyHeader: Boolean = true
 ) : ExecutionOptions {
-    /** Conversions from the public execution-options interface. */
+    /**
+     * Holds the conversion to the copyable implementation.
+     */
     companion object {
         /**
          * As the interface does not have a copy method, we provide this

@@ -5,12 +5,22 @@ import org.islandoftex.arara.api.configuration.LogFormat
 import org.islandoftex.arara.api.configuration.LoggingOptions
 import org.islandoftex.arara.api.files.MPPPath
 
-/** Logging settings; logging is disabled by default. */
+/**
+ * Implements the logging options model, deciding whether arara logs to a
+ * file at all and which file it writes to.
+ */
 data class LoggingOptions(
-    /** Output format, including NONE to disable logging. */
-    override val format: LogFormat = LogFormat.NONE,
-    /** Whether an existing log is appended to instead of replaced. */
+    /**
+     * Whether arara writes a log file at all.
+     */
+    override val enableLogging: Boolean = false,
+    /**
+     * Whether the log appends to the previous run instead of
+     * overwriting it.
+     */
     override val appendLog: Boolean = false,
-    /** Destination path for the selected log format. */
+    /**
+     * The log file, relative to the working directory.
+     */
     override val logFile: MPPPath = MPPPath("arara.log")
 ) : LoggingOptions
