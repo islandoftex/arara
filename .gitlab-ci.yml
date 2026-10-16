@@ -196,8 +196,12 @@ pages:
 
 # the CTAN artifact: the texlive image needs a JDK for Gradle (the
 # smoke test's precedent), and one command builds the jar, typesets
-# the books with the tool itself, and packs everything LeoPack-style
-docs:ctan:
+# the books with the tool itself, and packs everything LeoPack-style;
+# the structural gates prove the shape CTAN expects on every run,
+# catching the classes of regressions the 7.2.0 submission taught us
+# about: the hoisted, versioned README, the TDS zip inside, the tool
+# beside its rules, the man page, the books, both source zips
+.ctan-artifact: &ctan-artifact-definition
   stage: docs
   image: registry.gitlab.com/islandoftex/images/texlive:latest
   variables:
@@ -217,11 +221,43 @@ docs:ctan:
     - apt-get update && apt-get install -y openjdk-21-jdk-headless
   script:
     - ./gradlew ctanZip -Parara.docs.kroki=$ARARA_DOCS_KROKI
+  after_script:
+    - unzip -l build/ctan/arara-ctan.zip | grep -q 'arara/README.md'
+    - unzip -l build/ctan/arara-ctan.zip | grep -q 'arara.tds.zip'
+    - unzip -l build/ctan/arara-ctan.zip | grep -q 'arara/scripts/arara.jar'
+    - unzip -l build/ctan/arara-ctan.zip | grep -q 'arara/scripts/arara.sh'
+    - unzip -l build/ctan/arara-ctan.zip | grep -q 'arara/scripts/rules/'
+    - unzip -l build/ctan/arara-ctan.zip | grep -q 'arara/doc/arara.1'
+    - unzip -l build/ctan/arara-ctan.zip | grep -q 'arara/doc/arara-manual.pdf'
+    - unzip -l build/ctan/arara-ctan.zip | grep -q 'arara/doc/arara-quickstart.pdf'
+    - unzip -l build/ctan/arara-ctan.zip | grep -Eq 'arara-[0-9.]+(-SNAPSHOT)?-docsrc\.zip'
+    - unzip -l build/ctan/arara-ctan.zip | grep -Eq 'arara-[0-9.]+(-SNAPSHOT)?-src\.zip'
+    - unzip -p build/ctan/arara-ctan.zip arara/README.md | head -1 | grep -q '^This is arara v'
+  cache:
+    <<: *cachedefinition
+    policy: pull
+
+# the branch build proofs the release path; the artifact stays
+# downloadable for a week
+docs:ctan:
+  <<: *ctan-artifact-definition
   artifacts:
     name: "$CI_COMMIT_REF_NAME-ctan"
     paths:
       - build/ctan
     expire_in: 1 week
-  cache:
-    <<: *cachedefinition
-    policy: pull
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+
+# the tag build is the submission's provenance: its artifact stays
+# downloadable forever, so the release page can link the exact file
+# that was sent to CTAN
+docs:ctan-release:
+  <<: *ctan-artifact-definition
+  artifacts:
+    name: "$CI_COMMIT_REF_NAME-ctan"
+    paths:
+      - build/ctan
+    expire_in: never
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^v\//'
