@@ -3,5 +3,14 @@ package org.islandoftex.arara.lua.rules
 
 import org.islandoftex.arara.api.AraraException
 
-/** A helper argument or conversion error, distinct from an authored rule error. */
-internal class LuaHelperException(message: String) : AraraException(message)
+/**
+ * An arara-generated error raised at the Lua helper boundary (e.g. a
+ * badly typed helper argument), as opposed to the author-authored
+ * errors of `throwError`: the rule evaluation wraps these behind the
+ * localized runtime errors of the engine while author text keeps
+ * flowing raw, mirroring the MVEL dialect.
+ */
+class LuaHelperException(
+    message: String,
+    exception: Exception? = null
+) : AraraException(message, exception ?: RuntimeException(message))

@@ -1,48 +1,79 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.lua.rules
 
+import io.github.taoguan.luaj.LuaFunction
+import io.github.taoguan.luaj.LuaValue
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.rules.Rule
 import org.islandoftex.arara.api.rules.RuleArgument
 import org.islandoftex.arara.api.rules.RuleCommand
 import org.islandoftex.arara.core.localization.LanguageController
-import org.islandoftex.arara.core.rules.CommandEvaluator
-import org.luaj.vm2.LuaFunction
-import org.luaj.vm2.LuaValue
 
-/** A rule parsed from a Lua table by [LuaRuleParser]. */
+/**
+ * A rule backed by a Lua specification (see [LuaRuleParser] for the format).
+ */
 class LuaRule(
-    /** Identifier used to locate this rule. */
+    /**
+     * The identifier directives use to ask for this rule.
+     */
     override val identifier: String,
-    /** Optional human-readable rule name. */
+    /**
+     * The name the rule displays itself with.
+     */
     override val displayName: String?,
-    /** Authors credited by the rule. */
+    /**
+     * The authors credited for the rule.
+     */
     override val authors: List<String>,
-    /** Commands evaluated in declaration order. */
+    /**
+     * The commands of the rule, in order.
+     */
     override val commands: List<LuaRuleCommand>,
-    /** Accepted directive parameters and their processors. */
+    /**
+     * The arguments the rule declares.
+     */
     override val arguments: List<LuaRuleArgument>
 ) : Rule
 
 /**
- * Evaluates a Lua command closure through [CommandEvaluator].
+ * A rule command backed by a Lua closure.
  *
- * The closure receives processed argument lists and a `reference` table with
- * string fields `file_name`, `path` and `parent`. It returns command handles,
- * booleans or nested lists of either. An optional exit closure accepts a process
- * exit code and must return a boolean; without one, only zero indicates success.
+ * The closure receives a context table with the resolved rule arguments
+ * and the `reference` and returns a command (from `getCommand`), a boolean
+ * or a list thereof.
  */
 class LuaRuleCommand(
-    /** Optional human-readable task name. */
+    /**
+     * The name the command entry displays itself with, if any.
+     */
     override val name: String?,
+    /**
+     * The closure the command evaluates against the resolved
+     * arguments.
+     */
     private val commandFunction: LuaFunction,
+    /**
+     * The optional closure checking the exit code of the
+     * command's tasks.
+     */
     private val exitFunction: LuaFunction?
-) : RuleCommand, CommandEvaluator {
-    /** Apply the optional Lua exit predicate; without one, only exit code zero succeeds. */
-    override fun isSuccessful(exitCode: Int): Boolean {
-        val code = exitCode
-        return exitFunction?.let { fn ->
+) : RuleCommand {
+    /**
+     * Always unsupported: the command entry evaluates through the Lua
+     * function instead of a closure.
+     */
+    override val command: () -> Int
+        get() = throw AraraException(
+            "Operation not supported for LuaRuleCommand"
+        )
+
+    /**
+     * Check the exit code of a system command against the rule's `exit`
+     * closure (all exit codes but zero indicate failure by default).
+     */
+    val exitCheck: (Int) -> Boolean = { code ->
+        exitFunction?.let { fn ->
             LuaConversion.withLuaErrorHandling(
                 LanguageController.messages
                     .errorInterpreterExitRuntimeError
@@ -55,9 +86,16 @@ class LuaRuleCommand(
         } ?: (code == 0)
     }
 
-    /** Evaluate the Lua command closure with processed parameters and reference metadata. */
+    /**
+     * Evaluate the command closure against the resolved [parameters]
+     * (the argument identifiers mapped to their processed values plus the
+     * `reference` path).
+     *
+     * @return The flat list of objects the closure evaluated to.
+     * @throws AraraException The evaluation failed.
+     */
     @Throws(AraraException::class)
-    override fun evaluate(parameters: Map<String, Any>): List<Any> =
+    fun evaluate(parameters: Map<String, Any>): List<Any> =
         LuaConversion.withLuaErrorHandling(
             LanguageController.messages
                 .errorInterpreterCommandRuntimeError
@@ -75,24 +113,35 @@ class LuaRuleCommand(
 }
 
 /**
- * A rule argument with a literal default and an optional flag closure.
+ * A rule argument backed by an optional Lua flag closure.
  *
- * The flag receives `(ctx, value)`, where `ctx.parameters` contains the raw
- * directive parameters (including this argument's value) and `ctx.reference`
- * contains string fields `file_name`, `path` and `parent`. Its result becomes
- * a list of flag strings. Without a flag closure, the input is converted to
- * a single string. Required arguments must be supplied explicitly.
+ * The closure receives a context table (with the raw directive parameters
+ * and the `reference`) and the value the user provided for this argument;
+ * it returns a string or a list of strings.
  */
 class LuaRuleArgument(
-    /** Directive parameter name. */
+    /**
+     * The identifier directives use to pass this argument.
+     */
     override val identifier: String,
-    /** Whether the directive must supply this argument explicitly. */
+    /**
+     * Whether the argument must be present in every directive.
+     */
     override val isRequired: Boolean,
-    /** Literal default used when an optional argument is omitted. */
+    /**
+     * The value the argument takes when the directive omits it.
+     */
     override val defaultValue: Any?,
+    /**
+     * The optional closure rendering the argument's flags from
+     * the user-provided value.
+     */
     private val flagFunction: LuaFunction?
 ) : RuleArgument<Any?> {
-    /** Convert a value to flag strings using the optional Lua flag closure and raw parameter context. */
+    /**
+     * Evaluates the flag function of the argument against the input
+     * value, returning the resulting list of flags.
+     */
     override val processor: (Any?, Map<String, Any>) -> List<String> =
         { input, context ->
             LuaConversion.withLuaErrorHandling(
@@ -123,7 +172,10 @@ class LuaRuleArgument(
             }
         }
 
-    /** Describe argument metadata for diagnostics, without executing the flag closure. */
+    /**
+     * A human-readable representation of the argument, for logs and
+     * error reports.
+     */
     override fun toString(): String =
         "LuaRuleArgument(identifier='$identifier', isRequired=$isRequired, " +
             "defaultValue=$defaultValue)"

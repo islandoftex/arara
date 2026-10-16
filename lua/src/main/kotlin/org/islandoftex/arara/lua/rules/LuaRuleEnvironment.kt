@@ -1,30 +1,62 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.lua.rules
 
+import io.github.taoguan.luaj.Globals
+import io.github.taoguan.luaj.LuaError
+import io.github.taoguan.luaj.LuaValue
+import io.github.taoguan.luaj.Varargs
+import io.github.taoguan.luaj.lib.jse.JsePlatform
 import org.islandoftex.arara.api.AraraExceptionWithHeader
-import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.rules.RuleMethods
-import org.islandoftex.arara.lua.rules.LuaBindings.bindSpelled
-import org.islandoftex.arara.lua.rules.LuaBindings.sessionTable
 import org.islandoftex.arara.lua.rules.LuaConversion.badArgument
+import org.islandoftex.arara.lua.rules.LuaConversion.bindSpelled
 import org.islandoftex.arara.lua.rules.LuaConversion.booleanArgument
 import org.islandoftex.arara.lua.rules.LuaConversion.fromLua
 import org.islandoftex.arara.lua.rules.LuaConversion.numberArgument
 import org.islandoftex.arara.lua.rules.LuaConversion.pathArgument
+import org.islandoftex.arara.lua.rules.LuaConversion.sessionTable
 import org.islandoftex.arara.lua.rules.LuaConversion.stringArgument
 import org.islandoftex.arara.lua.rules.LuaConversion.stringListArgument
 import org.islandoftex.arara.lua.rules.LuaConversion.toLua
-import org.luaj.vm2.Globals
-import org.luaj.vm2.LuaError
-import org.luaj.vm2.LuaValue
-import org.luaj.vm2.Varargs
-import org.luaj.vm2.lib.common.CommonPlatform
 
 /**
- * Binds shared helpers under camelCase and snake_case names.
- * Paths expose selected operations; commands remain opaque handles.
+ * Set up the global environment rule scripts are evaluated in.
+ *
+ * The helper vocabulary follows the Lua doctrine: helpers act, or
+ * return Lua values - booleans, strings, tables - and imperative
+ * work is a free function, never a method on an object; JVM
+ * objects cross the boundary only as opaque handles that other
+ * helpers accept, and every path-taking helper answers both a
+ * string and a handle; overloading is runtime argument-type
+ * dispatch, the same device Lua's own library functions use.
+ *
+ * The conditional family reaches the rule commands through the
+ * shared binder, matching the merged registry of the deprecated
+ * dialect, so a rule migrated between the dialects keeps its
+ * reach. The vocabularies still differ at the edges - the
+ * deprecated dialect alone carries `checkClass` and `getOrNull` -
+ * and the completeness test walks only within each environment,
+ * so the drift is deliberate and documented here.
+ *
+ * The two contexts speak their own native types for the original
+ * reference: rule expressions yield the path string - a Lua value
+ * for composition and comparison, the shape the shipped clean,
+ * copy and move rules compare against the reference table's
+ * string field - while conditionals yield the path handle, the
+ * token the file-check family reads as a literal file rather
+ * than an extension. Both faces are design; the reference table
+ * itself (`file_name`, `path`, `parent`) is Lua-shaped data.
  */
 internal object LuaRuleEnvironment {
+    /**
+     * The Lua prelude with pure-Lua helpers available to all rules.
+     *
+     * The type checks answer by Lua's own `type` alone: a table is
+     * a table, and Lua carries no sequence-or-map distinction, so
+     * `isList` and `isMap` agree on every input - the deprecated
+     * dialect's checks read the JVM classes and can tell them
+     * apart.
+     */
     private const val PRELUDE = """
         function contains(list, value)
             for _, v in ipairs(list) do
@@ -53,23 +85,44 @@ internal object LuaRuleEnvironment {
         function is_boolean(value) return isBoolean(value) end
     """
 
+    /**
+     * Create a fresh global environment for one rule file.
+     *
+     * The rule commands see the conditional family as well: the
+     * deprecated dialect's registry merges both maps into one, so
+     * a rule migrated between the dialects expects the same
+     * reach in its command expressions.
+     */
     fun newGlobals(): Globals {
-        val globals = CommonPlatform.standardGlobals()
+        val globals = JsePlatform.standardGlobals()
         LuaConditionalEnvironment.bindConditionalHelpers(globals)
         bindHelpers(globals)
         globals.load(PRELUDE, "arara-prelude").call()
         return globals
     }
 
+    /**
+     * Collects the Lua arguments from the provided position on,
+     * converting each to its JVM shape.
+     */
     private fun Varargs.kotlinArgs(from: Int = 1): List<Any?> =
         (from..narg()).map { fromLua(arg(it)) }
 
+    /**
+     * Resolves the truthiness of a Lua value the way the helper
+     * family expects: nil is false, a boolean speaks for itself,
+     * anything else goes through the string verdicts.
+     */
     private fun truthiness(value: LuaValue): Boolean = when {
         value.isnil() -> false
         value.type() == LuaValue.TBOOLEAN -> value.toboolean()
         else -> RuleMethods.isTrue(value.tojstring())
     }
 
+    /**
+     * Reports whether a Lua value counts as empty: nil, an empty
+     * string, and a table with no positional part do.
+     */
     private fun isEmptyValue(value: LuaValue): Boolean = when {
         value.isnil() -> true
         value.istable() -> value.length() == 0
@@ -80,9 +133,13 @@ internal object LuaRuleEnvironment {
     // operators), access Lua arguments positionally (hence the argument
     // index numbers) and report binding errors where they occur
     @Suppress(
-        "LongMethod", "CyclomaticComplexMethod",
+        "LongMethod", "ComplexMethod",
         "SpreadOperator", "MagicNumber", "ThrowsCount"
     )
+    /**
+     * Binds every rule helper into the Lua environment, under its
+     * historic camelCase spelling and its snake_case alias.
+     */
     private fun bindHelpers(globals: Globals) {
         bindSpelled(
             globals, "throwError"
@@ -99,14 +156,6 @@ internal object LuaRuleEnvironment {
         ) { _, args ->
             LuaValue.userdataOf(
                 RuleMethods.getCommand(*args.kotlinArgs().toTypedArray())
-            )
-        }
-        bindSpelled(globals, "namedCommand") { name, args ->
-            val label = args.arg(1).stringArgument(name, 1)
-            val command = LuaConversion.toCommand(args.arg(2))
-                ?: throw badArgument(name, 2, "command", args.arg(2))
-            LuaValue.userdataOf(
-                org.islandoftex.arara.core.session.Command(command.elements, command.workingDirectory, label)
             )
         }
         bindSpelled(
@@ -358,19 +407,25 @@ internal object LuaRuleEnvironment {
         ) { name, args ->
             args.arg(1).pathArgument(name, 1)
                 .createDirectories()
-            LuaValue.valueOf(true)
+            LuaValue.TRUE
         }
         bindSpelled(
             globals, "removeDirectory"
         ) { name, args ->
             args.arg(1).pathArgument(name, 1)
                 .removeDirectory()
-            LuaValue.valueOf(true)
+            LuaValue.TRUE
         }
     }
 
     // the argument positions mirror the documented helper signatures
     @Suppress("MagicNumber")
+    /**
+     * Implements the `isTrue`/`isFalse` family: one argument
+     * yields a boolean, two to four arguments select between the
+     * yes/no/fallback values, with the fallback applying to
+     * empty input.
+     */
     private fun conditionalValue(
         args: Varargs,
         positive: Boolean,
@@ -378,7 +433,7 @@ internal object LuaRuleEnvironment {
     ): LuaValue {
         val value = args.arg(1)
         return when (args.narg()) {
-            0 -> throw LuaError(LanguageController.messages.errorLuaHelperNoArgs(name))
+            0 -> throw LuaError("$name requires at least one argument")
             1 -> LuaValue.valueOf(
                 !isEmptyValue(value) && truthiness(value) == positive
             )

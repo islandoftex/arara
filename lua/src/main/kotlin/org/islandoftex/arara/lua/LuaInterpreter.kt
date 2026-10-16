@@ -1,191 +1,563 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.lua
 
+import io.github.oshai.kotlinlogging.KotlinLogging
+import io.github.taoguan.luaj.LuaError
+import io.github.taoguan.luaj.LuaNumber
+import io.github.taoguan.luaj.LuaString
+import io.github.taoguan.luaj.LuaTable
+import io.github.taoguan.luaj.LuaValue
 import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.Project
-import org.islandoftex.arara.core.configuration.ConfigurationUtils
+import org.islandoftex.arara.api.files.ProjectFile
+import org.islandoftex.arara.core.configuration.DefaultConfiguration
+import org.islandoftex.arara.core.files.FileSearching
 import org.islandoftex.arara.core.files.UNKNOWN_TYPE
 import org.islandoftex.arara.core.localization.LanguageController
-import org.islandoftex.arara.lua.rules.LuaConversion
-import org.luaj.vm2.LuaError
-import org.luaj.vm2.LuaNumber
-import org.luaj.vm2.LuaString
-import org.luaj.vm2.LuaTable
-import org.luaj.vm2.LuaValue
+import org.islandoftex.arara.core.session.LinearExecutor
 
 /**
- * Interprets project tables without coercing malformed fields. Scripts receive
- * `user.home`, `user.name` and the invocation working directory as `cwd`, in fresh globals.
+ * Interprets Lua project specification files, i.e. Lua scripts
+ * returning a project table or a list of project tables.
+ *
+ * @param appWorkingDir The working directory to resolve relative file
+ * references against.
  */
+// the parser walks a key surface of its own depth - projects,
+// file entries and file types - and every extraction is its own
+// function; the count is the shape of the format, not
+// accumulated responsibilities
+@Suppress("TooManyFunctions")
 class LuaInterpreter(private val appWorkingDir: MPPPath) {
-    // Each throw identifies a distinct field violation at the format boundary.
-    @Suppress("ThrowsCount")
-    private fun fileType(table: LuaTable, context: String): FileType {
-        ProjectFields.keys(table, setOf("extension", "pattern"), context)
-        val extension = ProjectFields.string(table["extension"], "$context.extension")
-            ?: throw ProjectParseException(messages.errorScriptRequired("$context.extension"))
-        if (extension.isBlank()) throw ProjectParseException(
-            messages.errorScriptNonblank("$context.extension")
-        )
-        val pattern = ProjectFields.string(table["pattern"], "$context.pattern")
-            ?: ConfigurationUtils.defaultFileTypePatterns[extension]
-            ?: throw ProjectParseException(messages.errorScriptRequired("$context.pattern ($extension)"))
+    /**
+     * The logger of the Lua project interpreter.
+     */
+    private val logger = KotlinLogging.logger { }
+
+    /**
+     * Extract an optional string entry: a missing or nil value yields
+     * null, any other non-string value is a parse error (Lua numbers do
+     * not silently become strings at the data boundary).
+     */
+    private fun optionalString(value: LuaValue, typeError: String): String? =
+        when {
+            value.isnil() -> null
+            value is LuaString -> value.toString()
+            else -> throw ProjectParseException(typeError)
+        }
+
+    /**
+     * Extract an optional table entry: a missing or nil value yields
+     * null, any other non-table value is a parse error.
+     */
+    private fun optionalTable(value: LuaValue, typeError: String): LuaTable? =
+        when {
+            value.isnil() -> null
+            value is LuaTable -> value
+            else -> throw ProjectParseException(typeError)
+        }
+
+    /**
+     * The keys a project table accepts; a key outside the set
+     * names itself instead of passing silently.
+     */
+    private val projectKeys = setOf(
+        "name", "working_directory", "files", "dependencies"
+    )
+
+    /**
+     * The keys a project file entry accepts.
+     */
+    private val projectFileKeys = setOf("file_type", "priority", "directives")
+
+    /**
+     * The keys a project file type accepts.
+     */
+    private val fileTypeKeys = setOf("extension", "pattern")
+
+    /**
+     * Collects the keys a table carries outside the accepted set
+     * and reports them together, qualified the way the
+     * configuration format names a stray key of its own groups:
+     * bare at the root, prefixed by its surface deeper in.
+     */
+    private fun rejectUnknownKeys(
+        table: LuaTable,
+        keys: Set<String>,
+        qualify: (String) -> String = { it }
+    ) {
+        table.keys().map { it.tojstring() }
+            .filter { it !in keys }
+            .takeIf { it.isNotEmpty() }?.let { unknown ->
+                throw ProjectParseException(
+                    LanguageController.messages.errorProjectUnknownKey(
+                        unknown.joinToString(", ", "(", ")") { key ->
+                            qualify(key)
+                        }
+                    )
+                )
+            }
+    }
+
+    /**
+     * Extracts a file type from its Lua table: the extension is
+     * required, and the pattern may come from the table or from
+     * the default patterns of a known extension, and the table
+     * accepts no key outside its own pair.
+     */
+    private fun extractFileType(fileType: LuaTable): FileType {
+        rejectUnknownKeys(fileType, fileTypeKeys) { "file_type.$it" }
+        val extension = extractFileTypeExtension(fileType["extension"])
+        val pattern = optionalString(
+            fileType["pattern"],
+            LanguageController.messages
+                .errorProjectFileTypePatternNotAString
+        ) ?: DefaultConfiguration.defaultFileTypePatterns[extension]
+            ?: throw ProjectParseException(
+                LanguageController.messages
+                    .errorProjectFileTypePatternMissing
+            )
+
         return org.islandoftex.arara.core.files.FileType(extension, pattern)
     }
 
-    private fun file(path: MPPPath, table: LuaTable, context: String): LuaProjectFile {
-        ProjectFields.keys(table, setOf("file_type", "priority", "directives"), context)
-        val type = ProjectFields.table(table["file_type"], "$context.file_type")
-            ?.let { fileType(it, "$context.file_type") } ?: FileType.UNKNOWN_TYPE
-        val value = table["priority"]
-        val priority = when {
-            value.isnil() -> 0
-            value is LuaNumber && value.isint() -> value.toint()
-            else -> throw ProjectParseException(messages.errorScriptInteger("$context.priority"))
-        }
-        return LuaProjectFile(path, type, priority).apply {
-            directives = ProjectFields.table(table["directives"], "$context.directives")
-                ?.let { ProjectFields.strings(it, "$context.directives") }
-        }
-    }
-
-    @Suppress("ThrowsCount")
-    private fun project(table: LuaTable, context: String, defaultName: String): Project {
-        ProjectFields.keys(table, setOf("name", "working_directory", "files", "dependencies", "build"), context)
-        val name = ProjectFields.string(table["name"], "$context.name") ?: defaultName
-        if (name.isBlank()) throw ProjectParseException(messages.errorScriptNonblank("$context.name"))
-        val directory = ProjectFields.string(table["working_directory"], "$context.working_directory")
-            ?.let { appWorkingDir.resolve(it).normalize() } ?: appWorkingDir.normalize()
-        val files = ProjectFields.table(table["files"], "$context.files")
-            ?: throw ProjectParseException(messages.errorScriptRequired("$context.files"))
-        val paths = mutableSetOf<MPPPath>()
-        val entries = files.keys().map { key ->
-            val reference = ProjectFields.string(key, "$context.files key")
-                ?: throw ProjectParseException(messages.errorScriptStringKeys("$context.files"))
-            if (reference.isBlank()) throw ProjectParseException(
-                messages.errorScriptNonblank("$context.files key")
+    /**
+     * Converts the extension entry of a file type table: the entry
+     * is required and must be a string - a missing one and a
+     * mistyped one are distinct errors, each naming its own
+     * expectation.
+     *
+     * @param value The extension entry of the file type table.
+     * @return The extension, without the leading dot.
+     */
+    private fun extractFileTypeExtension(value: LuaValue): String =
+        when {
+            value.isnil() -> throw ProjectParseException(
+                LanguageController.messages
+                    .errorProjectFileTypeExtensionRequired
             )
-            val path = directory.resolve(reference).normalize()
-            if (!paths.add(path)) throw ProjectParseException(
-                messages.errorScriptDuplicate("$context.files", path.toString())
+            value is LuaString -> value.toString()
+            else -> throw ProjectParseException(
+                LanguageController.messages
+                    .errorProjectFileTypeExtensionNotAString
             )
-            if (path.isDirectory) throw ProjectParseException(
-                messages.errorScriptDirectory("$context.files[$reference]")
-            )
-            val spec = ProjectFields.table(files[key], "$context.files[$reference]")
-                ?: throw ProjectParseException(messages.errorScriptTable("$context.files[$reference]"))
-            file(path, spec, "$context.files[$reference]")
-        }.toSet()
-        if (entries.isEmpty()) throw ProjectParseException(messages.errorScriptEmpty("$context.files"))
-        val dependencies = ProjectFields.table(table["dependencies"], "$context.dependencies")
-            ?.let { ProjectFields.strings(it, "$context.dependencies").toSet() } ?: emptySet()
-        return org.islandoftex.arara.core.files.Project(
-            name, directory, entries, dependencies, build(table, directory, context)
-        )
-    }
-
-    private fun build(table: LuaTable, directory: MPPPath, context: String) =
-        ProjectFields.table(table["build"], "$context.build")?.let {
-            ProjectBuildFields.parse(it, directory, "$context.build")
         }
 
-    /** A table with named fields denotes one project; a positional table denotes a project list. */
-    @Suppress("ThrowsCount")
-    fun parseProjectsFromLua(
-        luaScript: String,
-        defaultName: String = "Untitled project",
-        chunkName: String = "specification"
-    ): List<Project> {
-        val root = kotlin.runCatching {
-            LuaScriptEnvironment.newGlobals(appWorkingDir).load(luaScript, chunkName).call()
-        }.getOrElse {
-            val detail = if (it is LuaError) LuaConversion.diagnostic(it) else it.message.orEmpty()
-            throw ProjectParseException(
-                messages.errorProjectInvalidLua(chunkName, detail),
-                it as? Exception ?: RuntimeException(it)
-            )
-        }
-        val table = root as? LuaTable ?: throw ProjectParseException(
-            messages.errorScriptTable("specification")
-        )
-        val projects = if (table.keys().any { it is LuaString }) {
-            listOf(project(table, "project", defaultName))
-        } else {
-            ProjectFields.list(table, "projects").mapIndexed { index, value ->
-                val entry = value as? LuaTable
-                    ?: throw ProjectParseException(messages.errorScriptTable("projects[${index + 1}]"))
-                if (entry["name"].isnil()) throw ProjectParseException(
-                    messages.errorScriptRequired("projects[${index + 1}].name")
+    /**
+     * Detects the file type of an entry by its extension, against
+     * the file types in effect when the specification is read; an
+     * extension nothing carries stays pending for the project's
+     * own configuration to resolve.
+     */
+    private fun detectFileType(path: MPPPath): FileType =
+        lookupExtension(path) ?: FileType.UNKNOWN_TYPE
+
+    /**
+     * Extracts the file name key of a project file entry, which has to
+     * be a Lua string.
+     */
+    private fun projectFileKey(key: LuaValue): LuaString =
+            key as? LuaString
+                ?: throw ProjectParseException(
+                    LanguageController.messages
+                        .errorProjectFileEntryKeyNotAString
                 )
-                project(entry, "projects[${index + 1}]", defaultName)
+
+    /**
+     * Extracts the specification table of a project file entry.
+     */
+    private fun projectFileSpec(
+        fileTable: LuaTable,
+        key: LuaValue,
+    ): LuaTable =
+            fileTable[key] as? LuaTable
+                ?: throw ProjectParseException(
+                    LanguageController.messages
+                        .errorProjectFileSpecNotATable
+                )
+
+    /**
+     * Extracts a single project file entry from its key and its
+     * specification table, rejecting directories on the way.
+     */
+    private fun projectFileEntry(
+        fileTable: LuaTable,
+        key: LuaValue,
+        workingDirectory: MPPPath,
+    ): ProjectFile {
+        val name = projectFileKey(key).toString()
+        val path = workingDirectory.resolve(name)
+        if (path.isDirectory) {
+            throw ProjectParseException(
+                LanguageController.messages
+                    .errorProjectFileIsADirectory
+            )
+        }
+        // a missing entry keeps its place in the specification: a
+        // run may generate the file before its turn comes, so the
+        // entry is only named in the log for the author to check,
+        // and a file still missing when its turn arrives fails
+        // with the ordinary extraction error
+        if (!path.exists) {
+            logger.warn {
+                "The project file entry $path does not exist yet."
             }
         }
-        if (projects.isEmpty()) throw ProjectParseException(messages.errorScriptEmpty("projects"))
-        val names = projects.map { it.name }
-        if (names.toSet().size != names.size) {
-            val duplicates = names.groupBy { it }.filterValues { it.size > 1 }.keys.joinToString(", ")
-            throw ProjectValidationException(messages.errorProjectDuplicateNames(duplicates))
+        return extractProjectFile(name, path, projectFileSpec(fileTable, key))
+    }
+
+    /**
+     * Extracts a project file from the Lua table the project
+     * specification provides, resolving the file type and the
+     * priority from the table's fields.
+     *
+     * @param name The file name as the specification spells it.
+     * @param path The path the specification names.
+     * @param table The Lua table describing the project file.
+     * @return The extracted project file.
+     */
+    private fun extractProjectFile(
+        name: String,
+        path: MPPPath,
+        table: LuaTable
+    ): ProjectFile {
+        rejectUnknownKeys(table, projectFileKeys) { "$name.$it" }
+        val fileType = optionalTable(
+            table["file_type"],
+            LanguageController.messages
+                .errorProjectFileTypeKeyRequiresTable
+        )?.let { extractFileType(it) } ?: detectFileType(path)
+
+        val priority = extractPriority(table["priority"])
+            ?: org.islandoftex.arara.core.files.ProjectFile.DEFAULT_PRIORITY
+
+        val directives = optionalTable(
+            table["directives"],
+            LanguageController.messages
+                .errorProjectDirectivesKeyRequiresTable
+        )?.let { luaDirectives ->
+            luaDirectives.keys()
+                .map { key -> luaDirectives[key] }
+                .map { value ->
+                    (value as? LuaString)?.toString()
+                        ?: throw ProjectParseException(
+                            LanguageController.messages
+                                .errorProjectDirectiveEntryNotAString
+                        )
+                }
+                .toList()
         }
+        return LuaProjectFile(path, fileType, priority, directives)
+    }
+
+    /**
+     * Converts the priority entry of a project file: an integral
+     * number names the priority, a fractional one is a type error,
+     * not a silent truncation, and an absent entry leaves the
+     * default. The integer sense itself bounds the value - the
+     * platform's integers are int-backed and its doubles beyond
+     * that range are not integers in its own terms - so the type
+     * verdict already holds the out-of-range values and nothing
+     * ever wraps.
+     *
+     * @param value The priority entry of the file's table.
+     * @return The priority, or null when the entry is absent.
+     */
+    private fun extractPriority(value: LuaValue): Int? =
+        when {
+            value.isnil() -> null
+            value is LuaNumber && value.isint() -> value.toint()
+            else -> throw ProjectParseException(
+                LanguageController.messages
+                    .errorProjectPriorityKeyRequiresInteger
+            )
+        }
+
+    /**
+     * Extracts the files of a project from their table: every
+     * entry resolves against the working directory, and a file
+     * is listed once - two spellings of the same location are
+     * still the same file, and the path's equality resolves
+     * the spelling.
+     */
+    private fun extractFiles(
+        fileTable: LuaTable,
+        workingDirectory: MPPPath
+    ): Set<ProjectFile> {
+        val seen = mutableSetOf<MPPPath>()
+        return fileTable.keys().map { key ->
+            val name = projectFileKey(key).toString()
+            val file = projectFileEntry(fileTable, key, workingDirectory)
+            if (!seen.add(file.path)) {
+                throw ProjectParseException(
+                    LanguageController.messages
+                        .errorProjectDuplicatePath(name)
+                )
+            }
+            file
+        }.toSet()
+    }
+
+    /**
+     * Extracts a project from its Lua table: the name falls back to
+     * the caller's default when the key is absent, the effective
+     * name - declared or derived - cannot be blank, the working
+     * directory resolves against the application's, and the file
+     * entries and dependencies convert to their own shapes.
+     */
+    // one extraction surface, each throw a distinct parse
+    // violation reported where it is detected - the same shape
+    // the project list extraction carries
+    @Suppress("ThrowsCount")
+    private fun extractProject(
+        table: LuaTable,
+        defaultName: String
+    ): Project {
+        rejectUnknownKeys(table, projectKeys)
+        val explicitName = optionalString(
+            table["name"],
+            LanguageController.messages
+                .errorProjectNameKeyRequiresString
+        )
+        // a project's name cannot be blank, wherever it comes
+        // from - the specification's own declaration, or the
+        // derived name the caller provides for a nameless one
+        val name = explicitName ?: defaultName
+        if (name.isBlank()) {
+            throw ProjectParseException(
+                LanguageController.messages
+                    .errorProjectNameCannotBeBlank
+            )
+        }
+        val workingDirectory = optionalString(
+            table["working_directory"],
+            LanguageController.messages
+                .errorProjectWorkingDirectoryKeyRequiresString
+        )?.let { appWorkingDir.resolve(it) } ?: appWorkingDir
+
+        val files = optionalTable(
+            table["files"],
+            LanguageController.messages
+                .errorProjectFilesKeyRequiresTable
+        )?.let { extractFiles(it, workingDirectory) } ?: setOf()
+
+        if (files.isEmpty()) {
+            throw ProjectParseException(
+                LanguageController.messages.errorProjectNeedsAFile
+            )
+        }
+
+        val dependencies = optionalTable(
+            table["dependencies"],
+            LanguageController.messages
+                .errorProjectDependenciesKeyRequiresStringList
+        )?.let { dependencyTable ->
+            dependencyTable.keys().map { key ->
+                (dependencyTable[key] as? LuaString)?.toString()
+                    ?: throw ProjectParseException(
+                        LanguageController.messages
+                            .errorProjectDependencyEntryNotAString
+                    )
+            }.toSet()
+        } ?: setOf()
+
+        return org.islandoftex.arara.core.files.Project(name, workingDirectory, files, dependencies)
+    }
+
+    /**
+     * Extracts the projects of a positional list: every entry is a
+     * project table carrying an explicit name, the names are
+     * unique within the list, and the list is not empty.
+     */
+    @Suppress("ThrowsCount")
+    private fun extractProjectList(
+        luaTable: LuaTable,
+        defaultName: String
+    ): List<Project> {
+        // a list of projects is positional; a root table with named
+        // keys is not a list, and reading it as one would misreport
+        // a malformed single project, so its named keys name
+        // themselves instead
+        luaTable.keys().filterIsInstance<LuaString>()
+            .takeIf { it.isNotEmpty() }?.let { named ->
+                throw ProjectParseException(
+                    LanguageController.messages.errorProjectUnknownKey(
+                        named.joinToString(", ", "(", ")") { key ->
+                            key.tojstring()
+                        }
+                    )
+                )
+            }
+
+        val projects = luaTable.keys()
+            .map { key ->
+                luaTable[key] as? LuaTable
+                    ?: throw ProjectParseException(
+                        LanguageController.messages
+                            .errorProjectListEntryNotATable
+                    )
+            }
+            .map { table ->
+                // dependencies identify projects by name, so every
+                // project of a list has to carry one
+                if (table["name"].isnil()) {
+                    throw ProjectParseException(
+                        LanguageController.messages
+                            .errorProjectListEntryNeedsName
+                    )
+                }
+                extractProject(table, defaultName)
+            }
+            .toList()
+
+        if (projects.isEmpty()) {
+            throw ProjectParseException(
+                LanguageController.messages.errorProjectReturnNotATable
+            )
+        }
+
+        // a name identifies a project within one run, so the
+        // list may not repeat it; the verdict names one shared
+        // name at a time, and the next run reports the next
+        projects.map { it.name }
+            .groupBy { it }
+            .filterValues { it.size > 1 }.keys
+            .firstOrNull()?.let { duplicated ->
+                throw ProjectValidationException(
+                    LanguageController.messages
+                        .errorProjectDuplicateName(duplicated)
+                )
+            }
         return projects
     }
 
-    /** Project preparation after configuration has supplied the available file types. */
-    companion object {
-        /** Resolve implicit types against the configuration belonging to this project. */
-        fun resolvePendingFileTypes(
-            project: Project,
-            options: org.islandoftex.arara.api.configuration.ExecutionOptions
-        ): Project {
-            val files = project.files.map { file ->
-                if (file !is LuaProjectFile || file.fileType != FileType.UNKNOWN_TYPE) {
-                    file
-                } else {
-                    val type = options.fileTypes.firstOrNull {
-                        file.path.fileName.endsWith(".${it.extension}")
-                    } ?: throw ProjectParseException(messages.errorProjectFiletype(file.path.toString()))
-                    LuaProjectFile(file.path, type, file.priority).apply { directives = file.directives }
-                }
-            }.toSet()
-            return org.islandoftex.arara.core.files.Project(
-                project.name, project.workingDirectory, files, project.dependencies, project.buildDirectory
+    /**
+     * Execute a lua script to get a list of projects.
+     *
+     * A root table holding a 'files' table denotes a single project;
+     * any other root is read as a list of project tables. The parse
+     * enforces the documented invariants of one specification and
+     * reports every violation where it is detected; the
+     * dependencies resolve against the whole invocation, one
+     * level up.
+     *
+     * @param luaScript The Lua string to be interpreted.
+     * @param defaultName The name a project that declared no name
+     *   takes; the caller names it from its specification file,
+     *   and a blank one is rejected like a blank declaration.
+     * @param chunkName The name Lua errors cite as the source of a
+     *   failure, so a broken specification points at its own file
+     *   instead of a synthetic chunk.
+     * @throws ProjectParseException The Lua script is invalid, the
+     *   root is malformed, or an entry violates a shape or type
+     *   expectation.
+     * @throws ProjectValidationException A project of a list
+     *   shares a name with another, or a single project declares
+     *   dependencies.
+     * @return List of projects extracted from the Lua run.
+     */
+    @Suppress("ThrowsCount")
+    fun parseProjectsFromLua(
+        luaScript: String,
+        defaultName: String = "Untitled",
+        chunkName: String = "specification"
+    ): List<Project> {
+        val luaTable = try {
+            // the chunk name makes every Lua failure cite the
+            // specification file as its source, the same convention
+            // the rule and configuration loaders follow
+            LuaPlatform.globalsFor(appWorkingDir)
+                .load(luaScript, chunkName).call() as? LuaTable
+        } catch (e: LuaError) {
+            throw ProjectParseException(
+                LanguageController.messages
+                    .errorProjectInvalidLua(e.message ?: ""),
+                e
             )
         }
-    }
-}
+            ?: throw ProjectParseException(
+                LanguageController.messages
+                    .errorProjectReturnNotATable
+            )
 
-/** Strict conversions for the project format's data boundary. */
-internal object ProjectFields {
-    fun keys(table: LuaTable, allowed: Set<String>, context: String) {
-        table.keys().firstOrNull { it !is LuaString || it.toString() !in allowed }?.let {
-            throw ProjectParseException(messages.errorScriptUnknownKey("$context.$it"))
+        if (!luaTable["files"].isnil()) {
+            val project = extractProject(luaTable, defaultName)
+            if (project.dependencies.isNotEmpty()) {
+                throw ProjectValidationException(
+                    LanguageController.messages
+                        .errorProjectSingleProjectHasDependencies
+                )
+            }
+            return listOf(project)
+        }
+
+        // dependencies resolve against the whole invocation, so the
+        // parse validates the shapes of one specification alone -
+        // the merged verdicts live one level up, where every
+        // project of the run is known
+        return extractProjectList(luaTable, defaultName)
+    }
+
+    /**
+     * Holds the post-configuration resolution of the file types
+     * the parse left pending, and the shared extension lookup
+     * both the detection and the resolution go through.
+     */
+    companion object {
+        /**
+         * Looks up the file type of a path by its extension,
+         * against the file types in effect for the run.
+         */
+        private fun lookupExtension(path: MPPPath): FileType? =
+            FileSearching.lookupFileType(
+                path.fileName.substringAfterLast('.', ""),
+                LinearExecutor.executionOptions
+            )
+        /**
+         * Resolves the file types the parse left pending: an entry
+         * that declared no file type is detected by its extension
+         * against the file types in effect for the project - its
+         * own configuration is in by now - and an extension no
+         * file type carries is an error naming the file and the
+         * remedy, before anything runs.
+         *
+         * @param project The project whose pending entries resolve.
+         * @return The project with every pending file type
+         *   resolved, itself when nothing was pending.
+         */
+        fun resolvePendingFileTypes(project: Project): Project {
+            val resolved = project.files.map { file ->
+                if (file is LuaProjectFile &&
+                    file.fileType == FileType.UNKNOWN_TYPE
+                ) {
+                    val fileType = lookupExtension(file.path)
+                        ?: throw ProjectParseException(
+                        LanguageController.messages
+                            .errorProjectFileTypeUnknownExtension(
+                                file.path.toString()
+                            )
+                    )
+                    LuaProjectFile(
+                        file.path,
+                        fileType,
+                        file.priority,
+                        file.directives
+                    )
+                } else {
+                    file
+                }
+            }.toSet()
+            return if (resolved == project.files) {
+                project
+            } else {
+                org.islandoftex.arara.core.files.Project(
+                    project.name,
+                    project.workingDirectory,
+                    resolved,
+                    project.dependencies
+                )
+            }
         }
     }
-
-    fun string(value: LuaValue, context: String): String? = when {
-        value.isnil() -> null
-        value is LuaString -> value.toString()
-        else -> throw ProjectParseException(messages.errorScriptString(context))
-    }
-
-    fun table(value: LuaValue, context: String): LuaTable? = when {
-        value.isnil() -> null
-        value is LuaTable -> value
-        else -> throw ProjectParseException(messages.errorScriptTable(context))
-    }
-
-    fun list(table: LuaTable, context: String): List<LuaValue> {
-        val size = table.keys().size
-        if (table.keys().any { it !is LuaNumber || !it.isint() || it.toint() !in 1..size }) {
-            throw ProjectParseException(messages.errorScriptList(context))
-        }
-        return (1..size).map { table[it] }
-    }
-
-    fun strings(table: LuaTable, context: String): List<String> = list(table, context).mapIndexed { index, value ->
-        string(value, "$context[${index + 1}]")
-            ?: throw ProjectParseException(messages.errorScriptString("$context[${index + 1}]"))
-    }
 }
-
-private val messages get() = LanguageController.messages

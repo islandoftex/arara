@@ -1,159 +1,375 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.lua.configuration
 
+import io.github.taoguan.luaj.LuaTable
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.core.configuration.LocalConfiguration
 import org.islandoftex.arara.core.configuration.SerialFileType
 import org.islandoftex.arara.core.localization.LanguageController
-import org.islandoftex.arara.lua.LuaScriptEnvironment
+import org.islandoftex.arara.lua.LuaPlatform
 import org.islandoftex.arara.lua.rules.LuaConversion
-import org.luaj.vm2.LuaBoolean
-import org.luaj.vm2.LuaError
-import org.luaj.vm2.LuaNumber
-import org.luaj.vm2.LuaString
-import org.luaj.vm2.LuaTable
-import org.luaj.vm2.LuaValue
 
 /**
- * Reads Lua scripts returning configuration tables. Scalar settings and lists live
- * at the root; logging and preambles use `log` and `preamble` tables. Unknown keys,
- * coercions and noncontiguous lists are rejected. Paths are computed in Lua;
- * YAML placeholder syntax is not expanded.
+ * Parse configuration files written in arara's Lua configuration
+ * format.
+ *
+ * A configuration file is a Lua script returning a table. The keys
+ * that name single values or plain lists sit at the root, and the
+ * keys that form true families nest in their own tables:
+ *
+ * ```lua
+ * return {
+ *   paths = {
+ *     user.home .. "/opt/paulo/rules",
+ *     cwd .. "/local-rules"
+ *   },
+ *   file_types = {
+ *     { extension = "tex" },
+ *     { extension = "texw", pattern = "^\\s*%\\s+" }
+ *   },
+ *   language = "en",
+ *   loops = 10,
+ *   verbose = true,
+ *   header = true,
+ *   database = "arara.db",
+ *   log = {
+ *     enabled = true,
+ *     file = "arara.log"
+ *   },
+ *   console = {
+ *     mode = "plain",
+ *     animations = true
+ *   },
+ *   preamble = {
+ *     default = "twopdftex",
+ *     prepend = "always",
+ *     definitions = {
+ *       twopdftex = {
+ *         "% arara: pdflatex",
+ *         "% arara: pdflatex"
+ *       }
+ *     }
+ *   }
+ * }
+ * ```
+ *
+ * The `preamble.prepend` key names where the default preamble
+ * applies: `"always"` prepends it to every file, and
+ * `"without-directives"` keeps it for the files that carry no
+ * directives of their own - any other word is an error. A
+ * definition is a list of directive lines, one per entry, in the
+ * same shape the `paths` list keeps.
+ *
+ * The `database` and `log.file` values name their files exactly
+ * as written, extension included - a relative path resolves
+ * against the working directory when the file is opened.
+ *
+ * The script runs with arara's own values in scope, so paths and
+ * other strings are computed in plain Lua instead of relying on a
+ * placeholder syntax: the table `user` carries the `home` and
+ * `name` of the user running arara, and `cwd` is the working
+ * directory the configuration is loaded for. As a script
+ * evaluates once, at load, so do the values: `cwd` is the
+ * working directory of that very moment.
+ *
+ * The parsed result is converted into the very same
+ * [LocalConfiguration] representation the YAML parser produces,
+ * so both formats behave identically once loaded.
  */
+// the parser walks a key surface of two depths - roots and
+// groups - and every extraction is its own function; the count
+// is the shape of the format, not accumulated responsibilities
+@Suppress("TooManyFunctions")
 object LuaLocalConfiguration {
     /**
-     * Evaluates [file] once with `user.home`, `user.name` and `cwd` in scope.
-     *
-     * @param scriptOutputToStderr Route script output to diagnostics for structured callers.
+     * The configuration keys the Lua format accepts at the root of
+     * the table; a key outside the set is an error.
      */
-    fun load(
-        file: MPPPath, workingDirectory: MPPPath, scriptOutputToStderr: Boolean = false
-    ): LocalConfiguration = runCatching {
-        val globals = LuaScriptEnvironment.newGlobals(workingDirectory)
-        if (scriptOutputToStderr) globals.STDOUT = globals.STDERR
-        val value = globals.load(file.readText(), file.toString()).call()
-        extract(Fields.table(value, "configuration"))
-    }.getOrElse {
-        val cause = when (it) {
-            is LuaError -> Exception(LuaConversion.diagnostic(it), it)
-            is Exception -> it
-            else -> RuntimeException(it)
-        }
-        throw AraraException("${messages.errorConfigurationGenericError} ($file)", cause)
-    }
+    private val knownKeys = setOf(
+        "paths", "file_types", "language", "loops", "verbose", "header",
+        "database", "log", "console", "preamble"
+    )
 
-    private fun extract(table: LuaTable): LocalConfiguration {
-        Fields.keys(table, setOf(
-            "paths", "file_types", "language", "console", "animations", "loops", "verbose", "header",
-            "database", "log", "preamble", "warn_deprecated_yaml", "terminal_width"
-        ), "configuration")
-        val log = Fields.group(table, "log", setOf("file", "format"))
-        val preamble = Fields.group(table, "preamble", setOf("default", "prepend", "definitions"))
-        val loops = Fields.integer(table["loops"], "loops")
-        require(loops == null || loops > 0) { messages.errorConfigurationLoopsInvalidRange }
-        val prepend = when (val mode = Fields.string(preamble["prepend"], "preamble.prepend")) {
-            null, "always" -> true
-            "without-directives" -> false
-            else -> error(messages.errorConfigurationPrepend(mode))
+    /**
+     * Validates the configuration file.
+     *
+     * @param file The configuration file.
+     * @param workingDirectory The working directory the configuration is
+     *   loaded for; it is in scope to the script as `cwd`.
+     * @return The configuration file as a resource.
+     * @throws AraraException Something wrong happened, to be caught in the
+     * higher levels.
+     */
+    @Throws(AraraException::class)
+    fun load(
+        file: MPPPath,
+        workingDirectory: MPPPath
+    ): LocalConfiguration =
+        runCatching {
+            // arara's values are in scope to the script, mirroring
+            // what the placeholder expansion of the YAML format
+            // resolves
+            val result = LuaPlatform.globalsFor(workingDirectory)
+                .load(file.readText(), file.fileName).call()
+            val table = result as? LuaTable ?: throw AraraException(
+                LanguageController.messages
+                    .errorConfigurationLuaReturnNotATable
+            )
+            fromMap(tableToMap(table))
+        }.getOrElse {
+            throw AraraException(
+                LanguageController.messages.errorConfigurationGenericError,
+                it as? Exception ?: AraraException(it.toString())
+            )
         }
+
+    /**
+     * Converts a Lua table into a plain map, recursively
+     * flattening nested tables into maps of their own.
+     *
+     * @param table The Lua table to convert.
+     * @return The map representation of the table.
+     */
+    private fun tableToMap(table: LuaTable): Map<String, Any?> =
+        table.keys().associate { key ->
+            key.tojstring() to LuaConversion.fromLua(table.get(key))
+        }
+
+    /**
+     * Converts the plain map of the Lua configuration into the
+     * model, rejecting every key the format does not accept, at
+     * the root and inside every group.
+     *
+     * @param map The map the Lua table converted to.
+     * @return The configuration model.
+     */
+    @Throws(AraraException::class)
+    private fun fromMap(map: Map<String, Any?>): LocalConfiguration {
+        map.keys.minus(knownKeys).takeIf { it.isNotEmpty() }?.let {
+            throw AraraException(
+                LanguageController.messages
+                    .errorConfigurationUnknownKeys(
+                        it.joinToString(", ", "(", ")")
+                    )
+            )
+        }
+        val log = group(map, "log", setOf("enabled", "file"))
+        val console = group(map, "console", setOf("mode", "animations"))
+        val preamble = group(
+            map, "preamble",
+            setOf("default", "prepend", "definitions")
+        )
         return LocalConfiguration(
-            paths = Fields.strings(table["paths"], "paths"),
-            filetypes = fileTypes(table["file_types"]),
-            language = Fields.string(table["language"], "language"),
-            console = Fields.string(table["console"], "console"),
-            animations = Fields.boolean(table["animations"], "animations"),
-            terminalWidth = Fields.integer(table["terminal_width"], "terminal_width"),
-            loops = loops,
-            verbose = Fields.boolean(table["verbose"], "verbose"),
-            header = Fields.boolean(table["header"], "header"),
-            warnDeprecatedYaml = Fields.boolean(table["warn_deprecated_yaml"], "warn_deprecated_yaml"),
-            dbname = Fields.string(table["database"], "database"),
-            logname = Fields.string(log["file"], "log.file"),
-            logformat = Fields.string(log["format"], "log.format"),
-            preambles = definitions(preamble["definitions"]),
-            defaultPreamble = Fields.string(preamble["default"], "preamble.default"),
-            prependPreambleIfDirectivesGiven = prepend,
+            paths = stringList(map, "paths"),
+            filetypes = fileTypes(map),
+            language = string(map, "language"),
+            loops = int(map, "loops"),
+            verbose = boolean(map, "verbose"),
+            logging = boolean(log, "enabled"),
+            header = boolean(map, "header"),
+            dbname = string(map, "database"),
+            logname = string(log, "file"),
+            console = string(console, "mode"),
+            animations = boolean(console, "animations"),
+            preambles = preambleDefinitions(preamble),
+            defaultPreamble = string(preamble, "default"),
+            prependPreambleIfDirectivesGiven = prependMode(preamble),
+            // the script computed its paths with the values in scope,
+            // so no engine tokens remain to expand downstream
             expandPathTokens = false
         )
     }
 
-    private fun fileTypes(value: LuaValue): List<SerialFileType> = Fields.list(value, "file_types")
-        .mapIndexed { index, entry ->
-            val context = "file_types[${index + 1}]"
-            val type = Fields.table(entry, context)
-            Fields.keys(type, setOf("extension", "pattern"), context)
-            val extension = Fields.string(type["extension"], "$context.extension")
-            require(!extension.isNullOrBlank()) { messages.errorScriptNonblank("$context.extension") }
-            val pattern = Fields.string(type["pattern"], "$context.pattern")
-            val result = if (pattern == null) SerialFileType(extension) else SerialFileType(extension, pattern)
-            result.toFileType()
-            result
-        }
-
-    private fun definitions(value: LuaValue): Map<String, String> {
-        if (value.isnil()) return emptyMap()
-        val table = Fields.table(value, "preamble.definitions")
-        return table.keys().associate { key ->
-            require(key is LuaString && key.tojstring().isNotBlank()) {
-                messages.errorScriptStringKeys("preamble.definitions")
+    /**
+     * Extracts a group table from the map, validating the shape
+     * and rejecting every subkey the group does not accept - a
+     * typo inside a group names itself the same way a root key
+     * does, qualified by its group.
+     */
+    @Throws(AraraException::class)
+    private fun group(
+        map: Map<String, Any?>,
+        name: String,
+        keys: Set<String>
+    ): Map<String, Any?> =
+        when (val value = map[name]) {
+            null -> emptyMap()
+            // an empty Lua table converts to an empty list
+            is List<*> -> value.takeIf { it.isEmpty() }?.let { emptyMap() }
+                ?: throw AraraException(
+                    LanguageController.messages
+                        .errorConfigurationKeyRequiresTable(name)
+                )
+            is Map<*, *> -> {
+                value.keys.map { it.toString() }
+                    .minus(keys).takeIf { it.isNotEmpty() }?.let {
+                        throw AraraException(
+                            LanguageController.messages
+                                .errorConfigurationUnknownKeys(
+                                    it.joinToString(", ", "(", ")") { key ->
+                                        "$name.$key"
+                                    }
+                                )
+                        )
+                    }
+                @Suppress("UNCHECKED_CAST")
+                value as Map<String, Any?>
             }
-            key.tojstring() to Fields.strings(table[key], "preamble.definitions.${key.tojstring()}")
-                .joinToString("\n")
+            else -> throw AraraException(
+                LanguageController.messages
+                    .errorConfigurationKeyRequiresTable(name)
+            )
         }
-    }
+
+    /**
+     * Extracts the preamble definitions: a table mapping each
+     * preamble name to its list of directive lines, joined into
+     * the single string the model keeps.
+     */
+    @Throws(AraraException::class)
+    private fun preambleDefinitions(
+        preamble: Map<String, Any?>
+    ): Map<String, String> =
+        when (val value = preamble["definitions"]) {
+            null -> emptyMap()
+            is List<*> -> value.takeIf { it.isEmpty() }?.let { emptyMap() }
+                ?: throw AraraException(
+                    LanguageController.messages
+                        .errorConfigurationKeyRequiresTable("definitions")
+                )
+            is Map<*, *> -> value.entries.associate { (name, lines) ->
+                val preambleName = name as? String
+                    ?: throw AraraException(
+                        LanguageController.messages
+                            .errorConfigurationKeyRequiresStringKeys(
+                                "definitions"
+                            )
+                    )
+                val directives = lines as? List<*>
+                    ?: throw AraraException(
+                        LanguageController.messages
+                            .errorConfigurationKeyRequiresStringList(
+                                "definitions"
+                            )
+                    )
+                preambleName to directives.joinToString("\n") { line ->
+                    line as? String ?: throw AraraException(
+                        LanguageController.messages
+                            .errorConfigurationEntryNotAString(
+                                "definitions"
+                            )
+                    )
+                }
+            }
+            else -> throw AraraException(
+                LanguageController.messages
+                    .errorConfigurationKeyRequiresTable("definitions")
+            )
+        }
+
+    /**
+     * Extracts the preamble application policy: `"always"` names
+     * the historical behavior and `"without-directives"` keeps the
+     * default preamble for files with no directives of their own;
+     * any other word is an error, and an absent key applies
+     * everywhere.
+     */
+    @Throws(AraraException::class)
+    private fun prependMode(preamble: Map<String, Any?>): Boolean =
+        when (val value = string(preamble, "prepend")) {
+            null -> true
+            "always" -> true
+            "without-directives" -> false
+            else -> throw AraraException(
+                LanguageController.messages
+                    .errorConfigurationPreamblePrependInvalid(value)
+            )
+        }
+
+    /**
+     * Extracts an optional string value, rejecting any other type.
+     */
+    private fun string(map: Map<String, Any?>, key: String): String? =
+        map[key]?.let {
+            it as? String ?: throw AraraException(
+                LanguageController.messages
+                    .errorConfigurationKeyRequiresString(key)
+            )
+        }
+
+    /**
+     * Extracts an optional integer value, rejecting any other type.
+     */
+    private fun int(map: Map<String, Any?>, key: String): Int? =
+        map[key]?.let {
+            it as? Int ?: throw AraraException(
+                LanguageController.messages
+                    .errorConfigurationKeyRequiresInteger(key)
+            )
+        }
+
+    /**
+     * Extracts an optional boolean value, rejecting any other type.
+     */
+    private fun boolean(map: Map<String, Any?>, key: String): Boolean? =
+        map[key]?.let {
+            it as? Boolean ?: throw AraraException(
+                LanguageController.messages
+                    .errorConfigurationKeyRequiresBoolean(key)
+            )
+        }
+
+    /**
+     * Extracts a list of strings, rejecting any non-string entry
+     * and any other shape.
+     */
+    private fun stringList(map: Map<String, Any?>, key: String): List<String> =
+        (map[key] ?: emptyList<Any?>()).let { value ->
+            (value as? List<*>)?.map { element ->
+                element as? String ?: throw AraraException(
+                    LanguageController.messages
+                        .errorConfigurationEntryNotAString(key)
+                )
+            } ?: throw AraraException(
+                LanguageController.messages
+                    .errorConfigurationKeyRequiresStringList(key)
+            )
+        }
+
+    /**
+     * Extracts the file type declarations, each a table with an
+     * extension and an optional pattern.
+     */
+    @Throws(AraraException::class)
+    private fun fileTypes(map: Map<String, Any?>): List<SerialFileType> =
+        (map["file_types"] ?: emptyList<Any?>()).let { value ->
+            (value as? List<*>)?.map { entry ->
+                val fileType = entry as? Map<*, *> ?: throw AraraException(
+                    LanguageController.messages
+                        .errorConfigurationFileTypeEntryNotATable
+                )
+                val extension = fileType["extension"] as? String
+                    ?: throw AraraException(
+                        LanguageController.messages
+                            .errorConfigurationFileTypeExtensionMissing
+                    )
+                val pattern = fileType["pattern"]
+                when {
+                    pattern == null -> SerialFileType(extension)
+                    pattern is String -> SerialFileType(extension, pattern)
+                    // a wrongly typed pattern is never silently
+                    // dropped: the rejection names the expectation,
+                    // matching the project specification's own
+                    // strictness
+                    else -> throw AraraException(
+                        LanguageController.messages
+                            .errorConfigurationFileTypePatternNotAString
+                    )
+                }
+            } ?: throw AraraException(
+                LanguageController.messages
+                    .errorConfigurationFileTypeKeyRequiresTableList
+            )
+        }
 }
-
-private object Fields {
-    fun table(value: LuaValue, context: String): LuaTable =
-        value as? LuaTable ?: error(messages.errorScriptTable(context))
-
-    fun keys(table: LuaTable, allowed: Set<String>, context: String) {
-        table.keys().firstOrNull { it !is LuaString || it.tojstring() !in allowed }?.let {
-            error(messages.errorScriptUnknownKey("$context.${it.tojstring()}"))
-        }
-    }
-
-    fun group(parent: LuaTable, name: String, allowed: Set<String>): LuaTable {
-        val value = parent[name]
-        val table = if (value.isnil()) LuaTable() else table(value, name)
-        keys(table, allowed, name)
-        return table
-    }
-
-    fun string(value: LuaValue, context: String): String? = when (value) {
-        LuaValue.NIL -> null
-        is LuaString -> value.tojstring()
-        else -> error(messages.errorScriptString(context))
-    }
-
-    fun boolean(value: LuaValue, context: String): Boolean? = when (value) {
-        LuaValue.NIL -> null
-        is LuaBoolean -> value.toboolean()
-        else -> error(messages.errorScriptBoolean(context))
-    }
-
-    fun integer(value: LuaValue, context: String): Int? = when {
-        value.isnil() -> null
-        value is LuaNumber && value.isint() -> value.toint()
-        else -> error(messages.errorScriptInteger(context))
-    }
-
-    fun list(value: LuaValue, context: String): List<LuaValue> {
-        if (value.isnil()) return emptyList()
-        val table = table(value, context)
-        val size = table.keys().size
-        require(table.keys().all { it is LuaNumber && it.isint() && it.toint() in 1..size }) {
-            messages.errorScriptList(context)
-        }
-        return (1..size).map { table[it] }
-    }
-
-    fun strings(value: LuaValue, context: String): List<String> = list(value, context).mapIndexed { index, entry ->
-        string(entry, "$context[${index + 1}]") ?: error(
-            messages.errorScriptString("$context[${index + 1}]")
-        )
-    }
-}
-
-private val messages get() = LanguageController.messages

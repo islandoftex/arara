@@ -1,115 +1,313 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.lua.rules
 
+import io.github.taoguan.luaj.LuaBoolean
+import io.github.taoguan.luaj.LuaFunction
+import io.github.taoguan.luaj.LuaString
+import io.github.taoguan.luaj.LuaTable
+import io.github.taoguan.luaj.LuaValue
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.core.localization.LanguageController
-import org.luaj.vm2.LuaBoolean
-import org.luaj.vm2.LuaFunction
-import org.luaj.vm2.LuaString
-import org.luaj.vm2.LuaTable
-import org.luaj.vm2.LuaValue
 
 /**
- * Parses scripts returning a rule table with command and flag closures.
+ * Parse rules written in arara's Lua rule format.
  *
- * Tables require an `identifier`, a `name` and at least one command; `authors`
- * and `arguments` are optional lists. Argument identifiers must be unique and
- * cannot be `files` or `reference`. Each argument needs a literal `default`,
- * a `flag` function or both; `required` defaults to false.
+ * A rule file is a Lua script returning a table of the following shape:
+ *
+ * ```lua
+ * return {
+ *   identifier = "pdflatex",
+ *   name = "PDFLaTeX",
+ *   authors = { "Island of TeX" },
+ *   commands = {
+ *     {
+ *       name = "PDFLaTeX engine",
+ *       command = function(ctx)
+ *         return get_command("pdflatex", ctx.interaction, ctx.options,
+ *                           ctx.reference.file_name)
+ *       end,
+ *       -- optional, defaults to a zero exit code check
+ *       exit = function(code) return code == 0 end
+ *     }
+ *   },
+ *   arguments = {
+ *     {
+ *       identifier = "interaction",
+ *       required = false,          -- optional, defaults to false
+ *       default = "nonstopmode",   -- optional
+ *       flag = function(ctx, value)
+ *         return "--interaction=" .. value
+ *       end
+ *     }
+ *   }
+ * }
+ * ```
+ *
+ * Command closures receive a context table holding the processed argument
+ * values (lists of strings) and the `reference` (a table with `file_name`,
+ * `path` and `parent` fields). Flag closures receive a context table with
+ * the raw directive `parameters` and the `reference`, plus the user-provided
+ * value of the argument as second parameter. The helper functions known
+ * from the YAML format (`getCommand`, `isTrue`, `throwError`, ...) are
+ * available as globals.
  */
 object LuaRuleParser {
     /**
-     * Reads and evaluates [file], requiring its identifier to match [identifier].
+     * Parses the provided file, checks the identifier and returns a rule
+     * representation.
      *
-     * @param scriptOutputToStderr Route script output to diagnostics, preserving structured caller output.
-     * @throws AraraException If the script or rule table is invalid.
+     * @param file The rule file.
+     * @param identifier The directive identifier.
+     * @return The rule object.
+     * @throws AraraException Something wrong happened, to be caught in the
+     * higher levels.
      */
-    fun parse(file: MPPPath, identifier: String, scriptOutputToStderr: Boolean = false): LuaRule {
-        val header = LanguageController.messages.errorRuleIdentifierAndPath(identifier, file.normalize().parent.toString())
-        return LuaConversion.withLuaErrorHandling(header) {
+    @Throws(AraraException::class)
+    fun parse(file: MPPPath, identifier: String): LuaRule {
+        // the localized error header is shared with the YAML engine, so
+        // both dialects report rule errors in the same voice
+        val errorHeader =
+            LanguageController.messages.errorRuleIdentifierAndPath(
+                identifier,
+                file.normalize().parent.toString()
+            ) + " "
+        val table = LuaConversion.withLuaErrorHandling(
+            errorHeader + LanguageController
+                .messages.errorParseRuleGenericError
+        ) {
             val globals = LuaRuleEnvironment.newGlobals()
-            if (scriptOutputToStderr) globals.STDOUT = globals.STDERR
-            val value = globals.load(file.readText(), file.toString()).call()
-            val table = value as? LuaTable ?: invalid(messages.errorScriptTable("rule"))
-            extract(table, identifier)
-        }
-    }
-
-    private fun extract(table: LuaTable, identifier: String): LuaRule {
-        val actual = string(table.get("identifier"), "identifier")
-        if (actual != identifier) invalid(
-            messages.errorValidateHeaderWrongIdentifier(identifier, actual)
-        )
-        val name = string(table.get("name"), "name")
-        val authors = sequence(table.get("authors"), "authors").map { string(it, "author") }
-        val commands = sequence(table.get("commands"), "commands").mapIndexed { index, command ->
-            val context = "commands[${index + 1}]"
-            val entry = command as? LuaTable ?: invalid(messages.errorScriptTable(context))
-            LuaRuleCommand(
-                optionalString(entry.get("name"), "$context.name"),
-                function(entry.get("command"), "$context.command")
-                    ?: invalid(messages.errorScriptRequired("$context.command")),
-                function(entry.get("exit"), "$context.exit")
+            runCatching {
+                globals.load(file.readText(), file.fileName).call()
+            }.getOrElse {
+                // the localized generic parse error names the class of
+                // the failure, the way the deprecated dialect's parser
+                // does; the details ride the cause chain
+                throw AraraException(
+                    errorHeader + LanguageController
+                        .messages.errorParseRuleGenericError,
+                    it as? Exception ?: AraraException(it.toString())
+                )
+            } as? LuaTable ?: throw AraraException(
+                errorHeader + LanguageController
+                    .messages.errorParseRuleGenericError
             )
         }
-        if (commands.isEmpty()) invalid(messages.errorScriptEmpty("commands"))
-        val arguments = sequence(table.get("arguments"), "arguments").mapIndexed { index, value ->
-            argument(value, "arguments[${index + 1}]")
+        return extractRule(table, identifier, errorHeader)
+    }
+
+    @Suppress("ThrowsCount")
+    /**
+     * Extracts the rule from its Lua table: the identifier has to
+     * match the directive that resolved the file, and the name,
+     * the authors, the commands and the arguments convert to
+     * their JVM shapes.
+     */
+    private fun extractRule(
+        table: LuaTable,
+        identifier: String,
+        errorHeader: String
+    ): LuaRule {
+        val ruleIdentifier = optionalString(
+            table.get("identifier"),
+            errorHeader + LanguageController.messages
+                .errorParseRuleIdentifierNotAString
+        ) ?: throw AraraException(
+            errorHeader + LanguageController.messages
+                .errorParseRuleIdentifierMissing
+        )
+        if (ruleIdentifier != identifier) {
+            throw AraraException(
+                errorHeader + LanguageController.messages
+                    .errorValidateHeaderWrongIdentifier(
+                        identifier,
+                        ruleIdentifier
+                    )
+            )
         }
+        val name = optionalString(
+            table.get("name"),
+            errorHeader + LanguageController.messages
+                .errorParseRuleNameNotAString
+        ) ?: throw AraraException(
+            errorHeader + LanguageController.messages
+                .errorValidateHeaderNullName
+        )
+        val authors = stringList(
+            table.get("authors"), "authors", errorHeader
+        )
+        val commands = tableList(
+            table.get("commands"), "commands", errorHeader
+        ).map { command ->
+            extractCommand(command, errorHeader)
+        }.ifEmpty {
+            throw AraraException(
+                errorHeader + LanguageController.messages
+                    .errorValidateBodyNullCommand
+            )
+        }
+        val arguments = tableList(
+            table.get("arguments"), "arguments", errorHeader
+        ).map { argument ->
+            extractArgument(argument, errorHeader)
+        }
+        validateArguments(arguments, errorHeader)
+        return LuaRule(ruleIdentifier, name, authors, commands, arguments)
+    }
+
+    /**
+     * Extracts a rule command from the Lua table the rule
+     * provides, converting the name and the command and exit
+     * closures to their JVM shapes.
+     */
+    private fun extractCommand(
+        command: LuaTable,
+        errorHeader: String
+    ): LuaRuleCommand = LuaRuleCommand(
+        name = optionalString(
+            command.get("name"),
+            errorHeader + LanguageController.messages
+                .errorParseRuleCommandNameNotAString
+        ),
+        commandFunction = command.get("command") as? LuaFunction
+            ?: throw AraraException(
+                errorHeader + LanguageController.messages
+                    .errorParseRuleCommandFunctionMissing
+            ),
+        exitFunction = command.get("exit") as? LuaFunction
+    )
+
+    @Suppress("ThrowsCount")
+    /**
+     * Extracts a rule argument from its Lua table: the identifier
+     * must be present and unique, the flag and the default are
+     * optional closures and values, and the reserved identifiers
+     * are rejected.
+     */
+    private fun extractArgument(
+        argument: LuaTable,
+        errorHeader: String
+    ): LuaRuleArgument {
+        val identifier = optionalString(
+            argument.get("identifier"),
+            errorHeader + LanguageController.messages
+                .errorParseRuleArgumentIdNotAString()
+        )?.takeIf { it.isNotBlank() }
+            ?: throw AraraException(
+                errorHeader + LanguageController.messages
+                    .errorValidateBodyNullArgumentId
+            )
+        val flag = argument.get("flag") as? LuaFunction
+        val default = argument.get("default")
+            .takeUnless { it.isnil() }
+            ?.let { LuaConversion.fromLua(it) }
+        if (flag == null && default == null) {
+            throw AraraException(
+                errorHeader + LanguageController.messages
+                    .errorParseRuleArgumentNeedsFlagOrDefault(identifier)
+            )
+        }
+        return LuaRuleArgument(
+            identifier = identifier,
+            isRequired = argument.get("required").let { value ->
+                when {
+                    value.isnil() -> false
+                    value is LuaBoolean -> value.toboolean()
+                    else -> throw AraraException(
+                        errorHeader + LanguageController.messages
+                            .errorParseRuleArgumentRequiredNotABoolean(
+                                identifier
+                            )
+                    )
+                }
+            },
+            defaultValue = default,
+            flagFunction = flag
+        )
+    }
+
+    @Suppress("ThrowsCount")
+    /**
+     * Validates the declared arguments of a rule: none of the
+     * identifiers is reserved, and each is unique.
+     */
+    private fun validateArguments(
+        arguments: List<LuaRuleArgument>,
+        errorHeader: String
+    ) {
         val identifiers = arguments.map { it.identifier }
-        identifiers.firstOrNull { it in setOf("files", "reference") }?.let {
-            invalid(messages.errorValidateBodyArgumentIdIsReserved(it))
+        identifiers.intersect(setOf("files", "reference")).forEach {
+            throw AraraException(
+                errorHeader + LanguageController.messages
+                    .errorValidateBodyArgumentIdIsReserved(it)
+            )
         }
-        if (identifiers.distinct().size != identifiers.size) invalid(
-            messages.errorValidateBodyDuplicateArgumentIdentifiers
+        if (identifiers.size != identifiers.toSet().size) {
+            throw AraraException(
+                errorHeader + LanguageController.messages
+                    .errorValidateBodyDuplicateArgumentIdentifiers
+            )
+        }
+    }
+
+    /**
+     * Extract an optional string entry: a missing or nil value yields
+     * null, any other non-string value is a parse error (Lua numbers do
+     * not silently become strings at the data boundary, mirroring the
+     * typed helper contract of the Lua dialect).
+     */
+    private fun optionalString(value: LuaValue, typeError: String): String? =
+        when {
+            value.isnil() -> null
+            value is LuaString -> value.tojstring()
+            else -> throw AraraException(typeError)
+        }
+
+    /**
+     * Extracts a list of strings from a Lua value: nil yields the
+     * empty list, a table yields its string entries, and any other
+     * shape is an error.
+     */
+    private fun stringList(
+        value: LuaValue,
+        key: String,
+        errorHeader: String
+    ): List<String> = when {
+        value.isnil() -> emptyList()
+        value is LuaTable -> value.keys().map { elementKey ->
+            (value.get(elementKey) as? LuaString)?.tojstring()
+                ?: throw AraraException(
+                    errorHeader + LanguageController.messages
+                        .errorParseRuleEntryNotAString(key)
+                )
+        }
+        else -> throw AraraException(
+            errorHeader + LanguageController.messages
+                .errorParseRuleKeyRequiresStringList(key)
         )
-        return LuaRule(identifier, name, authors, commands, arguments)
     }
 
-    private fun argument(value: LuaValue, context: String): LuaRuleArgument {
-        val entry = value as? LuaTable ?: invalid(messages.errorScriptTable(context))
-        val identifier = string(entry.get("identifier"), "$context.identifier")
-        if (identifier.isBlank()) invalid(messages.errorScriptNonblank("$context.identifier"))
-        val flag = function(entry.get("flag"), "$context.flag")
-        val default = entry.get("default")
-        if (default.isfunction()) invalid(messages.errorScriptLiteral("$context.default"))
-        if (flag == null && default.isnil()) invalid(
-            messages.errorScriptAlternatives(context, "flag, default")
+    /**
+     * Extracts a list of tables from a Lua value: nil yields the
+     * empty list, a table yields its table entries, and any other
+     * shape is an error.
+     */
+    private fun tableList(
+        value: LuaValue,
+        key: String,
+        errorHeader: String
+    ): List<LuaTable> = when {
+        value.isnil() -> emptyList()
+        value is LuaTable -> value.keys().map { elementKey ->
+            value.get(elementKey) as? LuaTable
+                ?: throw AraraException(
+                    errorHeader + LanguageController.messages
+                        .errorParseRuleEntryNotATable(key)
+                )
+        }
+        else -> throw AraraException(
+            errorHeader + LanguageController.messages
+                .errorParseRuleKeyRequiresTableList(key)
         )
-        val required = entry.get("required").let {
-            when (it) {
-                LuaValue.NIL -> false
-                is LuaBoolean -> it.toboolean()
-                else -> invalid(messages.errorScriptBoolean("$context.required"))
-            }
-        }
-        return LuaRuleArgument(identifier, required, LuaConversion.fromLua(default), flag)
     }
-
-    private fun function(value: LuaValue, name: String): LuaFunction? = when {
-        value.isnil() -> null
-        value is LuaFunction -> value
-        else -> invalid(messages.errorScriptFunction(name))
-    }
-
-    private fun optionalString(value: LuaValue, name: String): String? =
-        if (value.isnil()) null else string(value, name)
-
-    private fun string(value: LuaValue, name: String): String =
-        (value as? LuaString)?.tojstring() ?: invalid(messages.errorScriptString(name))
-
-    private fun sequence(value: LuaValue, name: String): List<LuaValue> {
-        if (value.isnil()) return emptyList()
-        val table = value as? LuaTable ?: invalid(messages.errorScriptList(name))
-        val keys = table.keys()
-        if (keys.any { !it.isint() || it.toint() !in 1..keys.size }) {
-            invalid(messages.errorScriptList(name))
-        }
-        return (1..keys.size).map { table.get(it) }
-    }
-
-    private fun invalid(detail: String): Nothing = throw LuaHelperException(detail)
 }
-
-private val messages get() = LanguageController.messages

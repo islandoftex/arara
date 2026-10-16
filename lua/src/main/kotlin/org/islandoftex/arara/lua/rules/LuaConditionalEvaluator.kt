@@ -7,24 +7,58 @@ import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.rules.DirectiveConditionalEvaluator
-import org.luaj.vm2.LuaBoolean
 
 /**
- * Evaluates boolean Lua expressions using the shared scheduling and loop limits.
- * `unless` and `until` invert the result; dry runs skip evaluation. Compound
- * expressions use Lua's `and`, `or` and `not` operators.
+ * Implements an evaluator for Lua directive conditionals, used when the
+ * Lua rule engine is selected on the command line.
+ *
+ * The condition is evaluated as a Lua expression and, like the MVEL
+ * dialect, has to yield a proper boolean value; anything else is
+ * rejected. Single-call conditions such as `exists('log')` work in both
+ * dialects unchanged, but compound conditions use Lua's `and`, `or` and
+ * `not` instead of `&&`, `||` and `!`.
  */
-class LuaConditionalEvaluator(executionOptions: ExecutionOptions) : DirectiveConditionalEvaluator(executionOptions) {
-    /** Evaluate the expression as a strict Lua boolean, inverting unless and until results. */
+class LuaConditionalEvaluator(
+    executionOptions: ExecutionOptions
+) : DirectiveConditionalEvaluator(executionOptions) {
+
+    /**
+     * Only run the evaluation of the conditional including a check whether
+     * the result needs to be inverted.
+     *
+     * @param conditional The conditional.
+     * @return The result of the evaluation.
+     */
+    @Throws(AraraException::class)
+    @Suppress("TooGenericExceptionCaught")
     override fun evaluateCondition(conditional: DirectiveConditional): Boolean {
-        val result = LuaConversion.withLuaErrorHandling(LanguageController.messages.errorEvaluateCompilationFailed) {
+        val result = try {
             LuaConditionalEnvironment.newGlobals()
-                .load("return (" + conditional.condition + ")", "directive-conditional").call()
+                .load("return (" + conditional.condition + ")")
+                .call()
+        } catch (exception: RuntimeException) {
+            // Lua errors and helper binding errors cross the Lua VM as
+            // LuaError (a runtime exception) with the original exception
+            // preserved in the cause chain, so a single runtime catch
+            // wraps both behind the localized evaluation error, with
+            // the binding message available as the cause
+            throw AraraException(
+                LanguageController.messages.errorEvaluateCompilationFailed,
+                exception
+            )
         }
-        val value = (result as? LuaBoolean)?.toboolean()
-            ?: throw AraraException(LanguageController.messages.errorEvaluateNotBooleanValue)
-        return if (conditional.type in setOf(DirectiveConditionalType.UNLESS, DirectiveConditionalType.UNTIL)) {
-            !value
-        } else value
+        return if (result.isboolean()) {
+            val value = result.toboolean()
+            if (conditional.type == DirectiveConditionalType.UNLESS ||
+                conditional.type == DirectiveConditionalType.UNTIL
+            )
+                !value
+            else
+                value
+        } else {
+            throw AraraException(
+                LanguageController.messages.errorEvaluateNotBooleanValue
+            )
+        }
     }
 }

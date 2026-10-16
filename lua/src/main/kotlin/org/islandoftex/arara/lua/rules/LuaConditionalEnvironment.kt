@@ -1,36 +1,93 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.lua.rules
 
+import io.github.taoguan.luaj.Globals
+import io.github.taoguan.luaj.LuaString
+import io.github.taoguan.luaj.LuaValue
+import io.github.taoguan.luaj.Varargs
+import io.github.taoguan.luaj.lib.jse.JsePlatform
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.core.rules.ConditionalMethods
 import org.islandoftex.arara.core.rules.RuleMethods
 import org.islandoftex.arara.core.session.ClassLoading.ClassLoadingStatus
-import org.islandoftex.arara.lua.rules.LuaBindings.bindSpelled
-import org.islandoftex.arara.lua.rules.LuaBindings.sessionTable
 import org.islandoftex.arara.lua.rules.LuaConversion.badArgument
+import org.islandoftex.arara.lua.rules.LuaConversion.bindSpelled
 import org.islandoftex.arara.lua.rules.LuaConversion.fromLua
 import org.islandoftex.arara.lua.rules.LuaConversion.numberArgument
+import org.islandoftex.arara.lua.rules.LuaConversion.sessionTable
 import org.islandoftex.arara.lua.rules.LuaConversion.stringArgument
-import org.luaj.vm2.Globals
-import org.luaj.vm2.LuaString
-import org.luaj.vm2.LuaValue
-import org.luaj.vm2.Varargs
-import org.luaj.vm2.lib.common.CommonPlatform
 
+/**
+ * Set up the global environment Lua directive conditionals are evaluated
+ * in (see [LuaConditionalEvaluator]).
+ *
+ * The environment exposes the very helpers the MVEL dialect offers for
+ * conditionals (both dialects bind the very helpers from the core
+ * module), so both dialects behave identically. Only helpers registered
+ * in the MVEL conditional registry are bound: the directive conditional
+ * world deliberately offers fewer tools than the rule world.
+ *
+ * Where the MVEL helper set offers overloads for plain extensions and
+ * file references, the Lua bindings accept either a string (interpreted
+ * as the extension, mirroring the MVEL string overload) or a file
+ * reference value obtained from `toFile` or `currentFile` - the
+ * doctrine's runtime argument-type dispatch, the same device Lua's own
+ * library functions use. The string means an extension here; the
+ * path-taking helpers of the rule world read their strings as paths.
+ *
+ * The original reference yields the path handle in this context - the
+ * token the file-check family reads as a literal file - where the rule
+ * expressions yield the path string for composition; both faces are
+ * design, and the rule environment's documentation names its witness.
+ *
+ * The helper boundary is typed: arguments must match the declared type
+ * and mismatches raise Lua-style bad argument errors. Lua's implicit
+ * coercions apply to operators, not to arara's library functions —
+ * convert explicitly with `tostring` or `tonumber` when needed.
+ *
+ * Every camelCase helper is additionally bound under its snake_case
+ * alias, the Lua-idiomatic spelling; each spelling reports argument
+ * errors under the name the conditional actually called, and the
+ * historic spelling stays available throughout the lifetime of the
+ * deprecated engine.
+ */
 internal object LuaConditionalEnvironment {
+    /**
+     * Create a fresh global environment for one conditional evaluation.
+     */
     fun newGlobals(): Globals {
-        val globals = CommonPlatform.standardGlobals()
+        val globals = JsePlatform.standardGlobals()
         bindHelpers(globals)
         return globals
     }
 
+    /**
+     * Binds the conditional helper family into the provided
+     * globals, under both spellings. The rule environment of the
+     * Lua dialect reaches through the same binder, so one engine
+     * speaks one vocabulary in both positions - the reach the
+     * deprecated dialect's merged registry always gave its
+     * command expressions.
+     */
     internal fun bindConditionalHelpers(globals: Globals) {
         bindHelpers(globals)
     }
 
+    /**
+     * Collects the Lua arguments from the provided position on,
+     * converting each to its JVM shape.
+     */
     private fun Varargs.values(from: Int): List<Any?> =
         (from..narg()).map { fromLua(arg(it)) }
 
+    /**
+     * Extract the argument at [index] as a file reference: a file object
+     * (from `toFile` or `currentFile`) or a real Lua string (the plain
+     * extension overload). Lua numbers do not silently become strings
+     * here — the helpers type-check their arguments as Lua's own
+     * library functions do; convert explicitly with `tostring` when
+     * needed.
+     */
     private fun Varargs.fileArgument(index: Int, helper: String): Any {
         val value = arg(index)
         return when {
@@ -45,9 +102,14 @@ internal object LuaConditionalEnvironment {
     // operators), inspect argument positions (hence the offsets) and
     // report binding errors where they occur
     @Suppress(
-        "LongMethod", "CyclomaticComplexMethod", "ThrowsCount",
+        "LongMethod", "ComplexMethod", "ThrowsCount",
         "SpreadOperator", "MagicNumber"
     )
+    /**
+     * Binds every conditional helper into the Lua environment,
+     * under its historic camelCase spelling and its snake_case
+     * alias.
+     */
     private fun bindHelpers(globals: Globals) {
         // file existence and content checks; both the extension-based
         // and the file-based MVEL overloads are available
@@ -93,7 +155,7 @@ internal object LuaConditionalEnvironment {
         bindSpelled(
             globals, "toFile"
         ) { name, args ->
-            LuaConversion.toLua(
+            LuaValue.userdataOf(
                 ConditionalMethods.toFile(
                     args.arg(1).stringArgument(name, 1)
                 )
@@ -102,12 +164,12 @@ internal object LuaConditionalEnvironment {
         bindSpelled(
             globals, "currentFile"
         ) { _, _ ->
-            LuaConversion.toLua(ConditionalMethods.currentFile())
+            LuaValue.userdataOf(ConditionalMethods.currentFile())
         }
         bindSpelled(
             globals, "getOriginalReference"
         ) { _, _ ->
-            LuaConversion.toLua(RuleMethods.originalReference)
+            LuaValue.userdataOf(RuleMethods.originalReference)
         }
         bindSpelled(
             globals, "getBasename"
@@ -181,6 +243,12 @@ internal object LuaConditionalEnvironment {
     // type, title, text and the extra values); the width parameter of
     // the Swing era is gone, and arara owns the terminal geometry
     @Suppress("MagicNumber")
+    /**
+     * Binds a dialog helper into the Lua environment: the
+     * arguments are validated for their types, the extra
+     * values are collected, and the conversation routes
+     * through the dialog facade.
+     */
     private fun bindDialog(
         globals: Globals,
         name: String,
@@ -200,6 +268,11 @@ internal object LuaConditionalEnvironment {
         }
     }
 
+    /**
+     * Binds a class loading helper into the environment, routing
+     * the file-based and the string-based overloads through one
+     * binding.
+     */
     private fun bindClassLoading(
         globals: Globals,
         name: String,
