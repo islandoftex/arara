@@ -1,3 +1,7 @@
+# The mirror runs the cross-OS proof: the wrapped Gradle, one JDK,
+# the unit suites and the runnable jar on every desktop platform;
+# everything else (lint, coverage, smoke, the books) is proven once,
+# on GitLab
 name: Run Gradle on repo activity
 on: [push, pull_request]
 jobs:
@@ -12,18 +16,9 @@ jobs:
     - uses: actions/checkout@v6
     - uses: actions/setup-java@v5
       with:
-        java-version: 17
-        distribution: corretto
+        java-version: 21
+        distribution: temurin
     - uses: gradle/actions/wrapper-validation@v5
     - uses: gradle/actions/setup-gradle@v5
-      with:
-        gradle-version: current
-    - name: Build
-      run: ./gradlew build
-    - name: Build jar
-      run: ./gradlew :cli:shadowJar
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v6
-      with:
-        name: arara-${{ matrix.os }}
-        path: cli/build/libs/*-with-deps-*.jar
+    - name: Test and assemble
+      run: ./gradlew test :cli:shadowJar
