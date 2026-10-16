@@ -4,21 +4,21 @@ package org.islandoftex.arara.cli.utils
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.message.MapMessage
 
-internal actual object EventLog {
+internal object EventLog {
     private val logger = LogManager.getLogger(RunLog::class.java)
 
-    actual val isInfoEnabled: Boolean get() = logger.isInfoEnabled
-    actual val isErrorEnabled: Boolean get() = logger.isErrorEnabled
+    val isInfoEnabled: Boolean get() = logger.isInfoEnabled
+    val isErrorEnabled: Boolean get() = logger.isErrorEnabled
 
-    actual fun info(event: String, message: String, fields: Map<String, Any>) {
+    fun info(event: String, message: String, fields: Map<String, Any>) {
         if (logger.isInfoEnabled) logger.info(EventMessage(event, message, fields))
     }
 
-    actual fun warn(event: String, message: String, fields: Map<String, Any>) {
+    fun warn(event: String, message: String, fields: Map<String, Any>) {
         if (logger.isWarnEnabled) logger.warn(EventMessage(event, message, fields))
     }
 
-    actual fun error(event: String, message: String, fields: Map<String, Any>, cause: Throwable?) {
+    fun error(event: String, message: String, fields: Map<String, Any>, cause: Throwable? = null) {
         if (logger.isErrorEnabled) {
             logger.error(EventMessage(event, message, fields), if (LoggingUtils.isJson) cause else null)
         }

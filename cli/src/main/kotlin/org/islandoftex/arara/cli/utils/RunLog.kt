@@ -1,159 +1,193 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.utils
 
-import kotlin.time.Duration.Companion.seconds
-import org.islandoftex.arara.api.AraraException
+import io.github.oshai.kotlinlogging.KotlinLogging
+import org.islandoftex.arara.api.AraraAPI
 import org.islandoftex.arara.api.files.ProjectFile
-import org.islandoftex.arara.api.rules.DirectiveConditional
-import org.islandoftex.arara.api.session.Command
-import org.islandoftex.arara.core.configuration.ConfigurationUtils
-import org.islandoftex.arara.core.session.LinearExecutor
+import org.islandoftex.arara.core.configuration.DefaultConfiguration
+import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.core.session.Session
 
-/** Application log labels are English; script, tool and exception text remains literal. */
+/**
+ * Writes the run's log entries: the single home of every log line
+ * the display side emits and of the block framing every log block
+ * uses, kept deliberately free of console knowledge. The framing
+ * follows the session width, never a presentation, so the file
+ * reads the same whichever console rendered the run - and the log
+ * blocks the interpreter, the command runner and the directive
+ * processing build all frame through the same helpers.
+ */
+// the log entries are one function per line the run writes - the
+// count is the shape of the log surface, not accumulated
+// responsibilities, and the project line is one more entry of
+// the same kind
 @Suppress("TooManyFunctions")
 object RunLog {
-    internal val applicationPath: String
-        get() = try {
-            ConfigurationUtils.applicationPath.toString()
-        } catch (_: AraraException) {
-            "[unknown application path]"
+    /**
+     * The logger of the run log.
+     */
+    private val logger = KotlinLogging.logger { }
+
+    /**
+     * The line that frames a log block, following the session width
+     * so no presentation can ever move it.
+     */
+    internal fun separator() =
+        "-".repeat(Session.userInterfaceOptions.terminalOutputWidth)
+
+    /**
+     * The line that opens or closes a named log block, framing the
+     * title in dashes at the session width.
+     *
+     * @param message The block title.
+     */
+    internal fun outputSeparator(message: String) =
+        " $message ".center(
+            Session.userInterfaceOptions.terminalOutputWidth,
+            '-'
+        )
+
+    /**
+     * Writes the welcome entry of the run.
+     */
+    fun welcome() = logger.info {
+        "Welcome to arara ${AraraAPI.version}!" + "\n" + separator()
+    }
+
+    /**
+     * Writes the environment entry of the run: the application, the
+     * Java runtime, the operating system, the user home and the
+     * configuration file in use.
+     *
+     * @param configurationFileName The configuration file name.
+     */
+    fun environment(configurationFileName: String) {
+        val javaVersion = Environment.getSystemProperty(
+            "java.version",
+            "[unknown version]"
+        )
+        val javaVendor = Environment.getSystemProperty(
+            "java.vendor",
+            "[unknown vendor]"
+        )
+        val javaHome = Environment.getSystemProperty(
+            "java.home",
+            "[unknown location]"
+        )
+        val osName = Environment.getSystemProperty(
+            "os.name",
+            "[unknown OS name]"
+        )
+        val osArch = Environment.getSystemProperty(
+            "os.arch",
+            "[unknown OS arch]"
+        )
+        val osVersion = Environment.getSystemProperty(
+            "os.version",
+            "[unknown OS version]"
+        )
+        val userHome = Environment.getSystemProperty(
+            "user.home",
+            "[unknown user's home directory]"
+        )
+        logger.debug {
+            "Environment details\n" +
+                "::: arara @ ${DefaultConfiguration.applicationPath}\n" +
+                "::: Java $javaVersion, $javaVendor\n" +
+                "::: $javaHome\n" +
+                "::: $osName, $osArch, $osVersion\n" +
+                "::: user.home @ $userHome\n" +
+                "::: CF @ $configurationFileName"
         }
-
-    internal fun separator(): String = "-".repeat(Session.userInterfaceOptions.terminalOutputWidth)
-
-    internal fun outputSeparator(message: String): String =
-        " $message ".center(Session.userInterfaceOptions.terminalOutputWidth, '-')
-
-    /** Record the application version greeting. */
-    fun welcome(version: String) = EventLog.info(
-        "application.version", "Welcome to arara $version!\n${separator()}", mapOf("version" to version)
-    )
-
-    /** Record input metadata when informational logging is enabled. */
-    fun fileInformation(file: ProjectFile) {
-        if (!EventLog.isInfoEnabled) return
-        val size = file.sourcePath.fileSize
-        EventLog.info(
-            "file.started",
-            "Processing \"${file.path}\" (size: $size bytes, last modified: ${file.sourcePath.lastModified})",
-            mapOf("path" to file.path.toString(), "sourcePath" to file.sourcePath.toString(), "sizeBytes" to size)
-        )
     }
 
-    /** Record a task starting within a rule. */
-    fun entry(name: String, task: String) = EventLog.info(
-        "task.started", "Interpreting task \"$task\" from rule \"$name\"", mapOf("rule" to name, "task" to task)
-    )
-
-    /** Record the task success flag. */
-    fun taskResult(success: Boolean) = EventLog.info(
-        "task.result", "Task result: " + if (success) "SUCCESS" else "FAILURE", mapOf("success" to success)
-    )
-
-    /** Record an application error with optional details and the original cause. */
-    fun exception(message: String?, details: String?, cause: Throwable? = null) {
-        EventLog.error("run.exception", message ?: "EXCEPTION PROVIDES NO MESSAGE", emptyMap(), cause)
-        if (details != null) EventLog.error("run.exception.details", details, emptyMap())
+    /**
+     * Writes the entry announcing the project the run enters, the
+     * English twin of the localized console line.
+     *
+     * @param name The project's name for the log.
+     * @param directory The full working directory path.
+     */
+    fun projectInformation(name: String, directory: String) = logger.info {
+        "Project \"$name\" (working directory: $directory)"
     }
 
-    /** Record elapsed seconds as text and milliseconds as a structured field. */
-    fun executionTime(seconds: Double) {
-        if (!EventLog.isInfoEnabled) return
-        val duration = seconds.seconds
-        val milliseconds = duration.inWholeMilliseconds % MILLISECONDS_PER_SECOND
-        val time = "${duration.inWholeSeconds}.${milliseconds.toString().padStart(MILLISECOND_DIGITS, '0')}"
-        EventLog.info("run.elapsed", "Elapsed time: $time seconds", mapOf("durationMs" to duration.inWholeMilliseconds))
+    /**
+     * Writes the entry announcing the file the run processes, the
+     * English twin of the localized console line.
+     *
+     * @param file The project file.
+     */
+    fun fileInformation(file: ProjectFile) = logger.info {
+        "Processing \"${file.path.fileName}\" (size: " +
+            "${byteSizeToString(file.path.fileSize)}, " +
+            "last modified: ${file.path.lastModified}), " +
+            "please wait."
     }
 
-    /** Record the project name and working directory. */
-    fun project(name: String, directory: String) = EventLog.info(
-        "project.started", "Project \"$name\" (working directory: $directory)",
-        mapOf("name" to name, "workingDirectory" to directory)
-    )
+    /**
+     * Writes the entry announcing an interpreted task.
+     *
+     * @param name The rule name.
+     * @param task The task name.
+     */
+    fun entry(name: String, task: String) = logger.info {
+        "I am ready to interpret task \"$task\" from rule \"$name\"."
+    }
 
-    /** Record invocation startup with the application version. */
-    fun executionStarted(version: String) = EventLog.info("run.started", "Run started", mapOf("version" to version))
+    /**
+     * Writes the entry recording a task outcome.
+     *
+     * @param value The task outcome.
+     */
+    fun taskResult(value: Boolean) = logger.info {
+        // a fixed English token keeps the outcome greppable across
+        // every language and every future rewording of the labels
+        "Task result: " + if (value) "SUCCESS" else "FAILURE"
+    }
 
-    /** Record the final exit code; unsuccessful runs use the error level. */
+    /**
+     * Writes the entry recording the elapsed time of the run. The
+     * log speaks English regardless of the session locale, so the
+     * format pins the root locale: its dot notation never bends to
+     * the user's language.
+     *
+     * @param seconds The elapsed seconds.
+     */
+    fun executionTime(seconds: Double) = logger.info {
+        "Elapsed time: " +
+            String.format(java.util.Locale.ROOT, "%.4f", seconds) +
+            " seconds"
+    }
+
+    /**
+     * Writes the closing entry recording the verdict of the whole
+     * run: the exit code the application returns, with the level
+     * carrying the outcome.
+     *
+     * @param exitCode The exit code of the run.
+     */
     fun executionOutcome(exitCode: Int) {
-        val fields = mapOf("exitCode" to exitCode, "success" to (exitCode == 0))
-        if (exitCode == 0) EventLog.info("run.completed", "Run completed with exit code $exitCode", fields)
-        else EventLog.error("run.failed", "Run failed with exit code $exitCode", fields)
+        if (exitCode == 0) {
+            logger.info { "Run completed with exit code $exitCode" }
+        } else {
+            logger.error { "Run failed with exit code $exitCode" }
+        }
     }
 
-    /** Record the resolved rule path and engine. */
-    fun rule(identifier: String, path: String, engine: String) = EventLog.info(
-        "rule.resolved", "Rule file: \"$path\" (engine: $engine)",
-        mapOf("rule" to identifier, "path" to path, "engine" to engine)
-    )
-
-    /** Record each resolved legacy rule, including skipped directives and dry runs. */
-    fun deprecatedYaml(identifier: String, path: String) = EventLog.warn(
-        "rule.deprecated", "Deprecated YAML rule: $identifier ($path); YAML rules will be discontinued in v9.",
-        mapOf("rule" to identifier, "path" to path, "engine" to "yaml", "removalVersion" to "9")
-    )
-
-    /** Record a directive whose initial condition prevented command evaluation. */
-    fun skipped(identifier: String, conditional: DirectiveConditional, engine: String) {
-        if (!EventLog.isInfoEnabled) return
-        EventLog.info("directive.skipped", "Directive $identifier skipped as its condition did not hold",
-            ruleFields(identifier, engine) + mapOf(
-                "conditionalType" to conditional.type.name.lowercase(), "condition" to conditional.condition
-            ))
+    /**
+     * Writes the entries recording an exception: the bare message,
+     * as thrown, and the underlying cause details when present. The
+     * pointer to the details is console presentation, so only the
+     * display carries it.
+     *
+     * @param message The exception message, possibly null.
+     * @param details The underlying cause details, if any.
+     */
+    fun exception(message: String?, details: String?) {
+        logger.error { message ?: "EXCEPTION PROVIDES NO MESSAGE" }
+        if (details != null) {
+            logger.error { details }
+        }
     }
-
-    /** Record the effective halt request made while evaluating a directive, including status zero. */
-    fun haltRequested(identifier: String, code: Int, engine: String) {
-        if (!EventLog.isInfoEnabled) return
-        EventLog.info("halt.requested", "Rule $identifier requested a file halt with exit code $code",
-            ruleFields(identifier, engine) + mapOf("exitCode" to code))
-    }
-
-    private fun ruleFields(identifier: String, engine: String): Map<String, Any> = buildMap {
-        put("rule", identifier)
-        put("engine", engine)
-        LinearExecutor.currentFile?.let { put("inputFile", it.path.toString()) }
-    }
-
-    /** Record captured tool output, including an explicit empty-output marker. */
-    fun commandOutput(output: String) {
-        if (!EventLog.isInfoEnabled) return
-        val message = if (output.isBlank()) "The tool produced no output."
-            else buildString {
-                appendLine(outputSeparator("BEGIN OUTPUT BUFFER"))
-                append(output)
-                if (!output.endsWith('\n')) appendLine()
-                append(outputSeparator("END OUTPUT BUFFER"))
-            }
-        EventLog.info("command.output", message, mapOf("output" to output, "empty" to output.isBlank()))
-    }
-
-    /** Record the command exit code and duration in milliseconds. */
-    fun commandCompleted(command: Command, exitCode: Int, durationMs: Long) {
-        if (!EventLog.isInfoEnabled) return
-        EventLog.info(
-            "command.completed", "System command exited with value $exitCode after $durationMs ms",
-            commandFields(command) + mapOf("exitCode" to exitCode, "durationMs" to durationMs)
-        )
-    }
-
-    /** Record a backend failure category, duration in milliseconds and original cause. */
-    fun commandFailed(command: Command, kind: String, durationMs: Long, cause: Throwable) {
-        if (!EventLog.isErrorEnabled) return
-        EventLog.error(
-            "command.failed", "System command failed ($kind) after $durationMs ms",
-            commandFields(command) + mapOf("failureKind" to kind, "durationMs" to durationMs), cause
-        )
-    }
-
-    private fun commandFields(command: Command): Map<String, Any> = buildMap {
-        put("argv", command.elements.toList())
-        (command.workingDirectory ?: LinearExecutor.currentProject?.workingDirectory)
-            ?.let { put("workingDirectory", it.normalize().toString()) }
-        LinearExecutor.currentFile?.let { put("inputFile", it.path.toString()) }
-    }
-
-    private const val MILLISECONDS_PER_SECOND = 1000
-    private const val MILLISECOND_DIGITS = 3
 }

@@ -3,4 +3,4 @@ package org.islandoftex.arara.cli.utils
 
 import org.islandoftex.arara.api.AraraAPI
 
-internal actual fun applicationVersion(): String = AraraAPI.version
+internal fun applicationVersion(): String = AraraAPI.version
