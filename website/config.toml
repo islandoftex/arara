@@ -10,6 +10,12 @@ theme = "devlab-theme"
 compile_sass = true
 build_search_index = true
 
+# The authors taxonomy: the news bylines and the author pages the
+# theme renders from the data/authors.toml registry.
+taxonomies = [
+  { name = "authors" }
+]
+
 [search]
 index_format = "elasticlunr_javascript"
 include_title = true

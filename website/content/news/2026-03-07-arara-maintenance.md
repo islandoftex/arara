@@ -2,6 +2,8 @@
 date = 2026-03-07
 title = "arara maintenance"
 description = "The bird is in a quiet routine: what maintenance mode means for arara, the ideas sleeping until there is reason to build them, and the honest story of why MacTeX cannot include the tool."
+[taxonomies]
+authors = ["Ben Frank"]
 +++
 
 It's been a while since we published anything regarding arara development. We
