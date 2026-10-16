@@ -1,10 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 pluginManagement {
     repositories {
-        // the leopack bridge: 0.1.1 is consumed from the local Maven
-        // repository until the plugin is published to the GitLab
-        // registry; remove this line once that happens
-        mavenLocal()
         mavenCentral()
         gradlePluginPortal()
         // the chronoheader plugin registry
