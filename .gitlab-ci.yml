@@ -76,6 +76,11 @@ test:smoke:
   before_script:
     - export GRADLE_USER_HOME=`pwd`/.gradle
     - apt-get update && apt-get install -y --no-install-recommends openjdk-21-jdk-headless bats
+    # the image ships a Java 25 JRE that wins the alternatives and
+    # would drive Gradle without a compiler: pin the installed JDK
+    # as the driving JVM
+    - export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
+    - export PATH="$JAVA_HOME/bin:$PATH"
   script:
     - ./gradlew smoke -Psmoke.strict=true
   cache:
@@ -219,6 +224,11 @@ pages:
         KROKI_MERMAID_PORT: "8002"
   before_script:
     - apt-get update && apt-get install -y openjdk-21-jdk-headless
+    # the image ships a Java 25 JRE that wins the alternatives and
+    # would drive Gradle without a compiler: pin the installed JDK
+    # as the driving JVM
+    - export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
+    - export PATH="$JAVA_HOME/bin:$PATH"
   script:
     - ./gradlew ctanZip -Parara.docs.kroki=$ARARA_DOCS_KROKI
   after_script:
