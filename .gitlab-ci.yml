@@ -187,7 +187,7 @@ pages:
     - git fetch origin website
     - git worktree add "$CI_PROJECT_DIR/site" origin/website
     - python3 scripts/assemble-website.py --site "$CI_PROJECT_DIR/site"
-    - zola build --root "$CI_PROJECT_DIR/site" --output-dir "$CI_PROJECT_DIR/public"
+    - zola --root "$CI_PROJECT_DIR/site" build --output-dir "$CI_PROJECT_DIR/public"
   artifacts:
     paths:
       - public
