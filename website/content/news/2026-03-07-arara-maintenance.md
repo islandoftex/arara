@@ -1,6 +1,7 @@
 +++
+date = 2026-03-07
 title = "arara maintenance"
-description = "arara maintenance"
+description = "The bird is in a quiet routine: what maintenance mode means for arara, the ideas sleeping until there is reason to build them, and the honest story of why MacTeX cannot include the tool."
 +++
 
 It's been a while since we published anything regarding arara development. We
@@ -10,7 +11,7 @@ notes to questions we have been asked repeatedly over the last few years.
 
 <!-- more -->
 
-# Maintenance Mode
+## Maintenance Mode
 
 The last major arara release has been in 2022. For a species of parrots, this
 bird has gone into a very quiet daily routine. However, let us ensure you that
@@ -58,7 +59,7 @@ yet, we are still always looking for contributors and would be happy to welcome
 new faces to the island's maintainer pool (no binding or large commitment
 required).
 
-# macOS and notarization
+## macOS and notarization
 
 Every year, we will receive e-mails on the TeX Live mailing list about arara
 being marked as “forcibly removed” on new MacTeX installations. If you are on
