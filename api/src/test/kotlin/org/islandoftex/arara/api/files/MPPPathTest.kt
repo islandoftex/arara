@@ -1,63 +1,84 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.api.files
 
+import kotlin.io.path.Path
+import kotlin.io.path.absolutePathString
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 import org.islandoftex.arara.api.utils.OS
+import org.junit.jupiter.api.io.TempDir
 
+/**
+ * Verifies the path attributes and normalization of [MPPPath] across
+ * operating systems: absolute path detection, dot segment resolution
+ * and parent lookup, including the root edge cases, and the live
+ * metadata queries of the file: its size and modification stamp,
+ * and the path exception a missing file raises. Platform-specific
+ * expectations are selected by the [getValueByOS] helper.
+ */
 class MPPPathTest {
     // attributes
     @Test
-    fun shouldNotClassifyRelativeAsAbsolutePaths() {
-        assertFalse(MPPPath(".").isAbsolute)
+    fun `does not classify relative paths as absolute`() {
+        assertFalse(
+            MPPPath(".").isAbsolute,
+            "a relative path is not reported as absolute"
+        )
     }
 
     @Test
-    fun shouldCorrectlyDetectAbsolutePaths() {
+    fun `correctly detects absolute paths`() {
         val path = getValueByOS(windows = "C:/test", unix = "/test")
 
-        assertTrue(MPPPath(path).isAbsolute)
+        assertTrue(
+            MPPPath(path).isAbsolute,
+            "an absolute path is reported as absolute"
+        )
     }
-
     @Test
-    fun shouldConsiderRootAbsolute() {
+    fun `considers the root absolute`() {
         val path = getValueByOS(windows = "C:/", unix = "/")
 
-        assertTrue(MPPPath(path).isAbsolute)
+        assertTrue(
+            MPPPath(path).isAbsolute,
+            "the root is reported as absolute"
+        )
     }
 
     // path normalization
     @Test
-    fun shouldNormalizeDots() {
-        val (expected, actual) = getValueByOS(
+    fun `normalizes dots`() {
+        val (dotted, clean) = getValueByOS(
                 windows = "C:/tmp/./quack/.." to "C:/tmp/",
                 unix = "/tmp/./quack/.." to "/tmp/"
         )
 
         assertEquals(
-            MPPPath(expected).normalize().toString(),
-            MPPPath(actual).normalize().toString()
+            MPPPath(clean).normalize().toString(),
+            MPPPath(dotted).normalize().toString(),
+            "dot segments are resolved during normalization"
         )
     }
-
     @Test
-    fun shouldNoExceedRoot() {
+    fun `does not exceed the root when normalizing`() {
         val (expected, actual) = getValueByOS(
                 windows = "C:/tmp/../../.." to "C:/",
                 unix = "/tmp/../../.." to "/"
         )
 
         assertEquals(
-            MPPPath(expected).normalize().toString(),
-            MPPPath(actual).toString()
+            MPPPath(actual).toString(),
+            MPPPath(expected).toString(),
+            "normalization stops at the root"
         )
     }
 
     // parenting
     @Test
-    fun shouldUseRootAsParentOfRoot() {
+    fun `uses the root as the parent of the root`() {
 
         // for this test, we cannot mock the drive letter in Windows, as
         // an attempt to go parent from root will make it resolve to the
@@ -70,33 +91,80 @@ class MPPPathTest {
         )
 
         assertEquals(
+            MPPPath(actual).toString(),
             MPPPath(expected).parent.toString(),
-            MPPPath(actual).toString()
+            "the root is its own parent"
         )
     }
-
     @Test
-    fun shouldDetermineParentCorrectly() {
+    fun `resolves the parent of a dotted path to the root, both ways around normalization`() {
         val (expected, actual) = getValueByOS(
                 windows = "C:/tmp/./quack/.." to "C:/",
                 unix = "/tmp/./quack/.." to "/"
         )
 
         assertEquals(
+            MPPPath(actual).toString(),
             MPPPath(expected).parent.normalize().toString(),
-            MPPPath(actual).toString()
+            "the parent of a path with dot segments resolves"
         )
         assertEquals(
+            MPPPath(actual).toString(),
             MPPPath(expected).normalize().parent.toString(),
-            MPPPath(actual).toString()
+            "the parent of a normalized path resolves equally"
         )
     }
 
+    @Test
+    fun `reports the size and the last modification of a file`(
+        @TempDir tempDir: java.nio.file.Path
+    ) {
+        val file = tempDir.resolve("quack.log")
+        java.nio.file.Files.writeString(file, "Moo! Quack!")
+        val path = MPPPath(file.toString())
+        assertTrue(
+            path.fileSize > 0L,
+            "a written file reports a positive size"
+        )
+        // the stamp the platform reports is the stamp the path
+        // carries, at the whole-second precision the model keeps
+        assertEquals(
+            java.nio.file.Files.getLastModifiedTime(file).toMillis() / 1000,
+            path.lastModified.toLong() / 1000,
+            "a written file reports its modification stamp"
+        )
+    }
+
+    @Test
+    fun `raises for the metadata of a missing file`() {
+        // the getters read the live metadata, so a missing path raises
+        // the path exception rather than inventing a stamp
+        val path = MPPPath("arara-file-not-there-quack.log")
+        assertFailsWith<org.islandoftex.arara.api.AraraIOException>(
+            "the size of a missing file raises"
+        ) {
+            path.fileSize
+        }
+        assertFailsWith<org.islandoftex.arara.api.AraraIOException>(
+            "the stamp of a missing file raises"
+        ) {
+            path.lastModified
+        }
+    }
+
+    /**
+     * Selects the operating system specific expectation for a test.
+     */
     private inline fun <reified T> getValueByOS(windows: T, unix: T): T =
             if (OS.isWindows) windows else unix
 
+    /**
+     * The drive letter the platform's working directory sits on, so
+     * the Windows-shaped expectations name the drive the test
+     * actually runs from instead of a hardcoded letter.
+     */
     private val drive: String by lazy {
-        if (OS.isWindows) MPPPath(".").toString()
+        if (OS.isWindows) Path(".").absolutePathString()
                 .substringBefore(":") else "C"
     }
 }
