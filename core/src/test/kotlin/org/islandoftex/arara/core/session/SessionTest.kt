@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.session
 
+import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -8,101 +9,142 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 import org.islandoftex.arara.api.AraraException
 
+/**
+ * Verifies the session map wrapper: insertion, retrieval, removal,
+ * clearing and the environment variable import.
+ */
 class SessionTest {
-    @Test
-    fun environmentRemovalFiltersReceiveTheUnprefixedVariableName() {
-        Session.clear()
-        Session.put("environment:ARARA_STALE", "old")
-        Session.put("keep", "value")
-        Session.updateEnvironmentVariables(additionFilter = { false }, removalFilter = { it == "ARARA_STALE" })
-        assertFalse(Session.contains("environment:ARARA_STALE"))
-        assertTrue(Session.contains("keep"))
+    @AfterTest
+    fun leaveTheSessionEmpty() {
+        // the session is a singleton the whole virtual machine
+        // shares, so the suite leaves it as empty as it found it
         Session.clear()
     }
 
     @Test
-    fun shouldIncludeAllEnvironmentVariables() {
+    fun `the environment import lands the system path in the session`() {
         Session.clear()
         Session.updateEnvironmentVariables()
         // on Linux it is called PATH, on Windows it may be Path
         assertTrue(
             Session.contains("environment:PATH") ||
-                Session.contains("environment:Path")
+                Session.contains("environment:Path"),
+            "the session holds the system path variable"
         )
     }
 
     @Test
-    fun shouldProperlyCheckExistence() {
+    fun `the addition filter admits only the named variables`() {
         Session.clear()
-        Session.put("A", "B")
-        assertTrue(Session.contains("A"))
-        assertFalse(Session.contains("C"))
+        Session.updateEnvironmentVariables(
+            additionFilter = { it == "PATH" || it == "Path" }
+        )
+        assertTrue(
+            Session.contains("environment:PATH") ||
+                Session.contains("environment:Path"),
+            "the named variable crosses the filter"
+        )
+        // a variable every host carries, under its own spelling per
+        // platform, answers whether the filter kept the others out
+        val other = if (org.islandoftex.arara.api.utils.OS.isWindows)
+            "SystemRoot" else "HOME"
+        assertFalse(
+            Session.contains("environment:$other"),
+            "every other variable stays outside the session"
+        )
     }
 
     @Test
-    fun shouldSupportInsertion() {
+    fun `the removal filter spares the keys it refuses`() {
         Session.clear()
-        assertFalse(Session.contains("A"))
-        Session.put("A", "B")
-        assertTrue(Session.contains("A"))
+        Session.updateEnvironmentVariables()
+        Session.put("environment:ARARA_SYNTHETIC", "planted")
+        Session.updateEnvironmentVariables(
+            removalFilter = { it != "ARARA_SYNTHETIC" }
+        )
+        assertTrue(
+            Session.contains("environment:ARARA_SYNTHETIC"),
+            "the key the filter refuses survives the refresh"
+        )
+        assertTrue(
+            Session.contains("environment:PATH") ||
+                Session.contains("environment:Path"),
+            "the refresh still reseeds the environment"
+        )
     }
 
     @Test
-    fun shouldSupportGet() {
+    fun `properly checks the existence of keys`() {
         Session.clear()
         Session.put("A", "B")
-        assertEquals(Session["A"], "B")
+        assertTrue(Session.contains("A"), "the session contains the inserted key")
+        assertFalse(Session.contains("C"), "the session omits an unknown key")
     }
 
     @Test
-    fun shouldSupportRemoval() {
+    fun `supports the insertion of keys`() {
+        Session.clear()
+        assertFalse(Session.contains("A"), "the key is absent before insertion")
+        Session.put("A", "B")
+        assertTrue(Session.contains("A"), "the key is present after insertion")
+    }
+
+    @Test
+    fun `gets the stored value for a key`() {
+        Session.clear()
+        Session.put("A", "B")
+        assertEquals("B", Session["A"], "the stored value of the key")
+    }
+
+    @Test
+    fun `supports the removal of keys`() {
         Session.clear()
         Session.put("A", "B")
         Session.put("C", "D")
-        assertTrue(Session.contains("A"))
-        assertTrue(Session.contains("C"))
+        assertTrue(Session.contains("A"), "the first key is present")
+        assertTrue(Session.contains("C"), "the second key is present")
         Session.remove("A")
-        assertFalse(Session.contains("A"))
-        assertTrue(Session.contains("C"))
+        assertFalse(Session.contains("A"), "the removed key is absent")
+        assertTrue(Session.contains("C"), "the other key survives the removal")
     }
 
     @Test
-    fun shouldSupportClearing() {
+    fun `supports clearing the whole session`() {
         Session.clear()
         Session.put("A", "B")
         Session.put("C", "D")
-        assertTrue(Session.contains("A"))
-        assertTrue(Session.contains("C"))
+        assertTrue(Session.contains("A"), "the first key is present")
+        assertTrue(Session.contains("C"), "the second key is present")
         Session.clear()
-        assertFalse(Session.contains("A"))
-        assertFalse(Session.contains("C"))
+        assertFalse(Session.contains("A"), "the first key is gone after clearing")
+        assertFalse(Session.contains("C"), "the second key is gone after clearing")
     }
 
     @Test
-    fun shouldNotThrowOnKnownRemoval() {
+    fun `does not throw on the removal of a known key`() {
         Session.clear()
         Session.put("A", "B")
-        try {
-            Session.remove("A")
-            assertTrue(true)
-        } catch (_: AraraException) {
-            assertTrue(false)
-        }
+        // any exception thrown here fails the test naturally
+        Session.remove("A")
     }
     @Test
-    fun shouldThrowOnUnknownRemoval() {
+    fun `throws on the removal of an unknown key`() {
         Session.clear()
-        assertFailsWith<AraraException> {
+        assertFailsWith<AraraException>(
+            "removing an unknown key must be rejected"
+        ) {
             Session.remove("A")
         }
     }
 
     @Test
-    fun shouldThrowOnUnknownGetter() {
+    fun `throws on reading an unknown key`() {
         Session.clear()
         Session.put("A", "B")
-        assertEquals(Session["A"], "B")
-        assertFailsWith<AraraException> {
+        assertEquals("B", Session["A"], "the stored value of the key")
+        assertFailsWith<AraraException>(
+            "reading an unknown key must be rejected"
+        ) {
             Session["C"]
         }
     }

@@ -1,35 +1,60 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.files
 
-import io.kotest.core.spec.style.ShouldSpec
-import io.kotest.engine.spec.tempfile
-import io.kotest.matchers.shouldBe
+import java.nio.file.Files
+import java.nio.file.Path
 import kotlin.io.path.deleteExisting
 import kotlin.io.path.deleteIfExists
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlin.io.path.writeText
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 import org.islandoftex.arara.api.files.toJVMPath
 import org.islandoftex.arara.api.files.toMPPPath
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.io.TempDir
 
-class JVMFileHandlingTest : ShouldSpec({
-    should("detect changes on file") {
-        withContext(Dispatchers.IO) {
-            val file = tempfile().toMPPPath()
-            val databaseFile = tempfile().toMPPPath()
-            databaseFile.toJVMPath().deleteIfExists()
-            FileHandling.hasChanged(file, databaseFile) shouldBe true
-            FileHandling.hasChanged(file, databaseFile) shouldBe false
-            file.writeText("QUACK")
-            FileHandling.hasChanged(file, databaseFile) shouldBe true
-            FileHandling.hasChanged(file, databaseFile) shouldBe false
-            file.writeText("QUACK2")
-            FileHandling.hasChanged(file, databaseFile) shouldBe true
-            file.toJVMPath().deleteExisting()
-            FileHandling.hasChanged(file, databaseFile) shouldBe true
-            FileHandling.hasChanged(file, databaseFile) shouldBe false
-            // kotest does not handle that we deleted the file ourselves
-            // so we have to restore it by writing new text
-            file.writeText("")
-        }
+/**
+ * Verifies the change tracking on the JVM: a file counts as changed on
+ * its first appearance, after modification and after deletion, and is
+ * not reported again until the next change.
+ */
+class JVMFileHandlingTest {
+    @Test
+    fun `detects changes on a file`(@TempDir tempDir: Path) {
+        val file = Files.createTempFile(tempDir, "arara", ".txt").toMPPPath()
+        val databaseFile = Files.createTempFile(tempDir, "arara-db", ".yaml")
+            .toMPPPath()
+        databaseFile.toJVMPath().deleteIfExists()
+        assertTrue(
+            FileHandling.hasChanged(file, databaseFile),
+            "a fresh file counts as changed"
+        )
+        assertFalse(
+            FileHandling.hasChanged(file, databaseFile),
+            "an unchanged file is not reported again"
+        )
+        file.writeText("QUACK")
+        assertTrue(
+            FileHandling.hasChanged(file, databaseFile),
+            "a modified file counts as changed"
+        )
+        assertFalse(
+            FileHandling.hasChanged(file, databaseFile),
+            "the modified file is not reported again"
+        )
+        file.writeText("QUACK2")
+        assertTrue(
+            FileHandling.hasChanged(file, databaseFile),
+            "a second modification counts as changed"
+        )
+        file.toJVMPath().deleteExisting()
+        assertTrue(
+            FileHandling.hasChanged(file, databaseFile),
+            "a deleted file counts as changed"
+        )
+        assertFalse(
+            FileHandling.hasChanged(file, databaseFile),
+            "the removed entry is not reported again"
+        )
     }
-})
+}

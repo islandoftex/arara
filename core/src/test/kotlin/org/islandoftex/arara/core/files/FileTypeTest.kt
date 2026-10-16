@@ -7,20 +7,38 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertNotEquals
 import org.islandoftex.arara.api.AraraException
 
+/**
+ * Verifies the file type model: equality only considers the extension,
+ * and a malformed pattern is rejected at construction.
+ */
 class FileTypeTest {
     @Test
-    fun shouldOnlyDependOnExtensionForEquality() {
-        assertEquals(FileType("test", "^\\s*"), FileType("test", "^\\s*%\\s+"))
-        assertEquals(FileType("test", "^\\s*%\\s+"), FileType("test", "^\\s*%\\s+"))
+    fun `only depends on the extension for equality`() {
+        assertEquals(
+            FileType("test", "^\\s*%\\s+"), FileType("test", "^\\s*"),
+            "equality only considers the extension"
+        )
+        assertEquals(
+            FileType("test", "^\\s*%\\s+"), FileType("test", "^\\s*%\\s+"),
+            "identical file types are equal"
+        )
     }
     @Test
-    fun shouldOnlyDependOnExtensionForInequality() {
-        assertNotEquals(FileType("test", "^\\s*"), FileType("tes", "^\\s*%\\s+"))
-        assertNotEquals(FileType("test", "^\\s*%\\s+"), FileType("tes", "^\\s*%\\s+"))
+    fun `only depends on the extension for inequality`() {
+        assertNotEquals(
+            FileType("tes", "^\\s*%\\s+"), FileType("test", "^\\s*"),
+            "different extensions make file types unequal"
+        )
+        assertNotEquals(
+            FileType("tes", "^\\s*%\\s+"), FileType("test", "^\\s*%\\s+"),
+            "different extensions make file types unequal regardless of the pattern"
+        )
     }
     @Test
-    fun shouldExpectValidPattern() {
-        assertFailsWith<AraraException> {
+    fun `rejects an invalid pattern`() {
+        assertFailsWith<AraraException>(
+            "a malformed pattern must be rejected"
+        ) {
             FileType("test", "[a")
         }
     }

@@ -1,42 +1,76 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.files
 
-import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.core.spec.style.ShouldSpec
-import io.kotest.matchers.shouldBe
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 
-class FileHandlingTest : ShouldSpec({
-
-    should("change extension of file with extension") {
-        MPPPath("quack.log").fileName shouldBe
-            FileHandling.changeExtension(MPPPath("quack.tex"), "log").fileName
+/**
+ * Verifies the file handling helpers: extension swapping, directory
+ * relationships and CRC32 checksums.
+ */
+class FileHandlingTest {
+    @Test
+    fun `changes the extension of a file with an extension`() {
+        assertEquals(
+            MPPPath("quack.log").fileName,
+            FileHandling.changeExtension(MPPPath("quack.tex"), "log").fileName,
+            "the sibling path with the new extension"
+        )
     }
 
-    should("change extension of file without extension") {
-        MPPPath("quack.log").fileName shouldBe
-            FileHandling.changeExtension(MPPPath("quack"), "log").fileName
+    @Test
+    fun `changes the extension of a file without an extension`() {
+        assertEquals(
+            MPPPath("quack.log").fileName,
+            FileHandling.changeExtension(MPPPath("quack"), "log").fileName,
+            "the sibling path with the new extension"
+        )
     }
 
-    should("get subdirectory relationship right") {
-        FileHandling.isSubDirectory(MPPPath("../docs"), MPPPath("..")) shouldBe true
-        FileHandling.isSubDirectory(MPPPath(".."), MPPPath("../docs")) shouldBe false
+    @Test
+    fun `a nested path is a subdirectory of its parent, and not the other way around`() {
+        assertTrue(
+            FileHandling.isSubDirectory(MPPPath("../docs"), MPPPath("..")),
+            "a nested directory is a subdirectory of its parent"
+        )
+        assertFalse(
+            FileHandling.isSubDirectory(MPPPath(".."), MPPPath("../docs")),
+            "a parent is not a subdirectory of its child"
+        )
     }
 
-    should("not treat files as subdirectories") {
-        FileHandling.isSubDirectory(MPPPath("../LICENSE"), MPPPath("..")) shouldBe false
-        FileHandling.isSubDirectory(MPPPath(".."), MPPPath("../LICENSE")) shouldBe false
+    @Test
+    fun `does not treat files as subdirectories`() {
+        assertFalse(
+            FileHandling.isSubDirectory(MPPPath("../LICENSE"), MPPPath("..")),
+            "a file is not a subdirectory of its parent directory"
+        )
+        assertFalse(
+            FileHandling.isSubDirectory(MPPPath(".."), MPPPath("../LICENSE")),
+            "a directory is not a subdirectory of a file"
+        )
     }
 
-    should("fail generating CRC sum on inexistent files") {
-        shouldThrow< AraraException> {
+    @Test
+    fun `fails generating a checksum for an inexistent file`() {
+        assertFailsWith<AraraException>(
+            "hashing an inexistent file must be rejected"
+        ) {
             FileHandling.calculateHash(MPPPath("QUACK"))
         }
     }
 
-    should("generate correct CRC sum") {
-        1616727774 shouldBe FileHandling.calculateHash(MPPPath("../LICENSE"))
+    @Test
+    fun `generates the correct checksum`() {
+        assertEquals(
+            3302180338,
+            FileHandling.calculateHash(MPPPath("src/test/resources/checksum.txt")),
+            "CRC32 checksum of the immutable fixture file"
+        )
     }
-
-})
+}

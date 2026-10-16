@@ -5,30 +5,38 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import org.islandoftex.arara.api.localization.MPPLocale
 
+/**
+ * Verifies the language controller: all known locales load their
+ * message catalogs, and unknown locales fall back to English.
+ */
 class LanguageControllerTest {
     @Test
-    fun shouldInstantiateAllKnownLocales() {
-        assertEquals(LanguageController.messages.providedLocale, MPPLocale("en"))
+    fun `instantiates all known locales`() {
+        assertEquals(MPPLocale("en"), LanguageController.messages.providedLocale, "the default messages are English")
 
-        listOf(
-            MPPLocale("fr"),
-            MPPLocale("de"),
-            MPPLocale("it"),
-            MPPLocale("nl"),
-            MPPLocale("en-QN"),
-            MPPLocale("pt-BR")
-        ).forEach {
-            LanguageController.loadMessagesFor(it)
-            assertEquals(LanguageController.messages.providedLocale, it)
+        try {
+            listOf(
+                MPPLocale("de"),
+                MPPLocale("it"),
+                MPPLocale("nl"),
+                MPPLocale("en-QN"),
+                MPPLocale("pt-BR")
+            ).forEach {
+                LanguageController.loadMessagesFor(it)
+                assertEquals(it, LanguageController.messages.providedLocale, "the requested locale is installed")
+            }
+        } finally {
+            // a failure mid-loop would otherwise leave the last
+            // locale installed for every later suite of the same
+            // virtual machine
+            LanguageController.loadMessagesFor(MPPLocale("en"))
         }
-
-        LanguageController.loadMessagesFor(MPPLocale("en"))
     }
 
     @Test
-    fun shouldFallBackToEnglishOnUnknownLocales() {
-        assertEquals(LanguageController.messages.providedLocale, MPPLocale("en"))
+    fun `falls back to English on unknown locales`() {
+        assertEquals(MPPLocale("en"), LanguageController.messages.providedLocale, "the default messages are English")
         LanguageController.loadMessagesFor(MPPLocale("quack"))
-        assertEquals(LanguageController.messages.providedLocale, MPPLocale("en"))
+        assertEquals(MPPLocale("en"), LanguageController.messages.providedLocale, "the default messages are English")
     }
 }

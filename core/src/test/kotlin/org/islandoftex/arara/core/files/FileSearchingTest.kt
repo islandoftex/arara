@@ -1,190 +1,480 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.files
 
-import io.kotest.core.spec.style.ShouldSpec
-import io.kotest.matchers.shouldBe
+import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.createDirectories
 import kotlin.io.path.div
 import kotlin.io.path.writeText
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
+import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.files.toMPPPath
-import org.islandoftex.arara.core.configuration.ConfigurationUtils
+import org.islandoftex.arara.core.configuration.DefaultConfiguration
 import org.islandoftex.arara.core.configuration.ExecutionOptions
+import org.junit.jupiter.api.Assumptions.assumeTrue
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.io.TempDir
 
-class FileSearchingTest : ShouldSpec({
-    context("file listings") {
-        fun prepareFileSystem(): Path {
-            val tempDir = Files.createTempDirectory(System.nanoTime().toString())
+/**
+ * Verifies the file searching helpers: extension and pattern listings
+ * over a temporary file system, and the reference lookup including the
+ * safe mode restriction on implicit extension completion.
+ */
+class FileSearchingTest {
+    /**
+     * The recursive and flat listing helpers.
+     */
+    @Nested
+    inner class `file listings` {
+        /**
+         * Builds the fixture file system inside the provided directory:
+         * a nested quack chain with tex and txt files at every level.
+         */
+        private fun prepareFileSystem(tempDir: Path): MPPPath {
             (tempDir / "quack/quack").createDirectories()
             listOf("quack", "quack/quack", "quack/quack/quack").forEach {
                 (tempDir / "$it.tex").writeText(" ")
                 (tempDir / "$it.txt").writeText(" ")
             }
-            return tempDir
+            return tempDir.toMPPPath()
         }
 
-        should("find file in listing by extension") {
-            val tempDir = prepareFileSystem().toMPPPath()
-            FileSearching.listFilesByExtensions(
-                tempDir,
-                listOf("tex"), false
-            ).toSet() shouldBe
-                setOf(tempDir / "quack.tex")
-            FileSearching.listFilesByExtensions(
-                tempDir,
-                listOf("tex"), true
-            ).toSet() shouldBe
+        @Test
+        fun `finds files in listings by extension`(@TempDir tempDir: Path) {
+            val listingDir = prepareFileSystem(tempDir)
+            assertEquals(
+                setOf(listingDir / "quack.tex"),
+                FileSearching.listFilesByExtensions(
+                    listingDir, listOf("tex"), false
+                ).toSet(),
+                "non-recursive extension listing"
+            )
+            assertEquals(
                 listOf("quack", "quack/quack", "quack/quack/quack")
-                    .map { tempDir / "$it.tex" }.toSet()
+                    .map { listingDir / "$it.tex" }.toSet(),
+                FileSearching.listFilesByExtensions(
+                    listingDir, listOf("tex"), true
+                ).toSet(),
+                "recursive extension listing"
+            )
         }
 
-        should("find file in listing by pattern") {
-            val tempDir = prepareFileSystem().toMPPPath()
-            FileSearching.listFilesByPatterns(
-                tempDir,
-                listOf("*q*.txt"), false
-            ).toSet() shouldBe
-                setOf(tempDir / "quack.txt")
-            FileSearching.listFilesByPatterns(
-                tempDir,
-                listOf("q*.txt"), true
-            ).toSet() shouldBe
+        @Test
+        fun `finds files in listings by pattern`(@TempDir tempDir: Path) {
+            val listingDir = prepareFileSystem(tempDir)
+            assertEquals(
+                setOf(listingDir / "quack.txt"),
+                FileSearching.listFilesByPatterns(
+                    listingDir, listOf("*q*.txt"), false
+                ).toSet(),
+                "non-recursive pattern listing"
+            )
+            assertEquals(
                 listOf("quack", "quack/quack", "quack/quack/quack")
-                    .map { tempDir / "$it.txt" }.toSet()
+                    .map { listingDir / "$it.txt" }.toSet(),
+                FileSearching.listFilesByPatterns(
+                    listingDir, listOf("q*.txt"), true
+                ).toSet(),
+                "recursive pattern listing"
+            )
+        }
+
+        @Test
+        fun `returns the target itself when it is a regular file`(@TempDir tempDir: Path) {
+            (tempDir / "solo.tex").writeText("quack")
+            assertEquals(
+                listOf((tempDir / "solo.tex").toMPPPath().toString()),
+                FileSearching.listFilesByExtensions(
+                    (tempDir / "solo.tex").toMPPPath(), listOf("tex"), false
+                ).map { it.toString() },
+                "a regular file target lists as its own match"
+            )
+        }
+
+        @Test
+        fun `lists the results in a sorted order`(@TempDir tempDir: Path) {
+            listOf("zeta.tex", "alpha.tex", "mid.tex").forEach {
+                (tempDir / it).writeText("quack")
+            }
+            assertEquals(
+                listOf("alpha.tex", "mid.tex", "zeta.tex"),
+                FileSearching.listFilesByExtensions(
+                    tempDir.toMPPPath(), listOf("tex"), false
+                ).map { it.fileName },
+                "the search results come sorted by name"
+            )
+        }
+
+        @Test
+        fun `includes a link to a file in the results`(@TempDir tempDir: Path) {
+            val target = tempDir / "target.tex"
+            target.writeText("quack")
+            val link = tempDir / "link.tex"
+            assumeTrue(
+                try {
+                    Files.createSymbolicLink(link, target)
+                    true
+                } catch (_: IOException) {
+                    false
+                } catch (_: UnsupportedOperationException) {
+                    false
+                },
+                "the host cannot create symlinks"
+            )
+            assertTrue(
+                FileSearching.listFilesByExtensions(
+                    tempDir.toMPPPath(), listOf("tex"), false
+                ).map { it.fileName }.contains("link.tex"),
+                "a link to a file matches like the file it points to"
+            )
         }
     }
 
-    context("configured file type resolution") {
-        val directory = Files.createTempDirectory("arara file lookup ").toMPPPath()
-        afterSpec { directory.removeDirectory() }
-        val compound = FileType("source.tex", "custom compound pattern")
-        val ordinary = FileType("tex", "custom ordinary pattern")
-        val options = ExecutionOptions(fileTypes = listOf(compound, ordinary))
-
-        should("keep the matched compound type for an explicit relative path") {
-            (directory / "nested folder").createDirectories()
-            (directory / "nested folder/document.source.tex").writeText("content")
-            val found = FileSearching.lookupFile(
-                "nested folder/../nested folder/document.source.tex", directory, options
-            )!!
-            found.fileType shouldBe compound
-            found.fileType.pattern shouldBe compound.pattern
-            found.path.normalize() shouldBe (directory / "nested folder/document.source.tex").normalize()
+    /**
+     * The reference lookup and its safe mode restriction.
+     */
+    @Nested
+    inner class `file lookup` {
+        @Test
+        fun `fails looking up an inexistent file`() {
+            assertNull(
+                FileSearching.lookupFile("QUACK", MPPPath("."), ExecutionOptions()),
+                "an inexistent reference does not resolve"
+            )
         }
 
-        should("keep the matched compound type when completing an extension") {
-            (directory / "completed.source.tex").writeText("content")
-            val found = FileSearching.lookupFile("completed", directory, options)!!
-            found.fileType shouldBe compound
-            found.fileType.pattern shouldBe compound.pattern
-        }
-
-        should("use the first configured type when extensions are repeated") {
-            (directory / "priority.tex").writeText("content")
-            val first = FileType("tex", "first pattern")
-            val configured = options.copy(fileTypes = listOf(first, ordinary))
-            for (reference in listOf("priority.tex", "priority")) {
-                FileSearching.lookupFile(reference, directory, configured)!!
-                    .fileType.pattern shouldBe first.pattern
-            }
-        }
-
-        should("allow explicit compound files but prohibit extension completion in safe mode") {
-            (directory / "safe.source.tex").writeText("content")
-            val safe = options.copy(executionMode = ExecutionMode.SAFE_RUN)
-            FileSearching.lookupFile("safe", directory, safe) shouldBe null
-            FileSearching.lookupFile("safe.source.tex", directory, safe)!!
-                .fileType.pattern shouldBe compound.pattern
-        }
-
-        should("reject directories and existing files with unconfigured extensions") {
-            (directory / "directory.tex").createDirectories()
-            (directory / "unknown.xyz").writeText("content")
-            FileSearching.lookupFile("directory.tex", directory, options) shouldBe null
-            FileSearching.lookupFile("unknown.xyz", directory, options) shouldBe null
-        }
-    }
-
-    context("file lookup") {
-        should("fail looking up inexistent file") {
-            FileSearching.lookupFile(
-                "QUACK", MPPPath("."),
-                ExecutionOptions()
-            ) shouldBe null
-        }
-
-        should("fail on existing directory") {
-            FileSearching.lookupFile(
-                "../buildSrc", MPPPath("."),
-                ExecutionOptions()
-            ) shouldBe null
-        }
-
-        should("succeed finding tex file with extension") {
-            withContext(Dispatchers.IO) {
-                val testDir = Files.createTempDirectory(System.nanoTime().toString())
-                val parent = (testDir / "test/quack/").createDirectories()
-                val pathToTest = parent / "changes.tex"
-                pathToTest.writeText("quack")
-                val projectFile = FileSearching.lookupFile(
-                    pathToTest.toString(),
-                    testDir.toMPPPath(),
+        @Test
+        fun `fails on an existing directory`(@TempDir tempDir: Path) {
+            // the directory exists and is reached by name, so the
+            // miss belongs to the directory rejection alone
+            (tempDir / "subdir").createDirectories()
+            assertNull(
+                FileSearching.lookupFile(
+                    (tempDir / "subdir").toString(),
+                    tempDir.toMPPPath(),
                     ExecutionOptions()
-                ) as ProjectFile
-                projectFile.path.normalize().toString() shouldBe
-                    pathToTest.normalize().toString()
-                projectFile.fileType.extension shouldBe "tex"
-                projectFile.fileType.pattern shouldBe ConfigurationUtils.defaultFileTypePatterns["tex"]
-            }
+                ),
+                "a directory reference does not resolve to a file"
+            )
         }
 
-        should("succeed finding tex file without extension") {
-            withContext(Dispatchers.IO) {
-                val testDir = Files.createTempDirectory(System.nanoTime().toString())
-                val parent = (testDir / "test/quack/").createDirectories()
-                (parent / "changes.tex").writeText("quack")
-                val projectFile = FileSearching.lookupFile(
-                    (parent / "changes").toString(),
-                    testDir.toMPPPath(),
-                    ExecutionOptions()
-                ) as ProjectFile
-                projectFile.path.normalize().toString() shouldBe
-                    (parent.normalize() / "changes.tex").toString()
-                projectFile.fileType.extension shouldBe "tex"
-                projectFile.fileType.pattern shouldBe ConfigurationUtils.defaultFileTypePatterns["tex"]
-            }
+        @Test
+        fun `succeeds finding a tex file with its extension`(@TempDir tempDir: Path) {
+            val parent = (tempDir / "test/quack").createDirectories()
+            val pathToTest = parent / "changes.tex"
+            pathToTest.writeText("quack")
+            val projectFile = FileSearching.lookupFile(
+                pathToTest.toString(),
+                tempDir.toMPPPath(),
+                ExecutionOptions()
+            ) as ProjectFile
+            assertEquals(
+                pathToTest.normalize().toString(),
+                projectFile.path.normalize().toString(),
+                "the resolved path points at the requested file"
+            )
+            assertEquals("tex", projectFile.fileType.extension, "file type extension")
+            assertEquals(
+                DefaultConfiguration.defaultFileTypePatterns["tex"],
+                projectFile.fileType.pattern,
+                "file type pattern of the default tex type"
+            )
         }
 
-        should("succeed finding tex file with extension in safe mode") {
-            withContext(Dispatchers.IO) {
-                val testDir = Files.createTempDirectory(System.nanoTime().toString())
-                val parent = (testDir / "test/quack/").createDirectories()
-                (parent / "changes.tex").writeText("quack")
-                val pathToTest = parent / "changes.tex"
-                val projectFile = FileSearching.lookupFile(
-                    pathToTest.toString(),
-                    testDir.toMPPPath(),
-                    ExecutionOptions().copy(executionMode = ExecutionMode.SAFE_RUN)
-                ) as ProjectFile
-                projectFile.path.normalize().toString() shouldBe
-                    pathToTest.normalize().toString()
-                projectFile.fileType.extension shouldBe "tex"
-                projectFile.fileType.pattern shouldBe ConfigurationUtils.defaultFileTypePatterns["tex"]
-            }
+        @Test
+        fun `succeeds finding a tex file without its extension`(@TempDir tempDir: Path) {
+            val parent = (tempDir / "test/quack").createDirectories()
+            (parent / "changes.tex").writeText("quack")
+            val projectFile = FileSearching.lookupFile(
+                (parent / "changes").toString(),
+                tempDir.toMPPPath(),
+                ExecutionOptions()
+            ) as ProjectFile
+            assertEquals(
+                (parent.normalize() / "changes.tex").toString(),
+                projectFile.path.normalize().toString(),
+                "the reference resolves to the file with its extension"
+            )
+            assertEquals("tex", projectFile.fileType.extension, "file type extension")
+            assertEquals(
+                DefaultConfiguration.defaultFileTypePatterns["tex"],
+                projectFile.fileType.pattern,
+                "file type pattern of the default tex type"
+            )
         }
 
-        should("not succeed finding tex file without extension in safe mode") {
-            FileSearching.lookupFile(
-                MPPPath("src/test/resources/executiontests/changes/changes").toString(),
-                MPPPath("."),
+        @Test
+        fun `succeeds finding a tex file with its extension in safe mode`(
+            @TempDir tempDir: Path
+        ) {
+            val parent = (tempDir / "test/quack").createDirectories()
+            (parent / "changes.tex").writeText("quack")
+            val pathToTest = parent / "changes.tex"
+            val projectFile = FileSearching.lookupFile(
+                pathToTest.toString(),
+                tempDir.toMPPPath(),
                 ExecutionOptions().copy(executionMode = ExecutionMode.SAFE_RUN)
-            ) shouldBe null
+            ) as ProjectFile
+            assertEquals(
+                pathToTest.normalize().toString(),
+                projectFile.path.normalize().toString(),
+                "the resolved path points at the requested file"
+            )
+            assertEquals("tex", projectFile.fileType.extension, "file type extension")
+            assertEquals(
+                DefaultConfiguration.defaultFileTypePatterns["tex"],
+                projectFile.fileType.pattern,
+                "file type pattern of the default tex type"
+            )
+        }
+
+        @Test
+        fun `does not find a tex file without its extension in safe mode`(
+            @TempDir tempDir: Path
+        ) {
+            // the file exists: only the extension completion is
+            // refused, so the miss belongs to the safe mode gate
+            (tempDir / "changes.tex").writeText("quack")
+            assertNull(
+                FileSearching.lookupFile(
+                    (tempDir / "changes").toString(),
+                    tempDir.toMPPPath(),
+                    ExecutionOptions().copy(executionMode = ExecutionMode.SAFE_RUN)
+                ),
+                "safe mode does not complete extensions when looking up files"
+            )
+        }
+
+        @Test
+        fun `safe mode names its refusal instead of extensions it never tried`(
+            @TempDir tempDir: Path
+        ) {
+            // the file is absent as typed and safe mode refuses the
+            // completion, so the verdict says so - enumerating the
+            // extensions would claim a search that never ran
+            val exception = assertFailsWith<AraraException> {
+                FileSearching.resolveFile(
+                    "changes",
+                    tempDir.toMPPPath(),
+                    ExecutionOptions().copy(executionMode = ExecutionMode.SAFE_RUN)
+                )
+            }
+            assertTrue(
+                "Safe mode" in exception.message!!,
+                "the verdict names the refusal: ${exception.message}"
+            )
+            assertTrue(
+                "with any of the extensions" !in exception.message!!,
+                "no claim of an extension search: ${exception.message}"
+            )
+        }
+
+        @Test
+        fun `reports the tried extensions as a plain enumeration`(
+            @TempDir tempDir: Path
+        ) {
+            val exception = assertFailsWith<AraraException>(
+                "an unresolvable reference names the extensions it tried"
+            ) {
+                FileSearching.resolveFile(
+                    "QUACK",
+                    tempDir.toMPPPath(),
+                    ExecutionOptions()
+                )
+            }
+            assertTrue(
+                exception.message!!.contains(".tex, .dtx, .ltx, .drv, .ins"),
+                "the extensions speak as a plain enumeration: ${exception.message}"
+            )
+            assertTrue(
+                "[" !in exception.message!! && " | " !in exception.message!!,
+                "no bracket or pipe groups the enumeration: ${exception.message}"
+            )
+        }
+
+        @Test
+        fun `a dotted configured extension reports the file instead of a pending type`(
+            @TempDir tempDir: Path
+        ) {
+            // the file matches the configured type by its suffix, but
+            // the type's own extension carries a dot the lookup cannot
+            // re-derive - the honest unresolvable verdict beats a
+            // headerless scan of the file
+            (tempDir / "archive.tar.gz").writeText("quack")
+            val options = ExecutionOptions().copy(
+                fileTypes = listOf(FileType("tar.gz", "^\\s*%\\s*")) +
+                    DefaultConfiguration.defaultFileTypes
+            )
+            val exception = assertFailsWith<AraraException>(
+                "a dotted extension never resolves to a pending type"
+            ) {
+                FileSearching.resolveFile(
+                    "archive.tar.gz",
+                    tempDir.toMPPPath(),
+                    options
+                )
+            }
+            assertTrue(
+                exception.message!!.contains("could not determine the file type"),
+                "the verdict names the unresolvable type: ${exception.message}"
+            )
+            assertTrue(
+                "'tar.gz'" in exception.message!!,
+                "the verdict names the configured extension: ${exception.message}"
+            )
+        }
+
+        @Test
+        fun `the indirect completion names the dotted extension instead of claiming a miss`(
+            @TempDir tempDir: Path
+        ) {
+            // the completion search finds the candidate the type
+            // built, but the type's dotted extension cannot be
+            // re-derived - the verdict names the dot instead of
+            // claiming the found file could not be found
+            (tempDir / "archive.tar.gz").writeText("quack")
+            val options = ExecutionOptions().copy(
+                fileTypes = listOf(FileType("tar.gz", "^\\s*%\\s*")) +
+                    DefaultConfiguration.defaultFileTypes
+            )
+            val exception = assertFailsWith<AraraException>(
+                "a found candidate with a dotted type extension names the dot"
+            ) {
+                FileSearching.resolveFile(
+                    "archive",
+                    tempDir.toMPPPath(),
+                    options
+                )
+            }
+            assertTrue(
+                "'tar.gz'" in exception.message!!,
+                "the verdict names the configured extension: ${exception.message}"
+            )
+            assertTrue(
+                "could not find" !in exception.message!!,
+                "the found file is not reported missing: ${exception.message}"
+            )
+        }
+
+        @Test
+        fun `lists a redeclared extension once`(@TempDir tempDir: Path) {
+            // the configuration's redeclaration keeps its place at
+            // the head of the order, and the enumeration shows it once
+            val options = ExecutionOptions().copy(
+                fileTypes = listOf(FileType("tex", "^\\s*%\\s*")) +
+                    DefaultConfiguration.defaultFileTypes
+            )
+            val exception = assertFailsWith<AraraException> {
+                FileSearching.resolveFile("QUACK", tempDir.toMPPPath(), options)
+            }
+            val message = exception.message!!
+            assertTrue(
+                message.contains(".tex, .dtx"),
+                "the redeclared extension leads the enumeration: $message"
+            )
+            assertTrue(
+                message.indexOf(".tex") == message.lastIndexOf(".tex"),
+                "the redeclared extension appears once: $message"
+            )
+        }
+
+        @Test
+        fun `resolves the completion in the priority order of the types`(
+            @TempDir tempDir: Path
+        ) {
+            (tempDir / "foo.ltx").writeText("quack")
+            (tempDir / "foo.dtx").writeText("quack")
+            fun options(first: String, second: String) =
+                ExecutionOptions().copy(
+                    fileTypes = listOf(
+                        FileType(first, "^\\s*%\\s*"),
+                        FileType(second, "^\\s*%\\s*")
+                    ) + DefaultConfiguration.defaultFileTypes
+                )
+            val ltxFirst = FileSearching.lookupFile(
+                "foo", tempDir.toMPPPath(), options("ltx", "dtx")
+            ) as ProjectFile
+            assertEquals(
+                "ltx", ltxFirst.fileType.extension,
+                "the first declared type wins the completion"
+            )
+            val dtxFirst = FileSearching.lookupFile(
+                "foo", tempDir.toMPPPath(), options("dtx", "ltx")
+            ) as ProjectFile
+            assertEquals(
+                "dtx", dtxFirst.fileType.extension,
+                "the reversed order reverses the resolution"
+            )
+        }
+
+        @Test
+        fun `reports an existing file whose extension no type carries`(
+            @TempDir tempDir: Path
+        ) {
+            (tempDir / "book.xyz").writeText("data")
+            val exception = assertFailsWith<AraraException>(
+                "an existing file is never reported as missing"
+            ) {
+                FileSearching.resolveFile(
+                    "book.xyz", tempDir.toMPPPath(), ExecutionOptions()
+                )
+            }
+            assertTrue(
+                exception.message!!.contains("book.xyz") &&
+                    "could not find" !in exception.message!!,
+                "the error tells the type truth, not a missing file: ${exception.message}"
+            )
+            assertTrue(
+                exception.message!!.contains(".tex, .dtx, .ltx, .drv, .ins"),
+                "the error names the extensions of the run: ${exception.message}"
+            )
+        }
+
+        @Test
+        fun `offers the specification suffix for a plain Lua file`(
+            @TempDir tempDir: Path
+        ) {
+            (tempDir / "notes.lua").writeText("return { }")
+            val exception = assertFailsWith<AraraException>(
+                "an existing Lua file hears the specification remedy"
+            ) {
+                FileSearching.resolveFile(
+                    "notes.lua", tempDir.toMPPPath(), ExecutionOptions()
+                )
+            }
+            assertTrue(
+                exception.message!!.contains(".proj.lua"),
+                "the error names the specification suffix: ${exception.message}"
+            )
+            assertTrue(
+                exception.message!!.contains(".tex, .dtx, .ltx, .drv, .ins"),
+                "the error names the extensions of the run: ${exception.message}"
+            )
         }
     }
-})
+
+    @Test
+    fun `falls back to an empty list on a missing directory`(@TempDir tempDir: Path) {
+        val missing = tempDir.resolve("does-not-exist")
+        assertTrue(
+            FileSearching.listFilesByExtensions(
+                missing.toMPPPath(), listOf("tex"), false
+            ).isEmpty(),
+            "a missing directory yields no files by extension"
+        )
+        assertTrue(
+            FileSearching.listFilesByPatterns(
+                missing.toMPPPath(), listOf("*.tex"), true
+            ).isEmpty(),
+            "a missing directory yields no pattern matches"
+        )
+    }
+}
