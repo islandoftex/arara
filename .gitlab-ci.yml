@@ -1,49 +1,51 @@
+# The pipeline answers the tree it serves: the strict gate runs
+# verbatim under one JDK, the smoke suite rides the TeX Live image the
+# project's own registry holds, the books build through a throwaway
+# Kroki pair, and only a version tag ships.
+
+# a one-shot container dies before a daemon could pay for its
+# startup, so the build runs in-process, with room to breathe
 variables:
-  # disable the Gradle daemon for Continuous Integration servers
   GRADLE_OPTS: "-Dorg.gradle.daemon=false -Xmx6g"
-  GIT_SUBMODULE_STRATEGY: recursive
 
-include:
-  - template: SAST.gitlab-ci.yml
-  - template: Dependency-Scanning.gitlab-ci.yml
-
+# four movements: build the tool, prove it, build its books, ship
 stages:
   - build
   - test
-  - pages
+  - docs
   - publish
 
+# Gradle's home lives inside the project, so the dependency store
+# rides the cache instead of downloading on every job
 before_script:
   - export GRADLE_USER_HOME=`pwd`/.gradle
 
-# The application requires Java 21; CI also verifies the latest LTS, Java 25.
-# Minimal Corretto images omit xargs, which the Gradle wrapper requires.
-.corretto:
-  before_script:
-    - yum install -y findutils
-    - export GRADLE_USER_HOME=`pwd`/.gradle
-
+# the build job fills the cache for its pipeline; every other job
+# only reads it, so no failure poisons what the next build sees
 .cachetemplate: &cachedefinition
-  key: "$CI_COMMIT_REF_NAME-$JAVA_VERSION"
+  key: "$CI_COMMIT_REF_NAME-jdk21"
   paths:
     - build
     - api/build
     - core/build
+    - mvel/build
+    - lua/build
     - cli/build
     - .gradle
 
-.buildtemplate: &builddefinition
+# the runnable jar is the application's whole distribution: the four
+# library modules ship through the package registry, and the tool
+# itself ships as one executable jar
+build:
   stage: build
+  image: eclipse-temurin:21
   script:
-    # create the executables for distribution
-    - ./gradlew --build-cache assembleDist stageProcessSmokeJar --info
+    - ./gradlew --build-cache :cli:shadowJar --info
     - mkdir bin
-    - cp cli/build/libs/*.jar bin/
-    - cp cli/build/native/jna.jar bin/
-    - cp cli/build/distributions/*.zip bin/
+    - cp cli/build/libs/arara-cli-with-deps-*.jar bin/
     # create checksum file to make sure we're distributing the right thing
     - cd bin
-    - md5sum *.{jar,zip} > checksums.txt
+    - md5sum *.jar > checksums.txt
   artifacts:
     name: "$CI_COMMIT_REF_NAME-snapshot"
     paths:
@@ -56,18 +58,13 @@ before_script:
     <<: *cachedefinition
     policy: push
 
-build:linux:jdk21:
-  extends: .corretto
-  image: amazoncorretto:21
-  <<: *builddefinition
-
-.testtemplate: &testdefinition
+# the project's own strict gate, verbatim
+test:gate:
   stage: test
+  needs: ["build"]
+  image: eclipse-temurin:21
   script:
-    - ./gradlew checkRuntimeDependencies allTests -PwarningsAsErrors=true -PtestJavaVersion="$JAVA_VERSION"
-    - ./gradlew -p buildSrc check
-    - ./gradlew detekt
-    - ./gradlew koverXmlReport koverHtmlReport koverVerify -PtestJavaVersion="$JAVA_VERSION"
+    - ./gradlew -PwarningsAsErrors=true test detekt spotlessCheck changelogCheck koverVerify koverXmlReport :dokkaGeneratePublicationHtml
   cache:
     <<: *cachedefinition
     policy: pull
@@ -139,145 +136,215 @@ test:publications:
       - build/dokka/html
     expire_in: 1 week
 
+# the smoke suite rides the plain TeX Live base: the JDK and bats
+# arrive per run through apt, TeX Live runs the typesetting
+# scenarios, and the toolchain resolver provisions the JRE 11 floor
+test:smoke:
+  stage: test
+  needs: ["build"]
+  image: registry.gitlab.com/islandoftex/images/texlive:latest
+  before_script:
+    - export GRADLE_USER_HOME=`pwd`/.gradle
+    - apt-get update && apt-get install -y --no-install-recommends openjdk-21-jdk-headless bats
+    # the image ships a Java 25 JRE that wins the alternatives and
+    # would drive Gradle without a compiler: pin the installed JDK
+    # as the driving JVM
+    - export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
+    - export PATH="$JAVA_HOME/bin:$PATH"
+  script:
+    - ./gradlew smoke -Psmoke.strict=true
+  cache:
+    <<: *cachedefinition
+    policy: pull
+
+# the upgrade report: what newer versions exist, stated on every
+# pipeline, so the dependency story stays visible
 test:dependencies:
   extends: .corretto
   stage: test
-  needs: ["build:linux:jdk21"]
-  image: amazoncorretto:21
+  needs: ["build"]
+  image: eclipse-temurin:21
   script:
-    - ./gradlew dependencyUpdates
+    - ./gradlew --no-parallel dependencyUpdates
   cache:
     <<: *cachedefinition
     policy: pull
 
-test:spotless:
-  extends: .corretto
-  stage: test
-  needs: ["build:linux:jdk21"]
-  image: amazoncorretto:21
-  script:
-    - ./gradlew spotlessCheck
-  cache:
-    <<: *cachedefinition
-    policy: pull
-
-test:linux:jdk21:
-  variables:
-    JAVA_VERSION: "21"
-  extends: .corretto
-  needs: ["build:linux:jdk21"]
-  image: amazoncorretto:21
-  <<: *testdefinition
-
-test:linux:jdk25:
-  variables:
-    JAVA_VERSION: "25"
-  extends: .corretto
-  needs: ["build:linux:jdk21"]
-  image: amazoncorretto:25
-  <<: *testdefinition
-  cache:
-    - <<: *cachedefinition
-      policy: pull
-    - key: "java21-toolchain-linux-amd64-v1"
-      paths:
-        - .gradle/jdks/
-      policy: pull-push
-      when: always
-
-.pagestemplate: &pagesdefinition
-  stage: pages
-  image: nixpkgs/nix-flakes:latest-x86_64-linux
+# the books' ingredients: the chapters turn into LaTeX, and the
+# diagrams draw through the throwaway Kroki pair — the companion
+# declares 8000 through its own variables, the main connects on 8002,
+# the same names with different meanings on each side
+docs:generate:
+  stage: docs
+  image: eclipse-temurin:21
   needs: []
   variables:
-    PRELEASE: "false"
+    ARARA_DOCS_KROKI: "http://kroki:8000"
+    # the default service linking lets the job reach the services but
+    # never the services each other: a per-build network puts the
+    # pair on one bridge where kroki can find its mermaid companion
+    FF_NETWORK_PER_BUILD: "true"
+  services:
+    - name: yuzutech/kroki-mermaid
+      alias: kroki-mermaid
+      variables:
+        KROKI_MERMAID_HOST: 0.0.0.0
+        KROKI_MERMAID_PORT: "8000"
+    - name: yuzutech/kroki
+      alias: kroki
+      variables:
+        KROKI_MERMAID_HOST: kroki-mermaid
+        KROKI_MERMAID_PORT: "8002"
   script:
-    - nix develop -c ./gradlew --build-cache :docs:buildDocs -Prelease=$PRELEASE
-    - cp -r website/public ./public
-  cache:
-    key: "documentation-$CI_COMMIT_REF_SLUG"
+    - ./gradlew generateVersionMacro convertDocs renderDiagrams -Parara.docs.kroki=$ARARA_DOCS_KROKI
+  artifacts:
+    name: "$CI_COMMIT_REF_NAME-docs-sources"
     paths:
-      - .gradle/
-    policy: pull-push
+      - build/generated/docs
+    expire_in: 1 week
+  cache:
+    <<: *cachedefinition
+    policy: pull
 
+# typesetting needs no JDK — the plain TeX Live base carries the
+# books, and the tool builds them itself: arara reads the directives
+# from the skeletons and drives LuaLaTeX and the clean, and the
+# post-clean tree is the CTAN-ready documentation set: the PDFs,
+# their LaTeX sources, and the rendered figures
+docs:compile:
+  stage: docs
+  needs:
+    - job: "docs:generate"
+      artifacts: true
+  image: registry.gitlab.com/islandoftex/images/texlive:latest
+  script:
+    - cd build/generated/docs
+    - arara -v arara-manual.tex arara-quickstart.tex
+  artifacts:
+    name: "$CI_COMMIT_REF_NAME-documentation"
+    paths:
+      - build/generated/docs
+    expire_in: 1 week
+
+# the registry and its job token arrive with the runner's own CI
+# variables, and the build wires them itself: the plain lifecycle
+# suffices, and the changelog-derived version carries its -SNAPSHOT
+publish:snapshot:
+  stage: publish
+  image: eclipse-temurin:21
+  script:
+    - ./gradlew publish
+  cache:
+    <<: *cachedefinition
+    policy: pull
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+
+# at the version tag the build ships the stable release the promoted
+# changelog names, and nothing else can ever trip the release
+publish:gitlab:
+  stage: publish
+  image: eclipse-temurin:21
+  script:
+    - ./gradlew publish -Prelease=true
+  cache:
+    <<: *cachedefinition
+    policy: pull
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^v/'
+
+# The website ships from its own branch: the job fetches it, lifts
+# the manual into it through the assembly script, and builds with
+# the official Zola image. Written for the final world — the job
+# sleeps until both main and website exist, and whichever merge
+# lands second is the one that wakes it.
 pages:
-  <<: *pagesdefinition
+  stage: publish
+  image: ghcr.io/getzola/zola:v0.23.6-alpine
+  before_script:
+    - apk add --no-cache git python3
+  script:
+    - git fetch origin website
+    - git worktree add "$CI_PROJECT_DIR/site" origin/website
+    - python3 scripts/assemble-website.py --site "$CI_PROJECT_DIR/site"
+    - zola --root "$CI_PROJECT_DIR/site" build --output-dir "$CI_PROJECT_DIR/public"
   artifacts:
     paths:
       - public
-      - website/public
-      - docs/*.pdf
-      - .gradle/build-cache/
-    expire_in: 1 week
   rules:
-    - if: '$CI_COMMIT_TAG'
+    - if: '$CI_COMMIT_BRANCH == "main"'
+
+# the CTAN artifact: the texlive image needs a JDK for Gradle (the
+# smoke test's precedent), and one command builds the jar, typesets
+# the books with the tool itself, and packs everything LeoPack-style;
+# the structural gates prove the shape CTAN expects on every run,
+# catching the classes of regressions the 7.2.0 submission taught us
+# about: the hoisted, versioned README, the TDS zip inside, the tool
+# beside its rules, the man page, the books, both source zips
+.ctan-artifact: &ctan-artifact-definition
+  stage: docs
+  image: registry.gitlab.com/islandoftex/images/texlive:latest
+  variables:
+    ARARA_DOCS_KROKI: "http://kroki:8000"
+    # same reason as the docs job: the pair needs to talk to each other
+    FF_NETWORK_PER_BUILD: "true"
+  services:
+    - name: yuzutech/kroki-mermaid
+      alias: kroki-mermaid
       variables:
-        PRELEASE: "true"
-    - if: '$CI_COMMIT_REF_NAME == "master"'
-
-pages:for-manual:
-  <<: *pagesdefinition
-  artifacts:
-    paths:
-      - website/public
-      - docs/*.pdf
-      - .gradle/build-cache/
-    expire_in: 1 week
-  rules:
-    - if: '$CI_COMMIT_REF_NAME != "master" && $CI_COMMIT_TAG == null'
-
-publish:gitlab:
-  extends: .corretto
-  image: amazoncorretto:21
-  stage: publish
+        KROKI_MERMAID_HOST: 0.0.0.0
+        KROKI_MERMAID_PORT: "8000"
+    - name: yuzutech/kroki
+      alias: kroki
+      variables:
+        KROKI_MERMAID_HOST: kroki-mermaid
+        KROKI_MERMAID_PORT: "8002"
+  before_script:
+    - apt-get update && apt-get install -y openjdk-21-jdk-headless
+    # the image ships a Java 25 JRE that wins the alternatives and
+    # would drive Gradle without a compiler: pin the installed JDK
+    # as the driving JVM
+    - export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
+    - export PATH="$JAVA_HOME/bin:$PATH"
   script:
-    - ./gradlew publishAllPublicationsToGitLabRepository -PjobToken=$CI_JOB_TOKEN -Prelease=true
+    - ./gradlew ctanZip -Parara.docs.kroki=$ARARA_DOCS_KROKI
+  after_script:
+    - unzip -l build/ctan/arara-ctan.zip | grep -q 'arara/README.md'
+    - unzip -l build/ctan/arara-ctan.zip | grep -q 'arara.tds.zip'
+    - unzip -l build/ctan/arara-ctan.zip | grep -q 'arara/scripts/arara.jar'
+    - unzip -l build/ctan/arara-ctan.zip | grep -q 'arara/scripts/arara.sh'
+    - unzip -l build/ctan/arara-ctan.zip | grep -q 'arara/scripts/rules/'
+    - unzip -l build/ctan/arara-ctan.zip | grep -q 'arara/doc/arara.1'
+    - unzip -l build/ctan/arara-ctan.zip | grep -q 'arara/doc/arara-manual.pdf'
+    - unzip -l build/ctan/arara-ctan.zip | grep -q 'arara/doc/arara-quickstart.pdf'
+    - unzip -l build/ctan/arara-ctan.zip | grep -Eq 'arara-[0-9.]+(-SNAPSHOT)?-docsrc\.zip'
+    - unzip -l build/ctan/arara-ctan.zip | grep -Eq 'arara-[0-9.]+(-SNAPSHOT)?-src\.zip'
+    - unzip -p build/ctan/arara-ctan.zip arara/README.md | head -1 | grep -q '^This is arara v'
   cache:
     <<: *cachedefinition
     policy: pull
-  rules:
-    - if: '$CI_COMMIT_TAG != null'
 
-.ctantemplate: &ctandefinition
-  stage: publish
-  image: nixpkgs/nix-flakes:latest-x86_64-linux
-  script:
-    - nix develop -c ./gradlew --build-cache -Prelease=$PRELEASE assembleCTAN --info
-    - cp build/*.zip ./
+# the branch build proofs the release path; the artifact stays
+# downloadable for a week
+docs:ctan:
+  <<: *ctan-artifact-definition
   artifacts:
     name: "$CI_COMMIT_REF_NAME-ctan"
     paths:
-      - ./*.zip
-      - docs/*.pdf
+      - build/ctan
     expire_in: 1 week
-  cache:
-    <<: *cachedefinition
-    policy: pull
-
-publish:snapshot_tdszip:
-  needs:
-    - build:linux:jdk21
-    - test:linux:jdk21
-    - test:linux:jdk25
-    - test:process-smoke
-    - job: pages:for-manual
-      optional: true
-      artifacts: true
-    - job: pages
-      optional: true
-      artifacts: true
-  variables:
-    PRELEASE: "false"
-  <<: *ctandefinition
   rules:
-    - if: '$CI_COMMIT_TAG == null && $CI_MERGE_REQUEST_ID == null && $CI_COMMIT_REF_NAME == "development"'
-    - if: '$CI_COMMIT_TAG == null && $CI_MERGE_REQUEST_ID == null && $CI_COMMIT_REF_NAME == "master"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
 
-publish:tdszip:
-  dependencies:
-    - pages
-  variables:
-    PRELEASE: "true"
-  <<: *ctandefinition
+# the tag build is the submission's provenance: its artifact stays
+# downloadable forever, so the release page can link the exact file
+# that was sent to CTAN
+docs:ctan-release:
+  <<: *ctan-artifact-definition
+  artifacts:
+    name: "$CI_COMMIT_REF_NAME-ctan"
+    paths:
+      - build/ctan
+    expire_in: never
   rules:
-    - if: '$CI_COMMIT_TAG != null'
+    - if: '$CI_COMMIT_TAG =~ /^v\//'

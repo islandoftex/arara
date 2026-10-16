@@ -1,6 +1,7 @@
 # Description of the bug
 
 * arara version:
+* arara engine: yaml/lua
 * operating system: Windows/Linux/Mac/…
 * TeX distribution: MikTeX/TeX Live/…
 
