@@ -5,48 +5,61 @@ import java.net.URI
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.credentials.HttpHeaderCredentials
+import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
-import org.gradle.api.tasks.bundling.Jar
 import org.gradle.authentication.http.HttpHeaderAuthentication
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.credentials
-import org.gradle.kotlin.dsl.withType
 
 /**
- * A simple wrapper around arara's publication logic.
+ * A simple wrapper around arara's publication logic. The plugin covers
+ * the four library modules alone — the application module ships as the
+ * runnable jar, and its thin jar is a build intermediate no consumer
+ * depends on, so it never reaches a Maven repository. The publications
+ * target this project's GitLab package registry when the CI variables
+ * are present; a local build simply has no remote to configure, and
+ * local repositories keep working through the default.
  */
 open class AraraPublication : Plugin<Project> {
+    /**
+     * Installs the Maven publication for the module: the library
+     * artifact, the sources jar and the license metadata, with
+     * the aggregated HTML documentation as its own distribution.
+     */
     @Suppress("LongMethod")
     override fun apply(target: Project) {
         target.apply(plugin = "maven-publish")
-        val documentationJar = target.tasks.register("javadocJar", Jar::class.java) {
-            archiveClassifier.set("javadoc")
-            from(target.tasks.named("dokkaGeneratePublicationHtml"))
+        // the sources jar completes the conventional library artifact
+        // set; the documentation travels through the aggregated HTML
+        // site instead of a javadoc jar, as the javadoc format is bound
+        // to the JVM-only publishing era
+        target.extensions.configure<JavaPluginExtension> {
+            withSourcesJar()
         }
         target.configure<PublishingExtension> {
-            publications.withType<MavenPublication>().configureEach {
+            // the project is JVM-only, hence a single publication derived
+            // from the java component is sufficient
+            publications.create<MavenPublication>("maven") {
+                from(target.components.getByName("java"))
+            }
+            publications.configureEach {
+                this as MavenPublication
 
-                artifactId = "arara-" + when (name) {
-                    "kotlinMultiplatform" ->
-                        target.name
+                // the artifact carries the module prefix, so the
+                // repository reads as one family of libraries
+                // instead of four coincidentally named jars
+                artifactId = "arara-" + target.name
 
-                    "metadata" ->
-                        "${target.name}-metadata"
-
-                    "jvm" ->
-                        "${target.name}-jvm"
-
-                    else ->
-                        throw IllegalArgumentException("Unknown publication type $name")
-                }
-
-                artifact(documentationJar)
                 groupId = target.group.toString()
                 version = target.version.toString()
 
+                // the metadata describes the family once; every
+                // module shares the same identity, provenance and
+                // people, and the artifact name is what tells them
+                // apart
                 pom {
                     name.set("arara (${target.name} module)")
                     description.set(
@@ -61,7 +74,7 @@ open class AraraPublication : Plugin<Project> {
                     }
                     licenses {
                         license {
-                            name.set("BSD 3-Clause License")
+                            name.set("""BSD 3-clause "New" or "Revised" License""")
                             url.set("https://opensource.org/licenses/BSD-3-Clause")
                             distribution.set("repo")
                         }
@@ -110,26 +123,30 @@ open class AraraPublication : Plugin<Project> {
                 }
             }
 
-            repositories {
-                maven {
-                    name = "PublicationCheck"
-                    url = target.rootProject.layout.buildDirectory
-                        .dir("publication-check/repository").get().asFile.toURI()
-                }
-            }
-
-            System.getenv("CI_PROJECT_ID")?.let {
+            // the registry URL is only known inside the CI environment,
+            // whose variables name this very project; a local build
+            // keeps the block empty and stays on local repositories,
+            // so the guard decides remote presence, not publishability
+            System.getenv("CI_PROJECT_ID")?.let { projectId ->
                 repositories {
                     maven {
                         name = "GitLab"
-                        url = URI("https://gitlab.com/api/v4/projects/$it/packages/maven")
-                        credentials(HttpHeaderCredentials::class) {
-                            name = "Job-Token"
-                            value = target.providers.gradleProperty("jobToken")
-                                .orElse(target.providers.environmentVariable("CI_JOB_TOKEN")).orNull
-                        }
-                        authentication {
-                            create<HttpHeaderAuthentication>("header")
+                        url = URI(
+                            "https://gitlab.com/api/v4/projects/" +
+                                    "$projectId/packages/maven"
+                        )
+                        // the standard job token of the GitLab runner is
+                        // the intended credential; it is only registered
+                        // when present so a missing token fails the
+                        // publication early instead of as a bare 401
+                        System.getenv("CI_JOB_TOKEN")?.let { token ->
+                            credentials(HttpHeaderCredentials::class) {
+                                name = "Job-Token"
+                                value = token
+                            }
+                            authentication {
+                                create<HttpHeaderAuthentication>("header")
+                            }
                         }
                     }
                 }

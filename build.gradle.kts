@@ -17,7 +17,10 @@ import org.islandoftex.arara.build.DocsConversion
 import org.islandoftex.arara.build.GenerateSmokeBats
 import org.islandoftex.arara.build.PrintSmokeJavaRuntime
 import org.islandoftex.arara.build.RunSmokeBats
+import org.islandoftex.arara.build.araraManPage
 import org.islandoftex.chronoheader.ChronoField
+import org.islandoftex.leopack.Stage
+import org.islandoftex.leopack.scribeswan.scribeswan
 import org.jetbrains.dokka.gradle.DokkaExtension
 import org.jetbrains.dokka.gradle.engine.plugins.DokkaHtmlPluginParameters
 import org.jetbrains.dokka.gradle.tasks.DokkaGeneratePublicationTask
@@ -52,6 +55,8 @@ plugins {
     alias(libs.plugins.spotless)
     alias(libs.plugins.kover)
     alias(libs.plugins.chronoheader)
+    alias(libs.plugins.solstice)
+    alias(libs.plugins.leopack.scribeswan)
     `java-base`
 }
 
@@ -92,6 +97,13 @@ spotlessChangelog {
     commitMessage("Release v{{version}}")
     remote("origin")
     branch("main")
+}
+
+// the promotion tool of the release flow: promoteChangelog is run by
+// hand to promote the unreleased section and rewrite the diff links;
+// CI never runs it - the promotion declares the release
+solstice {
+    branch = "main"
 }
 
 spotless {
@@ -377,6 +389,121 @@ val renderDiagrams: TaskProvider<Task> = tasks.register("renderDiagrams") {
             DocsConversion.renderDiagrams(generatedDir.get().asFile.resolve("assets"), endpoint.get())
         logger.lifecycle("Rendered {} diagram(s) through {}", figures.size, endpoint.get())
     }
+}
+
+// ── the CTAN artifact ─────────────────────────────────────────────────────
+// arara packs itself: the freshly built jar, staged with its rule pack
+// exactly as CTAN delivers it, typesets the manual and the quickstart,
+// and LeoPack derives the TDS tree and the submission zip — the tool
+// ships its own books, packed by its own family.
+
+// the packaging block resolves :cli's shadow jar at configuration
+// time, and the root configures before its children, so the
+// evaluation dependency makes the task resolvable first
+evaluationDependsOn(":cli")
+
+// the staged run mirrors the shipped layout: arara.jar with rules/
+// beside it, the configuration every CTAN user receives
+val stageAraraRun = tasks.register<Sync>("stageAraraRun") {
+    dependsOn(":cli:shadowJar")
+    into(layout.buildDirectory.dir("arara-run"))
+    from(project(":cli").tasks.named("shadowJar")) { rename { "arara.jar" } }
+    // from copies directory contents, so the into wrapper recreates
+    // the folder: arara looks for rules/ beside its own jar
+    into("rules") { from("rules") }
+}
+
+// the books are typeset by arara itself: the staged jar drives
+// LuaLaTeX through the skeletons, so every release documents itself
+val typesetDocs = tasks.register("typesetDocs") {
+    dependsOn(stageAraraRun, generateVersionMacro, convertDocs, renderDiagrams)
+    val docsDir = layout.buildDirectory.dir("generated/docs")
+    val jarFile = layout.buildDirectory.file("arara-run/arara.jar")
+    outputs.files(
+        layout.buildDirectory.file("generated/docs/arara-manual.pdf"),
+        layout.buildDirectory.file("generated/docs/arara-quickstart.pdf"),
+    )
+    doLast {
+        val result = ProcessBuilder(
+            "java", "-jar", jarFile.get().asFile.absolutePath,
+            "-v", "arara-manual.tex", "arara-quickstart.tex",
+        )
+            .directory(docsDir.get().asFile)
+            .inheritIO()
+            .start()
+            .waitFor()
+        if (result != 0) {
+            throw GradleException("arara failed to typeset its own books (exit $result)")
+        }
+    }
+}
+
+// the release date rides the changelog line of the very version the
+// build carries; before that line exists — snapshots — the man page
+// falls back to today. The lookup reads the changelog through the
+// build's working directory, so the man page lambda captures nothing
+// from the script and stays configuration-cache-safe
+
+ctan {
+    // the version sentence, resolved once at configuration time: the
+    // line filters below capture this plain string instead of the
+    // extension, so the recorded operations stay cache-serializable
+    val versionSentence = "This is arara v${version.get()}."
+
+    tds {
+        doc {
+            from(typesetDocs) { include("*.pdf") }
+            // the badge row doubles as the version placeholder: the
+            // shipped copy swaps the entire line for the version
+            // sentence, so the repository keeps its badges and CTAN
+            // reads a versioned, self-contained document — the
+            // convention is that every badge lives on this one line
+            from("README.md") {
+                filterLines { line ->
+                    when {
+                        "img.shields.io" in line || "/badges/" in line -> versionSentence
+                        else -> line
+                    }
+                }
+            }
+            manPage {
+                scribeswan { version -> araraManPage(version) }
+            }
+        }
+        scripts {
+            jar(project(":cli").tasks.named("shadowJar"))
+            launcherScript()
+            into("rules") { from("rules") }
+        }
+        source {
+            zip {
+                from(
+                    "api", "core", "lua", "mvel", "cli", "buildSrc",
+                    "build.gradle.kts", "settings.gradle.kts",
+                    "gradle/libs.versions.toml", "gradlew", "gradle/wrapper",
+                )
+                exclude("**/build/**")
+            }
+        }
+    }
+    sourceZips {
+        register("docsrc") {
+            from(layout.buildDirectory.dir("generated/docs")) {
+                // the two books ride in doc/ directly; the figures in
+                // assets/ stay — they are part of the sources
+                exclude("arara-manual.pdf", "arara-quickstart.pdf")
+            }
+            stageIn.set(Stage.DOC)
+        }
+    }
+}
+
+// the docsrc zip stages a directory, and a directory input cannot
+// wire tasks by itself; depending on the typeset step covers every
+// producer in the directory — the skeleton, the conversion, the
+// figures — and guarantees the snapshot happens after the books
+tasks.named("ctanSourceZipDocsrc") {
+    dependsOn(typesetDocs)
 }
 
 // opt-in gate: run the build with -PwarningsAsErrors=true to prove that
