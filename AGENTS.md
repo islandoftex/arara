@@ -1,237 +1,458 @@
 # AGENTS.md
 
-## Project shape
+## Why this working copy exists (read first)
 
-- Kotlin Multiplatform (KMP) Gradle build, JVM-only targets. Minimum JRE 21.
-  Kotlin 2.4, configured in `gradle.properties` (`arara.jvm.target`,
-  `arara.kotlin.api`, `arara.kotlin.language`). Invalid compiler settings fail
-  during configuration rather than falling back to another target.
-- Development happens on GitLab (`gitlab.com/islandoftex/arara`); the GitHub
-  repo is a mirror. The working branch is `development` (the default, per
-  `origin/HEAD`); `master` receives releases. See README for the upstream note.
-- Subprojects declared in `settings.gradle.kts`: `api`, `core`, `lua`, `mvel`,
-  `cli`, `docs`, `smoke-tests`. `buildSrc/` holds custom Gradle tasks
-  (CTAN/TDS packaging, publication) under `org.islandoftex.arara.build`.
-- Dependency versions live in `gradle/libs.versions.toml` (the version catalog).
-  Edit versions there, not in individual `build.gradle.kts` files.
-  Modules apply Kotlin plugins through catalog aliases and declare their own
-  production/test dependencies. The root reacts to KMP plugin application to
-  configure shared compiler, test, documentation and publication conventions.
+This tree is `arara`, the TeX automation tool (Kotlin, JVM, Gradle multi-project).
+Upstream development happens on GitLab (GitHub is only a mirror). This particular
+copy carries a large, externally generated change: the YAML/MVEL rule format was
+deprecated in favour of a new Lua rule and configuration format, selectable at
+runtime via `--engine yaml|lua` (default: YAML). The change arrived untested and
+was then repaired, modernized and simplified by the tagged `oc` sequence, which
+continues past the repair: the full suite is green, the tool is smoke-verified
+end-to-end on the provisioned JRE 11, and Kotlin, Gradle, the plugins and the
+libraries are at their latest stable versions. The same sequence later re-based
+the path model on a multiplatform path algebra behind a frozen public surface,
+migrated the common-able file helpers to the same backend, and verified the
+full suite on a real Windows machine.
 
-### Module roles (dependencies, not obvious from names)
+`oc0` is the exact pre-repair baseline and every later `oc<n>` tag is one
+self-contained, verified step — diff or bisect against the tags when in doubt
+about a change.
 
-- `api` — public KMP API surfaces (`MPPPath`, `FileType`, directives,etc.). Built
-  with `explicitApi()`. Exposes Okio for scoped reads and normalized path exports.
-  MPPPath keeps native JVM path algebra/identity and instance-bound filesystem I/O;
-  derived paths retain their backend. Test injection is internal, without global state.
-  `ForeignPath` is explicit POSIX/Windows lexical algebra with no filesystem access.
-- `core` — runtime engine (configuration, file searching, rules, sessions,
-  executor). `api(project(":api"))`.
-- `mvel` — MVEL expression interpreter used by rules. JVM-only; pulls
-  `org.mvel:mvel2`, `kotaml` (the compatible Kaml fork). Interpreter-neutral rule and conditional helpers
-  live in `core.rules`; MVEL's registry binds their JVM static methods.
-  Shared configuration models live in `core.configuration`; MVEL retains the
-  YAML loader (`YamlLocalConfiguration`).
-  `MvelCommandEvaluator` supplies results and exit predicates to the CLI through
-  the engine-neutral `core.rules.CommandEvaluator` interface.
-- `lua` — Luak interpreter for project specifications and Lua rules. JVM helper
-  environments, parser, conditionals and interpolation live in `lua.rules`; the
-  CLI prefers Lua by default; `--preferred-engine` (`-e`) changes the format preference.
-  Lookup falls back within each rule directory; the resolved rule determines expression syntax. Common-code rule value
-  and session adapters live in `lua.rules`. Paths and commands cross as userdata.
-  Lua configuration uses `lua.configuration.LuaLocalConfiguration`. Configuration
-  and project scripts share fresh `user`/`cwd` globals; config lookup is local
-  before global, Lua before YAML within a directory, independently of `--preferred-engine`.
-  Integer helper arguments require 32-bit values; Longs must be exactly
-  representable in Luak.
-- `cli` — the actual application; entrypoint is
-  `org.islandoftex.arara.cli.CLIKt` (`cli/src/jvmMain/.../CLI.kt`). Produces the
-  shaded `arara-cli-with-deps-*.jar` via the `shadowJar` task. Depends on
-  `core`, `lua`, `mvel`, `clikt`, `log4j`.
-- `docs` — builds the manual/quickstart PDFs from the rendered website HTML
-  (see "Documentation" below).
-- `smoke-tests` — standalone Kotlin runner for packaged-application checks;
-  uses `api` for paths and is not published.
-- `rules/` — built-in YAML rule definitions shipped with the distribution
-  (74 files like `arara-rule-pdflatex.yaml`). These are data, not Kotlin.
+Source code comments describe what the code does and why — they never
+reference the `oc` tags, file names, or line numbers.
 
-Kotaml handles all YAML parsing: rules, configuration, file databases and directive
-parameters. Directive conversion preserves quoted strings and uses conservative
-boolean and decimal numeric conversion for plain scalars.
+## Known issues (verified 2026-09-19; resolved during oc1..oc5)
 
-## Generated / gitignored files — do not edit by hand
+- ~~The build configures but does not compile~~ — fixed in `oc3`: the
+  KMP migration had dropped documented parameter defaults
+  (`MPPPath.writeText`, `Session.updateEnvironmentVariables`); they are
+  restored.
+- ~~Stale `src/jvmTest` paths in tests~~ — fixed in `oc4`: ExecutionTest,
+  InterpreterTest and PropertiesTest now point at `src/test/resources`.
+- ~~The test suite has never passed~~ — fixed in `oc5`: the full suite is
+  green (from a clean build). The single remaining failure was a
+  machine-dependent assertion in `LuaLocalConfigurationTest` that assumed
+  `MPPPath.toString()` keeps relative paths (it does not — see the
+  `providedPath`/`referencePath` duality in `MPPPath`).
 
-- `api/src/jvmMain/kotlin/org/islandoftex/arara/api/AraraAPI.kt` is **generated**
-  by the `:api:createAraraAPIObject` Gradle task (writes the current
-  `project.version` into `AraraAPI.version`). It is matched by `.gitignore`
-  (`api/src/**/AraraAPI.kt`). Never edit or commit it; run the task instead.
-- `docs/**/version.txt` is written by `:docs:writeVersionFile`, also gitignored.
-- `website/public/`, `result/` (Nix), and `**/build/*` are gitignored; the only
-  `build/` directories tracked are under `buildSrc/src/**/build/*`.
-- `website/themes/devlab-theme` is a pinned submodule; CI checks it out recursively.
-  Keep its commit in sync with the `devlab-theme` flake input.
-  `:docs:prepareWebsite` stages legacy shortcodes without editing sources.
+Remaining caveat: none — both engines and the Lua project pipeline are
+smoke-verified end-to-end by the generated suite behind `./gradlew smoke`
+(the codified successor of the oc7/oc45 scratch matrix and its script-era
+form): one command that builds the runnable jar, renders the scenario
+definitions of the helper build into runner files for bats, provisions the
+scratch matrix in `/tmp/arara-smoke` from the repository fixtures and the
+scenario content authored in the helper build's table, and runs the full
+scenario set twice
+— once on the underlying JVM and once on the floor runtime named by the
+smoke properties, resolved through the toolchain service and skipped
+loudly when absent. The scenarios cover both engines (the
+simple directive pipeline, the engine happy paths, conditionals in both
+dialects — including a wrongly typed conditional probe — sessions in
+both engines, engine options with a staged application rule, the
+project specification flow resolved through its Lua configuration,
+a plain Lua file run as an ordinary input through its configured
+file type, project specifications merged from several files with a
+cross-file dependency ordering the run, and a specification mixed
+with loose input files riding as the anonymous project,
+the safe mode rejection of unsafe helper calls, the configured
+preamble flow, multiple files as arguments and through the directive
+file replication, whole-file extraction beyond the header, call
+parameters reaching the rules, the dry run mode, the localized
+labels, the loop cap through the command line, the halt
+directive's error exit and its succeeding escape - the halted file
+ends, the run proceeds past it, and the request dies with the
+file's own end - the halt's requested status reaching the process
+unchanged, dispatch by file extension including its
+rejection path, and a file-database double run in both a TeX and a
+TeX-free shape asserting the record-and-skip semantics of `changed`,
+plus a run behind the log flag asserting the engine, the exit value
+and the YAML deprecation warning recorded in the log file, the
+rejection of the deprecated orb tag syntax under the Lua engine, a
+run configured through a Lua configuration file whose paths are
+computed from the values in scope, the missing-rule error naming the
+file in the engine's own format, the snake_case helper spellings
+through a local Lua rule, the configuration precedence when both
+formats are present with the YAML one winning, and the Lua
+configuration honored under the default engine, the console mode
+surface - the flag's explicit plain run, the configuration key
+selecting the console with the log stating a silent tool, the
+unoffered-mode errors of both the configuration and the command
+line, the styled presentation under a captured stream asserting the
+degraded structure with its closing verdict and summary, the styled
+dry run verdict without a table, the failed task quoting its own
+output with the log keeping the full record, and the log parity
+between the plain and the styled presentations, the session's
+mutation trail in the log, the shell completion and the version
+line through the runnable jar, the command line timeout aborting
+a slow command, the logname configuration key renaming the log, a
+project specification running from its own subdirectory through
+its own configuration, a custom file type through the Lua
+configuration, the file database carrying the record-and-skip
+semantics under its configured name, and call parameters reaching
+the rules through the command line flag)
+and the real TeX toolchain (the official `pdflatex` rule through both
+dialects). The historical scenarios the compact matrix once dropped are
+restored to the end-to-end set; the remaining fixture shapes stay with
+the automated `ExecutionTest` suite, driven from the same fixtures.
 
-## Common developer commands
+The full suite is also verified on a real Windows machine. When
+replicating there, clone with `git clone --config core.autocrlf=true`,
+then set `git config core.autocrlf false` and `git config core.eol lf`
+inside the clone before running anything — the formatter expects the
+working copy exactly as committed — then run the same gates. The
+functional suite runs through the bash of Git for Windows, which its
+tool probes already require; bats-core must be visible to `which
+bats` inside that shell (or `SMOKE_BATS` points at it), plus a TeX
+distribution for the three typesetting scenarios. Absent tools skip
+loudly. The runnable jar is
+`arara-cli-with-deps-<version>.jar`; the bare module jar next to it
+carries no dependencies.
 
-Run from the repo root with `./gradlew`. Current Gradle plugins require
-JDK 17+ to build; the Nix development shell supplies JDK 21. The application
-targets JRE 21.
+## Commands
 
-Add `-PwarningsAsErrors=true` to reject Kotlin compiler warnings in application
-and test compilations, including the smoke-test runner. CI enables this check.
-Detekt parses sources against the configured `arara.jvm.target`.
+Gradle 9.8.1 wrapper, Kotlin 2.4.21. Compatibility targets live in root
+`gradle.properties` (`arara.jvm.target=11`, `arara.kotlin.target=2.4.0`) and
+are enforced by the tapmoc plugin — no toolchains are configured, so whatever
+JVM drives the build compiles release-11 bytecode, with the JDK 11 API
+surface compile-checked as well. Driving the build with a
+bleeding-edge JDK the Kotlin plugin does not support yet makes it
+fall back to the newest supported target in `buildSrc` — the only
+compilation surface tapmoc does not govern — with a harmless
+Java/Kotlin target mismatch warning; switch the shell back to a
+supported JVM and the noise disappears. The foojay resolver in `settings.gradle.kts`
+remains solely to provision the smoke suite's floor runtime through the
+`printSmokeJavaRuntime` task (driven by `smoke.jvm.version`, with a
+loud notice whenever the smoke floor differs from the build floor).
 
-- `./gradlew build` — compile + `jvmTest` for all subprojects.
-- `./gradlew allTests` — run all KMP tests (this is what CI runs).
-  Use `-PtestJavaVersion=25` to run test workers on Java 25. The Foojay
-  resolver provisions missing toolchains outside Nix; GitLab jobs supply their
-  selected runtime directly and cache the Java 21 compiler toolchain for Java 25 jobs.
-- `./gradlew processSmoke` — test the runnable jar with a JDK 21+, without TeX.
-  Select another runtime with `-PsmokeJava=/path/to/java`. JUnit output goes to
-  `build/test-results/processSmoke/results.xml`; see `smoke-tests/README.md`.
-- `nix develop .#texIntegration -c ./gradlew texIntegration` — test official rules
-  against real TeX Live tools in both engines. Reports are under
-  `build/test-results/texIntegration`; fixtures and tool output remain in
-  `build/texIntegration`. Missing tools fail the suite.
-- `./gradlew :cli:test` or `./gradlew :core:jvmTest` — tests for one subproject.
-  Single test class: `./gradlew :core:jvmTest --tests "fully.qualified.ClassName"
-  --tests "*PartialName*"`.
-- `./gradlew :cli:shadowJar` — produces `cli/build/libs/arara-cli-with-deps-*.jar`,
-  the runnable distribution artifact. `:cli:assembleDist` depends on it and also
-  emits the `cli/build/distributions/*.zip`.
-- `./gradlew :cli:jvmJar` / `:cli:installDist` — application distribution.
+- `./gradlew :cli:run` — run arara from sources (entry point
+  `org.islandoftex.arara.cli.CLIKt`).
+- `./gradlew :cli:shadowJar` — runnable fat jar at
+  `cli/build/libs/arara-cli-with-deps-<version>.jar`; `:cli:build` includes it.
+- `./gradlew test` — all tests (JUnit Platform; tests are written in kotlin.test).
+  Single class:
+  `./gradlew :cli:test --tests "org.islandoftex.arara.cli.execution.ExecutionTest"`.
+- `./gradlew detekt` — root task linting every module's main sources
+  (`detekt-config.yml`; test sources are excluded). The lint tolerates zero
+  findings: the three former informational ones were retired — two with real
+  fixes in shape, one with a justified suppression at its declaration — and
+  the configuration now fails the build on any new occurrence.
+- `./gradlew spotlessCheck` / `spotlessApply` — enforced formatting: every
+  Kotlin file needs the `// SPDX-License-Identifier: BSD-3-Clause` header,
+  and files in `rules/` carry their own YAML/Lua headers. Both rule sets
+  are converter-generated artifacts, so their formatting steps
+  (`spotlessYamlRules*`, `spotlessLuaRules*`) are disabled unless
+  `-PvalidateYamlRules=true` / `-PvalidateLuaRules=true`.
+- `./gradlew dependencyUpdates` — dependency upgrade report (pre-release
+  versions filtered out).
+- `./gradlew smoke` — the end-to-end smoke suite: builds the runnable jar
+  and the generated bats scenario files, provisions the scratch matrix from
+  the repository fixtures, and runs every scenario on the underlying JVM and
+  on the floor runtime named by the smoke properties. Requires bats-core and
+  git on the path (or `SMOKE_BATS`); scenarios whose tools are absent skip
+  loudly, and `-Psmoke.strict=true` escalates every skip into a failure.
+  Per-leg TAP reports land in `build/reports/smoke/`.
+- `./gradlew koverHtmlReport` — aggregated coverage report across all five
+  modules (`build/reports/kover/html`; `koverXmlReport` for machine-readable
+  numbers, `koverLog` for a console summary). `koverVerify` enforces the
+  coverage floors in two tiers: the aggregate bound at the root guards
+  the merged truth of all tests across all modules, and each module's
+  own floor guards its own suite - the module reports see only their
+  own tests, so the classes of `api` and `core` show most of their
+  coverage through other modules' suites while their floors keep watch
+  over their own. Every floor sits below its measured baseline so
+  ordinary churn passes while a coverage regression fails the gate. The
+  baseline is honest, not padded: what it excludes cannot be covered
+  meaningfully — the interactive dialog surface, which lives with
+  the CLI's dialog renderer, no longer needs an exclusion: its
+  blocks render and its choices re-prompt under redirected streams
+  in the CLI suite, so the dialogs are tested whole, leaving only
+  the human typing itself uncovered; logging
+  supplier bodies (no backend is configured in tests, by design),
+  unreachable defensive arms, JVM bridge glue, and the `main` entry
+  point, which is filtered out of the reports and exercised for real
+  by the generated smoke suite through the runnable jar. Kover rides
+  0.9.11: upstream closed its configuration-cache zeroing (the api
+  floor once reported zero lines) by reverting the change that caused
+  it, not by fixing it, so any future release that lands
+  task-outcome logic again must be re-verified on both a fresh and a
+  reused configuration cache entry before adoption. The floors are
+  deliberately hard-coded in the build files rather than read from
+  `gradle.properties`: a gate moves only through a commit, never
+  through a command line `-P` override of a property.
+- `./gradlew updateHeaders` — refreshes the copyright year intervals in the
+  license, the YAML rules and the Lua rules to the current year. Run it on
+  demand when the year rolls over.
+- `./gradlew -PwarningsAsErrors=true test detekt spotlessCheck changelogCheck
+  koverVerify koverXmlReport :dokkaGeneratePublicationHtml` —
+  the strict gate proving the tree compiles without a single Kotlin warning
+  and holds its coverage floors; the coverage report regenerates with every
+  gate so the on-disk truth never goes stale, and the documentation
+  generation joins the gate and fails on any documentation warning.
+- The project **version is derived from `CHANGELOG.md`** by the
+  spotless-changelog plugin — do not hardcode it anywhere. `changelogPrint`
+  shows the mapping and `changelogCheck` gates it against the changelog
+  conventions; a breaking entry bumps the major — recognized by the phrase
+  `breaking change` in any of its spellings or by the bold
+  `**Breaking:**` marker of the current changelog convention.
+- Two spotless-changelog properties carry the release flow: without
+  `-Prelease=true` every build appends `-SNAPSHOT` to the derived version,
+  and an empty `[Unreleased]` section collapses the derived version onto
+  the changelog's own latest release instead of computing a bump. A
+  release is therefore declared by the promoted changelog in the
+  repository: the promotion — a fresh `[Unreleased]` heading above the
+  new release section — and the tag on the promoted master are human
+  acts, while CI never touches the changelog and only builds, running
+  `publish -Prelease=true` at the tag to ship the stable version the
+  promoted section names; plain pushes produce the `-SNAPSHOT` artifact.
+  The solstice plugin provides the promotion step: run its
+  `promoteChangelog` by hand to promote the unreleased section and
+  rewrite the diff-comparison links the promotion leaves behind.
+- The former packaging tasks (`roast`, `assembleCTAN*`, `assembleTDS*`, the
+  `docs` Gradle module, and the old PDF toolchain that scraped the rendered
+  website) were removed from the build and the tree. The manual now lives as
+  Markdown sources in `docs/`, and the LaTeX generation pipeline is in place:
+  `convertDocs` converts every chapter through CoralMark (the front matter
+  names the book's chapters, code fences ride listings, the mermaid fences
+  are extracted, the devlab callout components render as tinted boxes, the
+  GFM tables keep their mixed content, and every prose character LaTeX would
+  misread is escaped), `generateVersionMacro` writes the version the
+  changelog derives, and `renderDiagrams` draws the extracted mermaid sources
+  through a Kroki endpoint — the `arara.docs.kroki` property points at it —
+  into vector figures the conditional includes place in the books; a figure
+  that has not been rendered yet compiles to a visible box naming the
+  render command, so the books always build, never silently missing art.
+  The fence in each chapter remains the single source of truth and the
+  rendered figures are never committed. The typeset step runs
+  outside Gradle, wherever a TeX distribution lives:
+  `latexmk -pdf -interaction=nonstopmode arara-manual.tex arara-quickstart.tex
+  && latexmk -c arara-manual.tex arara-quickstart.tex` in
+  `build/generated/docs/` builds the two books — the reference guide and the
+  standalone quickstart, both with their covers — and cleans the LaTeX
+  intermediates, keeping the PDFs and the sources. Static art (the logo, the
+  cover) is committed under `docs/tex/assets/`; the covers pick the logo up
+  the moment it lands there and compile clean without it. The removed
+  machinery remains recoverable from the `oc247` tag.
+- Refreshing the diagram checkpoint needs a Kroki pair, and the public
+  service has proven unreliable for mermaid. Run one locally with podman
+  (two containers, one private network, the main delegating mermaid to
+  the companion by host name):
+  `podman network create kroki-net`, then
+  `podman run -d --name kroki-mermaid --network kroki-net -e
+  KROKI_MERMAID_HOST=0.0.0.0 -e KROKI_MERMAID_PORT=8000
+  yuzutech/kroki-mermaid`, then
+  `podman run -d --name kroki --network kroki-net -p 8000:8000 -e
+  KROKI_MERMAID_HOST=kroki-mermaid -e KROKI_MERMAID_PORT=8002
+  yuzutech/kroki`, and finally
+  `./gradlew renderDiagrams -Parara.docs.kroki=http://localhost:8000`.
+  One asymmetry cost an evening once: the companion *declares* port 8000
+  through its own variables, but the main container *connects* on 8002 —
+  the two sides read the same-named variables with different meanings.
+  The books compile without the pair — unrendered figures arrive as
+  visible boxes naming the render command — and CI runs its own
+  throwaway pair as job services instead.
 
-### Required verification order (matches CI)
+## Layout and architecture
 
-CI (`testtemplate` in `.gitlab-ci.yml`) runs `./gradlew allTests` **then**
-`./gradlew detekt` as separate jobs, and `spotlessCheck` is its own job. The
-full local pre-push sequence is:
+Dependency chain: `api` → `core` → (`mvel`, `lua`) → `cli`.
+`docs` holds the manual as Markdown sources plus the hand-written LaTeX
+skeleton; `buildSrc` holds the publication
+logic (the four library modules alone — the CLI application ships only
+as the runnable jar).
 
-```
-./gradlew spotlessCheck detekt allTests
-```
+- `api` — the public, stable interface. Builds with `explicitApi()`, so
+  public members must be explicitly `public`. **`api/.../AraraAPI.kt` is
+  generated** at configuration time (it embeds the project version);
+  never edit it by hand. The generation stays at configuration time on
+  purpose: every reader of the module's sources - the compiler, the
+  linter, the formatter, the documentation generator - sees the file
+  without a single ordering wire, and no reader can race a write it
+  never observes; an execution-time write was tried once and raced all
+  three readers at once. The project version is a watched
+  configuration input, so a version bump always refreshes the file,
+  and the tracked copy stays an honest diff of every bump.
+- `core` — implementations: linear executor/session, file handling, the
+  file database (`arara.db`, an internal machine-owned cache in a
+  private record format), localization (the
+  `AraraMessages` interface: typed members per message, one
+  implementation object per locale, compile-enforced completeness —
+  a locale missing a message fails the build; `MPPLocale` is the only
+  localization type left in `api`).
+- `mvel` — legacy YAML rule + config parsing (kotaml, the supported fork of the
+  archived kaml; the fork keeps the original `com.charleskorn.kaml` package),
+  plus MVEL **directive
+  conditionals** which are *not* deprecated and must survive the YAML removal.
+- `lua` — new Lua rule + config parsers (LuaJ fork `io.github.taoguan:luaj`).
+  The shared helpers live in `core` (`core/…/rules/RuleMethods`,
+  `core/…/rules/ConditionalMethods`) and the configuration model in
+  `core/…/configuration/`; the module no longer depends on `mvel` at all.
+  Every helper is bound under both spellings: the historic camelCase name
+  of the shared vocabulary and its mechanically derived snake_case alias,
+  the Lua-idiomatic form the official rules ship in — each spelling
+  reports its own name in argument errors, the camelCase forms retire
+  together with the deprecated engine (the removal playbook schedules
+  it), and a completeness test walks each environment's globals so a
+  helper registered without its alias fails the gate.
+- `cli` — the application: directive parsing, rule dispatch by file extension
+  (`.yaml` → mvel parser with a one-time deprecation warning, `.lua` →
+  `LuaRuleParser`), configuration file lookup (YAML names first, then Lua;
+  Lua configuration scripts run with `user` — `home`, `name` — and `cwd`
+  in scope, so they compute paths in plain Lua and no placeholder
+  expansion applies to them),
+  the console renderer seam (the display facade routes every call
+  site to the renderer resolved at startup and to the run log that
+  writes the display-side log entries; the plain renderer keeps
+  the historic silhouette, refreshed in place - the banner names
+  the run with the shared version line, the error block titles
+  its section on the dashed rule and the run closes with the
+  verdict word - and the run log's
+  display-side entries hold no console knowledge, so they record
+  the same lines whichever console rendered the run, while the
+  provenance line at the mode application names the presentation
+  - plain, styled, or styled degraded by an undecorated stream - the
+  way the engine line names the engine),
+  the dialog contract (core defines the semantics and ships the
+  headless default that assumes no interactive surface; the
+  application wires its implementation - the CLI wires the classic
+  terminal dialogs for the plain presentation and the type-tinted
+  dialog boxes for the styled one, both sharing the reading
+  semantics, and they stay available in every execution mode,
+  since a dialog is a conversation with the person who runs the
+  tool),
+  the console mode surface (the `-c`/`--console` flag and the
+  `console`
+  configuration key, in both formats, resolved as command line over
+  configuration over the plain default; `plain` (the default, the
+  historic silhouette with its banner naming the run, its error
+  sections titled and its closing verdict) and `styled` (the modern
+  presentation on the
+  terminal library the help output already renders through,
+  degrading to the ASCII structure when the stream cannot carry
+  colors or glyphs, and closing a run with a verdict line and a
+  summary table naming each file, its task count, its time and its
+  status; a verbose styled run shows the command it executes, frames
+  the tool's own output with dotted rules and names the
+  conditionally skipped directives; a failed task quotes the tail
+  of its own output in the dim bar panel, with the full record in
+  the log) are the offered modes, and an
+  unoffered name is an error rather than a silent fallback.
+  On Windows, the console landscape has two color systems: the
+  legacy console API every host accepts, and VT sequences, which
+  a program must opt into per process (`SetConsoleMode` with
+  `ENABLE_VIRTUAL_TERMINAL_PROCESSING`) before the console agrees
+  to interpret them. arara does not flip that bit: mordant probes
+  the console honestly, so a legacy conhost gets the degraded
+  form by design, ConPTY hosts (Windows Terminal, mintty) render
+  the full presentation, and a terminal that claims colors it
+  cannot process - bash inside a legacy console inherits a
+  lying `TERM` - garbles every ANSI byte it receives, arara's
+  own help included. The live feedback is gated the same way: it
+  requires the user's blessing, the escape vocabulary and a
+  live terminal, so a legacy console never sees a frame. The
+  JVM compounds the platform's quirks with one of its own: the
+  standard streams encode with the legacy codepage on Windows,
+  so the glyph vocabulary reached a mintty as question marks
+  whatever the font - and the modern mintty bridges native
+  programs onto a console, so the claim arrives console-
+  attached, not piped. The streams now speak UTF-8 behind a
+  Windows terminal claim: a pty keeps the pure rewrap, a
+  console additionally borrows the console's output codepage
+  and returns it at exit, and a refused borrow changes
+  nothing at all. The
+  glyph vocabulary wants a modern font - Consolas lacks the
+  check, the cross and the braille frames, Cascadia Mono and
+  DejaVu Sans Mono carry them all - and the
+  `VirtualTerminalLevel` registry key is the user-side escape
+  hatch for making conhost process VT for every program.
+  The clikt command line, and the shadow jar. **Directive conditionals
+  (`if`/`while`/`until`/`unless`) and interpolation in directive
+  `options` follow the engine too**: `--engine lua` evaluates conditionals
+  and interpolates `{{ … }}` tags as Lua (`LuaConditionalEvaluator` /
+  `LuaInterpolation`, strict boolean, same helper registry as the MVEL
+  dialect; the `@{ … }` orb tags of the deprecated YAML engine are
+  rejected with a hint); the default engine keeps MVEL orb tags.
+  Single-call conditions are valid in both dialects; compound ones differ
+  (`&&`/`||`/`!` vs `and`/`or`/`not`). The Lua helper boundary is
+  typed: helper arguments must match the declared type and mismatches
+  raise Lua-style `bad argument #<n> to '<helper>'` errors — Lua's
+  implicit coercions apply to operators, not to arara's library
+  functions (convert with `tostring`/`tonumber`; interpolation and flag
+  results still stringify by design). The Lua helpers follow a
+  doctrine: they act, or return Lua values — booleans, strings,
+  tables — and imperative work is a free function
+  (`create_directories`), never a method on an object; JVM objects
+  cross the boundary only as opaque handles that other helpers
+  accept (`to_file` and `current_file` yield a path handle,
+  `get_command` a command handle that
+  `unsafely_execute_system_command` consumes), and every
+  path-taking helper answers both a string and a handle;
+  overloading is runtime argument-type dispatch —
+  `exists('log')` reads the string as an extension of the current
+  file, `exists(to_file('log.txt'))` as the literal file — the
+  same device Lua's own library functions use. The original
+  reference yields the path string in rule expressions (the shape
+  the shipped clean, copy and move rules compare) and the path
+  handle in conditionals; both faces are design. Log lines are always English,
+  hardcoded at their sites — the log file is a shared diagnostic
+  artifact, so it reads the same in every language; the console stays
+  localized. Exception messages are the one accepted deviation: they
+  log as thrown, in the session language, and giving them English
+  twins is future work.
+- `MPPPath` (in `api`) is a sharp edge: it carries **two** paths —
+  `providedPath` (exactly what the caller wrote; backs `isAbsolute`,
+  `startsWith`, `resolve`) and `referencePath` (absolutized and normalized;
+  backs `toString`, I/O, and **equality**). `MPPPath("a") ==
+  MPPPath("/abs/cwd/a")` is true. Never assume identity semantics.
+  Internally the model runs on a multiplatform path algebra, with the JVM
+  bridges kept as the frozen escape hatch; metadata queries follow symlink
+  chains (the backend reads them without following), and on Windows,
+  drive-prefixed and UNC spellings written with forward slashes are
+  re-spelled before parsing so they keep their Windows shape.
+- `rules/` — every official rule ships in **both** formats
+  (`arara-rule-*.yaml` + `.lua` twins). A test in the `lua` module parses
+  every shipped Lua rule through the real parser, so the whole ruleset is
+  structure-validated in every gate.
 
-`processSmoke` is a separate CI gate: GitLab tests Java 21/25; the GitHub
-mirror tests Java 21 on Linux/macOS/Windows. Run it after the sequence above
-when changing runtime behavior or packaging. It builds its own runnable jar.
+## The YAML deprecation — traps that are easy to miss
 
-Run them in that order; `detekt` and `spotlessCheck` are cheap and fail fast on
-style issues that are noisy to fix after writing a lot of code.
+`ROADMAP.md` is the authoritative removal playbook (phases, keep/remove lists,
+grep checklist). Read it before touching anything YAML/MVEL. Note:
+**one YAML library (kotaml) with surfaces of opposite fate** — rules/config
+die with the YAML format removal; directive parameters stay, and the
+file database already left YAML for a private record format and the
+name `arara.db`.
 
-`./gradlew checkRuntimeDependencies` checks the CLI's external runtime dependency
-bytecode against `arara.jvm.target`, including JNA and the active multi-release JAR
-entries. It runs in CI and `:cli:check`. This detects newer class-file requirements
-and preview classes, not references to newer JDK APIs; runtime tests remain necessary.
-The report is under `build/reports/runtime-dependencies`.
+- `kotaml` (`io.heapy.kotaml`, imports read `com.charleskorn.kaml`) — the
+  single YAML parser. In the mvel module it parses the deprecated *rules* and
+  *config files* (removed together with them); in cli it parses *directive
+  parameters* (`% arara: pdflatex: { shell: yes }`, via `parseToYamlNode` +
+  `YamlNodeConversion`) — which **stays**: directive syntax is YAML by
+  specification and is not deprecated. In core, the deprecated YAML
+  configuration model keeps the dependency until the removal takes it;
+  the file database no longer parses YAML. Same for
+  MVEL conditionals
+  (`% arara: pdflatex if found('log', '!')`).
 
-`./gradlew koverHtmlReport koverXmlReport` produces aggregate coverage reports
-under `build/reports/kover`. Module tasks such as `:core:koverHtmlReport` measure
-that module's own tests; the root report merges execution across module boundaries.
-Packaged subprocess smoke checks are verified separately and do not contribute to
-these reports. Reports include all production classes. `./gradlew koverVerify`
-checks the aggregate floors (90% lines, 70% branches) and module line floors
-(api/core 80%, lua 73%, mvel 79%, cli 90%). GitLab runs this separately on both
-supported test runtimes and retains HTML/XML reports for one week.
+## Testing quirks
 
-### Lint / format (non-obvious)
-
-- **Spotless** (`build.gradle.kts`, root): applies `licenseHeader
-  ("// SPDX-License-Identifier: BSD-3-Clause")` to all `*.kt` in the listed
-  source roots. Every new Kotlin file MUST start with that exact header, or
-  `spotlessCheck` fails. Ktlint enforces only import ordering, with a single
-  alphabetical group; its other rules remain disabled. Spotless also trims trailing
-  whitespace, converts leading tabs and enforces final newlines. Gradle Kotlin DSL
-  files use the same import/whitespace rules (no license header there). Shipped YAML
-  and Lua rules have standard headers and whitespace checks; existing years are preserved.
-- **detekt** config is `detekt-config.yml`; `maxIssues: 20` is allowed (not
-  zero), so a green build does not mean zero findings. Notable active rules:
-  `MaxLineLength` 120, `MagicNumber` (ignored in tests), `ForbiddenComment`
-  rejects `TODO:`, `FIXME:`, `STOPSHIP:`, `WildcardImport` (except
-  `java.util.*`). Tests are excluded from many rules.
-- `.editorconfig`: 4-space indent, LF, UTF-8; Kotlin files end with newline.
-  YAML/shell use 2-space indent.
-
-### pre-commit
-
-`.pre-commit-config.yaml` wires standard hooks plus `forbid-tabs`/`forbid-crlf`
-and `nixpkgs-fmt` for `.nix` files. The `gradle-task` hook for `spotlessCheck`
-is configured with `types: [rust]` (so it does not actually trigger on Kotlin
-by default) — do not rely on it; run `./gradlew spotlessCheck` manually.
-
-## Documentation build
-
-Run `nix develop -c ./gradlew :docs:buildDocs` to build the website and PDFs;
-`assembleCTAN` includes this step. Zola and WeasyPrint come from the dev shell.
-`:docs:buildWebsite` writes `website/public`; staging and book HTML go under
-`docs/build`. Remove any old Nix-store symlink at `website/public` first.
-
-The Kotlin helpers in `buildSrc` extract `data-arara-document-*` regions and
-validate local assets. `./gradlew -p buildSrc check` runs their regression
-checks. `nix build .#website` compiles the same helpers and runs the same checks
-without downloading Gradle dependencies.
-
-`./gradlew dokkaGeneratePublicationHtml` builds the combined API reference in
-`build/dokka/html`. Every application module and the combined publication reject
-Dokka warnings, including undocumented public declarations and unresolved KDoc links. Maven publications carry Kotlin sources and
-HTML API reference jars (the `javadoc` classifier).
-`./gradlew checkPublications` checks staged Maven artifacts and uses Gradle TestKit
-to build and run an independent Kotlin consumer of core and its transitive API
-on Java 21. Artifacts are under `build/publication-check/repository`.
-
-## Release / packaging
-
-- Versioning is driven by `spotlessChangelog` from `CHANGELOG.md` (`tagPrefix
-  "v"`, release branch `master`, commit message `Release v{{version}}`).
-  `./gradlew` resolves `version = spotlessChangelog.versionNext`. Add a
-  `breaking change` marker in the changelog to bump major; see
-  `build.gradle.kts`.
-- CTAN/TDS artifacts use native `Sync` and `Zip` tasks registered by
-  `AraraPackaging` in `buildSrc`. `./gradlew assembleCTAN` builds the shaded jar,
-  PDFs, source archives, TDS tree and CTAN tree. Existing archive names remain
-  under `build/`. `-PpackagingDate=YYYY-MM-DD` fixes the man-page date for
-  reproducible builds; the default is the current UTC date.
-  Use `-Prelease=true` for a release build (CI sets `PRELEASE`).
-- Publishing to the GitLab Maven registry uses `-PjobToken=...` or the
-  `CI_JOB_TOKEN` environment variable. Local builds do not require credentials.
-
-## Nix
-
-`flake.nix` exposes `.#website` (the Zola site) and an independent default
-development shell. `nix develop` supplies `corretto21`, `jdk25`,
-`weasyprint`, `zola`, `zip`, and `nixpkgs-fmt` for development and documentation
-builds. Gradle runs on JDK 21; all application modules compile with the JDK 21 toolchain.
-The shell registers both Nix JDK homes explicitly and disables automatic
-JDK discovery/downloads, since generic Linux JDKs cannot run in the Nix CI
-image. Existing `GRADLE_OPTS` settings are preserved.
-Run application builds with `nix develop -c ./gradlew :cli:shadowJar`.
-There is no Nix application package or gradle2nix artifact lock to maintain.
-
-Keep `flake.lock` committed to pin the Nix tools; update it deliberately with
-`nix flake update`. Application dependencies remain in the Gradle version
-catalog and build scripts. `nixpkgs-fmt` formats `.nix` files (also enforced
-by pre-commit).
-
-## Conventions that differ from defaults
-
-- Application-owned Lua validation and helper diagnostics use the selected
-  message catalog. Keep field names, Lua type names and script-supplied errors
-  literal. The complete `AraraMessages` interface and locale objects live in
-  `core` common code; parameterized messages use named, typed functions.
-
-
-- Prefer `MPPPath` for IO. Use `java.nio.file.Path` when `MPPPath` lacks the
-  required operation, and `java.io.File` only when neither is suitable.
-- License header `// SPDX-License-Identifier: BSD-3-Clause` is mandatory on
-  every `.kt` (enforced by Spotless). Missing it is the most common failure for
-  new files.
-- Code uses tabs → spaces conversion at the Spotless stage; write with either
-  but the canonical form is 4 spaces (`.editorconfig`).
-- KMP `expect`/`actual` classes are enabled via `-Xexpect-actual-classes` in
-  `api` and `core`.
-- Several `@OptIn` annotations are project-wide
-  (`ExperimentalTime`, `RequiresOptIn`,
-  `ExperimentalUnsignedTypes`) — configured per-source-set in each module's
-  `build.gradle.kts`; you usually do not need to add them at call sites.
-- Tests use Kotest (`kotest-runner-junit5-jvm`, 6.2.6) in `core`, `mvel`,
-  `cli`; `lua` uses plain `kotlin("test-common")`.
+- The end-to-end suite is fixture-driven:
+  `cli/src/test/resources/executiontests/<scenario>/` (YAML rules + config per
+  scenario), driven by the `ExecutionTest` suite. Fixture paths
+  in tests are relative to the `cli/` module directory. The `lua-engine*`
+  scenarios plus `LuaExecutionTest` run the same pipeline with
+  `RuleEngine.current` flipped to the Lua engine (covering sessions and
+  wrongly typed conditional helper calls as well), so both engines have
+  automated end-to-end coverage. Tests of engine-independent logic -
+  the halt machinery, the exit codes, the failure bookkeeping, the
+  session plumbing - run their scenario through both engines, so a
+  divergence in what either dialect feeds the shared machinery fails
+  the gate; engine-specific machinery keeps its single-engine suites,
+  and the mirrored end-to-end suites own the scenario level.
+- Root `gradle.properties` also drives the build: `arara.jvm.target` and
+  `arara.kotlin.target` (the compatibility levels the tapmoc plugin
+  enforces) and `arara.pinned` (the modules whose versions the plugin
+  manages, so the upgrade report rejects their suggestions); the
+  version catalog is `gradle/libs.versions.toml`.
+- Git history starts at the `oc0` tag (the pristine baseline); every later
+  `oc<n>` tag marks one verified repair/modernization step, so regressions can
+  be bisected by tags.
