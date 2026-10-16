@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
-import org.islandoftex.arara.build.araraManPage
-import org.islandoftex.leopack.Stage
-import org.islandoftex.leopack.scribeswan.scribeswan
+import com.gradleup.tapmoc.TapmocExtension
 import io.gitlab.arturbosch.detekt.Detekt
 import java.io.File
 import org.gradle.api.Action
@@ -20,12 +18,14 @@ import org.islandoftex.arara.build.DocsConversion
 import org.islandoftex.arara.build.GenerateSmokeBats
 import org.islandoftex.arara.build.PrintSmokeJavaRuntime
 import org.islandoftex.arara.build.RunSmokeBats
+import org.islandoftex.arara.build.araraManPage
 import org.islandoftex.chronoheader.ChronoField
+import org.islandoftex.leopack.Stage
+import org.islandoftex.leopack.scribeswan.scribeswan
 import org.jetbrains.dokka.gradle.DokkaExtension
 import org.jetbrains.dokka.gradle.engine.plugins.DokkaHtmlPluginParameters
 import org.jetbrains.dokka.gradle.tasks.DokkaGeneratePublicationTask
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
-import tapmoc.TapmocExtension
 
 // resolves plugin ids from the version catalog, so the ids live in one
 // place only; reacting to a plugin by its catalog-declared id can never
@@ -643,15 +643,15 @@ subprojects {
     }
 
     // the compatibility plugin derives every compiler flag from the two
-    // target keys; the dependency check stays off because the current
-    // stable release misreads module descriptors as bytecode violations —
-    // once the fix ships in a newer stable release, add checkDependencies()
-    // here and the gates take the floor verification over from the smoke's
-    // Java 11 leg
+    // target keys, and the dependency check keeps every dependency's
+    // bytecode at or below the floor, so a library that quietly requires
+    // a newer runtime fails the gates by name instead of breaking the
+    // Java 11 promise in the field
     plugins.withId(pluginId("tapmoc")) {
         configure<TapmocExtension> {
             java(targetJvm)
             kotlin(targetKotlin)
+            checkDependencies()
         }
     }
 
