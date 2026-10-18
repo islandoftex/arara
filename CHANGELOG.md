@@ -28,6 +28,15 @@ on.
 
 ### Fixed
 
+* `buildString` joins the supplied values rather than an array identity, and
+  `writeToFile` reports path/I/O failures as false as documented.
+* Safe mode rejects class-loading helpers. Loaded archives use private copies
+  so replacing a user archive cannot break lazy companion loading; hosts can
+  release them with `ClassLoading.closeLoaders()`. Missing default constructors
+  now return an instantiation-failure status.
+* Log append settings are honored, repeated setup no longer truncates records,
+  and disabling logging releases its file handle and thread-local destination.
+
 * Load configuration from each Lua project's working directory, isolate its
   settings and preambles, and restore host configuration after CLI runs.
 * Honor explicitly requested preambles even when automatic prepending is

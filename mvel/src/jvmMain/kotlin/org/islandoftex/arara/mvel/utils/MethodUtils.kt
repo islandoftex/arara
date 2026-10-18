@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.mvel.utils
 
+import org.islandoftex.arara.api.AraraIOException
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.core.localization.LanguageController
@@ -91,6 +92,8 @@ object MethodUtils {
             // UTF-8 as encoding
             file.writeText(text, append)
             true
+        } catch (_: AraraIOException) {
+            false
         } catch (_: IOException) {
             // if something bad happens,
             // gracefully fallback to

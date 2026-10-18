@@ -2,6 +2,8 @@
 package org.islandoftex.arara.mvel.utils
 
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.SafeRunViolationException
+import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.session.ClassLoading
@@ -224,8 +226,10 @@ object ConditionalMethods {
      * @return A pair representing the status and the class.
      */
     @JvmStatic
-    fun loadClass(file: MPPPath, name: String): Pair<ClassLoadingStatus, Class<*>> =
-        ClassLoading.loadClass(file, name)
+    fun loadClass(file: MPPPath, name: String): Pair<ClassLoadingStatus, Class<*>> {
+        ensureClassLoadingAllowed()
+        return ClassLoading.loadClass(file, name)
+    }
 
     /**
      * Loads a class from the provided string reference, representing a file.
@@ -246,8 +250,10 @@ object ConditionalMethods {
      * @return A pair representing the status and the class object.
      */
     @JvmStatic
-    fun loadObject(file: MPPPath, name: String): Pair<ClassLoadingStatus, Any> =
-        ClassLoading.loadObject(file, name)
+    fun loadObject(file: MPPPath, name: String): Pair<ClassLoadingStatus, Any> {
+        ensureClassLoadingAllowed()
+        return ClassLoading.loadObject(file, name)
+    }
 
     /**
      * Loads a class from the provided string reference, instantiating it.
@@ -259,4 +265,11 @@ object ConditionalMethods {
     @JvmStatic
     fun loadObject(ref: String, name: String): Pair<ClassLoadingStatus, Any> =
         loadObject(MPPPath(ref), name)
+
+    private fun ensureClassLoadingAllowed() {
+        if (LinearExecutor.executionOptions.executionMode == ExecutionMode.SAFE_RUN) {
+            throw SafeRunViolationException("In safe mode, rules are not allowed to load arbitrary classes or objects.")
+        }
+    }
+
 }

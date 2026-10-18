@@ -19,7 +19,7 @@ internal data class ConfigurationSnapshot(
     val defaultPreamble: String?,
     val prepend: Boolean
 ) {
-    fun restore() {
+    fun restore(configureLogging: Boolean = true) {
         LinearExecutor.executionOptions = execution
         Session.loggingOptions = logging
         Session.userInterfaceOptions = ui
@@ -28,7 +28,7 @@ internal data class ConfigurationSnapshot(
         MvelState.defaultPreamble = defaultPreamble
         MvelState.prependPreambleIfDirectivesGiven = prepend
         LanguageController.loadMessagesFor(ui.locale)
-        LoggingUtils.setupLogging(logging)
+        if (configureLogging) LoggingUtils.setupLogging(logging)
     }
 
     companion object {

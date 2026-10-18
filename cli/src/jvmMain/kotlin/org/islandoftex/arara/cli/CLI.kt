@@ -346,12 +346,13 @@ class CLI : CliktCommand("arara") {
                     DirectiveUtils.initializeDirectiveCore()
                 },
                 executeBeforeProject = { project ->
-                    configuration.restore()
+                    configuration.restore(configureLogging = false)
                     ConfigurationUtils.configFileForProject(project)?.let {
                         DisplayUtils.configurationFileName = it.toString()
                         ConfigurationUtils.load(it, project)
                     }
                     updateConfigurationFromCommandLine()
+                    LoggingUtils.setupLogging(Session.loggingOptions)
                 },
                 executeBeforeFile = {
                     // TODO: do we have to reset some more file-specific config?

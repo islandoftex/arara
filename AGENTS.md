@@ -152,6 +152,8 @@ by pre-commit).
 
 ## Conventions that differ from defaults
 
+- Prefer `MPPPath` for IO. Use `java.nio.file.Path` when `MPPPath` lacks the
+  required operation, and `java.io.File` only when neither is suitable.
 - License header `// SPDX-License-Identifier: BSD-3-Clause` is mandatory on
   every `.kt` (enforced by Spotless). Missing it is the most common failure for
   new files.

@@ -7,7 +7,7 @@
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
         </Console>
         -->
-        <File name="File" append="false" fileName="${ctx:araraLogFile}">
+        <File name="File" append="${ctx:araraAppendLog:-false}" fileName="${ctx:araraLogFile}">
             <PatternLayout pattern="%d{dd MMM yyyy HH:mm:ss.SSS} %-5level - %msg%n" />
         </File>
     </Appenders>

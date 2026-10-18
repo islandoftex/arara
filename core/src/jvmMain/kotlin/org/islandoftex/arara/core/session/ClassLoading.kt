@@ -2,10 +2,14 @@
 package org.islandoftex.arara.core.session
 
 import org.islandoftex.arara.api.files.MPPPath
-import org.islandoftex.arara.api.files.toJVMFile
+import org.islandoftex.arara.api.files.toJVMPath
+import java.io.IOException
 import java.lang.reflect.InvocationTargetException
 import java.net.MalformedURLException
 import java.net.URLClassLoader
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.StandardCopyOption
 
 /**
  * Implements utilitary methods for classloading and object instantiation.
@@ -27,53 +31,71 @@ object ClassLoading {
         INSTANTIATION_EXCEPTION
     }
 
-    /**
-     * Loads a class from the provided file, potentially a Java archive.
-     * @param path File containing the Java bytecode (namely, a JAR).
-     * @param name The canonical name of the class.
-     * @return A pair representing the status and the class.
-     */
-    @JvmStatic
-    fun loadClass(path: MPPPath, name: String):
-        Pair<ClassLoadingStatus, Class<*>> {
-        val file = path.toJVMFile()
-
-        // status and class to be returned,
-        // it defaults to an object class
-        var value: Class<*> = Any::class.java
-
-        // if file does not exist, nothing
-        // can be done, status is changed
-        val status = if (!file.exists()) {
-            ClassLoadingStatus.FILE_NOT_FOUND
-        } else {
-            // classloading involves defining
-            // a classloader and fetching the
-            // desired class from it, based on
-            // the provided file archive
+    private data class LoadedArchive(val loader: URLClassLoader, val copy: Path?) {
+        fun close() {
             try {
-                // creates a new classloader with
-                // the provided file (potentially
-                // a JAR file)
-                val classloader = URLClassLoader(
-                    arrayOf(file.toURI().toURL()),
-                    ClassLoading::class.java.classLoader
-                )
-
-                // fetches the class from the
-                // instantiated classloader
-                value = Class.forName(name, true, classloader)
-                ClassLoadingStatus.SUCCESS
-            } catch (_: MalformedURLException) {
-                ClassLoadingStatus.MALFORMED_URL
-            } catch (_: ClassNotFoundException) {
-                ClassLoadingStatus.CLASS_NOT_FOUND
+                loader.close()
+            } finally {
+                // Snapshot cleanup must not replace the class-loading result.
+                copy?.let { runCatching { Files.deleteIfExists(it) } }
             }
         }
+    }
 
-        // return a new pair based on the
-        // current status and class holder
-        return status to value
+    private val archives = mutableListOf<LoadedArchive>()
+
+    init {
+        Runtime.getRuntime().addShutdownHook(Thread { closeLoaders() })
+    }
+
+    /**
+     * Release loaders once the host no longer needs any returned classes or objects.
+     * Successful loaders stay open until this call or JVM shutdown so lazy companion
+     * classes and resources remain available. The user's archive itself is never held open.
+     */
+    fun closeLoaders() = synchronized(archives) {
+        archives.forEach { runCatching { it.close() } }
+        archives.clear()
+    }
+
+    private fun openArchive(path: MPPPath): LoadedArchive {
+        // Directories keep their existing classpath semantics; jar files get a private snapshot.
+        val copy = if (path.isRegularFile) Files.createTempFile("arara-classpath-", ".jar") else null
+        var opened = false
+        try {
+            if (copy != null) Files.copy(path.toJVMPath(), copy, StandardCopyOption.REPLACE_EXISTING)
+            val resource = LoadedArchive(URLClassLoader(
+                arrayOf((copy ?: path.toJVMPath()).toUri().toURL()), ClassLoading::class.java.classLoader
+            ), copy)
+            opened = true
+            return resource
+        } finally {
+            if (!opened) copy?.let { runCatching { Files.deleteIfExists(it) } }
+        }
+    }
+
+    /** Load a class from an independent snapshot of the provided archive. */
+    @JvmStatic
+    fun loadClass(path: MPPPath, name: String): Pair<ClassLoadingStatus, Class<*>> {
+        if (!path.exists) return ClassLoadingStatus.FILE_NOT_FOUND to Any::class.java
+        val archive = try {
+            openArchive(path)
+        } catch (_: MalformedURLException) {
+            return ClassLoadingStatus.MALFORMED_URL to Any::class.java
+        } catch (_: IOException) {
+            return ClassLoadingStatus.CLASS_NOT_FOUND to Any::class.java
+        }
+        var retained = false
+        try {
+            val loaded = Class.forName(name, true, archive.loader)
+            synchronized(archives) { archives.add(archive) }
+            retained = true
+            return ClassLoadingStatus.SUCCESS to loaded
+        } catch (_: ClassNotFoundException) {
+            return ClassLoadingStatus.CLASS_NOT_FOUND to Any::class.java
+        } finally {
+            if (!retained) archive.close()
+        }
     }
 
     /**
@@ -112,6 +134,8 @@ object ClassLoading {
                 value = pair.second.getDeclaredConstructor().newInstance()
             } catch (_: IllegalAccessException) {
                 status = ClassLoadingStatus.ILLEGAL_ACCESS
+            } catch (_: NoSuchMethodException) {
+                status = ClassLoadingStatus.INSTANTIATION_EXCEPTION
             } catch (_: InstantiationException) {
                 // the user wanted to instantiate an abstract class
                 status = ClassLoadingStatus.INSTANTIATION_EXCEPTION
