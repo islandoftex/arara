@@ -52,7 +52,7 @@ import org.islandoftex.arara.core.session.ExecutorHooks
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.ui.Dialogs
-import org.islandoftex.arara.core.ui.SwingDialogRenderer
+import org.islandoftex.arara.cli.ui.TerminalDialogRenderer
 import org.islandoftex.arara.lua.LuaInterpreter
 import org.islandoftex.arara.mvel.utils.MvelState
 import java.time.LocalDate
@@ -224,7 +224,7 @@ class CLI : CliktCommand("arara") {
         Session.userInterfaceOptions = UserInterfaceOptions(
             locale = language?.let { MPPLocale(it) }
                 ?: Session.userInterfaceOptions.locale,
-            swingLookAndFeel = Session.userInterfaceOptions.swingLookAndFeel
+            terminalOutputWidth = Session.userInterfaceOptions.terminalOutputWidth
         )
         LanguageController.loadMessagesFor(Session.userInterfaceOptions.locale)
 
@@ -325,7 +325,7 @@ class CLI : CliktCommand("arara") {
         parameters.forEach { (key, value) -> Session.put("arg:$key", value) }
 
         try {
-            Dialogs.renderer = SwingDialogRenderer { Session.userInterfaceOptions }
+            Dialogs.renderer = TerminalDialogRenderer()
             LinearExecutor.hooks = ExecutorHooks(
                 executeBeforeExecution = {
                     Session.updateEnvironmentVariables()

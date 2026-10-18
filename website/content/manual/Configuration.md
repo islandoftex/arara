@@ -15,6 +15,9 @@ specify a configuration file, it will overwrite the defaults with the options
 given. Parts that have not been overwritten (omitted from the configuration
 file) will follow the default values.
 
+Dialog helpers now use the terminal. Remove the obsolete `laf` key from older
+configuration files; see [Dialog boxes](@/manual/Methods.md#dialog-boxes).
+
 # File lookup
 
 Our tool looks for the presence of at least one of four very specific files
@@ -215,33 +218,6 @@ resolution for a path in plain string should be kept as simple as possible, so
     ```yaml
     dbname: mydb
     ```
-
-- **[O]** *(string)* `laf` (default: `none`): This key modifies the default look
-  and feel class reference, i.e,  the appearance of GUI widgets provided by
-  our tool, according to the associated plain string value. The value cannot
-  be empty or contain invalid characters. There is no orb tag evaluation in
-  this specific context, only a plain string value. This look and feel setting
-  is used by UI methods, detailed in [Methods](@/manual/Methods.md). Note that
-  this value is used by the underlying Java runtime environment, so a full
-  qualified class name is expected.
-
-    ```yaml
-    laf: 'javax.swing.plaf.nimbus.NimbusLookAndFeel'
-    ```
-
-  {% messagebox(title="Special keywords for the look and feel setting") %}
-  Look and feel values other than the default provided by Java offer a more
-  pleasant visual experience to the user, so if your rules or directives employ
-  UI methods, it might be interesting to provide a value to the `laf` key. At
-  the time of writing, arara provides two special keywords that are translated
-  to the corresponding fully qualified Java class names: `none` `→`
-  default look and feel, and `system` `→` system look and feel.
-
-  The system look and feel, of course, offers the best option of all since it
-  mimics the native appearance of graphical applications in the underlying
-  system. However, some systems might encounter slow rendering times when this
-  option is used, so your mileage might vary.
-  {% end %}
 
 - **[O]** *(string map)* `preambles`: This key holds a string map containing
   predefined preambles for later use with the `--preamble` option (see

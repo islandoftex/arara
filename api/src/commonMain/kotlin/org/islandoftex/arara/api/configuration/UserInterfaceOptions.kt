@@ -15,13 +15,6 @@ public interface UserInterfaceOptions {
     public val locale: MPPLocale
 
     /**
-     * The name of the look and feel to apply to Swing components (dialogs).
-     * If it is not available on the JVM at runtime, the default look and feel
-     * will be used.
-     */
-    public val swingLookAndFeel: String
-
-    /**
      * The number of columns to use as the default terminal width when
      * outputting to terminal. This will only be used for wrapping arara's
      * messages not the messages of external tools that are called.

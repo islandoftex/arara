@@ -17,6 +17,12 @@ on.
 ### Changed
 
 * Build the website and PDF documentation through Gradle using Kotlin helpers.
+* **Breaking change:** Swing dialogs are replaced by terminal dialogs. Remove
+  the `laf` configuration key and explicit pixel-width arguments from dialog
+  helpers. The existing helper names (including `showDropdown`) and one-based
+  selections remain; zero cancels a selection. Closed input reports an error
+  instead of silently accepting a default.
+
 * animate+convert rules: change default program from `convert` to `magick` 
   (`convert` was deprecated in ImageMagick v7)
 

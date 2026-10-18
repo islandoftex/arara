@@ -1040,179 +1040,53 @@ sure to use such feature with great care and attention.
 
 # Dialog boxes
 
-A *dialog box* is a graphical control element, typically a small window, that
-communicates information to the user and prompts them for a response. This
-section introduces UI methods related to such interactions.
+The dialog helpers interact through the terminal. They work without a graphical
+display and accept redirected standard input. Questions pause execution while
+waiting for an answer; this waiting time is included in the total runtime.
 
-{% messagebox(title="UI elements") %}
-The graphical elements are provided by the Swing toolkit from the Java runtime
-environment. Note that the default look and feel class reference can be modified
-through a key in the configuration file, as seen in
-[Configuration](@/manual/Configuration.md). It is important to observe that the
-methods presented in this section require a graphical interface. If arara is
-being executed in a headless environment (i.e, an environment with no graphical
-display available), an exception will be thrown when trying to use such UI
-methods in either directive or rule contexts.
-{% end %}
-
-Each dialog box provided by the UI methods of arara requires the specification
-of an associated icon. An *icon* is a pictogram displayed on a computer screen
-in order to help the user quickly identify the message by conveying its meaning
-through a visual resemblance to a physical object. Our tool features five icon
-types, illustrated below, to be used with dialog boxes. Observe that each icon
-type is associated with a unique integer value which is provided later on to the
-actual method call. Also, it is worth mentioning that the visual appearance of
-such icons is based on the underlying Java virtual machine and the current look
-and feel, so your mileage might vary.
+The first argument selects a message label:
 
 - `1`: Error
 - `2`: Information
-- `3`: Attention
+- `3`: Warning
 - `4`: Question
-- `5`: Plain
+- Any other value: Plain
 
-As good practice, make sure to provide descriptive messages to be placed in
-dialog boxes in order to ease and enhance the user experience. It is also highly
-advisable to always provide an associated icon, so avoid the plain option
-whenever possible.
+Messages wrap at the configured terminal output width; dialog calls no longer
+take a pixel-width argument.
 
-{% messagebox(title="Message text width") %}
-arara sets the default message text width to 250 pixels. Feel free to override
-this value according to your needs. Please refer to the appropriate method
-signatures for specifying a new width.
+{% messagebox(title="Migrating graphical dialogs") %}
+Remove the pixel-width argument from calls such as
+`showInput(250, 4, 'Title', 'Question')`; use
+`showInput(4, 'Title', 'Question')` instead. Remove the `laf` configuration key.
+The helper names and one-based selection indices remain unchanged.
 {% end %}
 
-The UI method signatures are followed by a visual representation of the provided
-dialog box. For the sake of simplicity, each parameter index refers to the
-associated number in the figure.
+- **[R]** `showMessage(int type, String title, String text): void`
 
-- **[R]** `showMessage(int width, int icon, String title, String text): void`
-
-<img src="{{ get_url(url="/images/manual/messagebox1.svg") }}" alt="UI 1" width="701"/>
-
-  This method shows a message box according to the provided parameters. The
-  dialog box is disposed when the user either presses the confirmation button or
-  closes the window. It is important to observe that arara temporarily
-  interrupts the execution and waits for the dialog box disposal. Also note that
-  the total time includes the idle period as well.
-
-  ```java
-  showMessage(250, 2, 'My title', 'My message');
-  ```
-
-- **[R]** `showMessage(int icon, String title, String text): void`
-
-  <img src="{{ get_url(url="/images/manual/messagebox2.svg") }}" alt="UI 2" width="701"/>
-
-  This method shows a message box according to the provided parameters. The
-  dialog box is disposed when the user either presses the confirmation button or
-  closes the window. It is important to observe that arara temporarily
-  interrupts the execution and waits for the dialog box disposal. Also note that
-  the total time includes the idle period as well.
+  Prints the message and returns immediately, without reading input or waiting
+  for confirmation.
 
   ```java
   showMessage(2, 'My title', 'My message');
   ```
 
-- **[C|R]** `showOptions(int width, int icon, String title, String text, Object... options): int`
+- **[C|R]** `showOptions(int type, String title, String text, Object... options): int`
 
-  <img src="{{ get_url(url="/images/manual/optionbox1.svg") }}" alt="UI 3" width="701"/>
-
-  This method shows a message box according to the provided parameters,
-  including options represented as an array of `Object` objects. This array is
-  portrayed in the dialog box as a list of buttons. The dialog box is disposed
-  when the user either presses one of the buttons or closes the window. The
-  method returns the natural index of the selected button, starting from `1`. If
-  no button is pressed (e.g, the window is closed), `0` is returned. Note that
-  the object array is denoted by a  comma-separated sequence of elements in the
-  actual method call, resulting in a variable number of parameters. It is
-  important to observe that arara temporarily interrupts the execution and waits
-  for the dialog box disposal. Also note that the total time includes the idle
-  period as well.
-
-  ```tex
-  % arara: pdflatex if showOptions(250, 4, 'Important!',
-  % arara: --> 'Do you like ice cream?', 'Yes!', 'No!') == 1
-  ```
-
-  {% messagebox(title="Button orientation") %}
-  Keep in mind that your window manager might render the button orientation
-  differently than the original arrangement specified in your array of
-  objects. For instance, I had a window manager that rendered the buttons in the
-  reverse order. However, note that the visual appearance should not interfere
-  with the programming logic! The indices shall remain the same, pristine as
-  ever, regardless of the actual rendering. Trust your code, not your eyes.
-  {% end %}
-
-- **[C|R]** `showOptions(int icon, String title, String text, Object... options): int`
-
-  <img src="{{ get_url(url="/images/manual/optionbox2.svg") }}" alt="UI 4" width="701"/>
-
-  This method shows a message box according to the provided parameters,
-  including options represented as an array of `Object` objects. This array is
-  portrayed in the dialog box as a list of buttons. The dialog box is disposed
-  when the user either presses one of the buttons or closes the window. The
-  method returns the natural index of the selected button, starting from `1`. If
-  no button is pressed (e.g, the window is closed), `0` is returned. Note that
-  the object array is denoted by a  comma-separated sequence of elements in the
-  actual method call, resulting in a variable number of parameters. It is
-  important to observe that arara temporarily interrupts the execution and waits
-  for the dialog box disposal. Also note that the total time includes the idle
-  period as well.
+  Prints the options as a numbered list. Enter a number starting at `1` to
+  select an option, or `0` to cancel. Invalid answers prompt again. An empty
+  list returns `0` without reading input.
 
   ```tex
   % arara: pdflatex if showOptions(4, 'Important!',
   % arara: --> 'Do you like ice cream?', 'Yes!', 'No!') == 1
   ```
 
-- **[C|R]** `showDropdown(int width, int icon, String title, String text, Object... options): int`
+- **[C|R]** `showDropdown(int type, String title, String text, Object... options): int`
 
-  <img src="{{ get_url(url="/images/manual/dropdown1.svg") }}" alt="UI 5" width="701"/>
-
-  This method shows a dialog box according to the provided parameters, including
-  options represented as an array of `Object` objects. This array is portrayed
-  in the dialog box as a dropdown list. The first element from the array is
-  automatically selected. The dialog box is disposed when the user either
-  presses one of the buttons or closes the window. The method returns the
-  natural index of the selected item, starting from `1`. If the user cancels the
-  dialog or closes the window, `0` is returned.  Note that the object array is
-  denoted by a comma-separated sequence of elements in the actual method call,
-  resulting in a variable number of parameters. It is important to observe that
-  arara temporarily interrupts the execution and waits for the dialog box
-  disposal. Also note that the total time includes the idle period as well.
-
-  ```tex
-  % arara: pdflatex if showDropdown(250, 4, 'Important!',
-  % arara: --> 'Who deserves the tick?', 'David Carlisle',
-  % arara: --> 'Enrico Gregorio', 'Joseph Wright',
-  % arara: --> 'Heiko Oberdiek') == 2
-  ```
-
-  {% messagebox(title="Combo boxes and dropdown lists") %}
-  According to the [Wikipedia entry](https://en.wikipedia.org/wiki/Combo_box), a
-  *combo box* is a combination of a dropdown list or list box and a single line
-  editable textbox, allowing the user to either type a value directly or select
-  a value from the list. The term is sometimes used to mean a dropdown list, but
-  in Java, the term is definitely not a synonym! A dropdown list is sometimes
-  clarified with terms such as non-editable combo box to distinguish it from the
-  original definition of a combo box.
-  {% end %}
-
-- **[C|R]** `showDropdown(int icon, String title, String text, Object... options): int`
-
-  <img src="{{ get_url(url="/images/manual/dropdown2.svg") }}" alt="UI 6" width="701"/>
-
-  This method shows a dialog box according to the provided parameters, including
-  options represented as an array of `Object` objects. This array is portrayed
-  in the dialog box as a dropdown list. The first element from the array is
-  automatically selected. The dialog box is disposed when the user either
-  presses one of the buttons or closes the window. The method returns the
-  natural index of the selected item, starting from `1`. If the user cancels the
-  dialog or closes the window, `0` is returned.  Note that the object array is
-  denoted by a comma-separated sequence of elements in the actual method call,
-  resulting in a variable number of parameters. It is important to observe that
-  arara temporarily interrupts the execution and waits for the dialog box
-  disposal. Also note that the total time includes the idle period as well.
+  Uses the same numbered terminal selection as `showOptions`. The name is kept
+  for existing rules; no graphical dropdown is displayed and no item is
+  selected automatically.
 
   ```tex
   % arara: pdflatex if showDropdown(4, 'Important!',
@@ -1221,56 +1095,22 @@ associated number in the figure.
   % arara: --> 'Heiko Oberdiek') == 2
   ```
 
-  {% messagebox(title="Swing toolkit") %}
-  According to the [Wikipedia
-  entry](https://en.wikipedia.org/wiki/Swing_(Java)), the Swing toolkit was
-  developed to provide a more sophisticated set of GUI components than the
-  earlier  AWT widget system. Swing provides a look and feel that emulates the
-  look and feel of several platforms, and also supports a pluggable look and
-  feel that allows applications to have a look and feel unrelated to the
-  underlying platform. It has more powerful and flexible components than AWT. In
-  addition to familiar components such as buttons, check boxes and labels, Swing
-  provides several advanced components, such as scroll panes, trees, tables, and
-  lists.
-  {% end %}
+- **[C|R]** `showInput(int type, String title, String text): String`
 
-- **[C|R]** `showInput(int width, int icon, String title, String text): String`
-
-  <img src="{{ get_url(url="/images/manual/inputbox1.svg") }}" alt="UI 7" width="701"/>
-
-  This method shows an input dialog box according to the provided
-  parameters. The dialog box is disposed when the user either presses one of the
-  buttons or closes the window. The method returns the content of the input text
-  field, as a trimmed `String` object. If the user cancels the dialog or closes
-  the window, an empty string is returned. It is important to observe that arara
-  temporarily interrupts the execution and waits for the dialog box
-  disposal. Also note that the total time includes the idle period as well.
-
-  ```tex
-  % arara: pdflatex if showInput(250, 4, 'Important!',
-  % arara: --> 'Who wrote arara?') == 'Paulo'
-  ```
-
-- **[C|R]** `showInput(int icon, String title, String text): String`
-
-  <img src="{{ get_url(url="/images/manual/inputbox2.svg") }}" alt="UI 8" width="701"/>
-
-  This method shows an input dialog box according to the provided
-  parameters. The dialog box is disposed when the user either presses one of the
-  buttons or closes the window. The method returns the content of the input text
-  field, as a trimmed `String` object. If the user cancels the dialog or closes
-  the window, an empty string is returned. It is important to observe that arara
-  temporarily interrupts the execution and waits for the dialog box
-  disposal. Also note that the total time includes the idle period as well.
+  Reads one line and returns its trimmed text. Pressing Enter on a blank line
+  returns an empty string.
 
   ```tex
   % arara: pdflatex if showInput(4, 'Important!',
   % arara: --> 'Who wrote arara?') == 'Paulo'
   ```
 
-The UI methods presented in this section can be used for writing TeX tutorials
-and assisted compilation workflows based on user interactions, including visual
-input and feedback through dialog boxes.
+{% messagebox(title="Closed input") %}
+If standard input ends while a selection or text answer is required, arara
+reports an error. Closed input does not cancel a selection or accept a default
+answer. For unattended runs, supply the required answers through standard input
+or use rules without interactive questions.
+{% end %}
 
 # Commands
 

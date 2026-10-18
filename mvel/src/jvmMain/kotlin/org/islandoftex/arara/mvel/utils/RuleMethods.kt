@@ -287,19 +287,16 @@ object RuleMethods {
     /**
      * Shows the message.
      *
-     * @param width Integer value, in pixels.
      * @param type Type of message.
      * @param title Title of the message.
      * @param text Text of the message.
      */
     @JvmStatic
-    @JvmOverloads
     fun showMessage(
-        width: Int = dialogs.defaultWidth,
         type: Int,
         title: String,
         text: String
-    ) = dialogs.showMessage(width, type, title, text)
+    ) = dialogs.showMessage(type, title, text)
 
     /**
      * Unsafely executes a system command from the underlying operating system

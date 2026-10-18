@@ -159,7 +159,6 @@ object ConditionalMethods {
     /**
      * Shows a message with options presented as an array of buttons.
      *
-     * @param width Integer value, in pixels.
      * @param type Type of message.
      * @param title Title of the message.
      * @param text Text of the message.
@@ -167,37 +166,31 @@ object ConditionalMethods {
      * @return The index of the selected button, starting from 1.
      */
     @JvmStatic
-    @JvmOverloads
     fun showOptions(
-        width: Int = dialogs.defaultWidth,
         type: Int,
         title: String,
         text: String,
         vararg buttons: Any
-    ): Int = dialogs.showOptions(width, type, title, text, buttons)
+    ): Int = dialogs.showOptions(type, title, text, buttons)
 
     /**
      * Shows a message with a text input.
      *
-     * @param width Integer value, in pixels.
      * @param type Type of message.
      * @param title Title of the message.
      * @param text Text of the message.
      * @return The string representing the input text.
      */
     @JvmStatic
-    @JvmOverloads
     fun showInput(
-        width: Int = dialogs.defaultWidth,
         type: Int,
         title: String,
         text: String
-    ): String = dialogs.showInput(width, type, title, text)
+    ): String = dialogs.showInput(type, title, text)
 
     /**
-     * Shows a message with options presented as a dropdown list of elements.
+     * Shows a message with options presented as a numbered list of elements.
      *
-     * @param width Integer value, in pixels.
      * @param type Type of message.
      * @param title Title of the message.
      * @param text Text of the message.
@@ -205,14 +198,12 @@ object ConditionalMethods {
      * @return The index of the selected element, starting from 1.
      */
     @JvmStatic
-    @JvmOverloads
     fun showDropdown(
-        width: Int = dialogs.defaultWidth,
         type: Int,
         title: String,
         text: String,
         vararg elements: Any
-    ): Int = dialogs.showDropdown(width, type, title, text, elements)
+    ): Int = dialogs.showDropdown(type, title, text, elements)
 
     /**
      * Gets the file reference for the current directive. It is important to
