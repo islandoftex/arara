@@ -1,0 +1,45 @@
+.upright {
+  font-style: normal;
+}
+
+.tex sub, .latex sub, .latex sup {
+    text-transform: uppercase;
+}
+
+.tex sub, .latex sub {
+    vertical-align: -0.06ex;
+    margin-left: -0.1667em;
+    margin-right: -0.1em;
+}
+
+.tex, .latex, .tex sub, .latex sub {
+    font-size: 1em;
+}
+
+.latex sup {
+    font-size: 0.85em;
+    vertical-align: -0.3em;
+    margin-left: -0.32em;
+    margin-right: -0.15em;
+}
+
+.arara-badges { text-align: center; }
+.arara-badges img { display: inline-block; max-width: 100%; }
+
+/* The existing title and tall recording need more room than the theme demo. */
+.hero-with-media {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+}
+.hero-with-media .hero-title {
+  max-width: 16ch;
+  font-size: clamp(2rem, 4.4vw, 4rem);
+}
+@media (max-width: 1200px) {
+  .hero-with-media {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .hero-media {
+    width: min(100%, 40rem);
+    justify-self: center;
+  }
+}

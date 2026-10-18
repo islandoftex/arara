@@ -1,42 +1,18 @@
-{% import "_macros.html" as macros %}
-{% extends "index.html" %}
-
-{% block title %}{{ section.title }} | {{ super() }} {% endblock title %}
-
-{% block header %}
-<header class="box-shadow">
-  {{ macros::render_header() }}
-</header>
-{% endblock header %}
-
+{% extends "base.html" %}
+{% block layout_context %}{% if section.relative_path == "manual/_index.md" %}{% set devlab_layout = "docs" %}{% else %}{% set devlab_layout = "blog" %}{% endif %}{% endblock layout_context %}
+{% block extra_styles %}<link rel="stylesheet" href="{{ get_url(path='arara.css') }}">{% endblock extra_styles %}
 {% block content %}
-<div class="margin-left:20vw; margin-right: 20vw;">
-  <div class="heading-text">{{ section.title }}</div>
-  <ul>
-    {% for page in section.pages %}
-    <li>
-      <div>
-        <a href="{{ page.permalink | safe }}">
-          <strong class="title article-title">{{ page.title }}</strong>
-        </a>
-        {% if page.date %}
-        <div>
-          <span>{{ page.date | date(format="%F") }}</span>
-        </div>
-        {% endif %}
-      </div>
-      {% if page.summary %}
-      <div itemprop="summary" class="content article-body">
-        {{ page.summary | safe }}
-        <nav class="readmore">
-          <a itemprop="url" href="{{ page.permalink | safe }}">Read
-            More&nbsp;&raquo;
-          </a>
-        </nav>
-      </div>
-      {% endif %}
-    </li>
-    {% endfor %}
-  </ul>
-</div>
+{% if docs_section %}<div class="docs-shell">{% include "partials/docs-sidebar.html" %}<div class="docs-content">{% endif %}
+{% include "partials/page-heading.html" %}
+{% if section.content %}<div class="content">{{ section.content | safe }}</div>{% endif %}
+<section class="page-list" aria-label="{{ section.title }}">
+{% for page in section.pages %}
+<article class="page-list-item">
+  <h2><a href="{{ page.permalink }}">{{ page.title }}</a></h2>
+  {% if page.date %}<time datetime="{{ page.date }}">{{ page.date | date(format="%F") }}</time>{% endif %}
+  {% if page.summary %}<div class="content">{{ page.summary | safe }}</div><a href="{{ page.permalink }}">Read More &raquo;</a>{% endif %}
+</article>
+{% endfor %}
+</section>
+{% if docs_section %}</div></div>{% endif %}
 {% endblock content %}

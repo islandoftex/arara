@@ -44,8 +44,12 @@
   (`outputs.upToDateWhen { false }`), also gitignored.
 - `website/public/`, `result/` (Nix), and `**/build/*` are gitignored; the only
   `build/` directories tracked are under `buildSrc/src/**/build/*`.
-- `website/themes/juice` is a git submodule (`.gitmodules`). Use
+- `website/themes/devlab-theme` is a pinned upstream git submodule (`.gitmodules`). Use
   `GIT_SUBMODULE_STRATEGY=recursive` semantics; CI checks it out automatically.
+  The `devlab-theme` flake input must match the submodule commit. Zola 0.23.6
+  comes from the regular `nixpkgs` input; `nix build .#website` stages
+  legacy shortcodes with `scripts/prepare-website.py` without editing content.
+  Run `python3 -m unittest discover -s scripts -p "test_*.py"` for its checks.
 
 ## Common developer commands
 

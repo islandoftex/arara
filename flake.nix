@@ -3,12 +3,17 @@
 
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-unstable";
+    devlab-theme = {
+      url = "git+https://codeberg.org/RiPetitor/devlab-theme.git?rev=2b638831313058ba92d17095fce15454fda02eba";
+      flake = false;
+    };
     flake-utils.url = "github:numtide/flake-utils";
   };
 
   outputs =
     {
       flake-utils,
+      devlab-theme,
       nixpkgs,
       ...
     }:
@@ -16,6 +21,9 @@
       system:
       let
         pkgs = import nixpkgs { inherit system; };
+        websiteZola =
+          assert pkgs.zola.version == "0.23.6";
+          pkgs.zola;
       in
       {
         formatter = pkgs.nixfmt-tree;
@@ -28,43 +36,33 @@
             version = "7.0.0";
           in
           {
-            website =
-              let
-                juiceTheme = pkgs.fetchFromGitHub {
-                  owner = "huhu";
-                  repo = "juice";
-                  rev = "0dc909d59066a0c8cc9f7bcaa6f6853e7574452d";
-                  hash = "sha256-WtnU0CA4yf9Cad07uvIy+ma/nlrkNChUnWY38fvyZq8=";
-                };
-              in
-              pkgs.stdenvNoCC.mkDerivation {
-                inherit version;
-                pname = "arara-website";
+            # The same pinned tool powers local previews and the Nix build.
+            website-zola = websiteZola;
+            website = pkgs.stdenvNoCC.mkDerivation {
+              inherit version;
+              pname = "arara-website";
 
-                nativeBuildInputs = [
-                  pkgs.gnused
-                  pkgs.zola
-                ];
+              nativeBuildInputs = [
+                pkgs.python3
+                websiteZola
+              ];
 
-                src = ./.;
+              src = ./.;
+              # Tera load_data initializes a TLS client even for local files.
+              SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
 
-                # TODO: set updated date based on git if date != updated for all posts
-                buildPhase = ''
-                  tail -n +8 README.md | sed 's/## /# /g' >> website/content/_index.md
-                  tail -n +3 CHANGELOG.md | sed 's/## /# /g' >> website/content/CHANGELOG.md
+              buildPhase = ''
+                runHook preBuild
+                python3 scripts/prepare-website.py --output "$TMPDIR/site" --theme ${devlab-theme}
+                zola --root "$TMPDIR/site" build --output-dir "$TMPDIR/public"
+                runHook postBuild
+              '';
 
-                  pushd website
-                  mkdir -p themes/juice
-                  cp -rf ${juiceTheme}/{theme.toml,sass,static,templates} themes/juice/
-                  zola build
-                  popd
-                '';
-
-                installPhase = ''
-                  mkdir -p $out/public
-                  cp -r ./website/public/. $out/public/
-                '';
-              };
+              installPhase = ''
+                mkdir -p $out/public
+                cp -r "$TMPDIR/public/." $out/public/
+              '';
+            };
           };
 
         devShells.default = pkgs.mkShell {
@@ -80,7 +78,7 @@
             nixpkgs-fmt
             python3Packages.weasyprint
             zip
-            zola
+            websiteZola
           ];
         };
       }

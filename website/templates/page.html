@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block layout_context %}{% if page.relative_path is starting_with(pat="manual/") %}{% set devlab_layout = "docs" %}{% else %}{% set devlab_layout = "page" %}{% endif %}{% endblock layout_context %}
+{% block extra_styles %}<link rel="stylesheet" href="{{ get_url(path='arara.css') }}">{% endblock extra_styles %}
+{% block content %}
+{% if docs_section %}<div class="docs-shell">{% include "partials/docs-sidebar.html" %}{% endif %}
+<article class="content{% if docs_section %} docs-content{% endif %}">
+  {% include "partials/page-heading.html" %}
+  {{ page.content | safe }}
+  {% if docs_section %}{% include "partials/docs-prev-next.html" %}{% endif %}
+</article>
+{% if docs_section %}
+{% set toc_items = page.toc %}{% include "partials/docs-toc.html" %}
+</div>
+{% endif %}
+{% endblock content %}

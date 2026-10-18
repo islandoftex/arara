@@ -1,0 +1,39 @@
+{% component arara.hint(title: string = "", reference: string = "", indent: string = "", dedent: string = "") -%}
+{% filter replace(from="\n", to="\n" ~ indent) -%}
+<blockquote style="padding: 14px; margin-top: 10px; margin-bottom: 10px; background-color: #9FE2BF; border-left: 8px solid #6B8E23;">
+    <small>
+        <strong>&#128161; A useful tip{% if title %} – {{title}}{% endif %}</strong>
+        <br/>
+        {{ body | trim | replace(from="\n" ~ dedent, to="\n") | markdown(inline=true) | safe }}
+    </small>
+</blockquote>
+
+{%- endfilter %}
+{%- endcomponent %}
+
+{% component arara.messagebox(title: string = "", reference: string = "", indent: string = "", dedent: string = "") -%}
+{% filter replace(from="\n", to="\n" ~ indent) -%}
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+  <strong>{{ title }}</strong>
+  <br/>
+  {{ body | trim | replace(from="\n" ~ dedent, to="\n") | markdown(inline=true) | safe }}
+</blockquote>
+
+{%- endfilter %}
+{%- endcomponent %}
+
+{% component arara.nicetoknow(title: string = "", reference: string = "", indent: string = "", dedent: string = "") -%}
+{% filter replace(from="\n", to="\n" ~ indent) -%}
+<blockquote style="padding: 15px; margin-top: 10px; margin-bottom: 10px; background-color: #AFEEEE; border-left: 8px solid #00CED1;">
+    <small>
+        <strong>{% if title %}{{title}}{% else %}Nice to know:{% endif %}</strong>
+        <br/>
+        {{ body | trim | replace(from="\n" ~ dedent, to="\n") | markdown(inline=true) | safe }}
+        {% if reference %}<a href="{{ reference | safe }}" target="_blank">Read more &#8594;</a>{% endif %}
+    </small>
+</blockquote>
+
+{%- endfilter %}
+{%- endcomponent %}
+
+{% component arara.url(url: string) -%}{{ get_url(path=url) }}{%- endcomponent %}

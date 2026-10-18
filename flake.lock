@@ -1,15 +1,32 @@
 {
   "nodes": {
+    "devlab-theme": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1791299360,
+        "narHash": "sha256-apRVcO5PiRIu3BYY0v1bFEHBrBdVWzT2IahSVyf6gic=",
+        "ref": "refs/heads/main",
+        "rev": "2b638831313058ba92d17095fce15454fda02eba",
+        "revCount": 308,
+        "type": "git",
+        "url": "https://codeberg.org/RiPetitor/devlab-theme.git"
+      },
+      "original": {
+        "rev": "2b638831313058ba92d17095fce15454fda02eba",
+        "type": "git",
+        "url": "https://codeberg.org/RiPetitor/devlab-theme.git"
+      }
+    },
     "flake-utils": {
       "inputs": {
         "systems": "systems"
       },
       "locked": {
-        "lastModified": 1731533236,
-        "narHash": "sha256-l0KFg5HjrsfsO/JpG+r7fRrqm12kzFHyUHqHCVpMMbI=",
+        "lastModified": 1791914995,
+        "narHash": "sha256-Zf/xfQEAasnwnmEfHqW/4hjDE/s44yn2hD4RuVIZRjA=",
         "owner": "numtide",
         "repo": "flake-utils",
-        "rev": "11707dc2f618dd54ca8739b309ec4fc024de578b",
+        "rev": "b7a79d3fea1e214f6d668d521cecec0c01e26544",
         "type": "github"
       },
       "original": {
@@ -20,11 +37,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1772773019,
-        "narHash": "sha256-E1bxHxNKfDoQUuvriG71+f+s/NT0qWkImXsYZNFFfCs=",
+        "lastModified": 1792094642,
+        "narHash": "sha256-zp8ToDMnqZcu4o4IH9pdwXFXGp7yLm/M0dEnNWnyd7I=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "aca4d95fce4914b3892661bcb80b8087293536c6",
+        "rev": "fe13242281a67641c0102cdb1087f0ebe586c7df",
         "type": "github"
       },
       "original": {
@@ -35,6 +52,7 @@
     },
     "root": {
       "inputs": {
+        "devlab-theme": "devlab-theme",
         "flake-utils": "flake-utils",
         "nixpkgs": "nixpkgs"
       }

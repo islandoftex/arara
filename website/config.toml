@@ -4,7 +4,7 @@ base_url = "https://islandoftex.gitlab.io/arara"
 title = "arara"
 description = "A TeX automation tool based on directives and rules."
 
-theme = "juice"
+theme = "devlab-theme"
 
 # Whether to automatically compile all Sass files in the sass directory
 compile_sass = true
@@ -13,7 +13,6 @@ compile_sass = true
 build_search_index = true
 
 [markdown.highlighting]
-enable = true
 error_on_missing_language = true
 light_theme = "github-light"
 dark_theme = "github-dark"
@@ -30,15 +29,43 @@ external_links_target_blank = true
 # Whether to set rel="noreferrer" for all external links
 external_links_no_referrer = true
 
-[extra]
-juice_logo_name = "arara"
-juice_logo_path = "images/arara-text.svg"
-juice_extra_menu = [
-    { title = "Manual", link = "https://islandoftex.gitlab.io/arara/manual" },
-    { title = "News", link = "https://islandoftex.gitlab.io/arara/news" },
-    { title = "GitLab", link = "https://gitlab.com/islandoftex/arara" },
+[search]
+index_format = "elasticlunr_javascript"
+
+[extra.devlab.brand]
+logo_text = "arara"
+show_logo_mark = true
+logo_mark_path = "/images/arara-text.svg"
+
+[extra.devlab.footer]
+show = true
+note = "arara by the Island of TeX"
+
+[extra.devlab.navigation]
+links = [
+  { name = "Quickstart", path = "/quickstart/" },
+  { name = "Changelog", path = "/changelog/" },
+  { name = "Manual", collection = "manual" },
+  { name = "News", path = "/news/" },
+  { name = "GitLab", path = "https://gitlab.com/islandoftex/arara" },
 ]
-meta_title = "The cool TeX automation tool"
-meta_description = "arara is a TeX automation tool based on directives and rules."
-footer = "arara by the Island of TeX"
-repository_url = "https://gitlab.com/islandoftex/arara"
+
+[extra.devlab.collections.manual]
+section = "manual/_index.md"
+show_breadcrumbs = true
+show_toc = true
+show_pagination = true
+
+[extra.devlab.home]
+layout = "wide"
+
+[[extra.devlab.home.blocks]]
+type = "hero"
+title = "The cool TeX automation tool"
+description = "arara is a TeX automation tool based on directives and rules."
+image = "/images/demonstration.gif"
+image_alt = "arara demonstration"
+
+[[extra.devlab.home.blocks]]
+type = "content"
+title = "Overview"
