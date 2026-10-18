@@ -28,6 +28,13 @@ on.
 
 ### Fixed
 
+* Load configuration from each Lua project's working directory, isolate its
+  settings and preambles, and restore host configuration after CLI runs.
+* Honor explicitly requested preambles even when automatic prepending is
+  disabled; honor the header-extraction argument independently of global state.
+* Environment removal filters now receive variable names without the internal
+  `environment:` prefix, matching the addition filter and documented contract.
+
 * Halt requests stop the current file even when successful or returned without
   a task, and their exact status reaches the process. Requests are cleared at
   file boundaries, so files with the same name cannot share them.

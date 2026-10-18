@@ -58,4 +58,66 @@ class CLIRegressionTest {
         val status = assertFailsWith<ProgramResult> { CLI().parse(listOf("-d", root.path, "run.tex")) }
         assertEquals(7, status.statusCode)
     }
+
+    @Test
+    fun luaProjectsLoadTheConfigurationFromTheirOwnWorkingDirectory() = fixture { root ->
+        val project = File(root, "project").apply { mkdir() }
+        File(project, "arararc.yaml").writeText("!config\npaths: ['.']\n")
+        markerRule(project)
+        File(project, "run.tex").writeText("% arara: marker\n")
+        File(root, "project.lua").writeText("""
+            return {
+              name = "Configured",
+              workingDirectory = "${project.invariantSeparatorsPath}",
+              files = { ["run.tex"] = { fileType = { extension = "tex" } } }
+            }
+        """.trimIndent())
+        val status = assertFailsWith<ProgramResult> { CLI().parse(listOf("-d", root.path, "project.lua")) }
+        assertEquals(0, status.statusCode)
+        assertEquals(true, Session["marker"])
+    }
+
+    @Test
+    fun explicitPreambleOverridesTheAutomaticPrependingSetting() = fixture { root ->
+        File(root, "arararc.yaml").writeText("""
+            !config
+            paths: ['.']
+            prependPreambleIfDirectivesGiven: false
+            preambles:
+              selected: "% arara: marker"
+        """.trimIndent())
+        markerRule(root)
+        File(root, "noop.yaml").writeText("!config\nidentifier: noop\nname: Noop\ncommands:\n  - command: '@{ true }'\narguments: []\n")
+        File(root, "run.tex").writeText("% arara: noop\n")
+        val status = assertFailsWith<ProgramResult> {
+            CLI().parse(listOf("-d", root.path, "-p", "selected", "run.tex"))
+        }
+        assertEquals(0, status.statusCode)
+        assertEquals(true, Session["marker"])
+    }
+
+    @Test
+    fun cliRestoresHostConfigurationAndPreamblesAfterRunning() = fixture { root ->
+        val original = LinearExecutor.executionOptions
+        MvelState.preambles["host"] = "% arara: host"
+        File(root, "arararc.yaml").writeText("!config\npaths: ['.']\nloops: 3\npreambles: {local: '% arara: marker'}\n")
+        markerRule(root)
+        File(root, "run.tex").writeText("% arara: marker\n")
+        val status = assertFailsWith<ProgramResult> { CLI().parse(listOf("-d", root.path, "run.tex")) }
+        assertEquals(0, status.statusCode)
+        assertEquals(original, LinearExecutor.executionOptions)
+        assertEquals(mapOf("host" to "% arara: host"), MvelState.preambles)
+    }
+
+    private fun markerRule(root: File) {
+        File(root, "marker.yaml").writeText("""
+            !config
+            identifier: marker
+            name: Marker
+            commands:
+              - command: "@{ getSession().put('marker', true); return true; }"
+            arguments: []
+        """.trimIndent())
+    }
+
 }

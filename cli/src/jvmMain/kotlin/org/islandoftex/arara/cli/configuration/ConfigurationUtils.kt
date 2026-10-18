@@ -80,6 +80,7 @@ object ConfigurationUtils {
             Session.userInterfaceOptions
         )
 
+        MvelState.preambles.clear()
         MvelState.preambles += resource.preambles
         MvelState.defaultPreamble = resource.defaultPreamble
         MvelState.prependPreambleIfDirectivesGiven = resource.prependPreambleIfDirectivesGiven

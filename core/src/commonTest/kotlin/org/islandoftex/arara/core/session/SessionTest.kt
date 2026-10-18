@@ -10,6 +10,17 @@ import kotlin.test.assertTrue
 
 class SessionTest {
     @Test
+    fun environmentRemovalFiltersReceiveTheUnprefixedVariableName() {
+        Session.clear()
+        Session.put("environment:ARARA_STALE", "old")
+        Session.put("keep", "value")
+        Session.updateEnvironmentVariables(additionFilter = { false }, removalFilter = { it == "ARARA_STALE" })
+        assertFalse(Session.contains("environment:ARARA_STALE"))
+        assertTrue(Session.contains("keep"))
+        Session.clear()
+    }
+
+    @Test
     fun shouldIncludeAllEnvironmentVariables() {
         Session.clear()
         Session.updateEnvironmentVariables()

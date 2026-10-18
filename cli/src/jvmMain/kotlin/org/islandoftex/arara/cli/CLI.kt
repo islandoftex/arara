@@ -34,6 +34,7 @@ import org.islandoftex.arara.api.files.toMPPPath
 import org.islandoftex.arara.api.localization.MPPLocale
 import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.api.session.ExecutionStatus
+import org.islandoftex.arara.cli.configuration.ConfigurationSnapshot
 import org.islandoftex.arara.cli.configuration.ConfigurationUtils
 import org.islandoftex.arara.cli.ruleset.DirectiveUtils
 import org.islandoftex.arara.cli.utils.DisplayUtils
@@ -301,6 +302,17 @@ class CLI : CliktCommand("arara") {
      * The actual main method of arara (when run in command-line mode)
      */
     override fun run() {
+        val configuration = ConfigurationSnapshot.capture()
+        val previousHooks = LinearExecutor.hooks
+        try {
+            runSession(configuration)
+        } finally {
+            configuration.restore()
+            LinearExecutor.hooks = previousHooks
+        }
+    }
+
+    private fun runSession(configuration: ConfigurationSnapshot) {
         // initializing logging has to come first; init() actually disables
         // the logging, so early exceptions won't generate a lot of noise in
         // the terminal
@@ -333,8 +345,13 @@ class CLI : CliktCommand("arara") {
                     // component respects our MVEL processing
                     DirectiveUtils.initializeDirectiveCore()
                 },
-                executeBeforeProject = {
-                    // TODO: load config file here
+                executeBeforeProject = { project ->
+                    configuration.restore()
+                    ConfigurationUtils.configFileForProject(project)?.let {
+                        DisplayUtils.configurationFileName = it.toString()
+                        ConfigurationUtils.load(it, project)
+                    }
+                    updateConfigurationFromCommandLine()
                 },
                 executeBeforeFile = {
                     // TODO: do we have to reset some more file-specific config?
@@ -349,7 +366,7 @@ class CLI : CliktCommand("arara") {
                     DirectiveUtils.process(
                         file,
                         list
-                            .takeIf { list.isNotEmpty() && !MvelState.prependPreambleIfDirectivesGiven }
+                            .takeIf { list.isNotEmpty() && !MvelState.prependPreambleIfDirectivesGiven && preamble == null }
                             ?: prependPreambleDirectives(file.fileType, list)
                     )
                 }

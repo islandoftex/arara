@@ -66,6 +66,7 @@ There are a number of optional parameters:
 * `workingDirectory`: The working directory to execute the project
   in. Specifying a working directory with this option overrides any working
   directory given using the command-line option `-d`/`--working-directory`.
+  Local configuration is also loaded from this directory for that project.
 * `dependencies`: Other projects a project depends on. Make sure this project is
   actually specified. Project specification files with invalid dependencies will
   be treated as invalid.

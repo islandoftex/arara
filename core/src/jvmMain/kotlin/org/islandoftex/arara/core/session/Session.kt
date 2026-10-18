@@ -116,7 +116,7 @@ actual object Session : Session {
     ) {
         // remove all current environment variables to clean up the session
         map.filterKeys { it.startsWith("environment:") }
-                .filterKeys(removalFilter)
+                .filterKeys { removalFilter(it.removePrefix("environment:")) }
                 .forEach { remove(it.key) }
         // add all relevant new environment variables
         map.putAll(

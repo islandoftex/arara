@@ -42,10 +42,11 @@ perspective, and are described as follows.
   be located at `USER_DIR` which is the working directory associated with the
   current execution. This directory can also be interpreted as the one
   relative to the processed file. This approach offers a project-based
-  solution for complex workflows, e.g, a thesis or a book. However, arara must
-  be executed within the working directory, or the local configuration file
-  lookup will fail. Observe that this approach has the highest lookup
-  priority, which means that it will always supersede a global configuration.
+  solution for complex workflows, e.g, a thesis or a book. Lookup uses the
+  selected working directory, including `--working-directory` and each Lua
+  project's `workingDirectory`. Local configuration takes priority over global
+  configuration. Projects load their own settings without inheriting settings
+  from the previously processed project.
 
 {% messagebox(title="Beware of empty configuration files") %}
 A configuration file should never be empty, otherwise arara will complain about
