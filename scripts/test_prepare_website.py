@@ -1,4 +1,5 @@
 """Regression checks for staging unchanged legacy Markdown on Tera 2."""
+import os
 import importlib.util
 from pathlib import Path
 import tempfile
@@ -45,7 +46,7 @@ class PreparationTest(unittest.TestCase):
         sources = {p: p.read_bytes() for p in (repo / 'website/content').rglob('*.md')}
         with tempfile.TemporaryDirectory() as temp:
             output = Path(temp) / 'site'
-            prepare.prepare(repo, output, repo / 'website/themes/devlab-theme')
+            prepare.prepare(repo, output, Path(os.environ.get('ARARA_WEBSITE_THEME', repo / 'website/themes/devlab-theme')))
             self.assertEqual(len(sources), len(list((output / 'content').rglob('*.md'))))
             for source, original in sources.items():
                 self.assertEqual(original, source.read_bytes())

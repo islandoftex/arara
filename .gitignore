@@ -12,8 +12,9 @@ docs/**/version.txt
 !buildSrc/src/**/build/*
 api/src/**/AraraAPI.kt
 target
-website/public/*
+/website/public
 # nix build artifact
 result
 # Website preparation checks
 scripts/__pycache__/
+docs/__pycache__/

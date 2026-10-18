@@ -44,12 +44,9 @@
   (`outputs.upToDateWhen { false }`), also gitignored.
 - `website/public/`, `result/` (Nix), and `**/build/*` are gitignored; the only
   `build/` directories tracked are under `buildSrc/src/**/build/*`.
-- `website/themes/devlab-theme` is a pinned upstream git submodule (`.gitmodules`). Use
-  `GIT_SUBMODULE_STRATEGY=recursive` semantics; CI checks it out automatically.
-  The `devlab-theme` flake input must match the submodule commit. Zola 0.23.6
-  comes from the regular `nixpkgs` input; `nix build .#website` stages
-  legacy shortcodes with `scripts/prepare-website.py` without editing content.
-  Run `python3 -m unittest discover -s scripts -p "test_*.py"` for its checks.
+- `website/themes/devlab-theme` is a pinned submodule; CI checks it out recursively.
+  Keep its commit in sync with the `devlab-theme` flake input.
+  `scripts/prepare-website.py` stages legacy shortcodes without editing sources.
 
 ## Common developer commands
 
@@ -108,22 +105,16 @@ and `nixpkgs-fmt` for `.nix` files. The `gradle-task` hook for `spotlessCheck`
 is configured with `types: [rust]` (so it does not actually trigger on Kotlin
 by default) — do not rely on it; run `./gradlew spotlessCheck` manually.
 
-## Documentation build (has external prerequisites)
+## Documentation build
 
-`docs/buildDocs` → `buildManual` + `buildQuickstartGuide` run shell scripts
-(`docs/htmlmanualtopdf.sh`, `docs/htmlquickstarttopdf.sh`) that:
+Build the site with `nix build .#website` and make `result/public` available at
+`website/public`. Then run `nix develop -c ./gradlew :docs:buildDocs`;
+`assembleCTAN` includes this step. The PDF scripts require Bash, Python 3,
+`sed`, and WeasyPrint from the dev shell.
 
-1. Require `htmlq`, `sed`, and `weasyprint` on PATH. These are provided by the
-   Nix dev shell (`nix develop`), not by a plain JDK checkout.
-2. Read the already-rendered website HTML from `website/public/` — i.e. the
-   website (`zola build`) must be built first. CI builds the website in the
-   `pages` job before the CTAN/PDF step.
-3. Write `/tmp/arara-manual/...` (hardcoded `/tmp` path; non-Linux systems need
-   adjustment).
-
-The `:docs:buildDocs` task is a dependency of the CTAN packaging tasks
-(`assembleTDSTree`, `assembleDocumentationSourceZip`). You cannot produce a
-CTAN/TDS zip without first having the rendered website and the PDF tools.
+`docs/extract-web-content.py` reads the `data-arara-document-*` regions and
+checks local images. `nix build .#website` verifies extraction for all book
+pages. Each PDF build uses a temporary directory under `$TMPDIR` (or `/tmp`).
 
 ## Release / packaging
 

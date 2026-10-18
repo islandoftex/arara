@@ -26,9 +26,10 @@ tasks {
         description = "Compile the manual's HTML file to PDF."
 
         dependsOn("writeVersionFile")
-        commandLine("sh", "htmlmanualtopdf.sh")
+        commandLine("bash", "htmlmanualtopdf.sh")
 
         inputs.file("htmlmanualtopdf.sh")
+        inputs.file("extract-web-content.py")
         inputs.dir("resources")
         outputs.files("arara-manual.pdf")
         outputs.upToDateWhen { false }
@@ -39,9 +40,10 @@ tasks {
         description = "Compile the quickstart guide's HTML file to PDF."
 
         dependsOn("writeVersionFile")
-        commandLine("sh", "htmlquickstarttopdf.sh")
+        commandLine("bash", "htmlquickstarttopdf.sh")
 
         inputs.file("htmlquickstarttopdf.sh")
+        inputs.file("extract-web-content.py")
         inputs.dir("resources")
         outputs.files("arara-quickstart.pdf")
         outputs.upToDateWhen { false }

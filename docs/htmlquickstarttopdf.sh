@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-set -e
+set -euo pipefail
 
 # check the required tools; we make these available through the `nix develop`
 # shell so you may use that to build the manual
-required_tools=("htmlq" "sed" "weasyprint")
+required_tools=("sed" "weasyprint" "python3")
 for tool in "${required_tools[@]}"
 do
   if ! [ -x "$(command -v "$tool")" ]; then
@@ -16,6 +16,7 @@ done
 # this script fetches the manual content from the remote rendered version at
 # arara's website; caveat: chapters have to be manually adjusted
 currdir="$PWD"
+extractor="$(cd "$(dirname "$0")" && pwd)/extract-web-content.py"
 basedir="$(dirname "$currdir")/website/public/"
 baseurl="file://$basedir"
 
@@ -25,15 +26,9 @@ then
   exit 1
 fi
 
-# create a temporary directory to build the manual in; this will be created
-# in /tmp, so users of operating systems without that directory must change
-# it here
-tempdir="/tmp/arara-quickstart"
-if [ -d "$tempdir" ]
-then
-  rm -r "$tempdir"
-fi
-mkdir -p "$tempdir"
+# Each build owns its scratch directory, including parallel local builds.
+tempdir="$(mktemp -d "${TMPDIR:-/tmp}/arara-quickstart.XXXXXX")"
+trap 'rm -rf "$tempdir"' EXIT
 cp ./resources/* "$tempdir/"
 cd "$tempdir"
 
@@ -63,9 +58,9 @@ EOF
 
 # assemble the manual content by fetching chapters from the webpage;
 # while doing so assemble the toc for that chapter as well
+quickstart_body="$(python3 "$extractor" --asset-root "$basedir" --site-url "${PAGES_URL:-https://islandoftex.gitlab.io/arara}" "${basedir}quickstart/index.html")"
 cat <<EOF >> $htmlfile
-$(cat "$(echo "$baseurl" | cut -c8-)quickstart/index.html" | htmlq 'div.content.text' --remove-nodes 'div.heading-text' \
-  | tail -n +3 | head -n -1 \
+$(printf '%s\n' "$quickstart_body" \
   | sed -r 's/<(\/?)h5/<\1h6/g' | sed -r 's/<(\/?)h4/<\1h5/g' \
   | sed -r 's/<(\/?)h3/<\1h4/g' | sed -r 's/<(\/?)h2/<\1h3/g' \
   | sed -r 's/<(\/?)h1/<\1h2/g')

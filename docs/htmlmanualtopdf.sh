@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-set -e
+set -euo pipefail
 
 # check the required tools; we make these available through the `nix develop`
 # shell so you may use that to build the manual
-required_tools=("htmlq" "sed" "weasyprint")
+required_tools=("sed" "weasyprint" "python3")
 for tool in "${required_tools[@]}"
 do
   if ! [ -x "$(command -v "$tool")" ]; then
@@ -16,6 +16,7 @@ done
 # this script fetches the manual content from the remote rendered version at
 # arara's website; caveat: chapters have to be manually adjusted
 currdir="$PWD"
+extractor="$(cd "$(dirname "$0")" && pwd)/extract-web-content.py"
 basedir="$(dirname "$currdir")/website/public/"
 baseurl="file://$basedir"
 chapters=("introduction" "concepts" "cli" "configuration" "logging"
@@ -28,15 +29,9 @@ then
   exit 1
 fi
 
-# create a temporary directory to build the manual in; this will be created
-# in /tmp, so users of operating systems without that directory must change
-# it here
-tempdir="/tmp/arara-manual"
-if [ -d "$tempdir" ]
-then
-  rm -r "$tempdir"
-fi
-mkdir -p "$tempdir"
+# Each build owns its scratch directory, including parallel local builds.
+tempdir="$(mktemp -d "${TMPDIR:-/tmp}/arara-manual.XXXXXX")"
+trap 'rm -rf "$tempdir"' EXIT
 cp ./resources/* "$tempdir/"
 cd "$tempdir"
 
@@ -130,14 +125,14 @@ toc_content=""
 chapter_content=""
 for chapter in "${chapters[@]}"
 do
-  cp "$(echo "${baseurl}manual/$chapter/index.html" | cut -c8-)" "tmp-$htmlfile"
-  chapter_title="$(cat "tmp-$htmlfile" | htmlq -t 'div.heading-text' \
-                 | sed '/^[[:space:]]*$/d' | sed 's/ *$//g' | sed 's/^ *//g')"
+  chapter_page="${basedir}manual/$chapter/index.html"
+  chapter_title="$(python3 "$extractor" --title "$chapter_page")"
+  # Extract outside the heredoc so an invalid/empty chapter fails this build.
+  chapter_body="$(python3 "$extractor" --asset-root "$basedir" --site-url "${PAGES_URL:-https://islandoftex.gitlab.io/arara}" "$chapter_page")"
   this_chapter_content="$(cat <<EOF
 <article>
 <h1 id="chapter-$chapter">$chapter_title</h1>
-$(cat "tmp-$htmlfile" | htmlq 'div.content.text' --remove-nodes 'div.heading-text' \
-  | tail -n +3 | head -n -1 \
+$(printf '%s\n' "$chapter_body" \
   | sed -r 's/<(\/?)h5/<\1h6/g' | sed -r 's/<(\/?)h4/<\1h5/g' \
   | sed -r 's/<(\/?)h3/<\1h4/g' | sed -r 's/<(\/?)h2/<\1h3/g' \
   | sed -r 's/<(\/?)h1/<\1h2/g')
@@ -186,7 +181,6 @@ EOF
   # append chapter content to actual content
   chapter_content+="$this_chapter_content"
 done
-rm "tmp-$htmlfile"
 
 cat <<EOF >> $htmlfile
 <article id="contents">
@@ -201,7 +195,7 @@ $chapter_content
 EOF
 
 # respect non-empty PAGES_URL that holds a customized base_url
-if [ -z "${PAGES_URL}" ]; then
+if [ -z "${PAGES_URL:-}" ]; then
     PAGES_URL="https://islandoftex.gitlab.io/arara"
 fi
 

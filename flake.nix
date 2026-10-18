@@ -58,6 +58,16 @@
                 runHook postBuild
               '';
 
+              doCheck = true;
+              ARARA_WEBSITE_THEME = devlab-theme;
+              checkPhase = ''
+                runHook preCheck
+                python3 -m unittest discover -s scripts -p 'test_*.py'
+                python3 -m unittest discover -s docs -p 'test_*.py'
+                python3 docs/extract-web-content.py --check-site "$TMPDIR/public"
+                runHook postCheck
+              '';
+
               installPhase = ''
                 mkdir -p $out/public
                 cp -r "$TMPDIR/public/." $out/public/
@@ -76,6 +86,7 @@
             jdk11
             htmlq
             nixpkgs-fmt
+            python3
             python3Packages.weasyprint
             zip
             websiteZola
