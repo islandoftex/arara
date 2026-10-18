@@ -8,12 +8,12 @@ import org.islandoftex.arara.core.session.ClassLoading
 import org.islandoftex.arara.core.session.ClassLoading.ClassLoadingStatus
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
-import org.islandoftex.arara.core.ui.GUIDialogs
+import org.islandoftex.arara.core.ui.DialogRenderer
+import org.islandoftex.arara.core.ui.Dialogs
 
 @Suppress("unused", "TooManyFunctions")
 object ConditionalMethods {
-    // the GUI generator
-    private val dialogs = GUIDialogs(Session.userInterfaceOptions)
+    private val dialogs: DialogRenderer get() = Dialogs.renderer
 
     /**
      * Checks if the file exists according to its extension.

@@ -51,6 +51,8 @@ import org.islandoftex.arara.core.rules.Directives
 import org.islandoftex.arara.core.session.ExecutorHooks
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
+import org.islandoftex.arara.core.ui.Dialogs
+import org.islandoftex.arara.core.ui.SwingDialogRenderer
 import org.islandoftex.arara.lua.LuaInterpreter
 import org.islandoftex.arara.mvel.utils.MvelState
 import java.time.LocalDate
@@ -308,6 +310,7 @@ class CLI : CliktCommand("arara") {
 
         val executionStart = TimeSource.Monotonic.markNow()
         updateConfigurationFromCommandLine()
+        val previousDialogs = Dialogs.renderer
 
         // logging has to be initialized only once and for all because
         // context resets lead to missing output
@@ -322,6 +325,7 @@ class CLI : CliktCommand("arara") {
         parameters.forEach { (key, value) -> Session.put("arg:$key", value) }
 
         try {
+            Dialogs.renderer = SwingDialogRenderer { Session.userInterfaceOptions }
             LinearExecutor.hooks = ExecutorHooks(
                 executeBeforeExecution = {
                     Session.updateEnvironmentVariables()
@@ -361,6 +365,8 @@ class CLI : CliktCommand("arara") {
             // out local treatment
             DisplayUtils.printException(ex)
             ExecutionStatus.CaughtException()
+        } finally {
+            Dialogs.renderer = previousDialogs
         }.let { executionStatus ->
             // print the execution time if the command line parsing does not
             // return false as result (it makes no sense to print the execution

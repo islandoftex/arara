@@ -13,14 +13,14 @@ import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
-import org.islandoftex.arara.core.ui.GUIDialogs
+import org.islandoftex.arara.core.ui.DialogRenderer
+import org.islandoftex.arara.core.ui.Dialogs
 import org.islandoftex.arara.core.ui.InputHandling
 import org.islandoftex.arara.mvel.interpreter.AraraExceptionWithHeader
 
 @Suppress("unused", "TooManyFunctions")
 object RuleMethods {
-    // the GUI generator
-    private val dialogs = GUIDialogs(Session.userInterfaceOptions)
+    private val dialogs: DialogRenderer get() = Dialogs.renderer
 
     /**
      * Exit the application with status code.
