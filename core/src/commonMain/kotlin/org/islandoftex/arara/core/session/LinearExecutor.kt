@@ -70,7 +70,8 @@ object LinearExecutor : Executor {
         val executionStarted = TimeSource.Monotonic.markNow()
         var exitCode = 0
         for (project in projectsInOrder) {
-            exitCode = executeProject(project)
+            val projectCode = executeProject(project)
+            if (projectCode != 0) exitCode = projectCode
             if (executionOptions.haltOnErrors && exitCode != 0)
                 break
         }
@@ -83,18 +84,20 @@ object LinearExecutor : Executor {
     internal fun executeProject(project: Project): Int {
         var exitCode = 0
         currentProject = project
-        hooks.executeBeforeProject(project)
-        for (file in project.files.sortedByDescending { it.priority }) {
-            hooks.executeBeforeFile(file)
-            val executionReport = execute(file)
-            exitCode = executionReport.exitCode
-            if (executionOptions.haltOnErrors && exitCode != 0)
-                return exitCode
-            hooks.executeAfterFile(executionReport)
+        try {
+            hooks.executeBeforeProject(project)
+            for (file in project.files.sortedByDescending { it.priority }) {
+                hooks.executeBeforeFile(file)
+                val report = execute(file)
+                if (report.exitCode != 0) exitCode = report.exitCode
+                hooks.executeAfterFile(report)
+                if (executionOptions.haltOnErrors && report.exitCode != 0) break
+            }
+            hooks.executeAfterProject(project)
+            return exitCode
+        } finally {
+            currentProject = null
         }
-        hooks.executeAfterProject(project)
-        currentProject = null
-        return exitCode
     }
 
     /**
@@ -104,21 +107,33 @@ object LinearExecutor : Executor {
      */
     override fun execute(file: ProjectFile): ExecutionReport {
         currentFile = file
+        HaltRequest.clear()
         val executionStarted = TimeSource.Monotonic.markNow()
-        val directives = hooks.processDirectives(
-            file,
-            file.fetchDirectives(executionOptions.parseOnlyHeader)
-        )
+        try {
+            val directives = hooks.processDirectives(
+                file,
+                file.fetchDirectives(executionOptions.parseOnlyHeader)
+            )
+            val exitCode = executeDirectives(directives)
+            return ExecutionReport(executionStarted, TimeSource.Monotonic.markNow(), exitCode)
+        } finally {
+            currentFile = null
+            HaltRequest.clear()
+        }
+    }
+
+    private fun executeDirectives(directives: List<org.islandoftex.arara.api.rules.Directive>): Int {
         var exitCode = 0
         for (directive in directives) {
-            exitCode = directive.execute()
-            if (executionOptions.haltOnErrors && exitCode != 0) {
+            val code = directive.execute()
+            if (code != 0) exitCode = code
+            val haltCode = HaltRequest.exitCode
+            if (haltCode != null || (executionOptions.haltOnErrors && code != 0)) {
+                if (haltCode != null && haltCode != 0) exitCode = haltCode
                 break
             }
         }
-        currentFile = null
-        return ExecutionReport(
-            executionStarted, TimeSource.Monotonic.markNow(), exitCode
-        )
+        return exitCode
     }
+
 }

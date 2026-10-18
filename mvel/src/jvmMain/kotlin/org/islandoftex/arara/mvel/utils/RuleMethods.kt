@@ -11,6 +11,7 @@ import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.files.FileSearching
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
+import org.islandoftex.arara.core.session.HaltRequest
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.ui.DialogRenderer
@@ -30,7 +31,7 @@ object RuleMethods {
     @JvmStatic
     @JvmOverloads
     fun halt(status: Int = 0) {
-        Session.put("arara:$originalFile:halt", status)
+        HaltRequest.request(status)
     }
 
     /**

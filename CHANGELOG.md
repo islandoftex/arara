@@ -26,8 +26,18 @@ on.
 * animate+convert rules: change default program from `convert` to `magick` 
   (`convert` was deprecated in ImageMagick v7)
 
+### Fixed
+
+* Halt requests stop the current file even when successful or returned without
+  a task, and their exact status reaches the process. Requests are cleared at
+  file boundaries, so files with the same name cannot share them.
+* Successful tasks, files, and projects no longer erase a previous failure.
+  Executor state is released after exceptions so another run can start.
+
 ### Removed
 
+* **Breaking change:** The arara 7 `arara:FILENAME:halt` session entry is no
+  longer honored. Rules must call `halt(status)` instead of setting that entry.
 * The Nix application build is no longer provided. The Nix development shell
   and website build remain available; build arara with Gradle instead.
 

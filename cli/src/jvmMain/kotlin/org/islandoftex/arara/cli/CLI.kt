@@ -356,10 +356,7 @@ class CLI : CliktCommand("arara") {
             )
 
             val projects = resolveProjects()
-            if (LinearExecutor.execute(projects).exitCode != 0)
-                ExecutionStatus.ExternalCallFailed()
-            else
-                ExecutionStatus.Processing()
+            ExecutionStatus.FinishedWithCode(LinearExecutor.execute(projects).exitCode)
         } catch (ex: AraraException) {
             // catch a propagated exception to replace intentionally left
             // out local treatment

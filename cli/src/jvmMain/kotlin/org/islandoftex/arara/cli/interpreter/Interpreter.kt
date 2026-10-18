@@ -17,7 +17,7 @@ import org.islandoftex.arara.cli.ruleset.RuleFormat
 import org.islandoftex.arara.cli.ruleset.RuleUtils
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.core.localization.LanguageController
-import org.islandoftex.arara.core.session.Session
+import org.islandoftex.arara.core.session.HaltRequest
 import org.islandoftex.arara.core.ui.InputHandling
 import org.islandoftex.arara.mvel.interpreter.AraraExceptionWithHeader
 import org.islandoftex.arara.mvel.rules.DirectiveConditionalEvaluator
@@ -34,16 +34,13 @@ import org.mvel2.templates.TemplateRuntime
  */
 class Interpreter(
     private val executionOptions: ExecutionOptions,
-    currentFile: ProjectFile,
+    @Suppress("UNUSED_PARAMETER") currentFile: ProjectFile,
     private val workingDirectory: MPPPath
 ) {
     private val logger = KotlinLogging.logger { }
 
-    /**
-     * This string represents the key necessary for halting the current
-     * executor. It will be checked against session values.
-     */
-    private val haltKey = "arara:${currentFile.path.fileName}:halt"
+    // Read only after failure: booleans set 1; commands set their nonzero exit status (or 1).
+    private var lastFailureCode = 1
 
     /**
      * Gets the rule according to the provided directive.
@@ -101,6 +98,7 @@ class Interpreter(
         conditional: DirectiveConditional,
         authors: List<String>
     ): Boolean = value.also {
+        if (!value) lastFailureCode = 1
         logger.info {
             LanguageController.messages.LOG_INFO_BOOLEAN_MODE.format(it)
         }
@@ -137,9 +135,11 @@ class Interpreter(
             LanguageController.messages.LOG_INFO_SYSTEM_COMMAND.format(command)
         }
         var success = true
+        var commandExitCode = 1
 
         if (executionOptions.executionMode != ExecutionMode.DRY_RUN) {
             val code = InterpreterUtils.run(command)
+            commandExitCode = if (code == 0) 1 else code
             val check: Any = try {
                 val context = mapOf<String, Any>("value" to code)
                 TemplateRuntime.eval(
@@ -171,6 +171,7 @@ class Interpreter(
             DisplayUtils.printConditional(conditional)
         }
 
+        if (!success) lastFailureCode = commandExitCode
         return success
     }
 
@@ -179,7 +180,9 @@ class Interpreter(
      * @param result The result
      * @return A flat list.
      */
-    private fun resultToList(result: Any) = if (result is List<*>) {
+    private fun resultToList(result: Any?) = if (result == null && HaltRequest.exitCode != null) {
+        emptyList()
+    } else if (result is List<*>) {
         InputHandling.flatten(result)
     } else {
         listOf(result)
@@ -209,7 +212,15 @@ class Interpreter(
             exception
         )
     }.filter { it.toString().isNotBlank() }
-        .fold(ExecutionStatus.Processing() as ExecutionStatus) { _, current ->
+        .also {
+            HaltRequest.exitCode?.let { code ->
+                throw HaltExpectedException(
+                    LanguageController.messages.ERROR_INTERPRETER_USER_REQUESTED_HALT,
+                    ExecutionStatus.FinishedWithCode(code)
+                )
+            }
+        }
+        .fold(ExecutionStatus.Processing() as ExecutionStatus) { previous, current ->
             DisplayUtils.printEntry(
                 rule.displayName!!,
                 command.name
@@ -234,24 +245,16 @@ class Interpreter(
 
             DisplayUtils.printEntryResult(success)
             when {
-                Session.contains(haltKey) ->
-                    throw HaltExpectedException(
-                        LanguageController.messages
-                            .ERROR_INTERPRETER_USER_REQUESTED_HALT,
-                        ExecutionStatus.FinishedWithCode(
-                            Session[haltKey].toString().toInt()
-                        )
-                    )
                 executionOptions.haltOnErrors && !success ->
                     throw HaltExpectedException(
                         LanguageController
                             .messages.ERROR_INTERPRETER_COMMAND_UNSUCCESSFUL_EXIT
                             .format(command.name),
-                        ExecutionStatus.ExternalCallFailed()
+                        ExecutionStatus.FinishedWithCode(lastFailureCode)
                     )
                 success -> ExecutionStatus.Processing()
-                else -> ExecutionStatus.ExternalCallFailed()
-            }
+                else -> ExecutionStatus.FinishedWithCode(lastFailureCode)
+            }.let { if (it.exitCode != 0) it else previous }
         }
 
     /**
@@ -292,9 +295,9 @@ class Interpreter(
                 // a zero exit code meaning a conditionally disabled directive
                 // never fails
                 ExecutionStatus.Processing()
-            Session.contains(haltKey) ->
+            HaltRequest.exitCode != null ->
                 // a halt was requested by a rule
-                ExecutionStatus.FinishedWithCode(Session[haltKey].toString().toInt())
+                ExecutionStatus.FinishedWithCode(HaltRequest.exitCode!!)
             else -> {
                 try {
                     // if not execute the commands associated with the directive
@@ -303,14 +306,14 @@ class Interpreter(
                         retValue = rule.commands.fold(
                             ExecutionStatus.Processing()
                                 as ExecutionStatus
-                        ) { _, command ->
+                        ) { previous, command ->
                             executeCommand(
                                 // TODO: remove cast
                                 command as SerialRuleCommand,
                                 directive.conditional,
                                 rule,
                                 parameters
-                            )
+                            ).let { if (it.exitCode != 0) it else previous }
                         }
                     } while (evaluator.evaluate(directive.conditional))
                     retValue

@@ -638,11 +638,14 @@ features tab completion, you can use it to automatically fill partially typed
 file names from your working directory.
 
 {% messagebox(title="Exit status support") %}
-arara follows the good practices of software development and provides three
-values for exit status, so our tool can be programmatically used in scripts and
-other complex workflows: `0` `→` successful execution, `1`
-`→` one of the rules failed, and `2` `→` an exception was
-raised.
+In arara 8, a successful run returns `0`; an application exception returns `2`.
+A failed external command keeps its exit status, while a failed boolean rule returns
+`1`. A rule may request a specific status with `halt(status)`. Later successes
+do not clear an earlier failure when processing multiple tasks, files, or
+projects.
+
+Arara 7 reported rule failures as `1`; scripts migrating to arara 8 should
+handle other nonzero statuses from failed commands or explicit halt requests.
 
 Please refer to the documentation of your favourite command line interpreter to
 learn more about exit status captures. Programming languages also offer methods

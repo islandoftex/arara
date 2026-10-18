@@ -12,6 +12,9 @@ import org.islandoftex.arara.core.files.ProjectFile
 import org.islandoftex.arara.core.rules.Directives
 
 class InterpreterTest : ShouldSpec({
+    beforeTest { org.islandoftex.arara.core.session.HaltRequest.clear() }
+    afterTest { org.islandoftex.arara.core.session.HaltRequest.clear() }
+
     val texFile = FileType("tex", "^\\s*%\\s+")
 
     should("return zero exit code for ordinary halt") {

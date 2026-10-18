@@ -1282,6 +1282,25 @@ the instantiation of a class to one object. Therefore, the same session is
 consistently shared across rule contexts.
 {% end %}
 
+- **[R]** `halt(int status = 0): void` Stops processing the current file after
+  the current rule expression. `halt()` requests a successful stop; a nonzero
+  status requests a failure. No command needs to be returned after this call.
+  Halt requests are cleared at file boundaries, including for files with the
+  same name.
+
+  In arara 7, rules could request a halt through a session entry:
+
+  ```java
+  getSession().put('arara:myfile.tex:halt', 42);
+  ```
+
+  In arara 8, that entry is no longer read and setting it does not stop
+  execution. Replace it with a call affecting the current file:
+
+  ```java
+  halt(42);
+  ```
+
 - **[C|E|R]** `getSession(): Session` This method, as the name implies, returns
     the `Session` object for data sharing across rule contexts. Keep in mind
     that a session cannot contain duplicate keys. Each key can map to at most
@@ -1386,8 +1405,7 @@ consistently shared across rule contexts.
   ```
 
 {% messagebox(title="Flags and reserved storage in a session") %}
-From version 6.0 on, there are three reserved namespaces within a session. They
-are described as follows:
+The following session namespaces provide environment and argument values:
 
 - `environment`: This namespace is quite intuitive: arara will store the current
   state of the systems environment variables in its session. You may alter these
@@ -1397,18 +1415,6 @@ are described as follows:
 
   ```java
   path = getSession().get('environment:PATH');
-  ```
-
-- `arara`: This namespace provides flags that control the underlying behaviour of
-  arara. Flags are used in rules and may be manipulated by the user. Be aware
-  that every change in this namespace will result in the tool acting like you
-  know what you did. Use this power with care. Currently, there is only one
-  relevant flag: `arara:FILENAME:halt`. This will stop the currently run command
-  execution on the file with the specified file name. The value of this map
-  entry is the exit status you want arara to have.
-
-  ```java
-  getSession().put('arara:myfile.tex:halt', 42);
   ```
 
 - `arg`: This namespace acts as a bridge between contexts and the command line
