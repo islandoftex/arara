@@ -2,6 +2,7 @@
 package org.islandoftex.arara.core.configuration
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionOptions
 import org.islandoftex.arara.api.configuration.LoggingOptions
@@ -33,7 +34,8 @@ data class LocalConfiguration(
     private val logname: String? = null,
     val preambles: Map<String, String> = mapOf(),
     val defaultPreamble: String? = null,
-    val prependPreambleIfDirectivesGiven: Boolean = true
+    val prependPreambleIfDirectivesGiven: Boolean = true,
+    @Transient private val expandPathTokens: Boolean = true
 ) {
     /**
      * Convert the relevant properties of the configuration to execution
@@ -50,7 +52,7 @@ data class LocalConfiguration(
         val preprocessedPaths = paths.asSequence()
             .map { it.trim() }
             .map { input ->
-                input.replace(
+                if (!expandPathTokens) input else input.replace(
                     "@{user.home}",
                     Environment.getSystemPropertyOrNull("user.home") ?: ""
                 )
