@@ -154,13 +154,17 @@ class CLI : CliktCommand("arara") {
         val workingDir = (workingDirectory?.toMPPPath() ?: MPPPath("."))
             .normalize()
 
-        val specification = reference.firstOrNull { it.endsWith(".proj.lua") }
-        if (specification != null) {
-            if (reference.size != 1) throw AraraException("Pass one project specification at a time.")
-            val path = workingDir.resolve(specification)
-            return LuaInterpreter(workingDir).parseProjectsFromLua(
-                path.readText(), path.fileName.removeSuffix(".proj.lua"), path.toString()
-            )
+        val specifications = reference.filter { it.endsWith(".proj.lua") }
+        if (specifications.isNotEmpty()) {
+            if (specifications.size != reference.size) {
+                throw AraraException("Project specifications cannot be combined with loose inputs yet.")
+            }
+            return specifications.flatMap { specification ->
+                val path = workingDir.resolve(specification)
+                LuaInterpreter(workingDir).parseProjectsFromLua(
+                    path.readText(), path.fileName.removeSuffix(".proj.lua"), path.toString()
+                )
+            }
         }
         return Project(
             "Untitled",

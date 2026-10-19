@@ -16,6 +16,10 @@ on.
 
 ### Changed
 
+* Multiple project specifications share a dependency graph. Project names and
+  normalized file paths must be unique across the invocation; overlapping file
+  ownership is rejected before execution.
+
 * **Breaking change:** Project specifications require `.proj.lua`; ordinary `.lua`
   files are no longer interpreted as specifications. Invalid specifications no
   longer fall back to directive scanning. Rename `workingDirectory` to

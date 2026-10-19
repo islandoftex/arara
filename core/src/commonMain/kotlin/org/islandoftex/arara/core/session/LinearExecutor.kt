@@ -7,7 +7,7 @@ import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.session.ExecutionReport
 import org.islandoftex.arara.api.session.Executor
-import org.islandoftex.arara.core.dependencies.ProjectGraph
+import org.islandoftex.arara.core.dependencies.ProjectValidation
 import kotlin.time.TimeSource
 
 object LinearExecutor : Executor {
@@ -65,7 +65,7 @@ object LinearExecutor : Executor {
      * @param projects The projects to act on.
      */
     override fun execute(projects: List<Project>): ExecutionReport {
-        val projectsInOrder = ProjectGraph().apply { addAll(projects) }.kahn()
+        val projectsInOrder = ProjectValidation.executionOrder(projects)
         hooks.executeBeforeExecution()
         val executionStarted = TimeSource.Monotonic.markNow()
         var exitCode = 0

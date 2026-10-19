@@ -52,11 +52,13 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
             ?.let { appWorkingDir.resolve(it).normalize() } ?: appWorkingDir.normalize()
         val files = ProjectFields.table(table["files"], "$context.files")
             ?: throw ProjectParseException("$context.files is required.")
+        val paths = mutableSetOf<MPPPath>()
         val entries = files.keys().map { key ->
             val reference = ProjectFields.string(key, "$context.files key")
                 ?: throw ProjectParseException("$context.files requires filename keys.")
             if (reference.isBlank()) throw ProjectParseException("$context.files has a blank filename.")
             val path = directory.resolve(reference).normalize()
+            if (!paths.add(path)) throw ProjectParseException("$context.files repeats '$path'.")
             if (path.isDirectory) throw ProjectParseException("$context.files[$reference] is a directory.")
             val spec = ProjectFields.table(files[key], "$context.files[$reference]")
                 ?: throw ProjectParseException("$context.files[$reference] must be a table.")
@@ -92,11 +94,6 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
         if (projects.isEmpty()) throw ProjectParseException("A specification must contain at least one project.")
         val names = projects.map { it.name }
         if (names.toSet().size != names.size) throw ProjectValidationException("Project names must be unique.")
-        projects.forEach { project ->
-            project.dependencies.firstOrNull { it !in names }?.let {
-                throw ProjectValidationException("Project '${project.name}' has unknown dependency '$it'.")
-            }
-        }
         return projects
     }
 

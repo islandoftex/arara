@@ -51,4 +51,19 @@ class ProjectGraphTest {
         assertEquals(listOf("A", "B"), graph.kahn())
     }
 
+    @Test
+    fun invocationValidationRejectsSharedPathsRegardlessOfAttributes() {
+        val type = org.islandoftex.arara.core.files.FileType("tex", "^%")
+        val first = org.islandoftex.arara.core.files.ProjectFile(MPPPath("a.tex"), type)
+        val second = org.islandoftex.arara.core.files.ProjectFile(MPPPath("./a.tex"), type, 1)
+        assertFailsWith<AraraException> {
+            ProjectValidation.executionOrder(listOf(
+                Project("A", MPPPath("."), setOf(first)),
+                Project("B", MPPPath("."), setOf(second))
+            ))
+        }
+        assertFailsWith<AraraException> {
+            ProjectValidation.executionOrder(listOf(Project("A", MPPPath("."), setOf(first, second))))
+        }
+    }
 }

@@ -12,7 +12,7 @@ projects, please open an issue in our
 [repo](https://gitlab.com/islandoftex/arara).
 {% end %}
 
-Pass one `.proj.lua` file to execute a project specification. Ordinary `.lua`
+Pass one or more `.proj.lua` files to execute project specifications. Ordinary `.lua`
 files are regular inputs, using a configured file type. A malformed `.proj.lua`
 specification fails explicitly; it is never scanned for directives.
 
@@ -132,3 +132,31 @@ Dependencies must name existing projects and must not form cycles. Invalid
 graphs fail before any project executes. Independent projects are considered
 in name order. Files run by descending priority, with ties ordered by normalized
 absolute path.
+
+Multiple specifications share one dependency graph, so a dependency may name a
+project in another specification, including one that returns a single project.
+Names must be unique across the invocation. Each normalized absolute file path
+may belong to only one project; repeated paths within a specification are also
+errors. This identity is lexical: symbolic links are not resolved. All graph
+and ownership checks finish before execution.
+
+```sh
+arara figures.proj.lua book.proj.lua
+```
+
+For multiple runs of one file, list the directives in execution order:
+
+```lua
+return {
+  files = {
+    ["book.tex"] = {
+      directives = {
+        "% arara: pdflatex: { synctex: no }",
+        "% arara: pdflatex: { synctex: yes }"
+      }
+    }
+  }
+}
+```
+
+The file occurs once; its directives run in the order given.

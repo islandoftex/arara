@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.lua
 
-import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -86,7 +85,7 @@ class LuaInterpreterTest {
     }
 
     @Test
-    fun shouldFailOnUnsatisfiedDependency() {
+    fun leavesDependenciesForInvocationWideValidation() {
         val script = """
             return {
               name = "My awesome book",
@@ -96,10 +95,8 @@ class LuaInterpreterTest {
               dependencies = { "My awesome book v2" }
             }
         """.trimIndent()
-        assertFailsWith<AraraException> {
-            LuaInterpreter(MPPPath(".")).parseProjectsFromLua(script)
-                .also { println(it) }
-        }
+        val project = LuaInterpreter(MPPPath(".")).parseProjectsFromLua(script).single()
+        assertEquals(setOf("My awesome book v2"), project.dependencies)
     }
 
     @Test
@@ -209,6 +206,16 @@ class LuaInterpreterTest {
             "return { files = { ['a.tex'] = { fileType = { extension = 'tex' } } } }"
         )) {
             assertFailsWith<ProjectParseException> { parser.parseProjectsFromLua(script) }
+        }
+    }
+
+
+    @Test
+    fun rejectsDifferentSpellingsOfOneFileEvenWithDifferentAttributes() {
+        assertFailsWith<ProjectParseException> {
+            LuaInterpreter(MPPPath(".")).parseProjectsFromLua("""
+                return { files = { ['a.tex'] = {}, ['./a.tex'] = { priority = 1 } } }
+            """.trimIndent())
         }
     }
 
