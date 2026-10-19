@@ -28,6 +28,9 @@ on.
 
 ### Fixed
 
+* Project working directories resolve relative to the invocation directory;
+  implicit file types use each project's configuration, including compound extensions.
+
 * Project specifications reject malformed fields instead of silently ignoring
   entries or coercing values. Errors identify the offending field.
 

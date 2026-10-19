@@ -49,14 +49,14 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
         val name = ProjectFields.string(table["name"], "$context.name") ?: "Untitled project"
         if (name.isBlank()) throw ProjectParseException("$context.name must not be blank.")
         val directory = ProjectFields.string(table["workingDirectory"], "$context.workingDirectory")
-            ?.let { MPPPath(it) } ?: appWorkingDir
+            ?.let { appWorkingDir.resolve(it).normalize() } ?: appWorkingDir.normalize()
         val files = ProjectFields.table(table["files"], "$context.files")
             ?: throw ProjectParseException("$context.files is required.")
         val entries = files.keys().map { key ->
             val reference = ProjectFields.string(key, "$context.files key")
                 ?: throw ProjectParseException("$context.files requires filename keys.")
             if (reference.isBlank()) throw ProjectParseException("$context.files has a blank filename.")
-            val path = directory.resolve(reference)
+            val path = directory.resolve(reference).normalize()
             if (path.isDirectory) throw ProjectParseException("$context.files[$reference] is a directory.")
             val spec = ProjectFields.table(files[key], "$context.files[$reference]")
                 ?: throw ProjectParseException("$context.files[$reference] must be a table.")
@@ -94,6 +94,28 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
             }
         }
         return projects
+    }
+
+    companion object {
+        /** Resolve implicit types against the configuration belonging to this project. */
+        fun resolvePendingFileTypes(
+            project: Project,
+            options: org.islandoftex.arara.api.configuration.ExecutionOptions
+        ): Project {
+            val files = project.files.map { file ->
+                if (file !is LuaProjectFile || file.fileType != FileType.UNKNOWN_TYPE) {
+                    file
+                } else {
+                    val type = options.fileTypes.firstOrNull {
+                        file.path.fileName.endsWith(".${it.extension}")
+                    } ?: throw ProjectParseException("No configured file type matches '${file.path}'.")
+                    LuaProjectFile(file.path, type, file.priority).apply { directives = file.directives }
+                }
+            }.toSet()
+            return org.islandoftex.arara.core.files.Project(
+                project.name, project.workingDirectory, files, project.dependencies
+            )
+        }
     }
 }
 

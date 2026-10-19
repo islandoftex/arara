@@ -312,6 +312,31 @@ class CLI : CliktCommand("arara") {
         }
     }
 
+    private fun configureProject(
+        project: org.islandoftex.arara.api.files.Project,
+        configuration: ConfigurationSnapshot
+    ) {
+        configuration.restore(configureLogging = false)
+        ConfigurationUtils.configFileForProject(project)?.let {
+            DisplayUtils.configurationFileName = it.toString()
+            ConfigurationUtils.load(it, project)
+        }
+        updateConfigurationFromCommandLine()
+    }
+
+    private fun prepareProjects(
+        projects: List<org.islandoftex.arara.api.files.Project>,
+        configuration: ConfigurationSnapshot
+    ): List<org.islandoftex.arara.api.files.Project> = try {
+        projects.map { project ->
+            configureProject(project, configuration)
+            LuaInterpreter.resolvePendingFileTypes(project, LinearExecutor.executionOptions)
+        }
+    } finally {
+        configuration.restore(configureLogging = false)
+        updateConfigurationFromCommandLine()
+    }
+
     private fun runSession(configuration: ConfigurationSnapshot) {
         // initializing logging has to come first; init() actually disables
         // the logging, so early exceptions won't generate a lot of noise in
@@ -346,12 +371,7 @@ class CLI : CliktCommand("arara") {
                     DirectiveUtils.initializeDirectiveCore()
                 },
                 executeBeforeProject = { project ->
-                    configuration.restore(configureLogging = false)
-                    ConfigurationUtils.configFileForProject(project)?.let {
-                        DisplayUtils.configurationFileName = it.toString()
-                        ConfigurationUtils.load(it, project)
-                    }
-                    updateConfigurationFromCommandLine()
+                    configureProject(project, configuration)
                     LoggingUtils.setupLogging(Session.loggingOptions)
                 },
                 executeBeforeFile = {
@@ -373,7 +393,7 @@ class CLI : CliktCommand("arara") {
                 }
             )
 
-            val projects = resolveProjects()
+            val projects = prepareProjects(resolveProjects(), configuration)
             ExecutionStatus.FinishedWithCode(LinearExecutor.execute(projects).exitCode)
         } catch (ex: AraraException) {
             // catch a propagated exception to replace intentionally left

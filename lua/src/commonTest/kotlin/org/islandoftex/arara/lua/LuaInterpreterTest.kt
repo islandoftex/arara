@@ -52,7 +52,7 @@ class LuaInterpreterTest {
         assertEquals(1, projects[0].files.size)
         val projectFile = projects[0].files.first()
 
-        assertEquals(MPPPath("file.tex"), projectFile.path)
+        assertEquals(MPPPath("file.tex").normalize(), projectFile.path)
         assertEquals(1, projectFile.priority)
         assertEquals(1, (projectFile as? LuaProjectFile)?.directives?.size)
         assertEquals("tex", projectFile.fileType.extension)
@@ -161,6 +161,40 @@ class LuaInterpreterTest {
             )
         }
         assertEquals("project.files[a.tex].priority must be an integer.", error.message)
+    }
+
+
+    @Test
+    fun resolvesWorkingDirectoryAgainstTheInvocationDirectory() {
+        val base = MPPPath("project-root").normalize()
+        val project = LuaInterpreter(base).parseProjectsFromLua(
+            "return { workingDirectory = 'chapter/../sources', files = { ['a.tex'] = {} } }"
+        ).single()
+        assertEquals(base.resolve("sources").normalize(), project.workingDirectory)
+        assertEquals(base.resolve("sources/a.tex").normalize(), project.files.single().path)
+    }
+
+    @Test
+    fun resolvesImplicitCompoundTypesWithoutReplacingExplicitTypesOrDirectives() {
+        val project = LuaInterpreter(MPPPath(".")).parseProjectsFromLua("""
+            return { files = {
+              ['a.custom.tex'] = { priority = 3, directives = { 'marker' } },
+              ['b.tex'] = { fileType = { extension = 'tex', pattern = 'explicit' } }
+            } }
+        """.trimIndent()).single()
+        val type = org.islandoftex.arara.core.files.FileType("custom.tex", "configured")
+        val options = org.islandoftex.arara.core.configuration.ExecutionOptions(fileTypes = listOf(type))
+        val resolved = LuaInterpreter.resolvePendingFileTypes(project, options)
+        val implicit = resolved.files.single { it.path.fileName == "a.custom.tex" } as LuaProjectFile
+        assertEquals(type, implicit.fileType)
+        assertEquals(3, implicit.priority)
+        assertEquals(listOf("marker"), implicit.directives)
+        assertEquals("explicit", resolved.files.single { it.path.fileName == "b.tex" }.fileType.pattern)
+        assertFailsWith<ProjectParseException> {
+            LuaInterpreter.resolvePendingFileTypes(
+                project, org.islandoftex.arara.core.configuration.ExecutionOptions(fileTypes = emptyList())
+            )
+        }
     }
 
 }
