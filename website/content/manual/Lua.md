@@ -54,3 +54,8 @@ Scalar options and option lists retain their shape. A nil interpolation result
 becomes empty text. Lua and MVEL interpolation tags cannot be mixed. Safe runs
 leave options uninterpolated. Dry runs skip conditional evaluation and process
 launches; rule scripts and command closures still evaluate.
+
+Lua counterparts are available for the TeX engines: `context`, `csplain`, `etex`,
+`latex`, `luahbtex`, `lualatex`, `luatex`, `pdfcsplain`, `pdflatex`, `pdftex`,
+`platex`, `ptex`, `tex`, `uplatex`, `uptex`, `xelatex` and `xetex`. Their arguments
+match the [official rule descriptions](@/manual/Rules.md).

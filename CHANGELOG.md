@@ -16,6 +16,8 @@ on.
 
 ### Changed
 
+* Add Lua counterparts for the 17 TeX engine rules, retaining the YAML rules.
+
 * Add `--engine lua` for Lua rules, conditionals and `{{ ... }}` option
   interpolation using Luak. YAML/MVEL remains the default. Scalar options now
   retain their value during interpolation.
