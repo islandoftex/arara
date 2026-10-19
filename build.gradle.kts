@@ -108,6 +108,7 @@ detekt {
             "core/src/commonMain/kotlin",
             "core/src/jvmMain/kotlin",
             "lua/src/commonMain/kotlin",
+            "lua/src/jvmMain/kotlin",
             "mvel/src/commonMain/kotlin",
             "mvel/src/jvmMain/kotlin",
             "kotlin-dsl/src/main/kotlin",
