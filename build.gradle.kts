@@ -333,3 +333,17 @@ tasks.register<Exec>("processSmoke") {
         )
     }
 }
+
+// Give runtime-only CI jobs both jars, independent of versioned filenames.
+tasks.register<Copy>("stageProcessSmokeJar") {
+    group = "verification"
+    description = "Stage the application and smoke runner jars for a separate runtime job."
+    dependsOn(":cli:shadowJar", ":smoke-tests:runnerJar")
+    from(provider { project(":cli").tasks.named<Jar>("shadowJar").get().archiveFile.get().asFile }) {
+        rename { "arara.jar" }
+    }
+    from(provider { project(":smoke-tests").tasks.named<Jar>("runnerJar").get().archiveFile.get().asFile }) {
+        rename { "runner.jar" }
+    }
+    into(layout.buildDirectory.dir("processSmoke"))
+}

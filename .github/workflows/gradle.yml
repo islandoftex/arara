@@ -20,8 +20,15 @@ jobs:
         gradle-version: current
     - name: Build
       run: ./gradlew build
-    - name: Build jar
-      run: ./gradlew :cli:shadowJar
+    - name: Check runnable jar
+      run: ./gradlew processSmoke
+    - name: Upload smoke results
+      if: always()
+      uses: actions/upload-artifact@v6
+      with:
+        name: process-smoke-${{ matrix.os }}
+        path: build/test-results/processSmoke/results.xml
+        if-no-files-found: warn
     - name: Upload build artifacts
       uses: actions/upload-artifact@v6
       with:

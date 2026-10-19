@@ -36,7 +36,7 @@ before_script:
   stage: build
   script:
     # create the executables for distribution
-    - ./gradlew --build-cache assembleDist --info
+    - ./gradlew --build-cache assembleDist stageProcessSmokeJar --info
     - mkdir bin
     - cp cli/build/libs/*.jar bin/
     - cp cli/build/distributions/*.zip bin/
@@ -47,6 +47,8 @@ before_script:
     name: "$CI_COMMIT_REF_NAME-snapshot"
     paths:
       - bin
+      - build/processSmoke/arara.jar
+      - build/processSmoke/runner.jar
     expire_in: 1 week
   cache:
     <<: *cachedefinition
@@ -66,6 +68,24 @@ build:linux:jdk21:
   cache:
     <<: *cachedefinition
     policy: pull
+
+test:process-smoke:
+  stage: test
+  needs: ["build:linux:jdk21"]
+  image: amazoncorretto:$JAVA_VERSION
+  parallel:
+    matrix:
+      - JAVA_VERSION: ["11", "21"]
+  script:
+    - java -jar build/processSmoke/runner.jar --jar build/processSmoke/arara.jar --java "$JAVA_HOME/bin/java"
+  artifacts:
+    when: always
+    name: "process-smoke-$JAVA_VERSION"
+    reports:
+      junit: build/test-results/processSmoke/results.xml
+    paths:
+      - build/test-results/processSmoke/results.xml
+    expire_in: 1 week
 
 test:dependencies:
   extends: .corretto
@@ -188,6 +208,7 @@ publish:snapshot_tdszip:
     - build:linux:jdk21
     - test:linux:jdk11
     - test:linux:jdk17
+    - test:process-smoke
     - job: pages:for-manual
       artifacts: true
   variables:

@@ -11,3 +11,5 @@ Subprocess checks for the packaged arara jar; no TeX dependency.
 | JUnit report | `build/test-results/processSmoke/results.xml` |
 | Standalone CLI | `java -jar smoke-tests/build/libs/process-smoke.jar --jar APP_JAR --java JAVA` |
 | Optional CLI arguments | `--javac JAVAC`, `--report XML` |
+| CI runtimes | GitLab: Java 11/21; GitHub: Java 21 on Linux/macOS/Windows |
+| CI artifacts | `stageProcessSmokeJar`: `build/processSmoke/{arara,runner}.jar` |

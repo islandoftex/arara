@@ -82,6 +82,10 @@ full local pre-push sequence is:
 ./gradlew spotlessCheck detekt allTests
 ```
 
+`processSmoke` is a separate CI gate: GitLab tests Java 11/21; the GitHub
+mirror tests Java 21 on Linux/macOS/Windows. Run it after the sequence above
+when changing runtime behavior or packaging. It builds its own runnable jar.
+
 Run them in that order; `detekt` and `spotlessCheck` are cheap and fail fast on
 style issues that are noisy to fix after writing a lot of code.
 
