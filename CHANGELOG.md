@@ -28,6 +28,9 @@ on.
 
 ### Fixed
 
+* File lookup keeps the configured type that matched a filename, including
+  compound extensions, rather than falling back to an unknown type.
+
 * Process failures retain their original exception and captured output; CLI
   error classification no longer parses exception names from strings. Existing
   pair-returning rule helpers remain compatible.

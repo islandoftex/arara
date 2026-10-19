@@ -5,7 +5,6 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.configuration.ExecutionOptions
-import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.toJVMFile
 import org.islandoftex.arara.api.files.ProjectFile
@@ -145,13 +144,8 @@ object FileSearching {
             testFile.exists && testFile.isRegularFile -> {
                 types.firstOrNull {
                     reference.endsWith("." + it.extension)
-                }?.let {
-                    val extension = reference.substringAfterLast('.')
-                    ProjectFile(
-                        path = testFile,
-                        fileType = types.firstOrNull { extension == it.extension }
-                            ?: FileType.UNKNOWN_TYPE
-                    )
+                }?.let { matched ->
+                    ProjectFile(path = testFile, fileType = matched)
                 }
             }
             // when in safe mode we do not perform indirect search
@@ -167,22 +161,15 @@ object FileSearching {
             // so we need to add it and look again
             else -> {
                 val name = testFile.fileName
-                types.map { testFile.parent / "$name.${it.extension}" }
+                types.map { (testFile.parent / "$name.${it.extension}") to it }
                     .union(
                         types.map {
-                            testFile.parent /
-                                "${name.removeSuffix(".").trim()}.${it.extension}"
+                            (testFile.parent /
+                                "${name.removeSuffix(".").trim()}.${it.extension}") to it
                         }
                     )
-                    .firstOrNull { it.exists && it.isRegularFile }
-                    ?.let { found ->
-                        val extension = found.toString().substringAfterLast('.')
-                        ProjectFile(
-                            found,
-                            types.firstOrNull { extension == it.extension }
-                                ?: FileType.UNKNOWN_TYPE
-                        )
-                    }
+                    .firstOrNull { (file, _) -> file.exists && file.isRegularFile }
+                    ?.let { (file, type) -> ProjectFile(file, type) }
             }
         }
     }

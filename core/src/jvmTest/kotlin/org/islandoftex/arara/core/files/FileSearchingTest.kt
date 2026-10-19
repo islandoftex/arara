@@ -60,6 +60,57 @@ class FileSearchingTest : ShouldSpec({
         }
     }
 
+    context("configured file type resolution") {
+        val directory = Files.createTempDirectory("arara file lookup ").toMPPPath()
+        afterSpec { directory.removeDirectory() }
+        val compound = FileType("source.tex", "custom compound pattern")
+        val ordinary = FileType("tex", "custom ordinary pattern")
+        val options = ExecutionOptions(fileTypes = listOf(compound, ordinary))
+
+        should("keep the matched compound type for an explicit relative path") {
+            (directory / "nested folder").createDirectories()
+            (directory / "nested folder/document.source.tex").writeText("content")
+            val found = FileSearching.lookupFile(
+                "nested folder/../nested folder/document.source.tex", directory, options
+            )!!
+            found.fileType shouldBe compound
+            found.fileType.pattern shouldBe compound.pattern
+            found.path.normalize() shouldBe (directory / "nested folder/document.source.tex").normalize()
+        }
+
+        should("keep the matched compound type when completing an extension") {
+            (directory / "completed.source.tex").writeText("content")
+            val found = FileSearching.lookupFile("completed", directory, options)!!
+            found.fileType shouldBe compound
+            found.fileType.pattern shouldBe compound.pattern
+        }
+
+        should("use the first configured type when extensions are repeated") {
+            (directory / "priority.tex").writeText("content")
+            val first = FileType("tex", "first pattern")
+            val configured = options.copy(fileTypes = listOf(first, ordinary))
+            for (reference in listOf("priority.tex", "priority")) {
+                FileSearching.lookupFile(reference, directory, configured)!!
+                    .fileType.pattern shouldBe first.pattern
+            }
+        }
+
+        should("allow explicit compound files but prohibit extension completion in safe mode") {
+            (directory / "safe.source.tex").writeText("content")
+            val safe = options.copy(executionMode = ExecutionMode.SAFE_RUN)
+            FileSearching.lookupFile("safe", directory, safe) shouldBe null
+            FileSearching.lookupFile("safe.source.tex", directory, safe)!!
+                .fileType.pattern shouldBe compound.pattern
+        }
+
+        should("reject directories and existing files with unconfigured extensions") {
+            (directory / "directory.tex").createDirectories()
+            (directory / "unknown.xyz").writeText("content")
+            FileSearching.lookupFile("directory.tex", directory, options) shouldBe null
+            FileSearching.lookupFile("unknown.xyz", directory, options) shouldBe null
+        }
+    }
+
     context("file lookup") {
         should("fail looking up inexistent file") {
             FileSearching.lookupFile(
