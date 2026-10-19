@@ -17,7 +17,7 @@ on.
 ### Changed
 
 * Add Lua counterparts for the 17 TeX engine rules and 16 bibliography, glossary
-  and index rules, retaining the YAML rules.
+  and index rules, and 15 conversion rules, retaining the YAML rules.
 
 * Add `--engine lua` for Lua rules, conditionals and `{{ ... }}` option
   interpolation using Luak. YAML/MVEL remains the default. Scalar options now

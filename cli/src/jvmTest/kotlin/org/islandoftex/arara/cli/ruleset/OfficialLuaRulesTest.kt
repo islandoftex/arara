@@ -118,4 +118,14 @@ class OfficialLuaRulesTest {
         parity("bibtex", mapOf("options" to listOf("-min-crossrefs=2")))
         parity("makeindex", mapOf("style" to "custom style.ist", "options" to listOf("-q")))
     }
+
+    @Test
+    fun conversionCommandsMatchYaml() {
+        listOf("animate", "dvipdfm", "dvipdfmx", "dvips", "dvipspdf", "dvisvgm", "pdfcrop", "pdftk",
+            "pdftocairo", "ps2pdf", "xdvipdfmx").forEach { parity(it) }
+        listOf("convert", "ghostscript", "qpdf").forEach { parity(it, mapOf("options" to listOf("--help"))) }
+        parity("fig2dev", mapOf("language" to "pdf", "output" to "figure with spaces.pdf"))
+        parity("dvipdfmx", mapOf("output" to "../README.md", "options" to listOf("-v")))
+        parity("pdfcrop", mapOf("margins" to listOf(10, 20, 30, 40), "clip" to true))
+    }
 }

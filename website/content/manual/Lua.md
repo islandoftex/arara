@@ -64,3 +64,7 @@ Bibliography, glossary and index rules also have Lua counterparts: `authorindex`
 `bib2gls`, `biber`, `bibtex`, `bibtex8`, `bibtexu`, `makeglossaries`,
 `makeglossarieslite`, `makeindex`, `nomencl`, `pbibtex`, `songidx`, `texindy`,
 `upbibtex`, `xindex` and `xindy`.
+
+Image, DVI, PostScript and PDF rules are available in Lua: `animate`, `convert`,
+`dvipdfm`, `dvipdfmx`, `dvips`, `dvipspdf`, `dvisvgm`, `fig2dev`, `ghostscript`,
+`pdfcrop`, `pdftk`, `pdftocairo`, `ps2pdf`, `qpdf` and `xdvipdfmx`.
