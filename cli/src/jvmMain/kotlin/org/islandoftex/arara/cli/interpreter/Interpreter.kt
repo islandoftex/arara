@@ -10,6 +10,7 @@ import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.Rule
+import org.islandoftex.arara.api.rules.RuleCommand
 import org.islandoftex.arara.api.rules.RuleArgument
 import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.api.session.ExecutionStatus
@@ -17,13 +18,13 @@ import org.islandoftex.arara.cli.ruleset.RuleFormat
 import org.islandoftex.arara.cli.ruleset.RuleUtils
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.core.localization.LanguageController
+import org.islandoftex.arara.core.rules.CommandEvaluator
 import org.islandoftex.arara.core.session.HaltRequest
 import org.islandoftex.arara.core.ui.InputHandling
 import org.islandoftex.arara.api.AraraExceptionWithHeader
 import org.islandoftex.arara.mvel.rules.DirectiveConditionalEvaluator
 import org.islandoftex.arara.mvel.rules.SerialRuleCommand
-import org.islandoftex.arara.mvel.utils.MvelState
-import org.mvel2.templates.TemplateRuntime
+import org.islandoftex.arara.mvel.interpreter.MvelCommandEvaluator
 
 /**
  * Interprets the list of directives.
@@ -119,17 +120,16 @@ class Interpreter(
      * @param command The command to run.
      * @param conditional The conditional applied to the run (only for printing).
      * @param authors The rule authors (only for printing).
-     * @param ruleCommandExitValue The exit value of the rule command.
+     * @param exitCheck Determines whether the process exit code indicates success.
      * @return Success of the execution.
      * @throws AraraException Execution failed.
      */
     @Throws(AraraException::class)
-    @Suppress("TooGenericExceptionCaught")
     private fun runCommand(
         command: Command,
         conditional: DirectiveConditional,
         authors: List<String>,
-        ruleCommandExitValue: String?
+        exitCheck: (Int) -> Boolean
     ): Boolean {
         logger.info {
             LanguageController.messages.LOG_INFO_SYSTEM_COMMAND.format(command)
@@ -140,28 +140,7 @@ class Interpreter(
         if (executionOptions.executionMode != ExecutionMode.DRY_RUN) {
             val code = InterpreterUtils.run(command)
             commandExitCode = if (code == 0) 1 else code
-            val check: Any = try {
-                val context = mapOf<String, Any>("value" to code)
-                TemplateRuntime.eval(
-                    "@{ " + (ruleCommandExitValue ?: "value == 0") + " }",
-                    context
-                )
-            } catch (exception: RuntimeException) {
-                throw AraraExceptionWithHeader(
-                    LanguageController.messages
-                        .ERROR_INTERPRETER_EXIT_RUNTIME_ERROR,
-                    exception
-                )
-            }
-
-            success = if (check is Boolean) {
-                check
-            } else {
-                throw AraraExceptionWithHeader(
-                    LanguageController.messages
-                        .ERROR_INTERPRETER_WRONG_EXIT_CLOSURE_RETURN
-                )
-            }
+            success = exitCheck(code)
         } else {
             DisplayUtils.printAuthors(authors)
             DisplayUtils.printWrapped(
@@ -197,65 +176,68 @@ class Interpreter(
      * @throws AraraException Running the command failed.
      */
     @Throws(AraraException::class)
-    @Suppress("TooGenericExceptionCaught", "ThrowsCount")
+    @Suppress("ThrowsCount")
     private fun executeCommand(
-        command: SerialRuleCommand,
+        command: RuleCommand,
         conditional: DirectiveConditional,
         rule: Rule,
         parameters: Map<String, Any>
-    ) = try {
-        resultToList(TemplateRuntime.eval(command.commandString!!, parameters))
-    } catch (exception: RuntimeException) {
-        throw AraraExceptionWithHeader(
-            LanguageController
-                .messages.ERROR_INTERPRETER_COMMAND_RUNTIME_ERROR,
-            exception
-        )
-    }.filter { it.toString().isNotBlank() }
-        .also {
-            HaltRequest.exitCode?.let { code ->
-                throw HaltExpectedException(
-                    LanguageController.messages.ERROR_INTERPRETER_USER_REQUESTED_HALT,
-                    ExecutionStatus.FinishedWithCode(code)
-                )
-            }
-        }
-        .fold(ExecutionStatus.Processing() as ExecutionStatus) { previous, current ->
-            DisplayUtils.printEntry(
-                rule.displayName!!,
-                command.name
-                    ?: LanguageController.messages.INFO_LABEL_UNNAMED_TASK
-            )
-
-            val success = when (current) {
-                is Boolean -> runBoolean(
-                    current, conditional,
-                    rule.authors
-                )
-                is Command -> runCommand(
-                    current, conditional,
-                    rule.authors, command.exit
-                )
-                else ->
-                    throw AraraExceptionWithHeader(
-                        LanguageController
-                            .messages.ERROR_INTERPRETER_WRONG_RETURN_TYPE
-                    )
-            }
-
-            DisplayUtils.printEntryResult(success)
-            when {
-                executionOptions.haltOnErrors && !success ->
+    ): ExecutionStatus {
+        val evaluator = commandEvaluator(command)
+        return resultToList(evaluator.evaluate(parameters)).filter { it.toString().isNotBlank() }
+            .also {
+                HaltRequest.exitCode?.let { code ->
                     throw HaltExpectedException(
-                        LanguageController
-                            .messages.ERROR_INTERPRETER_COMMAND_UNSUCCESSFUL_EXIT
-                            .format(command.name),
-                        ExecutionStatus.FinishedWithCode(lastFailureCode)
+                        LanguageController.messages.ERROR_INTERPRETER_USER_REQUESTED_HALT,
+                        ExecutionStatus.FinishedWithCode(code)
                     )
-                success -> ExecutionStatus.Processing()
-                else -> ExecutionStatus.FinishedWithCode(lastFailureCode)
-            }.let { if (it.exitCode != 0) it else previous }
-        }
+                }
+            }
+            .fold(ExecutionStatus.Processing() as ExecutionStatus) { previous, current ->
+                DisplayUtils.printEntry(
+                    rule.displayName!!,
+                    command.name
+                        ?: LanguageController.messages.INFO_LABEL_UNNAMED_TASK
+                )
+
+                val success = when (current) {
+                    is Boolean -> runBoolean(
+                        current, conditional,
+                        rule.authors
+                    )
+                    is Command -> runCommand(
+                        current, conditional,
+                        rule.authors, evaluator::isSuccessful
+                    )
+                    else ->
+                        throw AraraExceptionWithHeader(
+                            LanguageController
+                                .messages.ERROR_INTERPRETER_WRONG_RETURN_TYPE
+                        )
+                }
+
+                DisplayUtils.printEntryResult(success)
+                when {
+                    executionOptions.haltOnErrors && !success ->
+                        throw HaltExpectedException(
+                            LanguageController
+                                .messages.ERROR_INTERPRETER_COMMAND_UNSUCCESSFUL_EXIT
+                                .format(command.name),
+                            ExecutionStatus.FinishedWithCode(lastFailureCode)
+                        )
+                    success -> ExecutionStatus.Processing()
+                    else -> ExecutionStatus.FinishedWithCode(lastFailureCode)
+                }.let { if (it.exitCode != 0) it else previous }
+            }
+    }
+
+    private fun commandEvaluator(command: RuleCommand): CommandEvaluator = when (command) {
+        is CommandEvaluator -> command
+        is SerialRuleCommand -> MvelCommandEvaluator(command)
+        else -> throw AraraExceptionWithHeader(
+            LanguageController.messages.ERROR_INTERPRETER_WRONG_RETURN_TYPE
+        )
+    }
 
     /**
      * Executes each directive, throwing an exception if something bad has
@@ -265,7 +247,6 @@ class Interpreter(
      * higher levels.
      */
     @Throws(AraraException::class)
-    @Suppress("NestedBlockDepth")
     fun execute(directive: Directive): ExecutionStatus {
         logger.info {
             LanguageController.messages.LOG_INFO_INTERPRET_RULE.format(
@@ -282,7 +263,12 @@ class Interpreter(
 
         // parse the rule identified by the directive (may throw an exception)
         val rule = RuleUtils.parseRule(file, directive.identifier)
-        val parameters = parseArguments(rule, directive).plus(MvelState.ruleMethods)
+        return executeRule(rule, directive, file)
+    }
+
+    @Suppress("NestedBlockDepth")
+    internal fun executeRule(rule: Rule, directive: Directive, file: MPPPath): ExecutionStatus {
+        val parameters = parseArguments(rule, directive)
         val evaluator = DirectiveConditionalEvaluator(executionOptions)
         val available =
             if (InterpreterUtils.runPriorEvaluation(directive.conditional))
@@ -304,8 +290,7 @@ class Interpreter(
                     do {
                         rule.commands.forEach { command ->
                             executeCommand(
-                                // TODO: remove cast
-                                command as SerialRuleCommand,
+                                command,
                                 directive.conditional,
                                 rule,
                                 parameters
@@ -379,7 +364,7 @@ class Interpreter(
         val context = mapOf(
             "parameters" to directive.parameters,
             "reference" to directive.parameters.getValue("reference")
-        ).plus(MvelState.ruleMethods)
+        )
 
         rule.arguments.forEach { argument ->
             resolvedArguments[argument.identifier] = processArgument(

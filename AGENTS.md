@@ -23,6 +23,8 @@
 - `mvel` — MVEL expression interpreter used by rules. JVM-only; pulls
   `org.mvel:mvel2`, `kaml`. Interpreter-neutral rule and conditional helpers
   live in `core.rules`; MVEL's registry binds their JVM static methods.
+  `MvelCommandEvaluator` supplies results and exit predicates to the CLI through
+  the engine-neutral `core.rules.CommandEvaluator` interface.
 - `lua` — Lua interpreter (`luak`) for Lua-based rules. KMP common.
 - `kotlin-dsl` — optional Kotlin scripting DSL for rules; pulls
   `kotlin-scripting-*` and a `runtimeOnly` `compiler-embeddable` (heavy).

@@ -9,6 +9,7 @@ import org.islandoftex.arara.api.rules.RuleArgument
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.ui.InputHandling
 import org.islandoftex.arara.api.AraraExceptionWithHeader
+import org.islandoftex.arara.mvel.utils.MvelState
 import org.mvel2.templates.TemplateRuntime
 import org.slf4j.LoggerFactory
 
@@ -47,8 +48,9 @@ class RuleArgument : RuleArgument<Any?> {
                     )
                     .plus(identifier to input!!)
             )
+            val evaluationContext = resolvedContext.plus(MvelState.ruleMethods)
             flag?.let { fn ->
-                when (val output = TemplateRuntime.eval(fn, resolvedContext)) {
+                when (val output = TemplateRuntime.eval(fn, evaluationContext)) {
                     is String -> listOf(output)
                     is List<*> -> InputHandling.flatten(output).map { it.toString() }
                     else -> {
