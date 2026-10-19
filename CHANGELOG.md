@@ -19,6 +19,11 @@ on.
 * animate+convert rules: change default program from `convert` to `magick` 
   (`convert` was deprecated in ImageMagick v7)
 
+### Removed
+
+* The Nix application build is no longer provided. The Nix development shell
+  and website build remain available; build arara with Gradle instead.
+
 ## [7.2.0] - 2025-06-29
 
 ### Added

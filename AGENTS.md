@@ -49,7 +49,9 @@
 
 ## Common developer commands
 
-Run from the repo root with `./gradlew`. JDK 11+ required.
+Run from the repo root with `./gradlew`. Current Gradle plugins require
+JDK 17+ to build; the Nix development shell supplies JDK 21. The application
+still targets JRE 11.
 
 - `./gradlew build` — compile + `jvmTest` for all subprojects.
 - `./gradlew allTests` — run all KMP tests (this is what CI runs).
@@ -134,14 +136,16 @@ CTAN/TDS zip without first having the rendered website and the PDF tools.
 
 ## Nix
 
-`flake.nix` exposes `.#default` (gradle2nix build using `gradle.lock`) and
-`.#website` (zola site). `nix develop` gives a shell with `corretto11`,
-`htmlq`, `weasyprint`, `zola`, `zip`, `nixpkgs-fmt`, and `gradle2nix` — the
-recommended way to get the docs-build prerequisites. `nixpkgs-fmt` formats
-`.nix` files (also enforced by pre-commit). CI verifies `gradle.lock` stays in
-sync with `build.gradle.kts`/`libs.versions.toml` via `gradle2nix` in the
-`test:flake-dependencies` job — when you change versions, regenerate
-`gradle.lock` or that job will fail.
+`flake.nix` exposes `.#website` (the Zola site) and an independent default
+development shell. `nix develop` supplies `corretto21`, `htmlq`, `weasyprint`,
+`zola`, `zip`, and `nixpkgs-fmt` for development and documentation builds.
+Run application builds with `nix develop -c ./gradlew :cli:shadowJar`.
+There is no Nix application package or gradle2nix artifact lock to maintain.
+
+Keep `flake.lock` committed to pin the Nix tools; update it deliberately with
+`nix flake update`. Application dependencies remain in the Gradle version
+catalog and build scripts. `nixpkgs-fmt` formats `.nix` files (also enforced
+by pre-commit).
 
 ## Conventions that differ from defaults
 

@@ -68,26 +68,6 @@ test:dependencies:
     <<: *cachedefinition
     policy: pull
 
-test:flake-dependencies:
-  stage: test
-  image: nixpkgs/nix-flakes:latest-x86_64-linux
-  needs: []
-  script:
-    - nix profile add nixpkgs#corretto11 nixpkgs#diffutils nixpkgs#findutils nixpkgs#gnused
-    - nix run github:tadfisher/gradle2nix/v2 -- -l gradle.lock.new
-    - nix shell nixpkgs#diffutils -c diff gradle.lock gradle.lock.new
-  cache:
-    <<: *cachedefinition
-    policy: pull
-  rules:
-    - changes:
-        - build.gradle.kts
-        - flake.lock
-        - flake.nix
-        - gradle.lock
-        - gradle/libs.versions.toml
-        - gradle/wrapper/gradle-wrapper.properties
-
 test:spotless:
   stage: test
   needs: ["build:linux:jdk11"]
