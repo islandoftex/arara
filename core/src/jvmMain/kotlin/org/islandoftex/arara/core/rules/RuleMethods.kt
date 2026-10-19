@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BSD-3-Clause
-package org.islandoftex.arara.mvel.utils
+package org.islandoftex.arara.core.rules
 
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.AraraIOException
@@ -16,8 +16,9 @@ import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.ui.DialogRenderer
 import org.islandoftex.arara.core.ui.Dialogs
+import org.islandoftex.arara.core.utils.MethodUtils
 import org.islandoftex.arara.core.ui.InputHandling
-import org.islandoftex.arara.mvel.interpreter.AraraExceptionWithHeader
+import org.islandoftex.arara.api.AraraExceptionWithHeader
 
 @Suppress("unused", "TooManyFunctions")
 object RuleMethods {

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BSD-3-Clause
-package org.islandoftex.arara.mvel.utils
+package org.islandoftex.arara.core.rules
 
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.SafeRunViolationException
@@ -12,6 +12,7 @@ import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.ui.DialogRenderer
 import org.islandoftex.arara.core.ui.Dialogs
+import org.islandoftex.arara.core.utils.MethodUtils
 
 @Suppress("unused", "TooManyFunctions")
 object ConditionalMethods {

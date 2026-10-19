@@ -19,7 +19,7 @@ import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.HaltRequest
 import org.islandoftex.arara.core.ui.InputHandling
-import org.islandoftex.arara.mvel.interpreter.AraraExceptionWithHeader
+import org.islandoftex.arara.api.AraraExceptionWithHeader
 import org.islandoftex.arara.mvel.rules.DirectiveConditionalEvaluator
 import org.islandoftex.arara.mvel.rules.SerialRuleCommand
 import org.islandoftex.arara.mvel.utils.MvelState

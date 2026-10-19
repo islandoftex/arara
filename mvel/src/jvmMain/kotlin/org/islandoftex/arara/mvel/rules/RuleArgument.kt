@@ -8,7 +8,7 @@ import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.rules.RuleArgument
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.ui.InputHandling
-import org.islandoftex.arara.mvel.interpreter.AraraExceptionWithHeader
+import org.islandoftex.arara.api.AraraExceptionWithHeader
 import org.mvel2.templates.TemplateRuntime
 import org.slf4j.LoggerFactory
 

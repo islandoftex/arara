@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.mvel.utils
 
+import org.islandoftex.arara.core.rules.RuleMethods
+import org.islandoftex.arara.core.rules.ConditionalMethods
+
 import org.islandoftex.arara.core.ui.DialogRenderer
 import org.islandoftex.arara.core.ui.Dialogs
 import kotlin.test.Test
