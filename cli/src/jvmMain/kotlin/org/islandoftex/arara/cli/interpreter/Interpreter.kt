@@ -14,6 +14,8 @@ import org.islandoftex.arara.api.rules.RuleCommand
 import org.islandoftex.arara.api.rules.RuleArgument
 import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.api.session.ExecutionStatus
+import org.islandoftex.arara.cli.ruleset.RuleEngine
+import org.islandoftex.arara.lua.rules.LuaConditionalEvaluator
 import org.islandoftex.arara.cli.ruleset.RuleFormat
 import org.islandoftex.arara.cli.ruleset.RuleUtils
 import org.islandoftex.arara.cli.utils.DisplayUtils
@@ -36,7 +38,8 @@ import org.islandoftex.arara.mvel.interpreter.MvelCommandEvaluator
 class Interpreter(
     private val executionOptions: ExecutionOptions,
     @Suppress("UNUSED_PARAMETER") currentFile: ProjectFile,
-    private val workingDirectory: MPPPath
+    private val workingDirectory: MPPPath,
+    private val engine: RuleEngine = RuleEngine.YAML
 ) {
     private val logger = KotlinLogging.logger { }
 
@@ -56,28 +59,16 @@ class Interpreter(
     private fun getRule(directive: Directive, workingDirectory: MPPPath): MPPPath =
         executionOptions.rulePaths.let { paths ->
             paths.flatMap { path ->
-                listOf(
-                    InterpreterUtils.construct(
-                        path, directive.identifier,
-                        RuleFormat.MVEL, workingDirectory
-                    ),
-                    InterpreterUtils.construct(
-                        path, directive.identifier,
-                        RuleFormat.KOTLIN_DSL, workingDirectory
-                    ),
-                    // this lookup adds support for the rules distributed with
-                    // arara (in TL names should be unique, hence we avoided
-                    // going for pdflatex.yaml in favor of arara-rule-pdflatex.yaml
-                    // from version 6 on)
-                    InterpreterUtils.construct(
-                        path, "arara-rule-" + directive.identifier,
-                        RuleFormat.MVEL, workingDirectory
-                    )
-                )
+                val formats = if (engine == RuleEngine.LUA) listOf(RuleFormat.LUA)
+                    else listOf(RuleFormat.MVEL, RuleFormat.KOTLIN_DSL)
+                formats.map { format ->
+                    InterpreterUtils.construct(path, directive.identifier, format, workingDirectory)
+                } + InterpreterUtils.construct(path, "arara-rule-" + directive.identifier,
+                    formats.first(), workingDirectory)
             }.firstOrNull { it.exists } ?: throw AraraException(
                 LanguageController.messages.ERROR_INTERPRETER_RULE_NOT_FOUND.format(
                     directive.identifier,
-                    directive.identifier,
+                    directive.identifier + if (engine == RuleEngine.LUA) ".lua" else ".yaml",
                     paths.joinToString("; ", "(", ")") {
                         it.normalize().toString()
                     }
@@ -269,7 +260,8 @@ class Interpreter(
     @Suppress("NestedBlockDepth")
     internal fun executeRule(rule: Rule, directive: Directive, file: MPPPath): ExecutionStatus {
         val parameters = parseArguments(rule, directive)
-        val evaluator = DirectiveConditionalEvaluator(executionOptions)
+        val evaluator = if (engine == RuleEngine.LUA) LuaConditionalEvaluator(executionOptions)
+            else DirectiveConditionalEvaluator(executionOptions)
         val available =
             if (InterpreterUtils.runPriorEvaluation(directive.conditional))
                 evaluator.evaluate(directive.conditional)

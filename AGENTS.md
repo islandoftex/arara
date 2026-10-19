@@ -25,7 +25,9 @@
   live in `core.rules`; MVEL's registry binds their JVM static methods.
   `MvelCommandEvaluator` supplies results and exit predicates to the CLI through
   the engine-neutral `core.rules.CommandEvaluator` interface.
-- `lua` — Luak interpreter for project specifications. Common-code rule value
+- `lua` — Luak interpreter for project specifications and Lua rules. JVM helper
+  environments, parser, conditionals and interpolation live in `lua.rules`; the
+  CLI selects them with `--engine lua` (default: YAML/MVEL). Common-code rule value
   and session adapters live in `lua.rules`. Paths and commands cross as userdata.
   Integer helper arguments require 32-bit values; Longs must be exactly
   representable in Luak.

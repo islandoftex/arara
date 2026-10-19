@@ -16,6 +16,10 @@ on.
 
 ### Changed
 
+* Add `--engine lua` for Lua rules, conditionals and `{{ ... }}` option
+  interpolation using Luak. YAML/MVEL remains the default. Scalar options now
+  retain their value during interpolation.
+
 * **Breaking change:** The Kotlin rule API moves the executable `command` lambda
   from `RuleCommand` to `ExecutableRuleCommand`. Interpreted commands use an
   evaluator instead.

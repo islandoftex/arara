@@ -27,6 +27,8 @@ object RuleUtils {
     fun parseRule(file: MPPPath, identifier: String): org.islandoftex.arara.api.rules.Rule {
         return if (file.toString().substringAfterLast('.') == "yaml")
             Rule.parse(file, identifier)
+        else if (file.toString().endsWith(".lua"))
+            org.islandoftex.arara.lua.rules.LuaRuleParser.parse(file, identifier)
         else
             TODO("Kotlin DSL not implemented yet")
     }

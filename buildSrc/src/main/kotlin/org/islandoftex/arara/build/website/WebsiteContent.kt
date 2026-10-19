@@ -74,7 +74,7 @@ data class WebsiteContent(val title: String, val body: String) {
         private const val LFS_POINTER = "version https://git-lfs.github.com/spec/v1"
         const val SITE_URL = "https://islandoftex.gitlab.io/arara"
         val chapters = listOf("introduction", "concepts", "cli", "configuration", "logging", "projects",
-            "methods", "rules", "building", "deploying", "yaml", "mvel")
+            "methods", "rules", "building", "deploying", "yaml", "mvel", "lua")
 
         fun read(source: String): WebsiteContent {
             val document = DocumentRegions()

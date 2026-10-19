@@ -3,6 +3,7 @@ package org.islandoftex.arara.cli
 
 import com.github.ajalt.clikt.core.ProgramResult
 import com.github.ajalt.clikt.core.parse
+import org.islandoftex.arara.api.files.toMPPPath
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
@@ -40,6 +41,23 @@ class CLIRegressionTest {
             Session.clear()
             HaltRequest.clear()
             root.deleteRecursively()
+        }
+    }
+
+    @Test
+    fun engineSelectionStaysWithEachInvocationIncludingReplicatedDirectives() = fixture { directory ->
+        val root = directory.toPath().toMPPPath()
+        root.resolve("arararc.yaml").writeText("!config\npaths: ['.']\n")
+        root.resolve("run.tex").writeText("% arara: probe: { files: ['run.tex'] }\n")
+        root.resolve("probe.yaml").writeText("!config\nidentifier: probe\nname: Probe\n" +
+            "commands:\n  - command: '@{ true }'\narguments: []\n")
+        root.resolve("probe.lua").writeText("return {identifier='probe', name='Probe', " +
+            "commands={{command=function() return false end}}}")
+        listOf(listOf("--engine", "lua") to 1, emptyList<String>() to 0).forEach { (flags, expected) ->
+            val status = assertFailsWith<ProgramResult> {
+                CLI().parse(listOf("-d", root.toString()) + flags + "run.tex")
+            }
+            assertEquals(expected, status.statusCode)
         }
     }
 

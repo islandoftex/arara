@@ -15,6 +15,9 @@ import com.github.ajalt.clikt.parameters.arguments.help
 import com.github.ajalt.clikt.parameters.arguments.multiple
 import com.github.ajalt.clikt.parameters.options.associate
 import com.github.ajalt.clikt.parameters.options.convert
+import com.github.ajalt.clikt.parameters.options.default
+import com.github.ajalt.clikt.parameters.types.choice
+import org.islandoftex.arara.cli.ruleset.RuleEngine
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.help
 import com.github.ajalt.clikt.parameters.options.option
@@ -96,6 +99,9 @@ class CLI : CliktCommand("arara") {
         your needs within your TeX file and let arara do the work. These directives
         feature conditional execution and parameter expansion.
     """.trimMargin("@")
+
+    private val engine by option("--engine").help("Rule engine (default: yaml)")
+        .choice("yaml" to RuleEngine.YAML, "lua" to RuleEngine.LUA).default(RuleEngine.YAML)
 
     private val log by option("-l", "--log")
         .help("Generate a log output")
@@ -330,7 +336,7 @@ class CLI : CliktCommand("arara") {
                     Session.updateEnvironmentVariables()
                     // directive processing has to be initialized, so that the core
                     // component respects our MVEL processing
-                    DirectiveUtils.initializeDirectiveCore()
+                    DirectiveUtils.initializeDirectiveCore(engine)
                 },
                 executeBeforeProject = { project ->
                     configureProject(project, configuration)
@@ -350,7 +356,8 @@ class CLI : CliktCommand("arara") {
                         file,
                         list
                             .takeIf { list.isNotEmpty() && !MvelState.prependPreambleIfDirectivesGiven && preamble == null }
-                            ?: prependPreambleDirectives(file.fileType, list)
+                            ?: prependPreambleDirectives(file.fileType, list),
+                        engine
                     )
                 }
             )

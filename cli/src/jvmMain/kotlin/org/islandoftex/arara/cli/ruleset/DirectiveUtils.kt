@@ -15,6 +15,7 @@ import org.islandoftex.arara.core.rules.Directives
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.mvel.utils.MvelState
 import org.mvel2.templates.TemplateRuntime
+import org.islandoftex.arara.lua.rules.LuaInterpolation
 
 /**
  * Implements directive utilitary methods.
@@ -30,7 +31,7 @@ object DirectiveUtils {
      * The [Directives] core object can't process directives without an
      * implementation. This hook collection ensures we can use it.
      */
-    fun initializeDirectiveCore() {
+    fun initializeDirectiveCore(engine: RuleEngine = RuleEngine.YAML) {
         Directives.hooks = DirectiveFetchingHooks(
             processPotentialDirective = { line, directive ->
                 directive.trim().also {
@@ -42,12 +43,13 @@ object DirectiveUtils {
                 }
             },
             buildDirectiveRaw = { id, parameters, conditional, lines ->
-                val parameterMap = getParameters(parameters, lines)
+                val parameterMap = getParameters(parameters, lines, engine)
                 DirectiveImpl(
                     identifier = id,
                     parameters = parameterMap,
                     conditional = conditional,
-                    lineNumbers = lines
+                    lineNumbers = lines,
+                    engine = engine
                 )
             },
             buildDirective = { id, parameters, conditional, lines ->
@@ -55,7 +57,8 @@ object DirectiveUtils {
                     identifier = id,
                     parameters = parameters,
                     conditional = conditional,
-                    lineNumbers = lines
+                    lineNumbers = lines,
+                    engine = engine
                 )
             }
         )
@@ -73,7 +76,8 @@ object DirectiveUtils {
     @Throws(AraraException::class)
     private fun getParameters(
         text: String?,
-        numbers: List<Int>
+        numbers: List<Int>,
+        engine: RuleEngine
     ): Map<String, Any> {
         if (text == null)
             return mapOf()
@@ -93,28 +97,23 @@ object DirectiveUtils {
         return if ("options" in map.keys && LinearExecutor.executionOptions
             .executionMode != ExecutionMode.SAFE_RUN
         ) {
-            // perform directive interpolation by applying MVEL methods to the
-            // directive arguments
-            map.plus(
-                "options" to (
-                    map["options"]?.takeIf { it is List<*> }
-                        ?.let { list ->
-                            (list as List<*>).map { it.toString() }
-                        }
-                        ?.map { value ->
-                            kotlin.runCatching {
-                                TemplateRuntime.eval(value, MvelState.directiveMethods)
-                            }.getOrElse {
-                                throw AraraException(
-                                    LanguageController.messages
-                                        .ERROR_EXTRACTOR_INTERPOLATION_FAILURE,
-                                    it
-                                )
-                            }
-                        } ?: emptyList()
-                    )
-            )
+            map.plus("options" to interpolateOptions(map.getValue("options"), engine))
         } else map
+    }
+
+    internal fun interpolateOptions(value: Any, engine: RuleEngine): Any {
+        fun interpolate(text: String): Any = if (engine == RuleEngine.LUA) {
+            LuaInterpolation.interpolate(text)
+        } else {
+            if ("{{" in text) throw AraraException(
+                LanguageController.messages.ERROR_EXTRACTOR_INTERPOLATION_FAILURE,
+                IllegalArgumentException("Lua tags require --engine lua.")
+            )
+            kotlin.runCatching { TemplateRuntime.eval(text, MvelState.directiveMethods) }.getOrElse {
+                throw AraraException(LanguageController.messages.ERROR_EXTRACTOR_INTERPOLATION_FAILURE, it)
+            }
+        }
+        return if (value is List<*>) value.map { interpolate(it.toString()) } else interpolate(value.toString())
     }
 
     /**
@@ -129,7 +128,8 @@ object DirectiveUtils {
     @Throws(AraraException::class)
     fun process(
         file: ProjectFile,
-        directives: List<Directive>
+        directives: List<Directive>,
+        engine: RuleEngine = RuleEngine.YAML
     ): List<Directive> =
         directives.flatMap { directive ->
             val parameters = directive.parameters
@@ -152,7 +152,8 @@ object DirectiveUtils {
                         directive.identifier,
                         parameters.plus("reference" to file.path),
                         directive.conditional,
-                        directive.lineNumbers
+                        directive.lineNumbers,
+                        (directive as? DirectiveImpl)?.engine ?: engine
                     )
                 )
             }

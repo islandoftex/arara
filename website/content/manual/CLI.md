@@ -651,3 +651,9 @@ Please refer to the documentation of your favourite command line interpreter to
 learn more about exit status captures. Programming languages also offer methods
 for retrieving such information.
 {% end %}
+
+# Rule engine
+
+`--engine yaml` (the default) uses YAML rules with MVEL expressions.
+`--engine lua` uses [Lua rules and expressions](@/manual/Lua.md).
+The selection applies to every project and loose input in the invocation.

@@ -53,6 +53,17 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath, private
         )
     }
 
+    private fun luaRule(root: MPPPath, body: String, exit: String = "code == 0") {
+        root.resolve("probe.lua").writeText(
+            "return {identifier='probe', name='Lua probe', commands={{command=function(ctx) " +
+                body + " end, exit=function(code) return " + exit + " end}}}\n"
+        )
+    }
+
+    private fun luaNative(mode: String): String =
+        "return get_command(" + listOf(java.toString(), "-cp", fixture.toString(), "SmokeProcess", mode)
+            .joinToString(", ") { quoted(it) } + ")"
+
     private fun native(mode: String): String = listOf(java.toString(), "-cp", fixture.toString(), "SmokeProcess", mode)
         .joinToString(", ", "return getCommand([", "]);") { quoted(it) }
 
@@ -67,6 +78,66 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath, private
     private fun contains(output: String, text: String) = check(text in output) { "Missing $text\n$output" }
 
     val cases: Map<String, (MPPPath) -> Unit> = linkedMapOf(
+        "lua_native_exit_and_output" to { root ->
+            luaRule(root, luaNative(FAILURE_STATUS.toString()))
+            val output = execute(root, FAILURE_STATUS, listOf("--engine", "lua", "--verbose"))
+            contains(output, "SMOKE_STDOUT")
+            contains(output, "SMOKE_STDERR")
+            contains(output, "SMOKE_CWD=$root")
+        },
+        "lua_custom_exit_accepts_nonzero" to { root ->
+            luaRule(root, luaNative(FAILURE_STATUS.toString()), "code == $FAILURE_STATUS")
+            execute(root, 0, listOf("--engine", "lua"))
+        },
+        "lua_custom_exit_rejects_zero" to { root ->
+            luaRule(root, luaNative("0"), "false")
+            execute(root, 1, listOf("--engine", "lua"))
+        },
+        "lua_halt_stops_the_file" to { root ->
+            luaRule(root, "halt($FAILURE_STATUS)")
+            root.resolve("run.tex").writeText("% arara: probe\n% arara: missingrule\n")
+            execute(root, FAILURE_STATUS, listOf("--engine", "lua"))
+        },
+        "lua_conditional_and_scalar_interpolation" to { root ->
+            root.resolve("probe.lua").writeText("""
+                return {identifier='probe', name='Lua probe', commands={{command=function(ctx)
+                  return ctx.options[1] == 'value-3'
+                end}}, arguments={{identifier='options', flag=function(ctx, value) return value end}}}
+            """.trimIndent())
+            root.resolve("run.tex").writeText(
+                "% arara: probe: { options: 'value-{{1+2}}' } if true and not false\n"
+            )
+            execute(root, 0, listOf("--engine", "lua"))
+            root.resolve("run.tex").writeText(
+                "% arara: probe: { options: ['value-{{1+2}}'] } unless false\n"
+            )
+            execute(root, 0, listOf("--engine", "lua"))
+        },
+        "lua_safe_mode_leaves_options_literal" to { root ->
+            root.resolve("probe.lua").writeText("""
+                return {identifier='probe', name='Lua probe', commands={{command=function(ctx)
+                  return ctx.options[1] == '{{error("must not execute")}}'
+                end}}, arguments={{identifier='options', flag=function(ctx, value) return value end}}}
+            """.trimIndent())
+            root.resolve("run.tex").writeText(
+                "% arara: probe: { options: ['{{error(\"must not execute\")}}'] }\n"
+            )
+            execute(root, 0, listOf("--engine", "lua", "--safe-run"))
+        },
+        "lua_dry_run_does_not_launch" to { root ->
+            luaRule(root, "return get_command('arara-nonexistent-command')")
+            execute(root, 0, listOf("--engine", "lua", "--dry-run"))
+        },
+        "lua_does_not_fall_back_to_yaml" to { root ->
+            rule(root, "return true;")
+            execute(root, APPLICATION_ERROR, listOf("--engine", "lua"))
+        },
+        "yaml_remains_the_default" to { root ->
+            rule(root, "return true;")
+            luaRule(root, "return false")
+            execute(root, 0)
+            execute(root, 1, listOf("--engine", "lua"))
+        },
         "native_exit_and_both_output_streams" to { root ->
             rule(root, native(FAILURE_STATUS.toString()))
             val output = execute(root, FAILURE_STATUS, listOf("--verbose"))

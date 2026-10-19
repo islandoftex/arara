@@ -17,11 +17,12 @@ data class DirectiveImpl(
     override val identifier: String,
     override val parameters: Map<String, Any>,
     override val conditional: DirectiveConditional,
-    override val lineNumbers: List<Int>
+    override val lineNumbers: List<Int>,
+    val engine: RuleEngine = RuleEngine.YAML
 ) : Directive {
     override fun execute(): Int = Interpreter(
         LinearExecutor.executionOptions, LinearExecutor.currentFile!!,
-        LinearExecutor.currentProject!!.workingDirectory
+        LinearExecutor.currentProject!!.workingDirectory, engine
     ).execute(this).exitCode
 
     override fun toString(): String {
