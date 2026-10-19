@@ -237,6 +237,15 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath, private
             rule(root, "return true;")
             contains(execute(root, APPLICATION_ERROR), "arararc.lua")
         },
+        "localized_configuration_and_project_errors" to { root ->
+            root.resolve("arararc.lua").writeText("return { verbose = 'true' }\n")
+            contains(execute(root, APPLICATION_ERROR, listOf("--language", "de")),
+                "verbose muss ein boolescher Wert sein.")
+            Files.delete(root.resolve("arararc.lua").toJVMPath())
+            root.resolve("invalid.proj.lua").writeText("return { files = false }\n")
+            contains(execute(root, APPLICATION_ERROR, listOf("--language", "de"), "invalid.proj.lua"),
+                "project.files muss eine Tabelle sein.")
+        },
         "ordinary_lua_is_not_executed_as_a_specification" to { root ->
             rule(root, "return true;")
             root.resolve("arararc.yaml").writeText(

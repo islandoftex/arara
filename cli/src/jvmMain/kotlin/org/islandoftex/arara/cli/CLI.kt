@@ -285,6 +285,7 @@ class CLI : CliktCommand("arara") {
         configuration: ConfigurationSnapshot
     ) {
         configuration.restore(configureLogging = false)
+        LanguageController.loadMessagesFor(language?.let { MPPLocale(it) } ?: Session.userInterfaceOptions.locale)
         ConfigurationUtils.configFileForProject(project)?.let {
             DisplayUtils.configurationFileName = it.toString()
             ConfigurationUtils.load(it, project)

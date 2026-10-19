@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.dependencies
 
+import org.islandoftex.arara.core.localization.LanguageController
+import org.islandoftex.arara.core.utils.formatString
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.Project
@@ -15,7 +17,10 @@ object ProjectValidation {
                 val path = file.path.normalize()
                 val previous = owners.put(path, project.name)
                 if (previous != null) {
-                    throw AraraException("File '$path' belongs to both '$previous' and '${project.name}'.")
+                    throw AraraException(
+                        LanguageController.messages.ERROR_PROJECT_FILE_OWNERSHIP
+                            .formatString(path.toString(), previous, project.name)
+                    )
                 }
             }
         }

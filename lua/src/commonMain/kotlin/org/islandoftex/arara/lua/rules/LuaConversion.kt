@@ -170,7 +170,7 @@ internal object LuaConversion {
 
     fun toCommand(value: LuaValue): Command? = value.takeIf { it.isuserdata() }?.touserdata() as? Command
 
-    private fun diagnostic(error: LuaError): String {
+    fun diagnostic(error: LuaError): String {
         val text = error.getLuaMessage() ?: error.message ?: error.toString()
         val location = error.fileline
         return if (location.isNullOrBlank() || text.contains(location)) text else "$location: $text"

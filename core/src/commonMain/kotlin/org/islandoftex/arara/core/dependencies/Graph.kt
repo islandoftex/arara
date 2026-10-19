@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.dependencies
 
+import org.islandoftex.arara.core.localization.LanguageController
+import org.islandoftex.arara.core.utils.formatString
 /**
  * A graph model for dependency resolution.
  */
@@ -71,7 +73,9 @@ internal open class Graph<T>(private val vertexName: (T) -> String = { it.toStri
             val cyclic = vertices.keys.filter { vertex ->
                 work[vertex] != 0 && reachesBack(vertex)
             }.joinToString(", ", transform = vertexName)
-            throw org.islandoftex.arara.api.AraraException("Project dependencies contain a cycle: $cyclic.")
+            throw org.islandoftex.arara.api.AraraException(
+                LanguageController.messages.ERROR_PROJECT_CYCLE.formatString(cyclic)
+            )
         }
         return order
     }

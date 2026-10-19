@@ -97,6 +97,9 @@ or `without-directives`. Definitions are lists of directive lines.
 | `preamble.default`, `preamble.definitions` | `defaultPreamble`, `preambles` |
 | `preamble.prepend` | `prependPreambleIfDirectivesGiven` |
 
+Validation errors use the selected language; `--language` also applies while
+loading configuration. Field names and script-supplied error text remain literal.
+
 Types are strict: booleans are not strings, loops must be positive integers,
 and lists must have contiguous numeric indices starting at one. Unknown keys
 are errors, including unknown keys in groups and file type declarations.

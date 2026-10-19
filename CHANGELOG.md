@@ -56,6 +56,9 @@ on.
 
 ### Fixed
 
+* Lua configuration and project validation errors use the selected language,
+  preserving field names, file paths and dependency details.
+
 * Message substitution preserves literal values containing placeholder text,
   dollar signs and backslashes. Invalid file-type patterns report their pattern
   in the selected language, and the Brazilian Portuguese failure label is corrected.

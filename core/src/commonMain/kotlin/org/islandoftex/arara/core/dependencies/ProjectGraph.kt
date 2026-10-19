@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.dependencies
 
+import org.islandoftex.arara.core.localization.LanguageController
+import org.islandoftex.arara.core.utils.formatString
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.Project
 
@@ -18,14 +20,17 @@ internal class ProjectGraph : Graph<Project>({ it.name }) {
         val byName = ordered.associateBy { it.name }
         if (byName.size != ordered.size) {
             val duplicates = ordered.groupBy { it.name }.filterValues { it.size > 1 }.keys.joinToString(", ")
-            throw AraraException("Project names must be unique: $duplicates.")
+            throw AraraException(LanguageController.messages.ERROR_PROJECT_DUPLICATE_NAMES.formatString(duplicates))
         }
         ordered.forEach { addVertex(it) }
         ordered.forEach { project ->
             project.dependencies.sorted().forEach { dependency ->
                 addEdge(
                     byName[dependency]
-                        ?: throw AraraException("Project '${project.name}' has unknown dependency '$dependency'."),
+                        ?: throw AraraException(
+                            LanguageController.messages.ERROR_PROJECT_UNKNOWN_DEPENDENCY
+                                .formatString(project.name, dependency)
+                        ),
                     project
                 )
             }

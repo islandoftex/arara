@@ -6,7 +6,10 @@ import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.core.configuration.LocalConfiguration
 import org.islandoftex.arara.core.configuration.SerialFileType
 import org.islandoftex.arara.core.localization.LanguageController
+import org.islandoftex.arara.core.utils.formatString
 import org.islandoftex.arara.lua.LuaScriptEnvironment
+import org.islandoftex.arara.lua.rules.LuaConversion
+import org.luaj.vm2.LuaError
 import org.luaj.vm2.LuaBoolean
 import org.luaj.vm2.LuaNumber
 import org.luaj.vm2.LuaString
@@ -25,9 +28,12 @@ object LuaLocalConfiguration {
         val value = LuaScriptEnvironment.newGlobals(workingDirectory).load(file.readText(), file.toString()).call()
         extract(Fields.table(value, "configuration"))
     }.getOrElse {
-        throw AraraException(
-            "${LanguageController.messages.ERROR_CONFIGURATION_GENERIC_ERROR} ($file)", it
-        )
+        val cause = when (it) {
+            is LuaError -> Exception(LuaConversion.diagnostic(it), it)
+            is Exception -> it
+            else -> RuntimeException(it)
+        }
+        throw AraraException("${messages.ERROR_CONFIGURATION_GENERIC_ERROR} ($file)", cause)
     }
 
     private fun extract(table: LuaTable): LocalConfiguration {
@@ -37,11 +43,11 @@ object LuaLocalConfiguration {
         val log = Fields.group(table, "log", setOf("enabled", "file"))
         val preamble = Fields.group(table, "preamble", setOf("default", "prepend", "definitions"))
         val loops = Fields.integer(table["loops"], "loops")
-        require(loops == null || loops > 0) { "loops must be a positive integer." }
+        require(loops == null || loops > 0) { messages.ERROR_CONFIGURATION_LOOPS_INVALID_RANGE }
         val prepend = when (val mode = Fields.string(preamble["prepend"], "preamble.prepend")) {
             null, "always" -> true
             "without-directives" -> false
-            else -> error("Unknown preamble.prepend '$mode'.")
+            else -> error(messages.ERROR_CONFIGURATION_PREPEND.formatString(mode))
         }
         return LocalConfiguration(
             paths = Fields.strings(table["paths"], "paths"),
@@ -66,7 +72,7 @@ object LuaLocalConfiguration {
             val type = Fields.table(entry, context)
             Fields.keys(type, setOf("extension", "pattern"), context)
             val extension = Fields.string(type["extension"], "$context.extension")
-            require(!extension.isNullOrBlank()) { "$context.extension must be a nonblank string." }
+            require(!extension.isNullOrBlank()) { messages.ERROR_SCRIPT_NONBLANK.formatString("$context.extension") }
             val pattern = Fields.string(type["pattern"], "$context.pattern")
             val result = if (pattern == null) SerialFileType(extension) else SerialFileType(extension, pattern)
             result.toFileType()
@@ -78,7 +84,7 @@ object LuaLocalConfiguration {
         val table = Fields.table(value, "preamble.definitions")
         return table.keys().associate { key ->
             require(key is LuaString && key.tojstring().isNotBlank()) {
-                "preamble.definitions requires nonblank string keys."
+                messages.ERROR_SCRIPT_STRING_KEYS.formatString("preamble.definitions")
             }
             key.tojstring() to Fields.strings(table[key], "preamble.definitions.${key.tojstring()}")
                 .joinToString("\n")
@@ -88,11 +94,11 @@ object LuaLocalConfiguration {
 
 private object Fields {
     fun table(value: LuaValue, context: String): LuaTable =
-        value as? LuaTable ?: error("$context must be a table.")
+        value as? LuaTable ?: error(messages.ERROR_SCRIPT_TABLE.formatString(context))
 
     fun keys(table: LuaTable, allowed: Set<String>, context: String) {
         table.keys().firstOrNull { it !is LuaString || it.tojstring() !in allowed }?.let {
-            error("Unknown key $context.${it.tojstring()}.")
+            error(messages.ERROR_SCRIPT_UNKNOWN_KEY.formatString("$context.${it.tojstring()}"))
         }
     }
 
@@ -106,19 +112,19 @@ private object Fields {
     fun string(value: LuaValue, context: String): String? = when (value) {
         LuaValue.NIL -> null
         is LuaString -> value.tojstring()
-        else -> error("$context must be a string.")
+        else -> error(messages.ERROR_SCRIPT_STRING.formatString(context))
     }
 
     fun boolean(value: LuaValue, context: String): Boolean? = when (value) {
         LuaValue.NIL -> null
         is LuaBoolean -> value.toboolean()
-        else -> error("$context must be a boolean.")
+        else -> error(messages.ERROR_SCRIPT_BOOLEAN.formatString(context))
     }
 
     fun integer(value: LuaValue, context: String): Int? = when {
         value.isnil() -> null
         value is LuaNumber && value.isint() -> value.toint()
-        else -> error("$context must be an integer.")
+        else -> error(messages.ERROR_SCRIPT_INTEGER.formatString(context))
     }
 
     fun list(value: LuaValue, context: String): List<LuaValue> {
@@ -126,12 +132,16 @@ private object Fields {
         val table = table(value, context)
         val size = table.keys().size
         require(table.keys().all { it is LuaNumber && it.isint() && it.toint() in 1..size }) {
-            "$context must be a contiguous positional list."
+            messages.ERROR_SCRIPT_LIST.formatString(context)
         }
         return (1..size).map { table[it] }
     }
 
     fun strings(value: LuaValue, context: String): List<String> = list(value, context).mapIndexed { index, entry ->
-        string(entry, "$context[${index + 1}]") ?: error("$context entries must be strings.")
+        string(entry, "$context[${index + 1}]") ?: error(
+            messages.ERROR_SCRIPT_STRING.formatString("$context[${index + 1}]")
+        )
     }
 }
+
+private val messages get() = LanguageController.messages
