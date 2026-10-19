@@ -28,6 +28,9 @@ on.
 
 ### Fixed
 
+* Rule validation rejects reserved and duplicate argument identifiers before
+  execution. Parse error context stays local to each rule load.
+
 * File lookup keeps the configured type that matched a filename, including
   compound extensions, rather than falling back to an unknown type.
 

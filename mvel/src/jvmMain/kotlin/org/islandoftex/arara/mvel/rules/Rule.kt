@@ -26,23 +26,6 @@ data class Rule(
     override val arguments: List<RuleArgument> = emptyList()
 ) : Rule {
     companion object {
-        private var ruleId: String? = null
-        private var rulePath: String? = null
-
-        /**
-         * Gets the rule error header, containing the identifier and the path, if
-         * any.
-         */
-        private val ruleErrorHeader: String
-            get() {
-                return ruleId?.let { id ->
-                    rulePath?.let { path ->
-                        LanguageController.messages.ERROR_RULE_IDENTIFIER_AND_PATH
-                            .format(id, path) + " "
-                    }
-                } ?: ""
-            }
-
         /**
          * Parses the provided file, checks the identifier and returns a rule
          * representation.
@@ -55,8 +38,8 @@ data class Rule(
          */
         @Throws(AraraException::class)
         fun parse(file: MPPPath, identifier: String): Rule {
-            ruleId = identifier
-            rulePath = file.normalize().toString()
+            val ruleErrorHeader = LanguageController.messages.ERROR_RULE_IDENTIFIER_AND_PATH
+                .format(identifier, file.normalize().toString()) + " "
             val rule = file.runCatching {
                 val text = readText()
                 if (!text.startsWith("!config"))
@@ -72,8 +55,8 @@ data class Rule(
                 )
             }
 
-            validateHeader(rule, identifier)
-            validateBody(rule)
+            validateHeader(rule, identifier, ruleErrorHeader)
+            validateBody(rule, ruleErrorHeader)
             return rule
         }
 
@@ -87,7 +70,7 @@ data class Rule(
          */
         @Throws(AraraException::class)
         @Suppress("ThrowsCount")
-        private fun validateHeader(rule: Rule, identifier: String) {
+        private fun validateHeader(rule: Rule, identifier: String, ruleErrorHeader: String) {
             if (rule.identifier != identifier) {
                 throw AraraException(
                     ruleErrorHeader +
@@ -112,7 +95,7 @@ data class Rule(
          */
         @Throws(AraraException::class)
         @Suppress("ThrowsCount")
-        private fun validateBody(rule: org.islandoftex.arara.mvel.rules.Rule) {
+        private fun validateBody(rule: org.islandoftex.arara.mvel.rules.Rule, ruleErrorHeader: String) {
             if (rule.commands.any { it.commandString == null })
                 throw AraraException(
                     ruleErrorHeader + LanguageController
@@ -120,6 +103,7 @@ data class Rule(
                 )
 
             val arguments = rule.arguments.filter { it.validate(ruleErrorHeader) }
+                .map { it.identifier }
 
             arguments.intersect(listOf("files", "reference")).forEach {
                 throw AraraException(
