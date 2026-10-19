@@ -34,6 +34,7 @@ class OfficialLuaRulesTest {
             val lua = LuaRuleParser.parse(path.toMPPPath(), identifier)
             val yaml = org.islandoftex.arara.mvel.rules.Rule.parse(
                 rules.resolve("arara-rule-$identifier.yaml"), identifier)
+            assertEquals(yaml.authors, lua.authors, identifier)
             assertEquals(yaml.displayName, lua.displayName, identifier)
             assertEquals(yaml.commands.map { it.name }, lua.commands.map { it.name }, identifier)
             assertEquals(yaml.arguments.map { it.identifier to it.isRequired },
@@ -46,7 +47,8 @@ class OfficialLuaRulesTest {
         val directory = Files.createTempDirectory("arara Lua parity ").toMPPPath()
         val hooks = LinearExecutor.hooks
         val options = LinearExecutor.executionOptions
-        val file = directory.resolve("input with spaces.tex")
+        val file = Files.createTempFile(MPPPath(".").toJVMPath(), "input with spaces ", ".tex")
+            .toMPPPath().normalize()
         try {
             val input = object : ProjectFile(file, FileType("tex", "^%")) {
                 override fun fetchDirectives(parseOnlyHeader: Boolean) = emptyList<org.islandoftex.arara.api.rules.Directive>()
@@ -57,6 +59,7 @@ class OfficialLuaRulesTest {
         } finally {
             LinearExecutor.hooks = hooks
             LinearExecutor.executionOptions = options
+            Files.deleteIfExists(file.toJVMPath())
             directory.removeDirectory()
         }
     }
@@ -64,6 +67,7 @@ class OfficialLuaRulesTest {
     @Suppress("UNCHECKED_CAST")
     private fun parameters(rule: Rule, reference: MPPPath, values: Map<String, Any>): Map<String, Any> =
         rule.arguments.associate { argument ->
+            check(!argument.isRequired || argument.identifier in values) { "Missing ${argument.identifier}" }
             val input = values[argument.identifier] ?: argument.defaultValue
             argument.identifier to if (input == null) emptyList<String>() else {
                 (argument as RuleArgument<Any?>).processor(input,
@@ -82,7 +86,12 @@ class OfficialLuaRulesTest {
             rules.resolve("arara-rule-$identifier.yaml"), identifier)
         val lua = LuaRuleParser.parse(rules.resolve("arara-rule-$identifier.lua"), identifier)
         val expected = yaml.commands.flatMap {
-            commandValues(MvelCommandEvaluator(it as org.islandoftex.arara.mvel.rules.SerialRuleCommand).evaluate(parameters(yaml, reference, values)))
+            try {
+                commandValues(MvelCommandEvaluator(it as org.islandoftex.arara.mvel.rules.SerialRuleCommand)
+                    .evaluate(parameters(yaml, reference, values)))
+            } catch (exception: org.islandoftex.arara.api.AraraException) {
+                throw AssertionError("$identifier: ${exception.exception}", exception)
+            }
         }
         val actual = lua.commands.flatMap { commandValues(it.evaluate(parameters(lua, reference, values))) }
         assertEquals(expected, actual, "$identifier $values")
@@ -98,5 +107,15 @@ class OfficialLuaRulesTest {
                 "options" to listOf("--jobname=with spaces")))
         }
         parity("pdflatex", mapOf("branch" to "developer", "draft" to true))
+    }
+
+    @Test
+    fun bibliographyAndIndexCommandsMatchYaml() {
+        listOf("authorindex", "bib2gls", "biber", "bibtex", "bibtex8", "bibtexu", "makeglossaries",
+            "makeglossarieslite", "makeindex", "nomencl", "pbibtex", "texindy", "upbibtex", "xindex", "xindy")
+            .forEach { parity(it) }
+        parity("songidx", mapOf("input" to "../README.md"))
+        parity("bibtex", mapOf("options" to listOf("-min-crossrefs=2")))
+        parity("makeindex", mapOf("style" to "custom style.ist", "options" to listOf("-q")))
     }
 }

@@ -59,3 +59,8 @@ Lua counterparts are available for the TeX engines: `context`, `csplain`, `etex`
 `latex`, `luahbtex`, `lualatex`, `luatex`, `pdfcsplain`, `pdflatex`, `pdftex`,
 `platex`, `ptex`, `tex`, `uplatex`, `uptex`, `xelatex` and `xetex`. Their arguments
 match the [official rule descriptions](@/manual/Rules.md).
+
+Bibliography, glossary and index rules also have Lua counterparts: `authorindex`,
+`bib2gls`, `biber`, `bibtex`, `bibtex8`, `bibtexu`, `makeglossaries`,
+`makeglossarieslite`, `makeindex`, `nomencl`, `pbibtex`, `songidx`, `texindy`,
+`upbibtex`, `xindex` and `xindy`.
