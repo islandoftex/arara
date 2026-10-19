@@ -10,8 +10,20 @@ import org.luaj.vm2.LuaString
 import org.luaj.vm2.LuaTable
 import org.luaj.vm2.LuaValue
 
-/** Parses scripts returning a rule table with command and flag closures. */
+/**
+ * Parses scripts returning a rule table with command and flag closures.
+ *
+ * Tables require an `identifier`, a `name` and at least one command; `authors`
+ * and `arguments` are optional lists. Argument identifiers must be unique and
+ * cannot be `files` or `reference`. Each argument needs a literal `default`,
+ * a `flag` function or both; `required` defaults to false.
+ */
 object LuaRuleParser {
+    /**
+     * Reads and evaluates [file], requiring its identifier to match [identifier].
+     *
+     * @throws AraraException If the script or rule table is invalid.
+     */
     fun parse(file: MPPPath, identifier: String): LuaRule {
         val header = LanguageController.messages.ERROR_RULE_IDENTIFIER_AND_PATH
             .format(identifier, file.normalize().parent.toString())

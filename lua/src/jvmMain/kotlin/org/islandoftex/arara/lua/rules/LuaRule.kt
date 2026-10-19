@@ -11,6 +11,7 @@ import org.islandoftex.arara.api.rules.RuleCommand
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.rules.CommandEvaluator
 
+/** A rule parsed from a Lua table by [LuaRuleParser]. */
 class LuaRule(
     override val identifier: String,
     override val displayName: String?,
@@ -19,6 +20,14 @@ class LuaRule(
     override val arguments: List<LuaRuleArgument>
 ) : Rule
 
+/**
+ * Evaluates a Lua command closure through [CommandEvaluator].
+ *
+ * The closure receives processed argument lists and a `reference` table with
+ * string fields `file_name`, `path` and `parent`. It returns command handles,
+ * booleans or nested lists of either. An optional exit closure accepts a process
+ * exit code and must return a boolean; without one, only zero indicates success.
+ */
 class LuaRuleCommand(
     override val name: String?,
     private val commandFunction: LuaFunction,
@@ -57,6 +66,15 @@ class LuaRuleCommand(
         }
 }
 
+/**
+ * A rule argument with a literal default and an optional flag closure.
+ *
+ * The flag receives `(ctx, value)`, where `ctx.parameters` contains the raw
+ * directive parameters (including this argument's value) and `ctx.reference`
+ * contains string fields `file_name`, `path` and `parent`. Its result becomes
+ * a list of flag strings. Without a flag closure, the input is converted to
+ * a single string. Required arguments must be supplied explicitly.
+ */
 class LuaRuleArgument(
     override val identifier: String,
     override val isRequired: Boolean,

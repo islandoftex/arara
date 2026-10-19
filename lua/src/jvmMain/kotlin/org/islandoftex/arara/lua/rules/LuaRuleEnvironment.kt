@@ -19,6 +19,10 @@ import org.islandoftex.arara.lua.rules.LuaConversion.stringArgument
 import org.islandoftex.arara.lua.rules.LuaConversion.stringListArgument
 import org.islandoftex.arara.lua.rules.LuaConversion.toLua
 
+/**
+ * Binds shared helpers under camelCase and snake_case names.
+ * Paths and commands cross the Lua boundary as opaque handles.
+ */
 internal object LuaRuleEnvironment {
     private const val PRELUDE = """
         function contains(list, value)
