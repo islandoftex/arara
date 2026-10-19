@@ -4,14 +4,15 @@ package org.islandoftex.arara.core.utils
 /**
  * Format a string using [stringReplacements] to replace occurrences of
  * `%s` in the string. As such mostly compatible with the usual
- * `kotlin.text.format` function for strings.
+ * `kotlin.text.format` function for strings. Replacement values are literal and
+ * never scanned for further placeholders. Missing values leave their placeholders
+ * intact; surplus values are ignored.
  */
 fun String.formatString(vararg stringReplacements: String): String {
-    var final = this
-    for (replacement in stringReplacements) {
-        final = final.replaceFirst("%s", replacement)
+    var index = 0
+    return replace(Regex("%s")) { match ->
+        if (index < stringReplacements.size) stringReplacements[index++] else match.value
     }
-    return final
 }
 
 /**

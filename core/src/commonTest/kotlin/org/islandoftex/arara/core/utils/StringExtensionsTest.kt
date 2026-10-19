@@ -13,6 +13,15 @@ import kotlin.test.assertEquals
  */
 class StringExtensionsTest {
     @Test
+    fun formattingKeepsReplacementTextLiteral() {
+        val literal = "cash ${'$'}1 / C:\\rules\\%s / 100%"
+        assertEquals("[$literal] [second]", "[%s] [%s]".formatString(literal, "second"))
+        assertEquals("first / %s", "%s / %s".formatString("first"))
+        assertEquals("first", "%s".formatString("first", "surplus"))
+        assertEquals("100% unchanged", "100% unchanged".formatString("unused"))
+    }
+
+    @Test
     fun star_becomes_dot_star() {
         assertEquals("gl.*b", "gl*b".globToRegex().pattern)
     }

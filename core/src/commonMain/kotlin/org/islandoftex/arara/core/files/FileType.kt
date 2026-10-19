@@ -3,6 +3,8 @@ package org.islandoftex.arara.core.files
 
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.FileType
+import org.islandoftex.arara.core.localization.LanguageController
+import org.islandoftex.arara.core.utils.formatString
 
 data class FileType(
     override val extension: String = FileType.INVALID_EXTENSION,
@@ -13,7 +15,7 @@ data class FileType(
             pattern.toRegex()
         } catch (e: IllegalArgumentException) {
             throw AraraException(
-                "The pattern you wanted to choose for this file type is invalid.",
+                LanguageController.messages.ERROR_FILETYPE_INVALID_PATTERN.formatString(pattern),
                 e
             )
         }

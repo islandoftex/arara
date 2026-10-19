@@ -56,6 +56,10 @@ on.
 
 ### Fixed
 
+* Message substitution preserves literal values containing placeholder text,
+  dollar signs and backslashes. Invalid file-type patterns report their pattern
+  in the selected language, and the Brazilian Portuguese failure label is corrected.
+
 * Log captured command output on execution failures, including timeouts.
 * Project validation errors identify duplicate names and the projects involved
   in dependency cycles, excluding projects that only depend on a cycle.
