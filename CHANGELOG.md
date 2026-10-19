@@ -16,6 +16,9 @@ on.
 
 ### Added
 
+* Project specifications receive `user.home`, `user.name` and `cwd`, matching
+  Lua configuration scripts. Each script load uses independent globals.
+
 * Lua configuration files (`arararc.lua` and the existing configuration basenames
   with a `.lua` suffix), with computed paths and typed logging and preamble tables.
   Local configuration takes priority over global configuration across both formats;

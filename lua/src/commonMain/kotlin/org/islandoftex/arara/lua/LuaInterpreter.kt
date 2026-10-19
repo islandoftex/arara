@@ -10,9 +10,11 @@ import org.luaj.vm2.LuaNumber
 import org.luaj.vm2.LuaString
 import org.luaj.vm2.LuaTable
 import org.luaj.vm2.LuaValue
-import org.luaj.vm2.lib.common.CommonPlatform
 
-/** Interprets a project specification without coercing malformed fields. */
+/**
+ * Interprets project tables without coercing malformed fields. Scripts receive
+ * `user.home`, `user.name` and the invocation working directory as `cwd`, in fresh globals.
+ */
 class LuaInterpreter(private val appWorkingDir: MPPPath) {
     // Each throw identifies a distinct field violation at the format boundary.
     @Suppress("ThrowsCount")
@@ -78,7 +80,7 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
         chunkName: String = "specification"
     ): List<Project> {
         val root = kotlin.runCatching {
-            CommonPlatform.standardGlobals().load(luaScript, chunkName).call()
+            LuaScriptEnvironment.newGlobals(appWorkingDir).load(luaScript, chunkName).call()
         }.getOrElse { throw ProjectParseException("Detected invalid Lua: ${it.message}") }
         val table = root as? LuaTable ?: throw ProjectParseException("A specification must return a table.")
         val projects = if (table.keys().any { it is LuaString }) {

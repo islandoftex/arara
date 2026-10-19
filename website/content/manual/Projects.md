@@ -72,6 +72,12 @@ There are a number of optional parameters:
   actually specified. Project specification files with invalid dependencies will
   be treated as invalid.
 
+Scripts receive `user.home`, `user.name` and `cwd`, as in
+[Lua configuration](@/manual/Configuration.md#lua-configuration). For project
+specifications, `cwd` is the invocation's selected working directory. Configuration
+scripts receive their project's resolved working directory instead. Each load has
+fresh globals; variables and changes to `user` do not carry between scripts.
+
 A more complete example showcasing the list of project specifications approach
 would be
 

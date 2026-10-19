@@ -265,6 +265,21 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath, private
             val output = execute(root, APPLICATION_ERROR, flags = listOf("named.proj.lua"))
             contains(output.replace(Regex("\\s+"), " "), "belongs to both")
         },
+        "project_and_lua_configuration_share_script_context" to { root ->
+            val project = root.resolve("sources").apply { createDirectories() }
+            rule(project, "return true;")
+            project.resolve("run.tex").writeText("% arara: probe\n")
+            project.resolve("arararc.lua").writeText("""
+                assert(cwd ~= user.home and cwd:sub(-7) == 'sources')
+                return { paths = { cwd } }
+            """.trimIndent())
+            root.resolve("context.proj.lua").writeText("""
+                assert(cwd == user.home)
+                return { name = user.name, working_directory = cwd .. '/sources',
+                    files = { ['run.tex'] = {} } }
+            """.trimIndent())
+            contains(execute(root, 0, reference = "context.proj.lua"), "Smoke probe")
+        },
         "project_loads_configuration_from_its_working_directory" to { root ->
             val project = root.resolve("project with spaces").apply { createDirectories() }
             initialize(project)
