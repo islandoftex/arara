@@ -4,7 +4,7 @@ package org.islandoftex.arara.core.dependencies
 /**
  * A graph model for dependency resolution.
  */
-internal open class Graph<T> {
+internal open class Graph<T>(private val vertexName: (T) -> String = { it.toString() }) {
     private val vertices = mutableMapOf<T, MutableSet<T>>()
     private val indegree = mutableMapOf<T, Int>()
 
@@ -68,8 +68,24 @@ internal open class Graph<T> {
             } ?: throw NoSuchElementException("Expected $vertex in map")
         }
         if (order.size != vertices.size) {
-            throw org.islandoftex.arara.api.AraraException("Project dependencies contain a cycle.")
+            val cyclic = vertices.keys.filter { vertex ->
+                work[vertex] != 0 && reachesBack(vertex)
+            }.joinToString(", ", transform = vertexName)
+            throw org.islandoftex.arara.api.AraraException("Project dependencies contain a cycle: $cyclic.")
         }
         return order
+    }
+
+    // Kahn's remainder includes downstream vertices; only report vertices that reach themselves.
+    private fun reachesBack(vertex: T): Boolean {
+        val seen = mutableSetOf<T>()
+        val queue = ArrayDeque<T>()
+        vertices[vertex].orEmpty().forEach(queue::addLast)
+        while (queue.isNotEmpty()) {
+            val current = queue.removeFirst()
+            if (current == vertex) return true
+            if (seen.add(current)) vertices[current].orEmpty().forEach(queue::addLast)
+        }
+        return false
     }
 }

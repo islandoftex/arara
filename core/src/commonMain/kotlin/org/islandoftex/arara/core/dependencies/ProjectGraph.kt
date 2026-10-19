@@ -7,7 +7,7 @@ import org.islandoftex.arara.api.files.Project
 /**
  * A graph of projects. Implemented for convenience.
  */
-internal class ProjectGraph : Graph<Project>() {
+internal class ProjectGraph : Graph<Project>({ it.name }) {
     /**
      * Add all projects and their dependencies into the graph.
      *
@@ -16,7 +16,10 @@ internal class ProjectGraph : Graph<Project>() {
     fun addAll(projects: Iterable<Project>) {
         val ordered = projects.sortedBy { it.name }
         val byName = ordered.associateBy { it.name }
-        if (byName.size != ordered.size) throw AraraException("Project names must be unique.")
+        if (byName.size != ordered.size) {
+            val duplicates = ordered.groupBy { it.name }.filterValues { it.size > 1 }.keys.joinToString(", ")
+            throw AraraException("Project names must be unique: $duplicates.")
+        }
         ordered.forEach { addVertex(it) }
         ordered.forEach { project ->
             project.dependencies.sorted().forEach { dependency ->

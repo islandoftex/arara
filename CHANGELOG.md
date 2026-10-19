@@ -48,6 +48,10 @@ on.
 
 ### Fixed
 
+* Log captured command output on execution failures, including timeouts.
+* Project validation errors identify duplicate names and the projects involved
+  in dependency cycles, excluding projects that only depend on a cycle.
+
 * Scalar options retain their value during interpolation instead of becoming
   an empty list.
 

@@ -59,6 +59,10 @@ internal object InterpreterUtils {
         !LinearExecutor.executionOptions.verbose,
         LinearExecutor.executionOptions.timeoutValue
     ).let {
+        logOutput(when (it) {
+            is SystemCommandResult.Completed -> it.output
+            is SystemCommandResult.Failed -> it.output
+        })
         if (it is SystemCommandResult.Failed) {
             throw AraraException(
                 LanguageController.messages.run {
@@ -73,7 +77,10 @@ internal object InterpreterUtils {
                 it.exception
             )
         }
-        val (exitCode, output) = it as SystemCommandResult.Completed
+        (it as SystemCommandResult.Completed).exitCode
+    }
+
+    private fun logOutput(output: String) {
         logger.info {
             """
                 ${DisplayUtils.displayOutputSeparator(
@@ -85,7 +92,6 @@ internal object InterpreterUtils {
             )}
             """.trimIndent()
         }
-        exitCode
     }
 
     /**

@@ -35,6 +35,30 @@ class ProjectGraphTest {
     }
 
     @Test
+    fun cycleDiagnosticsNameOnlyCycleMembers() {
+        val projects = listOf(
+            Project("Cycle A", MPPPath("."), emptySet(), setOf("Cycle B", "Prerequisite")),
+            Project("Cycle B", MPPPath("."), emptySet(), setOf("Cycle A")),
+            Project("Dependent", MPPPath("."), emptySet(), setOf("Cycle A")),
+            Project("Prerequisite", MPPPath("."), emptySet()),
+            Project("Independent", MPPPath("."), emptySet())
+        )
+        val failure = assertFailsWith<AraraException> { ProjectValidation.executionOrder(projects) }
+        assertEquals("Project dependencies contain a cycle: Cycle A, Cycle B.", failure.message)
+    }
+
+    @Test
+    fun validationDiagnosticsIdentifyDuplicateNamesAndUnknownDependencies() {
+        val project = Project("Owner", MPPPath("."), emptySet(), setOf("Missing"))
+        val duplicate = assertFailsWith<AraraException> {
+            ProjectValidation.executionOrder(listOf(project, project))
+        }
+        assertEquals("Project names must be unique: Owner.", duplicate.message)
+        val missing = assertFailsWith<AraraException> { ProjectValidation.executionOrder(listOf(project)) }
+        assertEquals("Project 'Owner' has unknown dependency 'Missing'.", missing.message)
+    }
+
+    @Test
     fun independentProjectsHaveStableOrderRegardlessOfInputOrder() {
         val projects = listOf("C", "B", "A").map { Project(it, MPPPath("."), emptySet()) }
         assertEquals(listOf("A", "B", "C"), ProjectGraph().apply { addAll(projects) }.kahn().map { it.name })
