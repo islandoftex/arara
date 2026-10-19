@@ -55,6 +55,10 @@ still targets JRE 11.
 
 - `./gradlew build` — compile + `jvmTest` for all subprojects.
 - `./gradlew allTests` — run all KMP tests (this is what CI runs).
+  Use `-PtestJavaVersion=11` to run test workers on Java 11 while Gradle
+  continues to run on JDK 17+. The existing Foojay resolver provisions a
+  missing toolchain; GitLab caches `.gradle/jdks/` separately across pipelines.
+  The first run or a cache miss downloads it; subsequent runs reuse it.
 - `./gradlew :cli:test` or `./gradlew :core:jvmTest` — tests for one subproject.
   Single test class: `./gradlew :core:jvmTest --tests "fully.qualified.ClassName"
   --tests "*PartialName*"`.

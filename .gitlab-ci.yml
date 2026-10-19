@@ -88,6 +88,27 @@ test:spotless:
     <<: *cachedefinition
     policy: pull
 
+# Gradle runs on 21; its test workers run on the cached Java 11 toolchain.
+test:linux:jdk11:
+  extends: .corretto
+  stage: test
+  needs: ["build:linux:jdk21"]
+  image: amazoncorretto:21
+  script:
+    - ./gradlew allTests -PtestJavaVersion=11
+  cache:
+    - <<: *cachedefinition
+      policy: pull
+    - key: "java11-toolchain-linux-amd64-v1"
+      paths:
+        - .gradle/jdks/
+      policy: pull-push
+      when: always
+  artifacts:
+    when: always
+    reports:
+      junit: "*/build/test-results/jvmTest/TEST-*.xml"
+
 test:linux:jdk17:
   extends: .corretto
   needs: ["build:linux:jdk21"]
@@ -164,6 +185,7 @@ publish:gitlab:
 publish:snapshot_tdszip:
   needs:
     - build:linux:jdk21
+    - test:linux:jdk11
     - test:linux:jdk17
     - job: pages:for-manual
       artifacts: true

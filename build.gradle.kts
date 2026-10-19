@@ -11,6 +11,8 @@ import org.islandoftex.arara.build.DocumentationSourceZipBuilderTask
 import org.islandoftex.arara.build.SourceZipBuilderTask
 import org.islandoftex.arara.build.TDSTreeBuilderTask
 import org.islandoftex.arara.build.TDSZipBuilderTask
+import org.gradle.jvm.toolchain.JavaLanguageVersion
+import org.gradle.jvm.toolchain.JavaToolchainService
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
@@ -249,6 +251,11 @@ subprojects {
 
             named<Test>("jvmTest") {
                 useJUnitPlatform()
+                providers.gradleProperty("testJavaVersion").orNull?.let { version ->
+                    javaLauncher.set(project.extensions.getByType<JavaToolchainService>().launcherFor {
+                        languageVersion.set(JavaLanguageVersion.of(version.toInt()))
+                    })
+                }
 
                 testLogging {
                     exceptionFormat = TestExceptionFormat.FULL
