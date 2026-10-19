@@ -83,4 +83,37 @@ class LinearExecutorRegressionTest {
         assertEquals(listOf("two"), visited)
         assertEquals(0, LinearExecutor.execute(listOf(Project("Again", MPPPath("."), setOf(file("one.tex", { 0 }))))).exitCode)
     }
+
+    @Test
+    fun hooksObserveTheirDocumentedFileAndProjectLifetimeOnFailure() {
+        val events = mutableListOf<String>()
+        val project = Project("Hooks", MPPPath("."), setOf(file("hook.tex", { 7 })))
+        LinearExecutor.hooks = ExecutorHooks(
+            executeBeforeProject = { assertEquals(project, LinearExecutor.currentProject); events.add("project-start") },
+            executeBeforeFile = { assertNull(LinearExecutor.currentFile); events.add("file-start") },
+            executeAfterFile = {
+                assertNull(LinearExecutor.currentFile)
+                assertEquals(project, LinearExecutor.currentProject)
+                assertEquals(7, it.exitCode)
+                events.add("file-end")
+            },
+            executeAfterProject = { assertEquals(project, LinearExecutor.currentProject); events.add("project-end") },
+            executeAfterExecution = { assertEquals(7, it.exitCode); events.add("execution-end") }
+        )
+        LinearExecutor.executionOptions = ExecutionOptions(haltOnErrors = true)
+        assertEquals(7, LinearExecutor.execute(listOf(project)).exitCode)
+        assertEquals(listOf("project-start", "file-start", "file-end", "project-end", "execution-end"), events)
+        assertNull(LinearExecutor.currentProject)
+    }
+
+    @Test
+    fun aFailingBeforeProjectHookClearsContextAndAllowsAnotherRun() {
+        val project = Project("Hook", MPPPath("."), setOf(file("hook.tex", { 0 })))
+        LinearExecutor.hooks = ExecutorHooks(executeBeforeProject = { throw AraraException("hook failure") })
+        assertFailsWith<AraraException> { LinearExecutor.execute(listOf(project)) }
+        assertNull(LinearExecutor.currentProject)
+        assertNull(LinearExecutor.currentFile)
+        LinearExecutor.hooks = ExecutorHooks()
+        assertEquals(0, LinearExecutor.execute(listOf(project)).exitCode)
+    }
 }

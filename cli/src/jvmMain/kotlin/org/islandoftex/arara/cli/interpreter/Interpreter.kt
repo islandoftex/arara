@@ -299,28 +299,24 @@ class Interpreter(
                 // a halt was requested by a rule
                 ExecutionStatus.FinishedWithCode(HaltRequest.exitCode!!)
             else -> {
+                var status: ExecutionStatus = ExecutionStatus.Processing()
                 try {
-                    // if not execute the commands associated with the directive
-                    var retValue: ExecutionStatus
                     do {
-                        retValue = rule.commands.fold(
-                            ExecutionStatus.Processing()
-                                as ExecutionStatus
-                        ) { previous, command ->
+                        rule.commands.forEach { command ->
                             executeCommand(
                                 // TODO: remove cast
                                 command as SerialRuleCommand,
                                 directive.conditional,
                                 rule,
                                 parameters
-                            ).let { if (it.exitCode != 0) it else previous }
+                            ).let { if (it.exitCode != 0) status = it }
                         }
                     } while (evaluator.evaluate(directive.conditional))
-                    retValue
+                    status
                 } catch (e: HaltExpectedException) {
                     // If the user uses the halt rule to trigger a halt, this will be
                     // raised. Any other exception will not be caught and propagate up.
-                    e.status
+                    if (e.status.exitCode != 0) e.status else status
                 } catch (e: AraraExceptionWithHeader) {
                     // rethrow arara exceptions that are bound to have a header by
                     // prepending the header and removing the outer exception with

@@ -28,6 +28,9 @@ on.
 
 ### Fixed
 
+* Successful loop iterations and `halt(0)` no longer hide an earlier command
+  failure within the same rule when execution continues after errors.
+
 * Rule validation rejects reserved and duplicate argument identifiers before
   execution. Parse error context stays local to each rule load.
 
