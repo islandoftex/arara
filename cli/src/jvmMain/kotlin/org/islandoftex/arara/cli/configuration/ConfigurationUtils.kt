@@ -11,6 +11,7 @@ import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.configuration.LocalConfiguration
 import org.islandoftex.arara.mvel.configuration.YamlLocalConfiguration
+import org.islandoftex.arara.lua.configuration.LuaLocalConfiguration
 import org.islandoftex.arara.mvel.utils.MvelState
 
 /**
@@ -26,20 +27,20 @@ object ConfigurationUtils {
      *
      * Look for configuration files in the user's working directory first
      * if no configuration files are found in the user's working directory,
-     * try to look up in a global directory, that is, the user home.
+     * try to look up in a global directory, that is, the user home. Within
+     * each directory Lua names precede YAML names. Only regular files qualify.
      */
     fun configFileForProject(project: Project): MPPPath? {
-        val names = listOf(
-            ".araraconfig.yaml",
-            "araraconfig.yaml", ".arararc.yaml", "arararc.yaml"
+        val names = listOf("lua", "yaml").flatMap { extension ->
+            listOf(".araraconfig", "araraconfig", ".arararc", "arararc").map { "$it.$extension" }
+        }
+        val directories = listOfNotNull(
+            project.workingDirectory,
+            Environment.getSystemPropertyOrNull("user.home")?.let { MPPPath(it) }
         )
-        return project.workingDirectory.let { workingDir ->
-            names.map { workingDir / it }.firstOrNull { it.exists }
-        } ?: Environment.getSystemPropertyOrNull("user.home")
-            ?.let { userHome ->
-                names.map { MPPPath(userHome) / it }
-                    .firstOrNull { it.exists }
-            }
+        return directories.firstNotNullOfOrNull { directory ->
+            names.map { directory / it }.firstOrNull { it.exists && it.isRegularFile }
+        }
     }
 
     /**
@@ -51,17 +52,17 @@ object ConfigurationUtils {
      * higher levels.
      */
     @Throws(AraraException::class)
-    private fun loadLocalConfiguration(file: MPPPath): LocalConfiguration {
-        return if (file.fileName.endsWith(".yaml"))
-            YamlLocalConfiguration.load(file)
-        else
-            TODO("Kotlin DSL not implemented yet")
-    }
+    private fun loadLocalConfiguration(file: MPPPath, currentProject: Project): LocalConfiguration =
+        when (file.fileName.substringAfterLast('.')) {
+            "yaml" -> YamlLocalConfiguration.load(file)
+            "lua" -> LuaLocalConfiguration.load(file, currentProject.workingDirectory)
+            else -> throw AraraException("Unsupported configuration format: $file")
+        }
 
     /**
      * Loads the application configuration.
      *
-     * @param file The YAML file to read the configuration from.
+     * @param file The YAML or Lua configuration file.
      *
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
@@ -69,7 +70,7 @@ object ConfigurationUtils {
     @Throws(AraraException::class)
     fun load(file: MPPPath, currentProject: Project) {
         // then validate it and update the configuration accordingly
-        val resource = loadLocalConfiguration(file)
+        val resource = loadLocalConfiguration(file, currentProject)
         LinearExecutor.executionOptions = resource.toExecutionOptions(
             currentProject,
             LinearExecutor.executionOptions

@@ -20,11 +20,12 @@ configuration files; see [Dialog boxes](@/manual/Methods.md#dialog-boxes).
 
 # File lookup
 
-Our tool looks for the presence of at least one of four very specific files
-before execution. These files are presented as follows. Observe that the
-directories must have the correct permissions for proper lookup and access. The
-lookup order is also presented: `.araraconfig.yaml` `→`
-`araraconfig.yaml` `→` `.arararc.yaml` `→` `arararc.yaml`.
+arara searches the project's working directory first, then the user's home
+directory. Within each directory it checks Lua before YAML, in this order:
+`.araraconfig`, `araraconfig`, `.arararc`, `arararc`, each with the selected
+format's `.lua` or `.yaml` suffix. Only regular files qualify. The first match
+is loaded; an invalid configuration is an error, without falling back to another
+file. Configuration format is independent of the `--engine` rule selector.
 
 arara provides two approaches regarding the location of a configuration
 file. They dictate how the execution should behave and happen from a user
@@ -44,14 +45,13 @@ perspective, and are described as follows.
   relative to the processed file. This approach offers a project-based
   solution for complex workflows, e.g, a thesis or a book. Lookup uses the
   selected working directory, including `--working-directory` and each Lua
-  project's `workingDirectory`. Local configuration takes priority over global
+  project's `working_directory`. Local configuration takes priority over global
   configuration. Projects load their own settings without inheriting settings
   from the previously processed project.
 
 {% messagebox(title="Beware of empty configuration files") %}
-A configuration file should never be empty, otherwise arara will complain about
-it. Make sure to populate it with at least one key, or do not write a
-configuration file at all. The available keys are described later on.
+A configuration file must contain valid YAML or a Lua script returning a table.
+An empty Lua configuration is written as `return {}`.
 {% end %}
 
 If the logging feature is properly enabled, arara will indicate in the
@@ -59,7 +59,51 @@ corresponding `arara.log` file whether a configuration file was used during the
 execution and, if so, the corresponding canonical, absolute path. Logging is
 detailed later on, in [Logging](@/manual/Logging.md).
 
-# Basic structure
+# Lua configuration
+
+A Lua configuration returns a table. The script receives `user.home`, `user.name`
+and `cwd` (the project's working directory). Each load uses fresh globals.
+Paths are computed with Lua expressions; YAML `@{...}` placeholders remain literal.
+
+```lua
+return {
+    paths = { cwd .. "/rules", user.home .. "/arara-rules" },
+    file_types = { { extension = "tex" }, { extension = "src", pattern = "^@" } },
+    loops = 10,
+    verbose = false,
+    header = true,
+    language = "en",
+    database = "arara.yaml",
+    log = { enabled = true, file = cwd .. "/arara.log" },
+    preamble = {
+        default = "build",
+        prepend = "without-directives",
+        definitions = { build = { "% arara: pdflatex", "% arara: pdflatex" } }
+    }
+}
+```
+
+All settings are optional. Omitted scalar settings retain their inherited values;
+rule paths and file types precede the inherited lists. Preamble definitions belong
+to the current configuration. `preamble.prepend` accepts `always` (the default)
+or `without-directives`. Definitions are lists of directive lines.
+
+| Lua key | YAML equivalent |
+| --- | --- |
+| `paths`, `language`, `loops`, `verbose`, `header` | Same name |
+| `file_types` | `filetypes` |
+| `database` | `dbname` |
+| `log.enabled`, `log.file` | `logging`, `logname` |
+| `preamble.default`, `preamble.definitions` | `defaultPreamble`, `preambles` |
+| `preamble.prepend` | `prependPreambleIfDirectivesGiven` |
+
+Types are strict: booleans are not strings, loops must be positive integers,
+and lists must have contiguous numeric indices starting at one. Unknown keys
+are errors, including unknown keys in groups and file type declarations.
+File types require a nonblank `extension`; `pattern` may be omitted for built-in
+extensions. Database and log paths follow the YAML options described below.
+
+# YAML configuration
 
 The following list describes the basic structure of an arara configuration file
 by presenting the proper elements (or keys, if we consider the proper YAML

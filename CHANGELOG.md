@@ -16,6 +16,11 @@ on.
 
 ### Added
 
+* Lua configuration files (`arararc.lua` and the existing configuration basenames
+  with a `.lua` suffix), with computed paths and typed logging and preamble tables.
+  Local configuration takes priority over global configuration across both formats;
+  Lua takes priority over YAML within a directory.
+
 * Lua counterparts for all 74 official rules, retaining the YAML rules.
 * `--engine lua` for Lua rules, conditionals and `{{ ... }}` option
   interpolation using Luak. YAML/MVEL remains the default.

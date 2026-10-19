@@ -221,6 +221,22 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath, private
             rule(root, "loadClass('missing.jar', 'Missing'); return true;")
             execute(root, APPLICATION_ERROR, listOf("--safe-run"))
         },
+        "lua_configuration_supports_both_rule_engines" to { root ->
+            root.resolve("arararc.lua").writeText("""
+                return { paths = { cwd }, preamble = { default = 'build',
+                    definitions = { build = { '% arara: probe' } } } }
+            """.trimIndent())
+            root.resolve("run.tex").writeText("plain input\n")
+            rule(root, "return true;")
+            luaRule(root, "return true")
+            contains(execute(root, 0), "Smoke probe")
+            contains(execute(root, 0, listOf("--engine", "lua")), "Lua probe")
+        },
+        "invalid_lua_configuration_is_an_application_error" to { root ->
+            root.resolve("arararc.lua").writeText("return { loops = 0 }\n")
+            rule(root, "return true;")
+            contains(execute(root, APPLICATION_ERROR), "arararc.lua")
+        },
         "ordinary_lua_is_not_executed_as_a_specification" to { root ->
             rule(root, "return true;")
             root.resolve("arararc.yaml").writeText(
