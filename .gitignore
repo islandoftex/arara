@@ -7,6 +7,7 @@ docs/**/version.txt
 **/arara.xml
 .DS_Store
 .gradle
+.kotlin
 .idea
 **/build/*
 !buildSrc/src/**/build/*
@@ -15,6 +16,3 @@ target
 /website/public
 # nix build artifact
 result
-# Website preparation checks
-scripts/__pycache__/
-docs/__pycache__/

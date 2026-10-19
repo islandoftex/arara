@@ -61,6 +61,7 @@ build:linux:jdk21:
   stage: test
   script:
     - ./gradlew allTests
+    - ./gradlew -p buildSrc check
     - ./gradlew detekt
   cache:
     <<: *cachedefinition

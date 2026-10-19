@@ -60,7 +60,8 @@ spotless {
                 "lua/build.gradle.kts",
                 "mvel/build.gradle.kts",
                 "kotlin-dsl/build.gradle.kts",
-                "cli/build.gradle.kts"
+                "cli/build.gradle.kts",
+                "docs/build.gradle.kts"
         )
         targetExclude("src/test/**/*.kts")
         // ktlint updated its rule set so that a majority of our files newly

@@ -40,13 +40,12 @@
   by the `:api:createAraraAPIObject` Gradle task (writes the current
   `project.version` into `AraraAPI.version`). It is matched by `.gitignore`
   (`api/src/**/AraraAPI.kt`). Never edit or commit it; run the task instead.
-- `docs/**/version.txt` is written by `:docs:writeVersionFile` on every build
-  (`outputs.upToDateWhen { false }`), also gitignored.
+- `docs/**/version.txt` is written by `:docs:writeVersionFile`, also gitignored.
 - `website/public/`, `result/` (Nix), and `**/build/*` are gitignored; the only
   `build/` directories tracked are under `buildSrc/src/**/build/*`.
 - `website/themes/devlab-theme` is a pinned submodule; CI checks it out recursively.
   Keep its commit in sync with the `devlab-theme` flake input.
-  `scripts/prepare-website.py` stages legacy shortcodes without editing sources.
+  `:docs:prepareWebsite` stages legacy shortcodes without editing sources.
 
 ## Common developer commands
 
@@ -107,14 +106,15 @@ by default) — do not rely on it; run `./gradlew spotlessCheck` manually.
 
 ## Documentation build
 
-Build the site with `nix build .#website` and make `result/public` available at
-`website/public`. Then run `nix develop -c ./gradlew :docs:buildDocs`;
-`assembleCTAN` includes this step. The PDF scripts require Bash, Python 3,
-`sed`, and WeasyPrint from the dev shell.
+Run `nix develop -c ./gradlew :docs:buildDocs` to build the website and PDFs;
+`assembleCTAN` includes this step. Zola and WeasyPrint come from the dev shell.
+`:docs:buildWebsite` writes `website/public`; staging and book HTML go under
+`docs/build`. Remove any old Nix-store symlink at `website/public` first.
 
-`docs/extract-web-content.py` reads the `data-arara-document-*` regions and
-checks local images. `nix build .#website` verifies extraction for all book
-pages. Each PDF build uses a temporary directory under `$TMPDIR` (or `/tmp`).
+The Kotlin helpers in `buildSrc` extract `data-arara-document-*` regions and
+validate local assets. `./gradlew -p buildSrc check` runs their regression
+checks. `nix build .#website` compiles the same helpers and runs the same checks
+without downloading Gradle dependencies.
 
 ## Release / packaging
 
@@ -136,7 +136,7 @@ pages. Each PDF build uses a temporary directory under `$TMPDIR` (or `/tmp`).
 ## Nix
 
 `flake.nix` exposes `.#website` (the Zola site) and an independent default
-development shell. `nix develop` supplies `corretto21`, `jdk11`, `htmlq`,
+development shell. `nix develop` supplies `corretto21`, `jdk11`,
 `weasyprint`, `zola`, `zip`, and `nixpkgs-fmt` for development and documentation
 builds. Gradle runs on JDK 21; the CLI compiler uses the JDK 11 toolchain.
 The shell registers both Nix JDK homes explicitly and disables automatic

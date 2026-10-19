@@ -16,6 +16,7 @@ on.
 
 ### Changed
 
+* Build the website and PDF documentation through Gradle using Kotlin helpers.
 * animate+convert rules: change default program from `convert` to `magick` 
   (`convert` was deprecated in ImageMagick v7)
 

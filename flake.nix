@@ -43,28 +43,35 @@
               pname = "arara-website";
 
               nativeBuildInputs = [
-                pkgs.python3
+                pkgs.kotlin
+                pkgs.jdk21
                 websiteZola
               ];
 
               src = ./.;
               # Tera load_data initializes a TLS client even for local files.
               SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
+              JAVA_HOME = pkgs.jdk21.home;
 
               buildPhase = ''
                 runHook preBuild
-                python3 scripts/prepare-website.py --output "$TMPDIR/site" --theme ${devlab-theme}
+                kotlinc buildSrc/src/main/kotlin/org/islandoftex/arara/build/website/*.kt \
+                  -include-runtime -d "$TMPDIR/website-tools.jar"
+                java -cp "$TMPDIR/website-tools.jar" org.islandoftex.arara.build.website.WebsiteToolKt \
+                  prepare "$PWD" "$TMPDIR/site" ${devlab-theme}
                 zola --root "$TMPDIR/site" build --output-dir "$TMPDIR/public"
                 runHook postBuild
               '';
 
               doCheck = true;
-              ARARA_WEBSITE_THEME = devlab-theme;
               checkPhase = ''
                 runHook preCheck
-                python3 -m unittest discover -s scripts -p 'test_*.py'
-                python3 -m unittest discover -s docs -p 'test_*.py'
-                python3 docs/extract-web-content.py --check-site "$TMPDIR/public"
+                kotlinc buildSrc/src/test/kotlin/org/islandoftex/arara/build/website/WebsiteToolsChecks.kt \
+                  -classpath "$TMPDIR/website-tools.jar" -d "$TMPDIR/website-tests.jar"
+                java -cp "$TMPDIR/website-tools.jar:$TMPDIR/website-tests.jar" \
+                  org.islandoftex.arara.build.website.WebsiteToolsChecksKt "$PWD" ${devlab-theme}
+                java -cp "$TMPDIR/website-tools.jar" org.islandoftex.arara.build.website.WebsiteToolKt \
+                  check "$TMPDIR/public"
                 runHook postCheck
               '';
 
@@ -77,6 +84,7 @@
 
         devShells.default = pkgs.mkShell {
           JAVA_HOME = pkgs.corretto21.home;
+          SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
           # Generic Linux toolchains downloaded by Foojay do not run in the Nix image.
           shellHook = ''
             export GRADLE_OPTS="''${GRADLE_OPTS:-} -Dorg.gradle.project.org.gradle.java.installations.paths=${pkgs.corretto21.home},${pkgs.jdk11.home} -Dorg.gradle.project.org.gradle.java.installations.auto-detect=false -Dorg.gradle.project.org.gradle.java.installations.auto-download=false"
@@ -84,9 +92,7 @@
           buildInputs = with pkgs; [
             corretto21
             jdk11
-            htmlq
             nixpkgs-fmt
-            python3
             python3Packages.weasyprint
             zip
             websiteZola

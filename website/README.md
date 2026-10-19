@@ -9,15 +9,16 @@ git lfs pull
 nix build .#website
 ```
 
-Preview using a fresh staging directory:
+Preview staged sources:
 
 ```sh
-python3 scripts/prepare-website.py --output /tmp/arara-site
-nix run .#website-zola -- --root /tmp/arara-site serve
+nix develop -c ./gradlew :docs:prepareWebsite
+nix run .#website-zola -- --root docs/build/website/source serve
 ```
 
 Staging adapts legacy shortcodes in generated copies, leaving sources unchanged.
 
-For PDFs, make `result/public` available at `website/public`, then run
-`nix develop -c ./gradlew :docs:buildDocs` (also included in `assembleCTAN`).
-`nix build .#website` runs the staging and PDF extraction checks.
+`nix develop -c ./gradlew :docs:buildDocs` builds the site and both PDFs;
+`assembleCTAN` includes this step. Use `:docs:buildWebsite` for HTML alone.
+Gradle and Nix share the Kotlin helpers in `buildSrc`; `./gradlew -p buildSrc check`
+runs their regression checks, which also run in `nix build .#website`.
