@@ -31,7 +31,7 @@ class CommandAdapterTest {
     ) : RuleCommand, CommandEvaluator {
         override val name = "Adapter"
         var directCalls = 0
-        override val command: () -> Int = { directCalls++; 0 }
+        val command: () -> Int = { directCalls++; 0 }
         override fun evaluate(parameters: Map<String, Any>): Any? = evaluateBody(parameters)
         override fun isSuccessful(exitCode: Int): Boolean = exitCheck(exitCode)
     }

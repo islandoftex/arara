@@ -16,6 +16,10 @@ on.
 
 ### Changed
 
+* **Breaking change:** The Kotlin rule API moves the executable `command` lambda
+  from `RuleCommand` to `ExecutableRuleCommand`. Interpreted commands use an
+  evaluator instead.
+
 * Project specifications can be combined with loose input files. Loose inputs
   run last as one anonymous project with the invocation directory's configuration.
   Repeated or shared file paths are rejected instead of being executed twice.

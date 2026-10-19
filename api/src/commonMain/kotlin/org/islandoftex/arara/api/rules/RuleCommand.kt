@@ -12,10 +12,10 @@ public interface RuleCommand {
      */
     public val name: String?
 
-    /**
-     * The command itself is implemented using a lambda which returns an
-     * integer. This integer is treated as exit code. Use it like you would use
-     * an exit code on the command line (i.e. we treat only 0 as success).
-     */
+}
+
+/** A command implemented directly by a Kotlin function. */
+public interface ExecutableRuleCommand : RuleCommand {
+    /** Executes the command and returns its exit status. */
     public val command: () -> Int
 }
