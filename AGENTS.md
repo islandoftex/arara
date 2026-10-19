@@ -25,7 +25,10 @@
   live in `core.rules`; MVEL's registry binds their JVM static methods.
   `MvelCommandEvaluator` supplies results and exit predicates to the CLI through
   the engine-neutral `core.rules.CommandEvaluator` interface.
-- `lua` — Lua interpreter (`luak`) for Lua-based rules. KMP common.
+- `lua` — Luak interpreter for project specifications. Common-code rule value
+  and session adapters live in `lua.rules`. Paths and commands cross as userdata.
+  Integer helper arguments require 32-bit values; Longs must be exactly
+  representable in Luak.
 - `kotlin-dsl` — optional Kotlin scripting DSL for rules; pulls
   `kotlin-scripting-*` and a `runtimeOnly` `compiler-embeddable` (heavy).
 - `cli` — the actual application; entrypoint is
