@@ -53,6 +53,18 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath, private
         )
     }
 
+    private fun officialRules(root: MPPPath) {
+        listOf("pdflatex", "bibtex", "dvips", "mkdir", "rmdir", "halt").forEach { name ->
+            listOf("yaml", "lua").forEach { extension ->
+                val fileName = "arara-rule-$name.$extension"
+                val text = checkNotNull(javaClass.getResourceAsStream("/rules/$fileName")) {
+                    "Missing smoke resource $fileName"
+                }.bufferedReader(Charsets.UTF_8).use { it.readText() }
+                root.resolve(fileName).writeText(text)
+            }
+        }
+    }
+
     private fun luaRule(root: MPPPath, body: String, exit: String = "code == 0") {
         root.resolve("probe.lua").writeText(
             "return {identifier='probe', name='Lua probe', commands={{command=function(ctx) " +
@@ -78,6 +90,36 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath, private
     private fun contains(output: String, text: String) = check(text in output) { "Missing $text\n$output" }
 
     val cases: Map<String, (MPPPath) -> Unit> = linkedMapOf(
+        "official_engine_bibliography_and_converter_rules" to { root ->
+            officialRules(root)
+            root.resolve("run.tex").writeText(
+                "% arara: pdflatex: { interaction: nonstopmode, synctex: yes }\n" +
+                    "% arara: bibtex\n% arara: dvips\n"
+            )
+            listOf("yaml", "lua").forEach { engine ->
+                val output = execute(root, 0, listOf("--engine", engine, "--dry-run"))
+                contains(output, "--interaction=nonstopmode")
+                contains(output, "--synctex=1")
+                contains(output, "bibtex")
+                contains(output, "dvips")
+            }
+        },
+        "official_lua_directory_and_halt_rules" to { root ->
+            officialRules(root)
+            root.resolve("run.tex").writeText(
+                "% arara: mkdir: { target: 'created directory' }\n" +
+                    "% arara: rmdir: { target: 'created directory' }\n" +
+                    "% arara: halt\n% arara: missingrule\n"
+            )
+            execute(root, 0, listOf("--engine", "lua"))
+            check(!root.resolve("created directory").exists)
+        },
+        "lua_terminal_input_and_safe_class_loading" to { root ->
+            luaRule(root, "return show_input(0, 'Lua input', 'Type the answer') == 'answer'")
+            contains(execute(root, 0, listOf("--engine", "lua"), input = "answer\n"), "Lua input")
+            luaRule(root, "load_class('missing.jar', 'Missing'); return true")
+            execute(root, APPLICATION_ERROR, listOf("--engine", "lua", "--safe-run"))
+        },
         "lua_native_exit_and_output" to { root ->
             luaRule(root, luaNative(FAILURE_STATUS.toString()))
             val output = execute(root, FAILURE_STATUS, listOf("--engine", "lua", "--verbose"))

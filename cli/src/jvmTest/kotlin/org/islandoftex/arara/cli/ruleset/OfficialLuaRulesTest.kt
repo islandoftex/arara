@@ -128,4 +128,37 @@ class OfficialLuaRulesTest {
         parity("dvipdfmx", mapOf("output" to "../README.md", "options" to listOf("-v")))
         parity("pdfcrop", mapOf("margins" to listOf(10, 20, 30, 40), "clip" to true))
     }
+
+    @Test
+    fun workflowCommandsMatchYaml() {
+        listOf("asymptote", "detex", "frontespizio", "indent", "knitr", "latexmk", "llmk", "ltx2any",
+            "make", "metapost", "perltex", "pythontex", "sage", "sketch", "spix", "texcount", "texfmt", "tikzmake")
+            .forEach { parity(it) }
+        parity("datatooltk", mapOf("output" to "data output.dbtex"))
+        parity("gnuplot", mapOf("input" to listOf("plot.gnuplot")))
+        parity("clean", mapOf("extensions" to listOf("aux", "log")))
+        parity("copy", mapOf("target" to "copy target.tex"))
+    }
+
+    @Test
+    fun workflowHelpersKeepOriginalFileProtectionAndDirectoryBehavior() = inProject { reference ->
+        listOf("clean", "move").forEach { identifier ->
+            val rule = LuaRuleParser.parse(rules.resolve("arara-rule-$identifier.lua"), identifier)
+            val values = if (identifier == "move") mapOf("target" to "moved.tex") else emptyMap()
+            kotlin.test.assertFailsWith<org.islandoftex.arara.api.AraraException> {
+                rule.commands.single().evaluate(parameters(rule, reference, values))
+            }
+        }
+        val target = reference.parent.resolve("arara lua directory ${reference.fileName}")
+        try {
+            listOf("mkdir" to true, "rmdir" to false).forEach { (identifier, exists) ->
+                val rule = LuaRuleParser.parse(rules.resolve("arara-rule-$identifier.lua"), identifier)
+                assertEquals(listOf(true), rule.commands.single().evaluate(
+                    parameters(rule, reference, mapOf("target" to target.toString()))))
+                assertEquals(exists, target.exists)
+            }
+        } finally {
+            target.removeDirectory()
+        }
+    }
 }

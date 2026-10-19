@@ -55,16 +55,7 @@ becomes empty text. Lua and MVEL interpolation tags cannot be mixed. Safe runs
 leave options uninterpolated. Dry runs skip conditional evaluation and process
 launches; rule scripts and command closures still evaluate.
 
-Lua counterparts are available for the TeX engines: `context`, `csplain`, `etex`,
-`latex`, `luahbtex`, `lualatex`, `luatex`, `pdfcsplain`, `pdflatex`, `pdftex`,
-`platex`, `ptex`, `tex`, `uplatex`, `uptex`, `xelatex` and `xetex`. Their arguments
-match the [official rule descriptions](@/manual/Rules.md).
-
-Bibliography, glossary and index rules also have Lua counterparts: `authorindex`,
-`bib2gls`, `biber`, `bibtex`, `bibtex8`, `bibtexu`, `makeglossaries`,
-`makeglossarieslite`, `makeindex`, `nomencl`, `pbibtex`, `songidx`, `texindy`,
-`upbibtex`, `xindex` and `xindy`.
-
-Image, DVI, PostScript and PDF rules are available in Lua: `animate`, `convert`,
-`dvipdfm`, `dvipdfmx`, `dvips`, `dvipspdf`, `dvisvgm`, `fig2dev`, `ghostscript`,
-`pdfcrop`, `pdftk`, `pdftocairo`, `ps2pdf`, `qpdf` and `xdvipdfmx`.
+Every rule in the [official pack](@/manual/Rules.md) has a Lua counterpart with
+the same arguments. Both formats are distributed together. Lua helper scripts
+and external tools invoked by individual rules are separate from arara's Luak
+rule interpreter.

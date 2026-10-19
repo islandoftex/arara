@@ -19,3 +19,12 @@ tasks.register<Jar>("runnerJar") {
     from(configurations.runtimeClasspath.get().map { zipTree(it) })
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
+
+// Keep the runtime-only checks tied to the shipped rule sources.
+tasks.processResources {
+    from(rootProject.layout.projectDirectory.dir("rules")) {
+        include("arara-rule-pdflatex.*", "arara-rule-bibtex.*", "arara-rule-dvips.*",
+            "arara-rule-mkdir.*", "arara-rule-rmdir.*", "arara-rule-halt.*")
+        into("rules")
+    }
+}
