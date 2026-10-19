@@ -5,7 +5,10 @@ import org.islandoftex.arara.api.AraraIOException
 import org.islandoftex.arara.api.time.DateTime
 
 /**
- * Platform-independent object to deal with paths.
+ * A lexical path with its original spelling and an absolute, normalized reference.
+ * Equality, hashing, display and I/O use the reference; [isAbsolute], [startsWith]
+ * and resolution use the original spelling. Normalization does not resolve symlinks.
+ * JVM identity follows the native path provider, including Windows case handling.
  */
 // since this should provide a fluent API to deal with paths,
 // we are adding an annotation to suppress detekt's warning
@@ -64,7 +67,8 @@ public expect class MPPPath {
     public val isRegularFile: Boolean
 
     /**
-     * Checks whether the path starts with [p].
+     * Compares the original path spellings by whole segments. Normalize both
+     * paths first to compare their absolute locations.
      */
     public fun startsWith(p: MPPPath): Boolean
 
