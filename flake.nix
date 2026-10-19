@@ -68,8 +68,14 @@
           };
 
         devShells.default = pkgs.mkShell {
+          JAVA_HOME = pkgs.corretto21.home;
+          # Generic Linux toolchains downloaded by Foojay do not run in the Nix image.
+          shellHook = ''
+            export GRADLE_OPTS="''${GRADLE_OPTS:-} -Dorg.gradle.project.org.gradle.java.installations.paths=${pkgs.corretto21.home},${pkgs.jdk11.home} -Dorg.gradle.project.org.gradle.java.installations.auto-detect=false -Dorg.gradle.project.org.gradle.java.installations.auto-download=false"
+          '';
           buildInputs = with pkgs; [
             corretto21
+            jdk11
             htmlq
             nixpkgs-fmt
             python3Packages.weasyprint

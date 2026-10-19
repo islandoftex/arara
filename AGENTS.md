@@ -141,8 +141,12 @@ CTAN/TDS zip without first having the rendered website and the PDF tools.
 ## Nix
 
 `flake.nix` exposes `.#website` (the Zola site) and an independent default
-development shell. `nix develop` supplies `corretto21`, `htmlq`, `weasyprint`,
-`zola`, `zip`, and `nixpkgs-fmt` for development and documentation builds.
+development shell. `nix develop` supplies `corretto21`, `jdk11`, `htmlq`,
+`weasyprint`, `zola`, `zip`, and `nixpkgs-fmt` for development and documentation
+builds. Gradle runs on JDK 21; the CLI compiler uses the JDK 11 toolchain.
+The shell registers both Nix JDK homes explicitly and disables automatic
+JDK discovery/downloads, since generic Linux JDKs cannot run in the Nix CI
+image. Existing `GRADLE_OPTS` settings are preserved.
 Run application builds with `nix develop -c ./gradlew :cli:shadowJar`.
 There is no Nix application package or gradle2nix artifact lock to maintain.
 
