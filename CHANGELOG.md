@@ -28,6 +28,10 @@ on.
 
 ### Fixed
 
+* Process failures retain their original exception and captured output; CLI
+  error classification no longer parses exception names from strings. Existing
+  pair-returning rule helpers remain compatible.
+
 * `buildString` joins the supplied values rather than an array identity, and
   `writeToFile` reports path/I/O failures as false as documented.
 * Safe mode rejects class-loading helpers. Loaded archives use private copies

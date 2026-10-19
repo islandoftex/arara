@@ -196,7 +196,22 @@ object Environment {
         command: Command,
         silenceSystemOut: Boolean = true,
         timeout: Duration = Duration.ZERO
-    ): Pair<Int, String> = ByteArrayOutputStream().use { buffer ->
+    ): Pair<Int, String> = when (val result = executeSystemCommandResult(command, silenceSystemOut, timeout)) {
+        is SystemCommandResult.Completed -> result.exitCode to result.output
+        is SystemCommandResult.Failed -> ERROR_EXIT_STATUS to
+            "${result.exception::class.java.name}: ${result.exception.message}"
+    }
+
+    /**
+     * Executes a command while preserving the failure and any captured output.
+     * The pair-returning helper remains available for existing rule callers.
+     */
+    @JvmStatic
+    fun executeSystemCommandResult(
+        command: Command,
+        silenceSystemOut: Boolean = true,
+        timeout: Duration = Duration.ZERO
+    ): SystemCommandResult = ByteArrayOutputStream().use { buffer ->
         ProcessExecutor(command.elements).runCatching {
             addDestroyer(ShutdownHookProcessDestroyer())
 
@@ -222,13 +237,14 @@ object Environment {
                 timeout(timeout.inWholeNanoseconds, TimeUnit.NANOSECONDS)
             }
 
-            execute().exitValue to buffer.toString()
+            SystemCommandResult.Completed(execute().exitValue, buffer.toString())
         }.getOrElse {
             logger.debug {
-                "Caught an exception when executing " +
-                    "$command returning $ERROR_EXIT_STATUS"
+                "Caught an exception when executing $command"
             }
-            ERROR_EXIT_STATUS to "${it::class.java.name}: ${it.message}"
+            if (it is InterruptedException) Thread.currentThread().interrupt()
+            if (it !is Exception) throw it
+            SystemCommandResult.Failed(it, buffer.toString())
         }
     }
 }

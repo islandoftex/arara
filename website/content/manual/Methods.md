@@ -1361,10 +1361,10 @@ consistently shared across rule contexts.
 - **[R]** `unsafelyExecuteSystemCommand(Command command): Pair<Integer, String>`
     This method, which has a very spooky name, unsafely executes the provided
     `Command` reference and returns an ordered pair containing the exit status
-    and the command output. Note that, if an exception is raised during the
-    command execution, `-99` is assigned as exit status and an empty string is
-    defined as command output. Please make sure to always check the returned
-    integer status when using this method.
+    and combined standard output and standard error. A completed command keeps
+    its actual exit status. If launching or waiting for the command fails,
+    including a timeout, the pair contains `-99` and the exception description.
+    Always check the returned status. This helper is unavailable in safe mode.
 
   ```java
   result = unsafelyExecuteSystemCommand(getCommand('ls'));
