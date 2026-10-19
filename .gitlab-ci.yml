@@ -16,6 +16,7 @@ stages:
 before_script:
   - export GRADLE_USER_HOME=`pwd`/.gradle
 
+# Gradle plugins require JDK 17+; application bytecode still targets Java 11.
 # Minimal Corretto images omit xargs, which the Gradle wrapper requires.
 .corretto:
   before_script:
@@ -51,9 +52,9 @@ before_script:
     <<: *cachedefinition
     policy: push
 
-build:linux:jdk11:
+build:linux:jdk21:
   extends: .corretto
-  image: amazoncorretto:11
+  image: amazoncorretto:21
   <<: *builddefinition
 
 .testtemplate: &testdefinition
@@ -68,8 +69,8 @@ build:linux:jdk11:
 test:dependencies:
   extends: .corretto
   stage: test
-  needs: ["build:linux:jdk11"]
-  image: amazoncorretto:11
+  needs: ["build:linux:jdk21"]
+  image: amazoncorretto:21
   script:
     - ./gradlew dependencyUpdates
   cache:
@@ -79,29 +80,23 @@ test:dependencies:
 test:spotless:
   extends: .corretto
   stage: test
-  needs: ["build:linux:jdk11"]
-  image: amazoncorretto:11
+  needs: ["build:linux:jdk21"]
+  image: amazoncorretto:21
   script:
     - ./gradlew spotlessCheck
   cache:
     <<: *cachedefinition
     policy: pull
 
-test:linux:jdk11:
-  extends: .corretto
-  needs: ["build:linux:jdk11"]
-  image: amazoncorretto:11
-  <<: *testdefinition
-
 test:linux:jdk17:
   extends: .corretto
-  needs: ["build:linux:jdk11"]
+  needs: ["build:linux:jdk21"]
   image: amazoncorretto:17
   <<: *testdefinition
 
 test:linux:jdk21:
   extends: .corretto
-  needs: ["build:linux:jdk11"]
+  needs: ["build:linux:jdk21"]
   image: amazoncorretto:21
   <<: *testdefinition
 
@@ -140,7 +135,7 @@ pages:for-manual:
 
 publish:gitlab:
   extends: .corretto
-  image: amazoncorretto:11
+  image: amazoncorretto:21
   stage: publish
   script:
     - ./gradlew publishAllPublicationsToGitLabRepository -PjobToken=$CI_JOB_TOKEN -Prelease=true
@@ -168,8 +163,8 @@ publish:gitlab:
 
 publish:snapshot_tdszip:
   needs:
-    - build:linux:jdk11
-    - test:linux:jdk11
+    - build:linux:jdk21
+    - test:linux:jdk17
     - job: pages:for-manual
       artifacts: true
   variables:

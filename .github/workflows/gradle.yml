@@ -12,7 +12,7 @@ jobs:
     - uses: actions/checkout@v6
     - uses: actions/setup-java@v5
       with:
-        java-version: 11
+        java-version: 21
         distribution: corretto
     - uses: gradle/actions/wrapper-validation@v5
     - uses: gradle/actions/setup-gradle@v5
