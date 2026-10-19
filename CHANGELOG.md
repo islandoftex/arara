@@ -16,6 +16,10 @@ on.
 
 ### Changed
 
+* Project specifications can be combined with loose input files. Loose inputs
+  run last as one anonymous project with the invocation directory's configuration.
+  Repeated or shared file paths are rejected instead of being executed twice.
+
 * Multiple project specifications share a dependency graph. Project names and
   normalized file paths must be unique across the invocation; overlapping file
   ownership is rejected before execution.

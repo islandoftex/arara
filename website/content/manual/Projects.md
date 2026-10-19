@@ -160,3 +160,18 @@ return {
 ```
 
 The file occurs once; its directives run in the order given.
+
+Specifications and loose inputs may be combined:
+
+```sh
+arara figures.proj.lua book.proj.lua appendix.tex
+```
+
+Loose inputs form one anonymous project, displayed as `Single files`, which runs
+after all specification projects. It uses the invocation directory and its
+local configuration. Specification dependencies can name only specification
+projects. When loose inputs are present, `Single files` is reserved as their
+project name. Repeated loose inputs and paths shared with a specification are
+errors, including aliases found through extension completion. Command-line
+options override each project's local configuration; configuration does not
+leak between projects.

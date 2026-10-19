@@ -120,6 +120,22 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath, private
             root.resolve("invalid.proj.lua").writeText("return { files = false }\n")
             contains(execute(root, APPLICATION_ERROR, reference = "invalid.proj.lua"), "project.files")
         },
+        "mixed_projects_and_loose_inputs_run_with_separate_configuration" to { root ->
+            val project = root.resolve("named").apply { createDirectories() }
+            initialize(project)
+            rule(project, "getSession().put('named', true); return true;")
+            rule(root, "getSession().get('named'); return true;")
+            root.resolve("named.proj.lua").writeText(
+                "return { working_directory = 'named', files = { ['run.tex'] = {} } }\n"
+            )
+            execute(root, 0, flags = listOf("named.proj.lua"))
+        },
+        "shared_project_input_is_rejected_before_execution" to { root ->
+            rule(root, "halt($FAILURE_STATUS);")
+            root.resolve("named.proj.lua").writeText("return { files = { ['run.tex'] = {} } }\n")
+            val output = execute(root, APPLICATION_ERROR, flags = listOf("named.proj.lua"))
+            contains(output.replace(Regex("\\s+"), " "), "belongs to both")
+        },
         "project_loads_configuration_from_its_working_directory" to { root ->
             val project = root.resolve("project with spaces").apply { createDirectories() }
             initialize(project)

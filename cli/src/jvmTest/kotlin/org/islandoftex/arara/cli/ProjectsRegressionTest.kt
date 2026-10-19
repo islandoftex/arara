@@ -179,4 +179,61 @@ class ProjectsRegressionTest {
         assertEquals(0, run(root, "project.proj.lua"))
         assertEquals("without;with;", Session["runs"])
     }
+
+    @Test
+    fun looseInputsRunLastWithTheInvocationConfiguration() = fixture { root ->
+        root.resolve("arararc.yaml").writeText("!config\npaths: ['.']\n")
+        val named = root.resolve("named").apply { createDirectories() }
+        named.resolve("arararc.yaml").writeText("!config\npaths: ['.']\n")
+        marker(named, "named")
+        named.resolve("a.tex").writeText("% arara: marker\n")
+        root.resolve("named.proj.lua").writeText("""
+            return { working_directory = 'named', files = { ['a.tex'] = {} } }
+        """.trimIndent())
+        root.resolve("marker.yaml").writeText("""
+            !config
+            identifier: marker
+            name: Marker
+            commands:
+              - command: "@{ getSession().get('named'); getSession().put('loose', true); return true; }"
+            arguments: []
+        """.trimIndent())
+        root.resolve("loose.tex").writeText("% arara: marker\n")
+        assertEquals(0, run(root, "loose.tex", "named.proj.lua"))
+        assertEquals(true, Session["named"])
+        assertEquals(true, Session["loose"])
+    }
+
+    @Test
+    fun repeatedLooseInputsAndMixedOwnershipFailBeforeRulesRun() = fixture { root ->
+        root.resolve("arararc.yaml").writeText("!config\npaths: ['.']\n")
+        marker(root)
+        root.resolve("a.tex").writeText("% arara: marker\n")
+        root.resolve("b.tex").writeText("% arara: marker\n")
+        root.resolve("named.proj.lua").writeText("return { files = { ['a.tex'] = {} } }")
+        for (inputs in listOf(
+            arrayOf("a.tex", "./a.tex"), arrayOf("a", "a.tex"), arrayOf("named.proj.lua", "a.tex")
+        )) {
+            assertEquals(2, run(root, *inputs))
+            assertEquals(false, "ran" in Session)
+        }
+        root.resolve("named.proj.lua").writeText(
+            "return { name = 'Single files', files = { ['a.tex'] = {} } }"
+        )
+        assertEquals(2, run(root, "named.proj.lua", "b.tex"))
+        assertEquals(false, "ran" in Session)
+    }
+
+    @Test
+    fun specificationDependenciesCannotNameTheAnonymousProject() = fixture { root ->
+        root.resolve("arararc.yaml").writeText("!config\npaths: ['.']\n")
+        marker(root)
+        root.resolve("a.tex").writeText("% arara: marker\n")
+        root.resolve("b.tex").writeText("% arara: marker\n")
+        root.resolve("named.proj.lua").writeText("""
+            return { files = { ['a.tex'] = {} }, dependencies = { 'Single files' } }
+        """.trimIndent())
+        assertEquals(2, run(root, "named.proj.lua", "b.tex"))
+        assertEquals(false, "ran" in Session)
+    }
 }

@@ -143,52 +143,40 @@ class CLI : CliktCommand("arara") {
         .help("The file(s) to evaluate and process")
         .multiple(required = true)
 
-    /**
-     * Resolve the projects to be run from either a configuration file that
-     * configures the run or by creating a single project from the called
-     * files.
-     */
-    private fun resolveProjects(): List<org.islandoftex.arara.api.files.Project> {
-        // resolve the working directory from the one that may be given
-        // as command line parameter; otherwise resolve current directory
-        val workingDir = (workingDirectory?.toMPPPath() ?: MPPPath("."))
-            .normalize()
-
-        val specifications = reference.filter { it.endsWith(".proj.lua") }
-        if (specifications.isNotEmpty()) {
-            if (specifications.size != reference.size) {
-                throw AraraException("Project specifications cannot be combined with loose inputs yet.")
-            }
-            return specifications.flatMap { specification ->
-                val path = workingDir.resolve(specification)
-                LuaInterpreter(workingDir).parseProjectsFromLua(
-                    path.readText(), path.fileName.removeSuffix(".proj.lua"), path.toString()
-                )
-            }
-        }
-        return Project(
-            "Untitled",
-            workingDir,
-            emptySet()
-        ).also { project ->
-            ConfigurationUtils.configFileForProject(project)?.let {
-                DisplayUtils.configurationFileName = it.toString()
-                ConfigurationUtils.load(it, project)
-            }
-        }.let { project ->
-            listOf(
-                Project(
-                    project.name,
-                    project.workingDirectory,
-                    reference.map { fileName ->
-                        FileSearching.resolveFile(
-                            fileName,
-                            workingDir,
-                            LinearExecutor.executionOptions
-                        )
-                    }.toSet()
-                )
+    /** Specifications share a graph; loose inputs form a final anonymous project. */
+    private fun resolveProjects(configuration: ConfigurationSnapshot): List<org.islandoftex.arara.api.files.Project> {
+        val workingDir = (workingDirectory?.toMPPPath() ?: MPPPath(".")).normalize()
+        val (specifications, inputs) = reference.partition { it.endsWith(".proj.lua") }
+        val projects = specifications.flatMap { specification ->
+            val path = workingDir.resolve(specification)
+            LuaInterpreter(workingDir).parseProjectsFromLua(
+                path.readText(), path.fileName.removeSuffix(".proj.lua"), path.toString()
             )
+        }
+        // Specification dependencies refer only to named specification projects.
+        org.islandoftex.arara.core.dependencies.ProjectValidation.executionOrder(projects)
+        return if (inputs.isEmpty()) projects else projects + resolveLooseInputs(
+            inputs, workingDir, configuration, projects.map { it.name }.toSet()
+        )
+    }
+
+    private fun resolveLooseInputs(
+        inputs: List<String>,
+        workingDir: MPPPath,
+        configuration: ConfigurationSnapshot,
+        dependencies: Set<String>
+    ): org.islandoftex.arara.api.files.Project {
+        val project = Project("Single files", workingDir, emptySet(), dependencies)
+        return try {
+            configureProject(project, configuration)
+            val files = inputs.map { FileSearching.resolveFile(it, workingDir, LinearExecutor.executionOptions) }
+            if (files.map { it.path.normalize() }.toSet().size != files.size) {
+                throw AraraException("Loose inputs refer to the same file more than once.")
+            }
+            Project(project.name, workingDir, files.toSet(), dependencies)
+        } finally {
+            configuration.restore(configureLogging = false)
+            updateConfigurationFromCommandLine()
         }
     }
 
@@ -367,7 +355,7 @@ class CLI : CliktCommand("arara") {
                 }
             )
 
-            val projects = prepareProjects(resolveProjects(), configuration)
+            val projects = prepareProjects(resolveProjects(configuration), configuration)
             ExecutionStatus.FinishedWithCode(LinearExecutor.execute(projects).exitCode)
         } catch (ex: AraraException) {
             // catch a propagated exception to replace intentionally left
