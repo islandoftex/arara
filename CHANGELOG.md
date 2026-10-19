@@ -14,43 +14,42 @@ on.
 
 ## [Unreleased]
 
+### Added
+
+* Lua counterparts for all 74 official rules, retaining the YAML rules.
+* `--engine lua` for Lua rules, conditionals and `{{ ... }}` option
+  interpolation using Luak. YAML/MVEL remains the default.
+* Project specifications can be combined with loose input files. Loose inputs
+  run last as one anonymous project with the invocation directory's configuration.
+* Multiple project specifications share a dependency graph.
+* `ClassLoading.closeLoaders()` lets hosts release loaded rule archives.
+
 ### Changed
-
-* Add Lua counterparts for all 74 official rules, retaining the YAML rules.
-
-* Add `--engine lua` for Lua rules, conditionals and `{{ ... }}` option
-  interpolation using Luak. YAML/MVEL remains the default. Scalar options now
-  retain their value during interpolation.
 
 * **Breaking change:** The Kotlin rule API moves the executable `command` lambda
   from `RuleCommand` to `ExecutableRuleCommand`. Interpreted commands use an
   evaluator instead.
-
-* Project specifications can be combined with loose input files. Loose inputs
-  run last as one anonymous project with the invocation directory's configuration.
-  Repeated or shared file paths are rejected instead of being executed twice.
-
-* Multiple project specifications share a dependency graph. Project names and
-  normalized file paths must be unique across the invocation; overlapping file
-  ownership is rejected before execution.
-
 * **Breaking change:** Project specifications require `.proj.lua`; ordinary `.lua`
   files are no longer interpreted as specifications. Invalid specifications no
   longer fall back to directive scanning. Rename `workingDirectory` to
   `working_directory` and `fileType` to `file_type`; the old keys are rejected.
   Unnamed single projects take their specification's basename.
-
-* Build the website and PDF documentation through Gradle using Kotlin helpers.
 * **Breaking change:** Swing dialogs are replaced by terminal dialogs. Remove
   the `laf` configuration key and explicit pixel-width arguments from dialog
   helpers. The existing helper names (including `showDropdown`) and one-based
   selections remain; zero cancels a selection. Closed input reports an error
   instead of silently accepting a default.
-
-* animate+convert rules: change default program from `convert` to `magick` 
+* **Breaking change:** Project names and normalized file paths must be unique
+  across the invocation. Repeated or shared file paths are rejected instead of
+  being executed twice. Overlapping file ownership is rejected before execution.
+* Build the website and PDF documentation through Gradle using Kotlin helpers.
+* animate+convert rules: change default program from `convert` to `magick`
   (`convert` was deprecated in ImageMagick v7)
 
 ### Fixed
+
+* Scalar options retain their value during interpolation instead of becoming
+  an empty list.
 
 * Reject cyclic project dependencies before execution instead of skipping projects.
   Independent projects and equal-priority files have deterministic ordering.
@@ -77,9 +76,8 @@ on.
 * `buildString` joins the supplied values rather than an array identity, and
   `writeToFile` reports path/I/O failures as false as documented.
 * Safe mode rejects class-loading helpers. Loaded archives use private copies
-  so replacing a user archive cannot break lazy companion loading; hosts can
-  release them with `ClassLoading.closeLoaders()`. Missing default constructors
-  now return an instantiation-failure status.
+  so replacing a user archive cannot break lazy companion loading. Missing
+  default constructors now return an instantiation-failure status.
 * Log append settings are honored, repeated setup no longer truncates records,
   and disabling logging releases its file handle and thread-local destination.
 
