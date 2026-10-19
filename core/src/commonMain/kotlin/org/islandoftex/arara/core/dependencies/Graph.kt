@@ -38,8 +38,7 @@ internal open class Graph<T> {
         addVertex(source)
         addVertex(target)
 
-        vertices[source]!!.add(target)
-        updateInDegree(target)
+        if (vertices[source]!!.add(target)) updateInDegree(target)
     }
 
     /**
@@ -67,6 +66,9 @@ internal open class Graph<T> {
                     queue.add(it)
                 }
             } ?: throw NoSuchElementException("Expected $vertex in map")
+        }
+        if (order.size != vertices.size) {
+            throw org.islandoftex.arara.api.AraraException("Project dependencies contain a cycle.")
         }
         return order
     }

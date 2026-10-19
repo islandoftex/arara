@@ -86,7 +86,10 @@ object LinearExecutor : Executor {
         currentProject = project
         try {
             hooks.executeBeforeProject(project)
-            for (file in project.files.sortedByDescending { it.priority }) {
+            for (file in project.files.sortedWith(
+                compareByDescending<org.islandoftex.arara.api.files.ProjectFile> { it.priority }
+                    .thenBy { it.path.normalize().toString() }
+            )) {
                 hooks.executeBeforeFile(file)
                 val report = execute(file)
                 if (report.exitCode != 0) exitCode = report.exitCode

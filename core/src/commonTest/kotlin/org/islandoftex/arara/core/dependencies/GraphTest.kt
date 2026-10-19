@@ -3,21 +3,25 @@ package org.islandoftex.arara.core.dependencies
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import org.islandoftex.arara.api.AraraException
 
 class GraphTest {
     @Test
     fun shouldOperateCorrectlyOnEmptyList() {
         assertEquals(Graph<Int>().kahn(), emptyList())
     }
+
     @Test
     fun shouldOperateCorrectlyOnSingletonList() {
         assertEquals(Graph<Int>().apply { addVertex(1) }.kahn(), listOf(1))
     }
+
     @Test
-    fun shouldBeEmptyOnCycles() {
-        // TODO: is that the correct behavior we want to enforce?
-        assertEquals(Graph<Int>().apply { addEdge(1, 1) }.kahn(), emptyList())
+    fun shouldRejectCycles() {
+        assertFailsWith<AraraException> { Graph<Int>().apply { addEdge(1, 1) }.kahn() }
     }
+
     @Test
     fun shouldSortCorrectly() {
         assertEquals(

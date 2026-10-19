@@ -14,14 +14,15 @@ internal class ProjectGraph : Graph<Project>() {
      * @param projects The iterable of projects to
      */
     fun addAll(projects: Iterable<Project>) {
-        projects.forEach { project ->
-            // separate vertex creation to ensure insertion if dependencies
-            // are empty
-            addVertex(project)
-            project.dependencies.forEach { dependency ->
+        val ordered = projects.sortedBy { it.name }
+        val byName = ordered.associateBy { it.name }
+        if (byName.size != ordered.size) throw AraraException("Project names must be unique.")
+        ordered.forEach { addVertex(it) }
+        ordered.forEach { project ->
+            project.dependencies.sorted().forEach { dependency ->
                 addEdge(
-                    projects.find { it.name == dependency }
-                        ?: throw AraraException("Stray project dependencies"),
+                    byName[dependency]
+                        ?: throw AraraException("Project '${project.name}' has unknown dependency '$dependency'."),
                     project
                 )
             }

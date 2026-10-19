@@ -116,4 +116,28 @@ class LinearExecutorRegressionTest {
         LinearExecutor.hooks = ExecutorHooks()
         assertEquals(0, LinearExecutor.execute(listOf(project)).exitCode)
     }
+
+    @Test
+    fun prioritiesTakePrecedenceOverNormalizedPathTieBreaking() {
+        val visited = mutableListOf<String>()
+        val a = file("a.tex", { visited.add("a"); 0 })
+        val b = file("b.tex", { visited.add("b"); 0 })
+        val high = object : ProjectFile(MPPPath("z.tex"), FileType("tex", "^%"), 1) {
+            override fun fetchDirectives(parseOnlyHeader: Boolean): List<Directive> = emptyList()
+        }
+        LinearExecutor.hooks = ExecutorHooks(executeBeforeFile = { if (it === high) visited.add("high") })
+        val project = Project("Order", MPPPath("."), linkedSetOf(b, a, high))
+        assertEquals(0, LinearExecutor.execute(listOf(project)).exitCode)
+        assertEquals(listOf("high", "a", "b"), visited)
+    }
+
+    @Test
+    fun cyclesFailBeforeAnyExecutionHookRuns() {
+        var started = false
+        LinearExecutor.hooks = ExecutorHooks(executeBeforeExecution = { started = true })
+        val project = Project("Cycle", MPPPath("."), setOf(file("a.tex", { 0 })), setOf("Cycle"))
+        assertFailsWith<AraraException> { LinearExecutor.execute(listOf(project)) }
+        assertEquals(false, started)
+    }
+
 }

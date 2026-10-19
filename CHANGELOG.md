@@ -28,6 +28,9 @@ on.
 
 ### Fixed
 
+* Reject cyclic project dependencies before execution instead of skipping projects.
+  Independent projects and equal-priority files have deterministic ordering.
+
 * Project working directories resolve relative to the invocation directory;
   implicit file types use each project's configuration, including compound extensions.
 
