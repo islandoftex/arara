@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
-package org.islandoftex.arara.mvel.configuration
+package org.islandoftex.arara.core.configuration
 
-import com.charleskorn.kaml.Yaml
 import kotlinx.serialization.Serializable
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionOptions
@@ -134,27 +133,4 @@ data class LocalConfiguration(
         )
     }
 
-    companion object {
-        /**
-         * Validates the configuration file.
-         *
-         * @param file The configuration file.
-         * @return The configuration file as a resource.
-         * @throws AraraException Something wrong happened, to be caught in the
-         * higher levels.
-         */
-        @Throws(AraraException::class)
-        fun load(file: MPPPath): LocalConfiguration =
-            file.runCatching {
-                val text = file.readText()
-                if (!text.startsWith("!config"))
-                    throw AraraException("Configuration should start with !config")
-                Yaml.default.decodeFromString(serializer(), text)
-            }.getOrElse {
-                throw AraraException(
-                    LanguageController.messages.ERROR_CONFIGURATION_GENERIC_ERROR,
-                    it
-                )
-            }
-    }
 }

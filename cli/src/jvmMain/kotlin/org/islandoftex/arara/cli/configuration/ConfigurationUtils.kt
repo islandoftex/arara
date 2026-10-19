@@ -9,7 +9,8 @@ import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
-import org.islandoftex.arara.mvel.configuration.LocalConfiguration
+import org.islandoftex.arara.core.configuration.LocalConfiguration
+import org.islandoftex.arara.mvel.configuration.YamlLocalConfiguration
 import org.islandoftex.arara.mvel.utils.MvelState
 
 /**
@@ -52,7 +53,7 @@ object ConfigurationUtils {
     @Throws(AraraException::class)
     private fun loadLocalConfiguration(file: MPPPath): LocalConfiguration {
         return if (file.fileName.endsWith(".yaml"))
-            LocalConfiguration.load(file)
+            YamlLocalConfiguration.load(file)
         else
             TODO("Kotlin DSL not implemented yet")
     }

@@ -29,6 +29,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(libs.yamlkt)
+                implementation(libs.kotlinx.serialization)
             }
         }
 
