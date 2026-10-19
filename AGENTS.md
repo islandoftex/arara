@@ -9,7 +9,7 @@
   repo is a mirror. The working branch is `development` (the default, per
   `origin/HEAD`); `master` receives releases. See README for the upstream note.
 - Subprojects declared in `settings.gradle.kts`: `api`, `core`, `lua`, `mvel`,
-  `kotlin-dsl`, `cli`, `docs`. `buildSrc/` holds custom Gradle tasks
+  `kotlin-dsl`, `cli`, `docs`, `smoke-tests`. `buildSrc/` holds custom Gradle tasks
   (CTAN/TDS packaging, publication) under `org.islandoftex.arara.build`.
 - Dependency versions live in `gradle/libs.versions.toml` (the version catalog).
   Edit versions there, not in individual `build.gradle.kts` files.
@@ -31,6 +31,8 @@
   `core`, `lua`, `mvel`, `clikt`, `log4j`.
 - `docs` — builds the manual/quickstart PDFs from the rendered website HTML
   (see "Documentation" below).
+- `smoke-tests` — standalone Kotlin runner for packaged-application checks;
+  uses `api` for paths and is not published.
 - `rules/` — built-in YAML rule definitions shipped with the distribution
   (74 files like `arara-rule-pdflatex.yaml`). These are data, not Kotlin.
 
@@ -59,6 +61,9 @@ still targets JRE 11.
   continues to run on JDK 17+. The existing Foojay resolver provisions a
   missing toolchain; GitLab caches `.gradle/jdks/` separately across pipelines.
   The first run or a cache miss downloads it; subsequent runs reuse it.
+- `./gradlew processSmoke` — test the runnable jar with a JDK 11+, without TeX.
+  Select another runtime with `-PsmokeJava=/path/to/java`. JUnit output goes to
+  `build/test-results/processSmoke/results.xml`; see `smoke-tests/README.md`.
 - `./gradlew :cli:test` or `./gradlew :core:jvmTest` — tests for one subproject.
   Single test class: `./gradlew :core:jvmTest --tests "fully.qualified.ClassName"
   --tests "*PartialName*"`.

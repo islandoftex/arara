@@ -18,5 +18,6 @@ include(
     "mvel",
     "kotlin-dsl",
     "cli",
-    "docs"
+    "docs",
+    "smoke-tests"
 )

@@ -16,8 +16,10 @@ import org.gradle.jvm.toolchain.JavaToolchainService
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import java.nio.file.Path
 
 plugins {
+    kotlin("jvm") version libs.versions.kotlin apply false
     kotlin("multiplatform") version libs.versions.kotlin apply false // Apache 2.0
     kotlin("plugin.serialization") version libs.versions.kotlin apply false // Apache 2.0
     alias(libs.plugins.shadow) apply false // Apache 2.0
@@ -61,7 +63,8 @@ spotless {
                 "mvel/build.gradle.kts",
                 "kotlin-dsl/build.gradle.kts",
                 "cli/build.gradle.kts",
-                "docs/build.gradle.kts"
+                "docs/build.gradle.kts",
+                "smoke-tests/build.gradle.kts"
         )
         targetExclude("src/test/**/*.kts")
         // ktlint updated its rule set so that a majority of our files newly
@@ -81,7 +84,8 @@ spotless {
                 "mvel/src/**/*.kt",
                 "kotlin-dsl/src/**/*.kt",
                 "cli/src/**/*.kt",
-                "buildSrc/src/**/*.kt"
+                "buildSrc/src/**/*.kt",
+                "smoke-tests/src/**/*.kt"
         )
         targetExclude("src/test/**/*.kts")
         // ktlint updated its rule set so that a majority of our files newly
@@ -109,7 +113,8 @@ detekt {
             "kotlin-dsl/src/main/kotlin",
             "cli/src/commonMain/kotlin",
             "cli/src/jvmMain/kotlin",
-            "buildSrc/src/main/kotlin"
+            "buildSrc/src/main/kotlin",
+            "smoke-tests/src/main/kotlin"
     ))
     buildUponDefaultConfig = true
     config.from(files("detekt-config.yml"))
@@ -190,7 +195,7 @@ val engine = libs.junit.jupiter.engine
 
 subprojects {
 
-    if (!path.contains("docs")) {
+    if (!path.contains("docs") && name != "smoke-tests") {
 
         apply(plugin = "org.jetbrains.dokka")
 
@@ -298,5 +303,33 @@ subprojects {
         }
 
         apply<AraraPublication>()
+    }
+}
+
+// Exercise the packaged application without requiring a TeX installation.
+tasks.register<Exec>("processSmoke") {
+    group = "verification"
+    description = "Run portable process checks against the runnable jar (JDK 11+)."
+    dependsOn(":cli:shadowJar", ":smoke-tests:runnerJar")
+    val smokeJava = providers.gradleProperty("smokeJava").orElse(
+        providers.systemProperty("java.home").map {
+            Path.of(it, "bin", if (System.getProperty("os.name").startsWith("Windows")) "java.exe" else "java")
+                .toString()
+        }
+    )
+    val report = layout.buildDirectory.file("test-results/processSmoke/results.xml")
+    inputs.files(project(":smoke-tests").tasks.named("runnerJar"))
+    inputs.files(project(":cli").tasks.named("shadowJar"))
+    inputs.property("smokeJava", smokeJava)
+    outputs.file(report)
+    outputs.upToDateWhen { false }
+    doFirst {
+        val jar = project(":cli").tasks.named<Jar>("shadowJar").get().archiveFile.get().asFile
+        val runner = project(":smoke-tests").tasks.named<Jar>("runnerJar").get().archiveFile.get().asFile
+        commandLine(
+            smokeJava.get(), "-jar", runner.absolutePath,
+            "--jar", jar.absolutePath, "--java", smokeJava.get(),
+            "--report", report.get().asFile.absolutePath
+        )
     }
 }
