@@ -123,4 +123,44 @@ class LuaInterpreterTest {
         """.trimIndent()
         assertEquals(2, LuaInterpreter(MPPPath(".")).parseProjectsFromLua(script).size)
     }
+
+    @Test
+    fun rejectsMalformedFieldsWithoutSilentlyDroppingEntries() {
+        val invalid = listOf(
+            "name = 42, files = { ['a.tex'] = {} }",
+            "name = ' ', files = { ['a.tex'] = {} }",
+            "files = { ['a.tex'] = false }",
+            "files = { [42] = {} }",
+            "files = { ['a.tex'] = { priority = 1.5 } }",
+            "files = { ['a.tex'] = { priority = 2147483648 } }",
+            "files = { ['a.tex'] = { directives = { 1 } } }",
+            "files = { ['a.tex'] = { directives = { [2] = 'x' } } }",
+            "files = { ['a.tex'] = { fileType = false } }",
+            "files = { ['a.tex'] = { fileType = { extension = 4 } } }",
+            "files = { ['a.tex'] = {} }, dependencies = { false }",
+            "files = { ['a.tex'] = {} }, typo = true"
+        )
+        invalid.forEach { fields ->
+            assertFailsWith<ProjectParseException>(fields) {
+                LuaInterpreter(MPPPath(".")).parseProjectsFromLua("return { $fields }")
+            }
+        }
+    }
+
+    @Test
+    fun rejectsMalformedProjectListsAndPreservesFieldContext() {
+        for (script in listOf("return {}", "return { false }", "return { [2] = {} }",
+            "return { { files = { ['a.tex'] = {} } } }")) {
+            assertFailsWith<ProjectParseException> {
+                LuaInterpreter(MPPPath(".")).parseProjectsFromLua(script)
+            }
+        }
+        val error = assertFailsWith<ProjectParseException> {
+            LuaInterpreter(MPPPath(".")).parseProjectsFromLua(
+                "return { files = { ['a.tex'] = { priority = false } } }"
+            )
+        }
+        assertEquals("project.files[a.tex].priority must be an integer.", error.message)
+    }
+
 }

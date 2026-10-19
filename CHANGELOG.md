@@ -28,6 +28,9 @@ on.
 
 ### Fixed
 
+* Project specifications reject malformed fields instead of silently ignoring
+  entries or coercing values. Errors identify the offending field.
+
 * Successful loop iterations and `halt(0)` no longer hide an earlier command
   failure within the same rule when execution continues after errors.
 

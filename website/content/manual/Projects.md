@@ -114,3 +114,8 @@ additional parameters. For files, there are the following additional options:
 Apart from the return expression you are free to use Lua code to perform
 computations or other actions within the project specification file. Please note
 that for technical reasons arara's Lua interpreter only accepts Lua 5.2.
+
+Project fields are checked strictly: unknown keys and values of the wrong type
+are errors. `directives` and `dependencies` must be contiguous lists of strings;
+`priority` must be a 32-bit integer. A list of projects requires an explicit,
+nonblank, unique name for each entry. Errors identify the offending field.
