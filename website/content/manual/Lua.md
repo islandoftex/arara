@@ -10,6 +10,9 @@ for `name.lua`, then `arara-rule-name.lua`; it does not fall back to YAML.
 Configuration files and directive parameter maps still use YAML. Project
 specifications remain separate `.proj.lua` files.
 
+Rule validation and helper diagnostics use the selected language. Field names,
+helper names, Lua type names and errors supplied by scripts remain literal.
+
 A rule is a Lua script returning a table:
 
 ```lua

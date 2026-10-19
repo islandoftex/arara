@@ -56,6 +56,9 @@ on.
 
 ### Fixed
 
+* Lua rule schema, helper conversion and interpolation errors use the selected
+  language. Lua interpolation no longer reports failures as MVEL errors.
+
 * Lua configuration and project validation errors use the selected language,
   preserving field names, file paths and dependency details.
 

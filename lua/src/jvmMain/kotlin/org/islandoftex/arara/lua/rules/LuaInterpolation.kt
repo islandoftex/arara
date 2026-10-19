@@ -11,8 +11,8 @@ import org.islandoftex.arara.core.localization.LanguageController
  */
 object LuaInterpolation {
     fun interpolate(template: String): String =
-        LuaConversion.withLuaErrorHandling(LanguageController.messages.ERROR_EXTRACTOR_INTERPOLATION_FAILURE) {
-            if ("@{" in template) fail("MVEL tags require the YAML engine; Lua uses {{ expression }}.")
+        LuaConversion.withLuaErrorHandling(LanguageController.messages.ERROR_LUA_INTERPOLATION_FAILURE) {
+            if ("@{" in template) fail(LanguageController.messages.ERROR_YAML_TAGS_IN_LUA)
             val output = StringBuilder()
             var index = 0
             while (index < template.length) {
@@ -43,7 +43,7 @@ object LuaInterpolation {
                 text.startsWith("--", index) -> {
                     val commentEnd = longStringEnd(text, index + 2)
                     index = commentEnd ?: text.indexOf('\n', index).takeIf { it >= 0 }
-                        ?: fail("Unterminated interpolation tag.")
+                        ?: fail(LanguageController.messages.ERROR_LUA_UNTERMINATED_TAG)
                 }
                 character == '\'' || character == '"' -> index = quotedEnd(text, index)
                 character == '{' -> { depth++; index++ }
@@ -52,7 +52,7 @@ object LuaInterpolation {
                 else -> index++
             }
         }
-        fail("Unterminated interpolation tag.")
+        fail(LanguageController.messages.ERROR_LUA_UNTERMINATED_TAG)
     }
 
     private fun quotedEnd(text: String, start: Int): Int {
@@ -64,14 +64,14 @@ object LuaInterpolation {
                 else -> index++
             }
         }
-        fail("Unterminated quoted string in interpolation tag.")
+        fail(LanguageController.messages.ERROR_LUA_UNTERMINATED_QUOTE)
     }
 
     private fun longStringEnd(text: String, start: Int): Int? {
         val opening = Regex("\\[(=*)\\[").find(text, start)?.takeIf { it.range.first == start } ?: return null
         val closing = "]" + opening.groupValues[1] + "]"
         val end = text.indexOf(closing, opening.range.last + 1)
-        if (end < 0) fail("Unterminated long string in interpolation tag.")
+        if (end < 0) fail(LanguageController.messages.ERROR_LUA_UNTERMINATED_LONG_STRING)
         return end + closing.length
     }
 

@@ -7,6 +7,8 @@ import org.luaj.vm2.LuaValue
 import org.luaj.vm2.Varargs
 import org.luaj.vm2.lib.common.CommonPlatform
 import org.islandoftex.arara.api.AraraExceptionWithHeader
+import org.islandoftex.arara.core.localization.LanguageController
+import org.islandoftex.arara.core.utils.formatString
 import org.islandoftex.arara.core.rules.RuleMethods
 import org.islandoftex.arara.lua.rules.LuaConversion.badArgument
 import org.islandoftex.arara.lua.rules.LuaBindings.bindSpelled
@@ -369,7 +371,7 @@ internal object LuaRuleEnvironment {
     ): LuaValue {
         val value = args.arg(1)
         return when (args.narg()) {
-            0 -> throw LuaError("$name requires at least one argument")
+            0 -> throw LuaError(LanguageController.messages.ERROR_LUA_HELPER_NO_ARGS.formatString(name))
             1 -> LuaValue.valueOf(
                 !isEmptyValue(value) && truthiness(value) == positive
             )

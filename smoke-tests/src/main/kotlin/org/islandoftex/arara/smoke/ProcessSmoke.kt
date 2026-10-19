@@ -246,6 +246,18 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath, private
             contains(execute(root, APPLICATION_ERROR, listOf("--language", "de"), "invalid.proj.lua"),
                 "project.files muss eine Tabelle sein.")
         },
+        "localized_lua_rule_and_interpolation_errors" to { root ->
+            root.resolve("probe.lua").writeText(
+                "return { identifier = 'probe', name = 'Probe', commands = { { command = true } } }\n"
+            )
+            val flags = listOf("--engine", "lua", "--language", "de")
+            contains(execute(root, APPLICATION_ERROR, flags), "commands[1].command muss eine Funktion sein.")
+            luaRule(root, "return true")
+            root.resolve("run.tex").writeText("% arara: probe: { options: '{{ 1' }\n")
+            val output = execute(root, APPLICATION_ERROR, flags)
+            contains(output, "Interpolations-Tag nicht abgeschlossen.")
+            check("MVEL" !in output) { "Lua interpolation reported as MVEL: $output" }
+        },
         "ordinary_lua_is_not_executed_as_a_specification" to { root ->
             rule(root, "return true;")
             root.resolve("arararc.yaml").writeText(

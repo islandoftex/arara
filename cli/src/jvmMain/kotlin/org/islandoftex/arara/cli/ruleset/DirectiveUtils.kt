@@ -107,7 +107,7 @@ object DirectiveUtils {
         } else {
             if ("{{" in text) throw AraraException(
                 LanguageController.messages.ERROR_EXTRACTOR_INTERPOLATION_FAILURE,
-                IllegalArgumentException("Lua tags require --engine lua.")
+                IllegalArgumentException(LanguageController.messages.ERROR_LUA_TAGS_IN_YAML)
             )
             kotlin.runCatching { TemplateRuntime.eval(text, MvelState.directiveMethods) }.getOrElse {
                 throw AraraException(LanguageController.messages.ERROR_EXTRACTOR_INTERPOLATION_FAILURE, it)
