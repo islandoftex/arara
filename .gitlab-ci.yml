@@ -16,6 +16,12 @@ stages:
 before_script:
   - export GRADLE_USER_HOME=`pwd`/.gradle
 
+# Minimal Corretto images omit xargs, which the Gradle wrapper requires.
+.corretto:
+  before_script:
+    - yum install -y findutils
+    - export GRADLE_USER_HOME=`pwd`/.gradle
+
 .cachetemplate: &cachedefinition
   key: "$CI_COMMIT_REF_NAME-$JAVA_VERSION"
   paths:
@@ -46,6 +52,7 @@ before_script:
     policy: push
 
 build:linux:jdk11:
+  extends: .corretto
   image: amazoncorretto:11
   <<: *builddefinition
 
@@ -59,6 +66,7 @@ build:linux:jdk11:
     policy: pull
 
 test:dependencies:
+  extends: .corretto
   stage: test
   needs: ["build:linux:jdk11"]
   image: amazoncorretto:11
@@ -69,6 +77,7 @@ test:dependencies:
     policy: pull
 
 test:spotless:
+  extends: .corretto
   stage: test
   needs: ["build:linux:jdk11"]
   image: amazoncorretto:11
@@ -79,16 +88,19 @@ test:spotless:
     policy: pull
 
 test:linux:jdk11:
+  extends: .corretto
   needs: ["build:linux:jdk11"]
   image: amazoncorretto:11
   <<: *testdefinition
 
 test:linux:jdk17:
+  extends: .corretto
   needs: ["build:linux:jdk11"]
   image: amazoncorretto:17
   <<: *testdefinition
 
 test:linux:jdk21:
+  extends: .corretto
   needs: ["build:linux:jdk11"]
   image: amazoncorretto:21
   <<: *testdefinition
@@ -127,6 +139,7 @@ pages:for-manual:
     - if: '$CI_COMMIT_TAG == null'
 
 publish:gitlab:
+  extends: .corretto
   image: amazoncorretto:11
   stage: publish
   script:
