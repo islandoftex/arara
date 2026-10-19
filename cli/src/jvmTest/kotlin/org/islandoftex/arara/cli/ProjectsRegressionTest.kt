@@ -56,10 +56,41 @@ class ProjectsRegressionTest {
         """.trimIndent())
         marker(sources)
         sources.resolve("a.custom.src").writeText("@ arara: marker\n")
-        root.resolve("project.lua").writeText("""
-            return { workingDirectory = 'sources', files = { ['a.custom.src'] = {} } }
+        root.resolve("project.proj.lua").writeText("""
+            return { working_directory = 'sources', files = { ['a.custom.src'] = {} } }
         """.trimIndent())
-        assertEquals(0, run(root, "project.lua"))
+        assertEquals(0, run(root, "project.proj.lua"))
         assertEquals(true, Session["ran"])
     }
+
+    @Test
+    fun ordinaryLuaInputsAreNeverExecutedAsSpecifications() = fixture { root ->
+        root.resolve("arararc.yaml").writeText("""
+            !config
+            paths: ['.']
+            filetypes:
+              - extension: lua
+                pattern: '^-- +'
+        """.trimIndent())
+        marker(root)
+        root.resolve("ordinary.lua").writeText("-- arara: marker\nerror('must not execute')\n")
+        assertEquals(0, run(root, "ordinary.lua"))
+        assertEquals(true, Session["ran"])
+    }
+
+    @Test
+    fun malformedSpecificationsDoNotFallBackToDirectiveScanning() = fixture { root ->
+        root.resolve("arararc.yaml").writeText("""
+            !config
+            paths: ['.']
+            filetypes:
+              - extension: proj.lua
+                pattern: '^% +'
+        """.trimIndent())
+        marker(root)
+        root.resolve("invalid.proj.lua").writeText("% arara: marker\n")
+        assertEquals(2, run(root, "invalid.proj.lua"))
+        assertEquals(false, "ran" in Session)
+    }
+
 }

@@ -13,7 +13,7 @@ class LuaInterpreterTest {
         val script = """
             return {
               name = "My awesome book",
-              workingDirectory = ".",
+              working_directory = ".",
               files = {
                 ["a.mp"] = { },
                 ["file.tex"] = { }
@@ -38,7 +38,7 @@ class LuaInterpreterTest {
                 ["file.tex"] = {
                   directives = { "% arara: pdftex" },
                   priority = 1,
-                  fileType = {
+                  file_type = {
                     extension = "tex",
                     pattern = ".*"
                   }
@@ -136,7 +136,7 @@ class LuaInterpreterTest {
             "files = { ['a.tex'] = { directives = { 1 } } }",
             "files = { ['a.tex'] = { directives = { [2] = 'x' } } }",
             "files = { ['a.tex'] = { fileType = false } }",
-            "files = { ['a.tex'] = { fileType = { extension = 4 } } }",
+            "files = { ['a.tex'] = { file_type = { extension = 4 } } }",
             "files = { ['a.tex'] = {} }, dependencies = { false }",
             "files = { ['a.tex'] = {} }, typo = true"
         )
@@ -168,7 +168,7 @@ class LuaInterpreterTest {
     fun resolvesWorkingDirectoryAgainstTheInvocationDirectory() {
         val base = MPPPath("project-root").normalize()
         val project = LuaInterpreter(base).parseProjectsFromLua(
-            "return { workingDirectory = 'chapter/../sources', files = { ['a.tex'] = {} } }"
+            "return { working_directory = 'chapter/../sources', files = { ['a.tex'] = {} } }"
         ).single()
         assertEquals(base.resolve("sources").normalize(), project.workingDirectory)
         assertEquals(base.resolve("sources/a.tex").normalize(), project.files.single().path)
@@ -179,7 +179,7 @@ class LuaInterpreterTest {
         val project = LuaInterpreter(MPPPath(".")).parseProjectsFromLua("""
             return { files = {
               ['a.custom.tex'] = { priority = 3, directives = { 'marker' } },
-              ['b.tex'] = { fileType = { extension = 'tex', pattern = 'explicit' } }
+              ['b.tex'] = { file_type = { extension = 'tex', pattern = 'explicit' } }
             } }
         """.trimIndent()).single()
         val type = org.islandoftex.arara.core.files.FileType("custom.tex", "configured")
@@ -194,6 +194,21 @@ class LuaInterpreterTest {
             LuaInterpreter.resolvePendingFileTypes(
                 project, org.islandoftex.arara.core.configuration.ExecutionOptions(fileTypes = emptyList())
             )
+        }
+    }
+
+
+    @Test
+    fun usesTheSuppliedNameAndRejectsTheVersionSevenKeys() {
+        val parser = LuaInterpreter(MPPPath("."))
+        assertEquals("book", parser.parseProjectsFromLua(
+            "return { files = { ['a.tex'] = {} } }", "book", "book.proj.lua"
+        ).single().name)
+        for (script in listOf(
+            "return { workingDirectory = '.', files = { ['a.tex'] = {} } }",
+            "return { files = { ['a.tex'] = { fileType = { extension = 'tex' } } } }"
+        )) {
+            assertFailsWith<ProjectParseException> { parser.parseProjectsFromLua(script) }
         }
     }
 

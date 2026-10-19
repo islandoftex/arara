@@ -16,6 +16,12 @@ on.
 
 ### Changed
 
+* **Breaking change:** Project specifications require `.proj.lua`; ordinary `.lua`
+  files are no longer interpreted as specifications. Invalid specifications no
+  longer fall back to directive scanning. Rename `workingDirectory` to
+  `working_directory` and `fileType` to `file_type`; the old keys are rejected.
+  Unnamed single projects take their specification's basename.
+
 * Build the website and PDF documentation through Gradle using Kotlin helpers.
 * **Breaking change:** Swing dialogs are replaced by terminal dialogs. Remove
   the `laf` configuration key and explicit pixel-width arguments from dialog

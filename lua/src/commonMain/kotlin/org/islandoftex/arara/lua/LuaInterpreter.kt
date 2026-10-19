@@ -28,9 +28,9 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
     }
 
     private fun file(path: MPPPath, table: LuaTable, context: String): LuaProjectFile {
-        ProjectFields.keys(table, setOf("fileType", "priority", "directives"), context)
-        val type = ProjectFields.table(table["fileType"], "$context.fileType")
-            ?.let { fileType(it, "$context.fileType") } ?: FileType.UNKNOWN_TYPE
+        ProjectFields.keys(table, setOf("file_type", "priority", "directives"), context)
+        val type = ProjectFields.table(table["file_type"], "$context.file_type")
+            ?.let { fileType(it, "$context.file_type") } ?: FileType.UNKNOWN_TYPE
         val value = table["priority"]
         val priority = when {
             value.isnil() -> 0
@@ -44,11 +44,11 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
     }
 
     @Suppress("ThrowsCount")
-    private fun project(table: LuaTable, context: String): Project {
-        ProjectFields.keys(table, setOf("name", "workingDirectory", "files", "dependencies"), context)
-        val name = ProjectFields.string(table["name"], "$context.name") ?: "Untitled project"
+    private fun project(table: LuaTable, context: String, defaultName: String): Project {
+        ProjectFields.keys(table, setOf("name", "working_directory", "files", "dependencies"), context)
+        val name = ProjectFields.string(table["name"], "$context.name") ?: defaultName
         if (name.isBlank()) throw ProjectParseException("$context.name must not be blank.")
-        val directory = ProjectFields.string(table["workingDirectory"], "$context.workingDirectory")
+        val directory = ProjectFields.string(table["working_directory"], "$context.working_directory")
             ?.let { appWorkingDir.resolve(it).normalize() } ?: appWorkingDir.normalize()
         val files = ProjectFields.table(table["files"], "$context.files")
             ?: throw ProjectParseException("$context.files is required.")
@@ -70,19 +70,23 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
 
     /** A table with named fields denotes one project; a positional table denotes a project list. */
     @Suppress("ThrowsCount")
-    fun parseProjectsFromLua(luaScript: String): List<Project> {
+    fun parseProjectsFromLua(
+        luaScript: String,
+        defaultName: String = "Untitled project",
+        chunkName: String = "specification"
+    ): List<Project> {
         val root = kotlin.runCatching {
-            CommonPlatform.standardGlobals().load(luaScript).call()
+            CommonPlatform.standardGlobals().load(luaScript, chunkName).call()
         }.getOrElse { throw ProjectParseException("Detected invalid Lua: ${it.message}") }
         val table = root as? LuaTable ?: throw ProjectParseException("A specification must return a table.")
         val projects = if (table.keys().any { it is LuaString }) {
-            listOf(project(table, "project"))
+            listOf(project(table, "project", defaultName))
         } else {
             ProjectFields.list(table, "projects").mapIndexed { index, value ->
                 val entry = value as? LuaTable
                     ?: throw ProjectParseException("projects[${index + 1}] must be a table.")
                 if (entry["name"].isnil()) throw ProjectParseException("projects[${index + 1}].name is required.")
-                project(entry, "projects[${index + 1}]")
+                project(entry, "projects[${index + 1}]", defaultName)
             }
         }
         if (projects.isEmpty()) throw ProjectParseException("A specification must contain at least one project.")

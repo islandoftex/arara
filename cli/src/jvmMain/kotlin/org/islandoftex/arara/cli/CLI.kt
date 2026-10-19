@@ -24,7 +24,6 @@ import com.github.ajalt.clikt.parameters.types.path
 import com.github.ajalt.clikt.parameters.types.restrictTo
 import com.github.ajalt.mordant.rendering.Theme
 import com.github.ajalt.mordant.terminal.Terminal
-import io.github.oshai.kotlinlogging.KotlinLogging
 import org.islandoftex.arara.api.AraraAPI
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
@@ -155,67 +154,38 @@ class CLI : CliktCommand("arara") {
         val workingDir = (workingDirectory?.toMPPPath() ?: MPPPath("."))
             .normalize()
 
-        return reference.singleOrNull()
-            ?.takeIf { it.trim().endsWith(".lua") }
-            ?.let { workingDir.resolve(it) }
-            ?.takeIf { it.exists }?.readText()
-            ?.let { luaScript ->
-                // try project resolution in the following order:
-                // - treat project file as list of projects
-                // - treat project file as a single project
-                // - do not consider it a project
-                // if it is not a project this Lua file should be subject
-                // to ordinary arara execution rules (maybe someone has
-                // defined a lua filetype), so if there is an exception/it
-                // is not a project we simply return null
-                val logger = KotlinLogging.logger {}
-
-                kotlin.runCatching {
-                    logger.info {
-                        "Guessing provided Lua file is a project specification, " +
-                            "trying to extract information from that."
-                    }
-                    LuaInterpreter(workingDir).parseProjectsFromLua(luaScript)
-                }.getOrElse {
-                    if (it is AraraException) {
-                        DisplayUtils.printWrapped(
-                            "Found Lua file, attempted to parse it as a project but failed. " +
-                                "Continuing by treating the Lua file as regular input. " +
-                                "See log for details.\n"
+        val specification = reference.firstOrNull { it.endsWith(".proj.lua") }
+        if (specification != null) {
+            if (reference.size != 1) throw AraraException("Pass one project specification at a time.")
+            val path = workingDir.resolve(specification)
+            return LuaInterpreter(workingDir).parseProjectsFromLua(
+                path.readText(), path.fileName.removeSuffix(".proj.lua"), path.toString()
+            )
+        }
+        return Project(
+            "Untitled",
+            workingDir,
+            emptySet()
+        ).also { project ->
+            ConfigurationUtils.configFileForProject(project)?.let {
+                DisplayUtils.configurationFileName = it.toString()
+                ConfigurationUtils.load(it, project)
+            }
+        }.let { project ->
+            listOf(
+                Project(
+                    project.name,
+                    project.workingDirectory,
+                    reference.map { fileName ->
+                        FileSearching.resolveFile(
+                            fileName,
+                            workingDir,
+                            LinearExecutor.executionOptions
                         )
-                        logger.info {
-                            "Failed to parse Lua file argument as project: ${it.message}\n" +
-                                "This file is now treated as regular input file. " +
-                                "If it is a project specification, please fix the errors above."
-                        }
-                    }
-                    null
-                }
-            }
-            ?: Project(
-                "Untitled",
-                workingDir,
-                emptySet()
-            ).also { project ->
-                ConfigurationUtils.configFileForProject(project)?.let {
-                    DisplayUtils.configurationFileName = it.toString()
-                    ConfigurationUtils.load(it, project)
-                }
-            }.let { project ->
-                listOf(
-                    Project(
-                        project.name,
-                        project.workingDirectory,
-                        reference.map { fileName ->
-                            FileSearching.resolveFile(
-                                fileName,
-                                workingDir,
-                                LinearExecutor.executionOptions
-                            )
-                        }.toSet()
-                    )
+                    }.toSet()
                 )
-            }
+            )
+        }
     }
 
     /**

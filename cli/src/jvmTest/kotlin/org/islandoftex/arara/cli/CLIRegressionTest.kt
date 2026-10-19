@@ -65,14 +65,14 @@ class CLIRegressionTest {
         File(project, "arararc.yaml").writeText("!config\npaths: ['.']\n")
         markerRule(project)
         File(project, "run.tex").writeText("% arara: marker\n")
-        File(root, "project.lua").writeText("""
+        File(root, "project.proj.lua").writeText("""
             return {
               name = "Configured",
-              workingDirectory = "${project.invariantSeparatorsPath}",
-              files = { ["run.tex"] = { fileType = { extension = "tex" } } }
+              working_directory = "${project.invariantSeparatorsPath}",
+              files = { ["run.tex"] = { file_type = { extension = "tex" } } }
             }
         """.trimIndent())
-        val status = assertFailsWith<ProgramResult> { CLI().parse(listOf("-d", root.path, "project.lua")) }
+        val status = assertFailsWith<ProgramResult> { CLI().parse(listOf("-d", root.path, "project.proj.lua")) }
         assertEquals(0, status.statusCode)
         assertEquals(true, Session["marker"])
     }
@@ -119,5 +119,4 @@ class CLIRegressionTest {
             arguments: []
         """.trimIndent())
     }
-
 }

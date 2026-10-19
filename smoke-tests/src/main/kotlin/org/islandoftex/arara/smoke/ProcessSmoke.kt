@@ -108,15 +108,27 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath, private
             rule(root, "loadClass('missing.jar', 'Missing'); return true;")
             execute(root, APPLICATION_ERROR, listOf("--safe-run"))
         },
+        "ordinary_lua_is_not_executed_as_a_specification" to { root ->
+            rule(root, "return true;")
+            root.resolve("arararc.yaml").writeText(
+                "!config\npaths: ['.']\nfiletypes:\n  - extension: lua\n    pattern: '^-- +'\n"
+            )
+            root.resolve("ordinary.lua").writeText("-- arara: probe\nerror('must not execute')\n")
+            execute(root, 0, reference = "ordinary.lua")
+        },
+        "malformed_project_is_an_application_error" to { root ->
+            root.resolve("invalid.proj.lua").writeText("return { files = false }\n")
+            contains(execute(root, APPLICATION_ERROR, reference = "invalid.proj.lua"), "project.files")
+        },
         "project_loads_configuration_from_its_working_directory" to { root ->
             val project = root.resolve("project with spaces").apply { createDirectories() }
             initialize(project)
             rule(project, "return true;")
-            root.resolve("project.lua").writeText(
-                "return { name = 'Smoke', workingDirectory = ${quoted(project.toString().replace('\\', '/'))}, " +
-                    "files = { ['run.tex'] = { fileType = { extension = 'tex' } } } }\n"
+            root.resolve("project.proj.lua").writeText(
+                "return { name = 'Smoke', working_directory = ${quoted(project.toString().replace('\\', '/'))}, " +
+                    "files = { ['run.tex'] = { file_type = { extension = 'tex' } } } }\n"
             )
-            execute(root, 0, reference = "project.lua")
+            execute(root, 0, reference = "project.proj.lua")
         }
     )
 }
