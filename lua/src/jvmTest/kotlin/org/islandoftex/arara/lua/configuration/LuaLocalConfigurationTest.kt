@@ -48,7 +48,7 @@ class LuaLocalConfigurationTest {
             assertEquals(4, options.maxLoops)
             assertTrue(options.verbose)
             assertFalse(options.parseOnlyHeader)
-            assertEquals(MPPPath("cache.yaml"), options.databaseName)
+            assertEquals(root.resolve("cache.yaml"), options.databaseName)
             assertTrue(model.toLoggingOptions().enableLogging)
             assertEquals(root.resolve("build.log"), model.toLoggingOptions().logFile)
             assertEquals(MPPLocale("de").displayLanguage, model.toUserInterfaceOptions().locale.displayLanguage)

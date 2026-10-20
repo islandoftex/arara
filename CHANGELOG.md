@@ -34,6 +34,9 @@ on.
 
 ### Changed
 
+* **Breaking change:** `dbname`/`database` honors the complete configured path
+  instead of discarding parent directories. Relative paths resolve against the
+  project's working directory; absolute paths are honored. Blank paths are rejected.
 * **Breaking change:** The Kotlin rule API moves the executable `command` lambda
   from `RuleCommand` to `ExecutableRuleCommand`. Interpreted commands use an
   evaluator instead.

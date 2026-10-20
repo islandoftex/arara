@@ -49,7 +49,7 @@ class YamlLocalConfigurationTest {
             assertEquals(3, options.maxLoops)
             assertTrue(options.verbose)
             assertFalse(options.parseOnlyHeader)
-            assertEquals(MPPPath("cache.yaml"), options.databaseName)
+            assertEquals(project.workingDirectory.resolve("nested/cache.yaml"), options.databaseName)
             assertTrue(model.toLoggingOptions().enableLogging)
             assertEquals(MPPPath("nested/run.log"), model.toLoggingOptions().logFile)
             assertEquals(mapOf("sample" to "% arara: echo"), model.preambles)

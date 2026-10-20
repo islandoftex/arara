@@ -257,14 +257,14 @@ resolution for a path in plain string should be kept as simple as possible, so
     logname: mylog
     ```
 
-- **[O]** *(string)* `dbname` (default: `arara`): This key modifies the default
-  YAML database file name, according to the associated plain string value,
-  plus the `yaml` extension. The value cannot be empty or contain invalid
-  characters. There is no orb tag evaluation in this specific context, only a
-  plain string value. This database is used by file hashing operations.
+- **[O]** *(string)* `dbname` (default: `arara.yaml`): The database file path,
+  including its extension. Lua configurations use `database`. Relative paths
+  resolve against the project's working directory; absolute paths are used as
+  written. The parent directory must exist. No placeholder expansion or extension
+  appending is performed.
 
     ```yaml
-    dbname: mydb
+    dbname: cache/hashes.yaml
     ```
 
 - **[O]** *(string map)* `preambles`: This key holds a string map containing

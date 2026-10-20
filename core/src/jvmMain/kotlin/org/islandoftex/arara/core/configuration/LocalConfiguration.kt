@@ -12,6 +12,7 @@ import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.api.localization.MPPLocale
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
+import org.islandoftex.arara.core.utils.formatString
 
 /**
  * A local configuration which resembles configuration files in the working
@@ -74,8 +75,15 @@ data class LocalConfiguration(
             }
             .map { it.normalize() }
             .toSet()
-        val databaseName = dbname?.let { MPPPath(MPPPath(it.trim()).fileName) }
-            ?: baseOptions.databaseName
+        val databaseName = dbname?.let { name ->
+            if (name.isBlank()) throw AraraException(
+                LanguageController.messages.ERROR_SCRIPT_NONBLANK.formatString("dbname/database")
+            )
+            runCatching { currentProject.workingDirectory.resolve(name.trim()).normalize() }.getOrElse {
+                throw AraraException(LanguageController.messages.ERROR_CONFIGURATION_GENERIC_ERROR,
+                    it as? Exception ?: RuntimeException(it))
+            }
+        } ?: baseOptions.databaseName
         val maxLoops = loops?.let {
             if (loops > 0) {
                 loops

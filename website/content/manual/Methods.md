@@ -174,8 +174,8 @@ references, when applied.
     according to whether the provided `File` reference has changed since last
     verification, based on a traditional cyclic redundancy check. The file
     reference, as well as the associated hash, is stored in a YAML database file
-    named `arara.yaml` located in the same directory as the current file (the
-    database name can be overridden in the configuration file. The method
+    named `arara.yaml` located in the project's working directory (the
+    database name can be overridden in the configuration file). The method
     semantics (including the return values) is presented as follows.
 
   | File exists? &nbsp;&nbsp;&nbsp; | Entry exists? &nbsp;&nbsp;&nbsp; | Has changed? &nbsp;&nbsp;&nbsp; | DB action &nbsp;&nbsp;&nbsp; | Result |
@@ -221,7 +221,7 @@ references, when applied.
     concatenated with the provided `String` extension has changed since last
     verification, based on a traditional cyclic redundancy check. The file
     reference, as well as the associated hash, is stored in a YAML database file
-    named `arara.yaml` located in the same directory as the current file (the
+    named `arara.yaml` located in the project's working directory (the
     database name can be overridden in the configuration file, as discussed in
     [Configuration](@/manual/Configuration.md). The method semantics (including the
     return values) is presented as follows.
@@ -248,7 +248,7 @@ references, when applied.
     according to whether the provided `File` reference has not changed since
     last verification, based on a traditional cyclic redundancy check. The file
     reference, as well as the associated hash, is stored in a YAML database file
-    named `arara.yaml` located in the same directory as the current file (the
+    named `arara.yaml` located in the project's working directory (the
     database name can be overridden in the configuration file, as discussed in
     [Configuration](@/manual/Configuration.md). The method semantics (including the
     return values) is presented as follows.
@@ -277,7 +277,7 @@ references, when applied.
     concatenated with the provided `String` extension has not changed since last
     verification, based on a traditional cyclic redundancy check. The file
     reference, as well as the associated hash, is stored in a YAML database file
-    named `arara.yaml` located in the same directory as the current file (the
+    named `arara.yaml` located in the project's working directory (the
     database name can be overridden in the configuration file, as discussed in
     [Configuration](@/manual/Configuration.md). The method semantics (including the
     return values) is presented as follows.
