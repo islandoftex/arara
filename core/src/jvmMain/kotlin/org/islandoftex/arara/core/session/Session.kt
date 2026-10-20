@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.session
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.LoggingOptions
 import org.islandoftex.arara.api.configuration.UserInterfaceOptions
@@ -17,6 +18,8 @@ import org.islandoftex.arara.core.utils.formatString
  * @since 4.0
  */
 actual object Session : Session {
+    private val logger = KotlinLogging.logger { }
+
     // the session map which holds the execution session;
     // the idea here is to provide wrappers to the map
     // methods, so it could be easily manipulated
@@ -63,7 +66,9 @@ actual object Session : Session {
      * @param value The value to be inserted.
      */
     override fun put(key: String, value: Any) {
+        val overwritten = map.containsKey(key)
         map[key] = value
+        logger.debug { "Session variable '$key' ${if (overwritten) "overwritten" else "set"}." }
     }
 
     /**
@@ -78,6 +83,7 @@ actual object Session : Session {
     override fun remove(key: String) {
         if (contains(key)) {
             map.remove(key)
+            logger.debug { "Session variable '$key' removed." }
         } else {
             throw AraraException(
                     LanguageController.messages.ERROR_SESSION_REMOVE_UNKNOWN_KEY
@@ -99,7 +105,11 @@ actual object Session : Session {
      * Clears the session (map). This method, as usual, holds the map method of
      * the same name.
      */
-    override fun clear() = map.clear()
+    override fun clear() {
+        val count = map.size
+        map.clear()
+        logger.debug { "Session cleared (${variables(count)})." }
+    }
 
     /**
      * Update the environment variables stored in the session.
@@ -120,11 +130,13 @@ actual object Session : Session {
                 .forEach { remove(it.key) }
         // add all relevant new environment variables
         map.putAll(
-
-                // move this to jvmMain?
-                System.getenv()
-                        .filterKeys(additionFilter)
-                        .mapKeys { "environment:${it.key}" }
+            System.getenv().filterKeys(additionFilter).mapKeys { "environment:${it.key}" }
         )
+        logger.debug {
+            val count = map.keys.count { it.startsWith("environment:") }
+            "Session environment refreshed (${variables(count)})."
+        }
     }
+
+    private fun variables(count: Int): String = "$count ${if (count == 1) "variable" else "variables"}"
 }

@@ -2,15 +2,15 @@
 package org.islandoftex.arara.cli.interpreter
 
 import io.github.oshai.kotlinlogging.KotlinLogging
-import kotlin.time.TimeSource
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.session.Command
-import org.islandoftex.arara.cli.utils.RunLog
 import org.islandoftex.arara.cli.utils.DisplayUtils
+import org.islandoftex.arara.cli.utils.RunLog
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.SystemCommandResult
+import kotlin.time.TimeSource
 
 /**
  * Runs system commands, logs captured output, and maps process failures to localized errors.

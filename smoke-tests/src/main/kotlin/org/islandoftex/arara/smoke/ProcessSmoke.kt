@@ -260,7 +260,7 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath, private
         },
         "styled_presentation_preserves_engines_and_failure_output" to { root ->
             rule(root, native("7"))
-            val output = execute(root, 7, listOf("--console", "styled"))
+            val output = execute(root, FAILURE_STATUS, listOf("--console", "styled"))
             contains(output, "FAILURE")
             contains(output, "SMOKE_STDERR")
             check("\u001b" !in output) { "Piped styled output contains ANSI escapes" }
@@ -271,7 +271,7 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath, private
         },
         "styled_verbose_streams_once_and_dry_run_does_not_launch" to { root ->
             rule(root, native("7"))
-            val verbose = execute(root, 7, listOf("--console", "styled", "--verbose"))
+            val verbose = execute(root, FAILURE_STATUS, listOf("--console", "styled", "--verbose"))
             check(Regex("SMOKE_STDERR").findAll(verbose).count() == 1) { "Verbose output was repeated" }
             val dry = execute(root, 0, listOf("--console", "styled", "--dry-run"))
             contains(dry, "SmokeProcess")
@@ -296,7 +296,7 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath, private
         },
         "diagnostic_log_records_exact_rule_command_and_application_outcomes" to { root ->
             rule(root, native("7"))
-            execute(root, 7, listOf("--log"))
+            execute(root, FAILURE_STATUS, listOf("--log"))
             val log = root.resolve("arara.log").readText()
             contains(log, "Rule file: \"${root.resolve("probe.yaml")}\" (engine: yaml)")
             contains(log, "working directory: $root")
@@ -307,6 +307,31 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath, private
             val timeout = root.resolve("arara.log").readText()
             contains(timeout, "System command failed (TIMEOUT) after ")
             contains(timeout, "Run failed with exit code 2")
+        },
+        "english_log_labels_preserve_the_localized_console" to { root ->
+            rule(root, "return true;")
+            val output = execute(root, 0, listOf("--log", "--language", "de"))
+            contains(output, "ERFOLGREICH")
+            val log = root.resolve("arara.log").readText()
+            contains(log, "Task result: SUCCESS")
+            contains(log, "Run completed with exit code 0")
+            contains(log, "Elapsed time: ")
+        },
+        "session_mutations_from_both_engines_are_traced_without_values" to { root ->
+            rule(root, "s=getSession(); s.put('trace', 'HIDDEN_SESSION_VALUE'); " +
+                "s.put('trace', 'SECOND_HIDDEN_VALUE'); s.remove('trace'); return true;")
+            luaRule(root, "local s=get_session(); s.put('trace', 'HIDDEN_SESSION_VALUE'); " +
+                "s.put('trace', 'SECOND_HIDDEN_VALUE'); s.remove('trace'); return true")
+            for (engine in listOf("yaml", "lua")) {
+                execute(root, 0, listOf("--log", "--engine", engine))
+                val log = root.resolve("arara.log").readText()
+                contains(log, "Session variable 'trace' set.")
+                contains(log, "Session variable 'trace' overwritten.")
+                contains(log, "Session variable 'trace' removed.")
+                check("HIDDEN_SESSION_VALUE" !in log && "SECOND_HIDDEN_VALUE" !in log) {
+                    "Session mutation records included variable values"
+                }
+            }
         },
         "database_changes_persist_between_processes" to { root ->
             val existing = "!database\nmap: {}\n"

@@ -16,6 +16,9 @@ on.
 
 ### Added
 
+* Debug logs trace session variable additions, overwrites, removals, clears and
+  environment refreshes by key or count, without recording variable values.
+
 * Diagnostic logs identify the selected rule file and engine, project directory,
   command duration and outcome, silent tool output, and the final application exit code.
 

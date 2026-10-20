@@ -13,9 +13,9 @@ import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.rules.DirectiveFetchingHooks
 import org.islandoftex.arara.core.rules.Directives
 import org.islandoftex.arara.core.session.LinearExecutor
+import org.islandoftex.arara.lua.rules.LuaInterpolation
 import org.islandoftex.arara.mvel.utils.MvelState
 import org.mvel2.templates.TemplateRuntime
-import org.islandoftex.arara.lua.rules.LuaInterpolation
 
 /**
  * Implements directive utilitary methods.

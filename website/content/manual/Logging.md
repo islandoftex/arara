@@ -32,17 +32,17 @@ to easily spot each entry.
 The very first entry to appear in the log file is the current version of arara.
 
 ```text
-Welcome to arara 7.0.0!
+Welcome to arara 8.0.0!
 ```
 
 The following entries in the log file are the absolute path of the current
 deployment of arara (line 1), details about the current Java virtual machine
 (namely, vendor and absolute path, in lines 2 and 3, respectively), the
 underlying operating system information (namely, system name, architecture and
-eventually the kernel version, in line 4), home and working directories (lines 5
-and 6, respectively), and the absolute path of the applied configuration file,
-if any (line 7). This block is very important to help with tracking possible
-issues related to the underlying operating system and the tool configuration
+eventually the kernel version, in line 4), the home directory (line 5), and
+the absolute path of the applied configuration file, if any (line 6). This block
+is very important to help with tracking possible issues related to the underlying
+operating system and the tool configuration
 itself.
 
 ```text
@@ -82,11 +82,11 @@ Language foo not available; defaulting to English.
 The following block in the log file refers to file information and directive
 extraction. First, as with the terminal output counterpart, the tool will
 display details about the file being processed, including size and modification
-status:
+status. The project record also identifies its working directory:
 
 ```text
-Processing 'doc12.tex' (size: 74 B, last modified:
-06/02/2018 05:36:40), please wait.
+Project "Single files" (working directory: /home/islandoftex/Documents)
+Processing "/home/islandoftex/Documents/doc12.tex" (size: 74 bytes, last modified: 2018-02-06T05:36:40Z)
 ```
 
 The next entries refer to finding potential directive patterns in the code,
@@ -95,8 +95,8 @@ line numbers. Note that these numbers might refer to incorrect lines in the code
 if the `--preamble` command line option is used.
 
 ```text
-I found a potential pattern in line 1: pdftex
-I found a potential pattern in line 2: clean: { extensions: [ log ] }
+Potential directive at line 1: pdftex
+Potential directive at line 2: clean: { extensions: [ log ] }
 ```
 
 When all matching patterns are collected from the code in the previous phase,
@@ -104,13 +104,6 @@ arara composes the directives accordingly, including potential parameters and
 conditionals. Observe that all directives have an associated list of line
 numbers from which they were originally composed. This phase is known as
 *directive extraction*.
-
-```text
-I found a potential directive: Directive: { identifier: pdftex,
-parameters: {}, conditional: { NONE }, lines: [1] }
-I found a potential directive: Directive: { identifier: clean,
-parameters: {extensions=[log]}, conditional: { NONE }, lines: [2] }
-```
 
 In this phase, directives are correctly extracted and composed, but are yet to
 be validated regarding invalid or reserved parameter keys. The tool then
@@ -123,7 +116,7 @@ inconsistencies, such as invalid or reserved parameter keys. Then all directives
 are validated and internally mapped with special parameters.
 
 ```text
-All directives were validated. We are good to go.
+All directives were validated.
 ```
 
 After validation, all directives are listed in a special block in the log file,
@@ -155,12 +148,12 @@ Once all directives are normalized, arara proceeds to interpret the potential
 conditionals, if any, and the corresponding rules. Note that, when available,
 the conditional type dictates whether the rule should be interpreted first or
 not. For each rule, the tool informs the identifier and the absolute path of the
-corresponding YAML file. In this specific scenario, the rule is part of the
-default rule pack released with our tool:
+corresponding rule file and the selected engine. In this specific scenario, the
+rule is part of the default rule pack released with our tool:
 
 ```text
-I am ready to interpret rule 'pdftex'.
-Rule location: '/opt/islandoftex/arara/rules'
+Interpreting rule "pdftex"
+Rule file: "/opt/islandoftex/arara/rules/arara-rule-pdftex.yaml" (engine: yaml)
 ```
 
 For each task (or subtask, as it is part of a rule task) defined in the rule
@@ -170,7 +163,7 @@ specific scenario, there is just one task associated with the `pdftex`
 rule. Both task name and system command are shown:
 
 ```text
-I am ready to interpret task 'PDFTeX engine' from rule 'PDFTeX'.
+Interpreting task "PDFTeX engine" from rule "PDFTeX"
 System command: [ pdftex, doc12.tex ]
 ```
 
@@ -197,43 +190,44 @@ Transcript written on doc12.log.
 Observe that the above output buffer block contains the relevant information
 about the `pdftex` execution on the provided file. It is possible to write a
 shell script to extract these blocks from the log file, as a means to provide
-individual information on each execution. Finally, the task result is shown:
+individual information on each execution. The process exit code and duration
+are recorded before the task result:
 
 ```text
+System command exited with value 0 after 25 ms
 Task result: SUCCESS
 ```
 
 The execution proceeds to the next directive in the list and then interprets the
 `clean` rule. The same steps previously described are applied in this
-scenario. Also note that the output buffer block is deliberately empty due to
-the nature of the underlying system command, as removal commands such as `rm` do
-not provide output at all when successful.
+scenario. Removal commands such as `rm` do not provide output when successful,
+so the log explicitly records that the tool produced no output:
 
 ```text
-I am ready to interpret rule 'clean'.
-Rule location: '/opt/islandoftex/arara/rules'
-I am ready to interpret task 'Cleaning feature' from rule 'Clean'.
+Interpreting rule "clean"
+Rule file: "/opt/islandoftex/arara/rules/arara-rule-clean.yaml" (engine: yaml)
+Interpreting task "Cleaning feature" from rule "Clean"
 System command: [ rm, -f, doc12.log ]
----------------------- BEGIN OUTPUT BUFFER ----------------------
-
------------------------ END OUTPUT BUFFER -----------------------
+The tool produced no output.
+System command exited with value 0 after 2 ms
 Task result: SUCCESS
 ```
 
-{% messagebox(title="Empty output buffer") %}
-If the system command is simply a boolean value, the corresponding block will
-remain empty. Also note that not all commands from the underlying operating
-system path provide proper stream output, so the output buffer block might be
-empty in certain corner scenarios. This is the case, for example, of the
-provided `clean` rule.
+{% messagebox(title="Command output and failures") %}
+Boolean tasks record their value without an output buffer. System commands with
+no output produce the explicit silent-output record shown above. Output captured
+before a process failure is retained; failures to start or finish a command also
+record their category, such as `IO`, `TIMEOUT` or `INTERRUPTED`.
 {% end %}
 
-Finally, as the last entry in the log file, the tool shows the execution time,
-in seconds. As previously mentioned, the execution time has a very simple
-precision and should not be considered for command profiling.
+Finally, the log records the application exit code and the execution time
+in seconds. Elapsed times use a decimal point regardless of the console
+language. As previously mentioned, the execution time has a very simple precision
+and should not be considered for command profiling.
 
 ```text
-Total: 0.33 seconds
+Run completed with exit code 0
+Elapsed time: 0.330 seconds
 ```
 
 The logging feature provides a consistent framework for event recording. It is
@@ -251,3 +245,19 @@ more details.
 Log records include each project's working directory, the resolved rule file and
 engine, command duration and exit code, captured tool output (or an explicit
 silent-output record), and the application's final exit code.
+
+# Session tracing
+
+Debug records trace session additions, overwrites and removals by key, and
+session clears and environment refreshes by count:
+
+```text
+Session variable 'iteration' set.
+Session variable 'iteration' overwritten.
+Session variable 'iteration' removed.
+Session cleared (0 variables).
+Session environment refreshed (42 variables).
+```
+
+Variable values are not recorded by this tracing. Reads do not produce records,
+and failed removals do not claim that a variable was removed.
