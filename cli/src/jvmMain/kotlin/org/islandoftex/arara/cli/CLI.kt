@@ -16,12 +16,11 @@ import com.github.ajalt.clikt.parameters.arguments.multiple
 import com.github.ajalt.clikt.parameters.options.associate
 import com.github.ajalt.clikt.parameters.options.convert
 import com.github.ajalt.clikt.parameters.options.default
-import com.github.ajalt.clikt.parameters.types.choice
-import org.islandoftex.arara.cli.ruleset.RuleEngine
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.help
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.versionOption
+import com.github.ajalt.clikt.parameters.types.choice
 import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.parameters.types.path
 import com.github.ajalt.clikt.parameters.types.restrictTo
@@ -36,10 +35,12 @@ import org.islandoftex.arara.api.files.toMPPPath
 import org.islandoftex.arara.api.localization.MPPLocale
 import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.api.session.ExecutionStatus
-import org.islandoftex.arara.cli.console.ConsoleMode
-import org.islandoftex.arara.cli.configuration.ConfigurationSnapshot
 import org.islandoftex.arara.cli.configuration.ConfigurationFiles
+import org.islandoftex.arara.cli.configuration.ConfigurationSnapshot
+import org.islandoftex.arara.cli.console.ConsoleMode
 import org.islandoftex.arara.cli.ruleset.DirectiveUtils
+import org.islandoftex.arara.cli.ruleset.RuleEngine
+import org.islandoftex.arara.cli.ui.TerminalDialogRenderer
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.cli.utils.LoggingUtils
 import org.islandoftex.arara.cli.utils.printFileInformation
@@ -54,7 +55,6 @@ import org.islandoftex.arara.core.session.ExecutorHooks
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.ui.Dialogs
-import org.islandoftex.arara.cli.ui.TerminalDialogRenderer
 import org.islandoftex.arara.lua.LuaInterpreter
 import org.islandoftex.arara.mvel.utils.MvelState
 import java.time.LocalDate
@@ -154,6 +154,10 @@ class CLI : CliktCommand("arara") {
         val mode = ConsoleMode.resolve(console, Session.userInterfaceOptions.consoleMode)
         if (mode != appliedConsole) {
             DisplayUtils.renderer = mode.renderer(terminal)
+            Dialogs.renderer = when (mode) {
+                ConsoleMode.PLAIN -> TerminalDialogRenderer()
+                ConsoleMode.STYLED -> org.islandoftex.arara.cli.console.styled.StyledDialogRenderer(terminal)
+            }
             appliedConsole = mode
         }
     }
@@ -287,6 +291,10 @@ class CLI : CliktCommand("arara") {
         val configuration = ConfigurationSnapshot.capture()
         val previousHooks = LinearExecutor.hooks
         val previousRenderer = DisplayUtils.renderer
+        val previousOutcomes = DisplayUtils.outcomes
+        val previousFile = DisplayUtils.currentFile
+        DisplayUtils.prepareFiles(emptyList())
+        val previousDialogs = Dialogs.renderer
         appliedConsole = null
         DisplayUtils.renderer = org.islandoftex.arara.cli.console.plain.PlainConsoleRenderer()
         try {
@@ -295,6 +303,9 @@ class CLI : CliktCommand("arara") {
             configuration.restore()
             LinearExecutor.hooks = previousHooks
             DisplayUtils.renderer = previousRenderer
+            DisplayUtils.outcomes = previousOutcomes
+            DisplayUtils.currentFile = previousFile
+            Dialogs.renderer = previousDialogs
         }
     }
 
@@ -336,7 +347,6 @@ class CLI : CliktCommand("arara") {
 
         val executionStart = TimeSource.Monotonic.markNow()
         updateConfigurationFromCommandLine()
-        val previousDialogs = Dialogs.renderer
 
         // logging has to be initialized only once and for all because
         // context resets lead to missing output
@@ -351,7 +361,6 @@ class CLI : CliktCommand("arara") {
         parameters.forEach { (key, value) -> Session.put("arg:$key", value) }
 
         try {
-            Dialogs.renderer = TerminalDialogRenderer()
             LinearExecutor.hooks = ExecutorHooks(
                 executeBeforeExecution = {
                     Session.updateEnvironmentVariables()
@@ -368,7 +377,8 @@ class CLI : CliktCommand("arara") {
                     updateConfigurationFromCommandLine()
                     it.printFileInformation()
                 },
-                executeAfterFile = {
+                executeAfterFile = { report ->
+                    DisplayUtils.printFileResult(report.exitCode)
                     // add an empty line between file executions
                     println()
                 },
@@ -376,7 +386,9 @@ class CLI : CliktCommand("arara") {
                     DirectiveUtils.process(
                         file,
                         list
-                            .takeIf { list.isNotEmpty() && !MvelState.prependPreambleIfDirectivesGiven && preamble == null }
+                            .takeIf {
+                                list.isNotEmpty() && !MvelState.prependPreambleIfDirectivesGiven && preamble == null
+                            }
                             ?: prependPreambleDirectives(file.fileType, list),
                         engine
                     )
@@ -384,18 +396,18 @@ class CLI : CliktCommand("arara") {
             )
 
             val projects = prepareProjects(resolveProjects(configuration), configuration)
+            DisplayUtils.prepareFiles(projects.flatMap { it.files }.toList())
             ExecutionStatus.FinishedWithCode(LinearExecutor.execute(projects).exitCode)
         } catch (ex: AraraException) {
             // catch a propagated exception to replace intentionally left
             // out local treatment
             DisplayUtils.printException(ex)
             ExecutionStatus.CaughtException()
-        } finally {
-            Dialogs.renderer = previousDialogs
         }.let { executionStatus ->
             // print the execution time if the command line parsing does not
             // return false as result (it makes no sense to print the execution
             // time for a help message)
+            DisplayUtils.printRunSummary(executionStatus.exitCode == 0)
             DisplayUtils.printTime(executionStart.elapsedNow().toDouble(DurationUnit.SECONDS))
 
             throw ProgramResult(executionStatus.exitCode)

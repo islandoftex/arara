@@ -18,4 +18,12 @@ interface ConsoleRenderer {
     fun printFileInformation(file: ProjectFile)
     fun displaySeparator(): String
     fun displayOutputSeparator(message: String): String
+
+    fun printTaskDetails(command: String, conditional: DirectiveConditional, authors: List<String>) { }
+
+    fun printSkippedDirective(identifier: String) { }
+
+    fun printCommandFailure(output: String) { }
+
+    fun printRunSummary(success: Boolean, files: List<Pair<String, Int?>>) { }
 }

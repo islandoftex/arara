@@ -3,6 +3,7 @@ package org.islandoftex.arara.cli.interpreter
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.AraraExceptionWithHeader
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.configuration.ExecutionOptions
 import org.islandoftex.arara.api.files.MPPPath
@@ -11,12 +12,11 @@ import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.api.rules.Rule
-import org.islandoftex.arara.api.rules.RuleCommand
 import org.islandoftex.arara.api.rules.RuleArgument
+import org.islandoftex.arara.api.rules.RuleCommand
 import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.api.session.ExecutionStatus
 import org.islandoftex.arara.cli.ruleset.RuleEngine
-import org.islandoftex.arara.lua.rules.LuaConditionalEvaluator
 import org.islandoftex.arara.cli.ruleset.RuleFiles
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.core.localization.LanguageController
@@ -24,10 +24,10 @@ import org.islandoftex.arara.core.rules.CommandEvaluator
 import org.islandoftex.arara.core.session.HaltRequest
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.ui.InputHandling
-import org.islandoftex.arara.api.AraraExceptionWithHeader
+import org.islandoftex.arara.lua.rules.LuaConditionalEvaluator
+import org.islandoftex.arara.mvel.interpreter.MvelCommandEvaluator
 import org.islandoftex.arara.mvel.rules.DirectiveConditionalEvaluator
 import org.islandoftex.arara.mvel.rules.SerialRuleCommand
-import org.islandoftex.arara.mvel.interpreter.MvelCommandEvaluator
 
 /**
  * Interprets the list of directives.
@@ -46,6 +46,7 @@ class Interpreter(
 
     // Read only after failure: booleans set 1; commands set their nonzero exit status (or 1).
     private var lastFailureCode = 1
+    private var failureOutput = ""
 
     // TODO: in the following, extract the printing into the higher level
     // function
@@ -100,9 +101,12 @@ class Interpreter(
         var commandExitCode = 1
 
         if (executionOptions.executionMode != ExecutionMode.DRY_RUN) {
-            val code = CommandRunner.run(command)
+            DisplayUtils.renderer.printTaskDetails(command.toString(), conditional, authors)
+            val result = CommandRunner.runResult(command)
+            val code = result.exitCode
             commandExitCode = if (code == 0) 1 else code
             success = exitCheck(code)
+            failureOutput = if (success) "" else result.output
         } else {
             DisplayUtils.printAuthors(authors)
             DisplayUtils.printWrapped(
@@ -162,6 +166,7 @@ class Interpreter(
                         ?: LanguageController.messages.INFO_LABEL_UNNAMED_TASK
                 )
 
+                failureOutput = ""
                 val success = when (current) {
                     is Boolean -> runBoolean(
                         current, conditional,
@@ -179,6 +184,7 @@ class Interpreter(
                 }
 
                 DisplayUtils.printEntryResult(success)
+                if (!success) DisplayUtils.renderer.printCommandFailure(failureOutput)
                 when {
                     executionOptions.haltOnErrors && !success ->
                         throw HaltExpectedException(
@@ -239,11 +245,10 @@ class Interpreter(
             else true
 
         return when {
-            !available ->
-                // if this directive is conditionally disabled, skip by returning
-                // a zero exit code meaning a conditionally disabled directive
-                // never fails
+            !available -> {
+                DisplayUtils.renderer.printSkippedDirective(directive.identifier)
                 ExecutionStatus.Processing()
+            }
             HaltRequest.exitCode != null ->
                 // a halt was requested by a rule
                 ExecutionStatus.FinishedWithCode(HaltRequest.exitCode!!)

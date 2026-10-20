@@ -2,31 +2,32 @@
 package org.islandoftex.arara.cli.console.styled
 
 import com.github.ajalt.mordant.rendering.AnsiLevel
+import com.github.ajalt.mordant.rendering.TextStyle
 import com.github.ajalt.mordant.terminal.Terminal
-import kotlin.time.Duration.Companion.seconds
 import org.islandoftex.arara.api.AraraAPI
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.ProjectFile
+import org.islandoftex.arara.api.files.toJVMPath
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.cli.console.ConsoleRenderer
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.cli.utils.center
+import org.islandoftex.arara.cli.utils.wrap
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
-import org.islandoftex.arara.cli.utils.wrap
 import org.islandoftex.arara.core.utils.formatString
+import kotlin.time.Duration.Companion.seconds
 
 @Suppress("TooManyFunctions")
 class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
-    private val longestMatch: Int by lazy {
-        listOf(
-            LanguageController.messages.INFO_LABEL_ON_SUCCESS,
-            LanguageController.messages.INFO_LABEL_ON_FAILURE,
-            LanguageController.messages.INFO_LABEL_ON_ERROR
-        ).map { it.length }.maxOrNull()!!
-    }
+    private val longestMatch: Int
+        get() = maxOf(
+            LanguageController.messages.INFO_LABEL_ON_SUCCESS.length,
+            LanguageController.messages.INFO_LABEL_ON_FAILURE.length,
+            LanguageController.messages.INFO_LABEL_ON_ERROR.length
+        )
 
     private var displayLine = true
     private var displayResult = false
@@ -64,10 +65,14 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
     }
 
     override fun printFileInformation(file: ProjectFile) {
+        displayRolling = false
+        displayLine = false
+        displayResult = false
+        displayException = false
         val name = file.path.fileName
         val metadata = DisplayUtils.byteSizeToString(file.path.fileSize) +
             " · " + file.path.lastModified
-        val title = hyperlink(name, file.path.toString())
+        val title = hyperlink(name, file.path.toJVMPath().toUri().toASCIIString())
         val head = "$rule$rule $name "
         val tail = " $metadata $rule$rule"
         val fill = (
@@ -237,5 +242,50 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
     private fun failureGlyph(): String =
         if (isDecorated) StyledTheme.failureGlyph else StyledTheme.failureFallback
 
-    private fun hyperlink(text: String, @Suppress("UNUSED_PARAMETER") url: String): String = text
+    private fun hyperlink(text: String, url: String): String =
+        if (terminal.terminalInfo.ansiHyperLinks) TextStyle(hyperlink = url)(text) else text
+
+    override fun printTaskDetails(command: String, conditional: DirectiveConditional, authors: List<String>) {
+        if (isVerboseMode && !isDryRunMode) {
+            terminal.println("")
+            printWrapped(command)
+            printConditional(conditional)
+            printAuthors(authors)
+            terminal.println(muted(displaySeparator()))
+        }
+    }
+
+    override fun printSkippedDirective(identifier: String) {
+        printWrapped("- $identifier · ${LanguageController.messages.INFO_CONSOLE_SKIPPED}")
+    }
+
+    override fun printCommandFailure(output: String) {
+        if (!isVerboseMode && output.isNotBlank()) {
+            terminal.println("")
+            terminal.println(terminal.theme.danger(displaySeparator()))
+            terminal.println(output.lineSequence().takeLastLines())
+            terminal.println(terminal.theme.danger(displaySeparator()))
+        }
+    }
+
+    override fun printRunSummary(success: Boolean, files: List<Pair<String, Int?>>) {
+        terminal.println("")
+        val verdict = if (success) terminal.theme.success(getResult(true))
+            else terminal.theme.danger(getResult(false))
+        terminal.println(verdict)
+        files.forEach { (path, code) ->
+            val label = when (code) {
+                null -> LanguageController.messages.INFO_CONSOLE_UNPROCESSED
+                0 -> getResult(true)
+                else -> getResult(false)
+            }
+            printWrapped("${org.islandoftex.arara.api.files.MPPPath(path).fileName} · $label")
+        }
+    }
+
+    private fun Sequence<String>.takeLastLines(): String = toList().takeLast(FAILURE_TAIL_LINES).joinToString("\n")
+
+    private companion object {
+        const val FAILURE_TAIL_LINES = 12
+    }
 }

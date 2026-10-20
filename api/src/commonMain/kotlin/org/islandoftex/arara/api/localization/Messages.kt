@@ -118,6 +118,8 @@ public open class Messages(
     public val ERROR_VALIDATEBODY_NULL_COMMAND: String = "I found a null command in the provided rule. This should be an easy fix. Make sure to add a valid command to the rule.",
     public val ERROR_VALIDATEHEADER_NULL_NAME: String = "The provided rule has no name. This should be an easy fix. Make sure to add a valid name and try again.",
     public val ERROR_VALIDATEHEADER_WRONG_IDENTIFIER: String = "The rule has a wrong identifier. I was expecting \"%s\", but found \"%s\". This should be an easy fix: just replace the wrong identifier by the correct one.",
+    public val INFO_CONSOLE_SKIPPED: String = "Skipped",
+    public val INFO_CONSOLE_UNPROCESSED: String = "Not processed",
     public val INFO_DISPLAY_EXCEPTION_MORE_DETAILS: String = "There are more details available on this exception:",
     public val INFO_DISPLAY_EXECUTION_TIME: String = "Total: %s seconds",
     public val INFO_DISPLAY_FILE_INFORMATION: String = "Processing \"%s\" (size: %s, last modified: %s), please wait.",

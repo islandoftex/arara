@@ -657,3 +657,14 @@ for retrieving such information.
 `--engine yaml` (the default) uses YAML rules with MVEL expressions.
 `--engine lua` uses [Lua rules and expressions](@/manual/Lua.md).
 The selection applies to every project and loose input in the invocation.
+
+# Console presentation
+
+`-c styled` / `--console styled` enables colored task results, dialog frames and
+a closing file summary. `--console plain` retains the classic layout and is the
+default. The option overrides the configuration's `console` value.
+
+Styled output falls back to ASCII markers without ANSI escapes in pipes.
+`--verbose` includes command details and streams tool output; otherwise a failed
+command's captured output is shown beside its result. Log contents and exit
+statuses are independent of the presentation.

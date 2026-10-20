@@ -99,6 +99,8 @@ class ItalianLanguage : Messages(
     ERROR_VALIDATEBODY_NULL_COMMAND = "Ho trovato un comando 'nullo' nella regola fornita. Dovrebbe essere facile correggere: aggiungi un comando valido alla regola.",
     ERROR_VALIDATEHEADER_NULL_NAME = "La regola fornita non ha nome. È facile correggere: specifica un nome valido e riprova.",
     ERROR_VALIDATEHEADER_WRONG_IDENTIFIER = "La regola ha un identificatore sbagliato. Mi sarei aspettato '%s', ma ho trovato '%s'. È facile correggere: correggi l'identificatore sbagliato con quello giusto.",
+    INFO_CONSOLE_SKIPPED = "Saltata",
+    INFO_CONSOLE_UNPROCESSED = "Non elaborato",
     INFO_DISPLAY_EXCEPTION_MORE_DETAILS = "Ci sono altri dettagli riguardo a questa eccezione:",
     INFO_DISPLAY_EXECUTION_TIME = "Totale: %s secondi",
     INFO_DISPLAY_FILE_INFORMATION = "Elaborazione '%s' (totale: %s, modificato il: %s), attendere.",

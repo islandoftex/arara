@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.smoke
 
-import java.io.ByteArrayOutputStream
-import java.nio.file.Files
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.toJVMFile
 import org.islandoftex.arara.api.files.toJVMPath
 import org.islandoftex.arara.api.files.toMPPPath
+import java.io.ByteArrayOutputStream
+import java.nio.file.Files
 import java.util.concurrent.TimeUnit
 import javax.xml.stream.XMLOutputFactory
 import javax.xml.stream.XMLStreamWriter
@@ -257,6 +257,42 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath, private
             val output = execute(root, APPLICATION_ERROR, flags)
             contains(output, "Interpolations-Tag nicht abgeschlossen.")
             check("MVEL" !in output) { "Lua interpolation reported as MVEL: $output" }
+        },
+        "styled_presentation_preserves_engines_and_failure_output" to { root ->
+            rule(root, native("7"))
+            val output = execute(root, 7, listOf("--console", "styled"))
+            contains(output, "FAILURE")
+            contains(output, "SMOKE_STDERR")
+            check("\u001b" !in output) { "Piped styled output contains ANSI escapes" }
+            luaRule(root, "return true")
+            val lua = execute(root, 0, listOf("--engine", "lua", "--console", "styled"))
+            contains(lua, "SUCCESS")
+            contains(lua, "run.tex")
+        },
+        "styled_verbose_streams_once_and_dry_run_does_not_launch" to { root ->
+            rule(root, native("7"))
+            val verbose = execute(root, 7, listOf("--console", "styled", "--verbose"))
+            check(Regex("SMOKE_STDERR").findAll(verbose).count() == 1) { "Verbose output was repeated" }
+            val dry = execute(root, 0, listOf("--console", "styled", "--dry-run"))
+            contains(dry, "SmokeProcess")
+            check("SMOKE_STDOUT" !in dry) { "Styled dry run launched a command" }
+        },
+        "styled_summary_names_unprocessed_files_after_an_exception" to { root ->
+            root.resolve("first.tex").writeText("% arara: missingrule\n")
+            root.resolve("second.tex").writeText("% arara: probe\n")
+            val output = execute(root, APPLICATION_ERROR, listOf("--console", "styled", "first.tex"), "second.tex")
+            contains(output, "first.tex · FAILURE")
+            contains(output, "second.tex · Not processed")
+        },
+        "plain_and_styled_presentations_keep_identical_diagnostic_logs" to { root ->
+            rule(root, "return true;")
+            fun logFor(mode: String): String {
+                execute(root, 0, listOf("--console", mode, "--log"))
+                return root.resolve("arara.log").readText()
+                    .replace(Regex("(?m)^.*? (TRACE|DEBUG|INFO|WARN|ERROR) +- "), "$1 - ")
+                    .replace(Regex("Total: [0-9.,]+ seconds"), "Total: TIME seconds")
+            }
+            check(logFor("plain") == logFor("styled")) { "Console mode changed the diagnostic log" }
         },
         "database_changes_persist_between_processes" to { root ->
             val existing = "!database\nmap: {}\n"

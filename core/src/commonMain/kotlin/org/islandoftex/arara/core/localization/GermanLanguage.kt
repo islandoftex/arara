@@ -99,6 +99,8 @@ class GermanLanguage : Messages(
     ERROR_VALIDATEBODY_NULL_COMMAND = "Ich habe eine Nullanweisung in der vorgegebenen Regel gefunden. Bitte stelle sicher, dass ein gültiges Kommando zur Regel hinzugefügt wird.",
     ERROR_VALIDATEHEADER_NULL_NAME = "Die gewünschte Regel hat keinen Namen. Das sollte leicht zu beheben sein. Ergänze einen gültigen Namen und versuche es erneut.",
     ERROR_VALIDATEHEADER_WRONG_IDENTIFIER = "Die Regel hat einen falschen Bezeichner. Ich erwartete \"%s\" fand aber \"%s\". Das solle leicht zu beheben sein: Ersetze einfach den falschen durch einen korrekten Bezeichner.",
+    INFO_CONSOLE_SKIPPED = "Übersprungen",
+    INFO_CONSOLE_UNPROCESSED = "Nicht verarbeitet",
     INFO_DISPLAY_EXCEPTION_MORE_DETAILS = "Es sind mehr Details für diese Ausnahme verfügbar.",
     INFO_DISPLAY_EXECUTION_TIME = "Gesamt: %s Sekunden",
     INFO_DISPLAY_FILE_INFORMATION = "Verarbeitung \"%s\" (Größe: %s, letzte Modifikation: %s), bitte warten.",

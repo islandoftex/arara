@@ -20,6 +20,9 @@ import kotlin.time.Duration.Companion.seconds
 object DisplayUtils {
     private val logger = KotlinLogging.logger { }
     var renderer: ConsoleRenderer = PlainConsoleRenderer()
+    internal var outcomes = linkedMapOf<String, Int?>()
+    internal var currentFile: String? = null
+
     var configurationFileName: String = "[none]"
     val logoString: String = """
               __ _ _ __ __ _ _ __ __ _
@@ -34,6 +37,18 @@ object DisplayUtils {
         } catch (_: AraraException) {
             "[unknown application path]"
         }
+
+    internal fun prepareFiles(files: List<ProjectFile>) {
+        outcomes = files.associate { it.path.toString() to null }.toMap(LinkedHashMap())
+        currentFile = null
+    }
+
+    fun printFileResult(exitCode: Int) {
+        currentFile?.let { outcomes[it] = exitCode }
+        currentFile = null
+    }
+
+    fun printRunSummary(success: Boolean) = renderer.printRunSummary(success, outcomes.toList())
 
     @Suppress("MagicNumber")
     internal fun byteSizeToString(size: Long): String {
@@ -55,7 +70,12 @@ object DisplayUtils {
     }
 
     fun printBanner() = renderer.printBanner()
-    fun printFileInformation(file: ProjectFile) = renderer.printFileInformation(file)
+
+    fun printFileInformation(file: ProjectFile) {
+        currentFile = file.path.toString()
+        renderer.printFileInformation(file)
+    }
+
     fun printWrapped(text: String) = renderer.printWrapped(text)
     fun printAuthors(authors: List<String>) = renderer.printAuthors(authors)
     fun printConditional(conditional: DirectiveConditional) = renderer.printConditional(conditional)
@@ -72,6 +92,7 @@ object DisplayUtils {
     }
 
     fun printException(exception: AraraException) {
+        currentFile?.let { outcomes[it] = 2 }
         val text = (exception.message ?: "EXCEPTION PROVIDES NO MESSAGE") +
             if (exception.hasException()) " " + LanguageController.messages.INFO_DISPLAY_EXCEPTION_MORE_DETAILS else ""
         val details = exception.exception?.let { it.message ?: it.toString() }

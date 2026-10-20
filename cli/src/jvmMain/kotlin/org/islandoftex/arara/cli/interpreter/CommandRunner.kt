@@ -29,7 +29,9 @@ internal object CommandRunner {
      * higher levels.
      */
     @Throws(AraraException::class)
-    internal fun run(command: Command): Int = Environment.executeSystemCommandResult(
+    internal fun run(command: Command): Int = runResult(command).exitCode
+
+    internal fun runResult(command: Command): SystemCommandResult.Completed = Environment.executeSystemCommandResult(
         command,
         !LinearExecutor.executionOptions.verbose,
         LinearExecutor.executionOptions.timeoutValue
@@ -39,6 +41,7 @@ internal object CommandRunner {
             is SystemCommandResult.Failed -> it.output
         })
         if (it is SystemCommandResult.Failed) {
+            DisplayUtils.renderer.printCommandFailure(it.output)
             throw AraraException(
                 LanguageController.messages.run {
                     when (it.kind) {
@@ -52,7 +55,7 @@ internal object CommandRunner {
                 it.exception
             )
         }
-        (it as SystemCommandResult.Completed).exitCode
+        it as SystemCommandResult.Completed
     }
 
     private fun logOutput(output: String) {

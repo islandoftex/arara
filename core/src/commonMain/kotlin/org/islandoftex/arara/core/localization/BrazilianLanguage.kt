@@ -99,6 +99,8 @@ class BrazilianLanguage : Messages(
     ERROR_VALIDATEBODY_NULL_COMMAND = "Encontrei um comando nulo na regra especificada. Isso é fácil de resolver. Certifique-se de adicionar um comando válido na regra.",
     ERROR_VALIDATEHEADER_NULL_NAME = "A regra especificada não possui nome. Isso é fácil de resolver. Certifique-se de adicionar um nome válido e tente novamente.",
     ERROR_VALIDATEHEADER_WRONG_IDENTIFIER = "A regra possui um identificador incorreto. Eu estava esperando '%s', mas encontrei '%s'. Isso é fácil de resolver: apenas substitua o identificador incorreto pelo valor correto.",
+    INFO_CONSOLE_SKIPPED = "Ignorada",
+    INFO_CONSOLE_UNPROCESSED = "Não processado",
     INFO_DISPLAY_EXCEPTION_MORE_DETAILS = "Detalhes adicionais estão disponíveis para esta exceção:",
     INFO_DISPLAY_EXECUTION_TIME = "Total: %s segundos",
     INFO_DISPLAY_FILE_INFORMATION = "Processando '%s' (tamanho: %s, última modificação: %s), por favor, aguarde.",

@@ -99,6 +99,8 @@ class NorfolkLanguage : Messages(
     ERROR_VALIDATEBODY_NULL_COMMAND = "Thass a rum dew, ole partner. Thass a null command in that ole rule. Do you add a proper command there.",
     ERROR_VALIDATEHEADER_NULL_NAME = "Cor blast me, bor, but that rule ent got no name, but dunt yew git yarself in a puckaterry, dew you jist giv' it a proper name and try agin.",
     ERROR_VALIDATEHEADER_WRONG_IDENTIFIER = "My heart alive, my bewty, but that rule ent got the right identifier. That oughta be '%s', not '%s', but dunt yew git yarself in a puckaterry. Dew you jist fix that.",
+    INFO_CONSOLE_SKIPPED = "Skipped, bor",
+    INFO_CONSOLE_UNPROCESSED = "Not processed",
     INFO_DISPLAY_EXCEPTION_MORE_DETAILS = "Hear's orl my know on that aggraweartin' exception:",
     INFO_DISPLAY_EXECUTION_TIME = "Wuh that took %s seconds but if thass a slight longer than you expected, dunt yew go mobbing me abowt it cors that ent my fault. My grandf'ar dint have none of these pearks. He had to use a pen and a bit o' pearper, but thass bin nice mardling wi' yew. Dew yew keep a troshin'!",
     INFO_DISPLAY_FILE_INFORMATION = "Hold yew hard, ole partner, I'm gornta hev a look at '%s' (thass %s big, that is, and that was last chearnged on %s in case yew dunt remember).",

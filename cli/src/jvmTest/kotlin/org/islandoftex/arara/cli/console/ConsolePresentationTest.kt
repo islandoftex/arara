@@ -52,10 +52,15 @@ class ConsolePresentationTest {
                     renderer.printEntry("Probe", "Task")
                     renderer.printEntryResult(true)
                     renderer.printException("Failure", "Details")
+                    renderer.printSkippedDirective("probe")
+                    renderer.printRunSummary(false, listOf("pending.tex" to null, "failed.tex" to 7))
                 }
                 assertEquals(level != AnsiLevel.NONE, "\u001b[" in output)
                 assertTrue("SUCCESS" in output)
                 assertTrue("Failure" in output)
+                assertTrue("Skipped" in output)
+                assertTrue("pending.tex" in output)
+                assertTrue("Not processed" in output)
                 if (level == AnsiLevel.NONE) {
                     assertTrue("> Probe" in output)
                     assertTrue("+ SUCCESS" in output)

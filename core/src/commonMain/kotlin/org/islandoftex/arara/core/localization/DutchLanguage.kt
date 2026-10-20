@@ -99,6 +99,8 @@ class DutchLanguage : Messages(
     ERROR_VALIDATEBODY_NULL_COMMAND = "Ik heb een null-opdracht in de opgegeven regel gevonden. Dit zou makkelijk op te lossen moeten zijn: geef een geldige opdracht op voor deze regel.",
     ERROR_VALIDATEHEADER_NULL_NAME = "De opgegeven regel heeft geen naam. Dit zou makkelijk op te lossen moeten zijn: geef een geldige naam op en probeer het opnieuw.",
     ERROR_VALIDATEHEADER_WRONG_IDENTIFIER = "De regel heeft een verkeerde verwijsnaam. Ik verwachtte '%s', maar vond '%s'. Dit zou makkelijk op te lossen moeten zijn: vervang de verkeerde verwijsnaam met de correcte naam.",
+    INFO_CONSOLE_SKIPPED = "Overgeslagen",
+    INFO_CONSOLE_UNPROCESSED = "Niet verwerkt",
     INFO_DISPLAY_EXCEPTION_MORE_DETAILS = "Er zijn meer details beschikbaar voor deze exception:",
     INFO_DISPLAY_EXECUTION_TIME = "Totaal: %s seconden",
     INFO_DISPLAY_FILE_INFORMATION = "Verwerken van '%s' (grootte: %s, laatst gewijzigd: %s), een ogenblik geduld.",

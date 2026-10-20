@@ -451,3 +451,6 @@ on, in [Logging](@/manual/Logging.md).
 `--console plain` or `--console styled` overrides configuration. Styled output uses
 terminal colors when available and ASCII markers without ANSI escapes in pipes.
 Rule-engine selection is independent of the console presentation.
+Styled mode also frames terminal dialogs, shows command details with `--verbose`,
+and displays captured output from failed commands when it was not streamed live.
+Its closing summary lists successful, failed, and unprocessed files.

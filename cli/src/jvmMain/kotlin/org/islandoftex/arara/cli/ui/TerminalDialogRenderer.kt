@@ -8,9 +8,9 @@ import java.io.BufferedReader
 import java.io.PrintWriter
 
 /** Terminal dialogs use host-owned streams and the current configured column width. */
-class TerminalDialogRenderer(
+open class TerminalDialogRenderer(
     private val input: BufferedReader = System.`in`.bufferedReader(),
-    private val output: PrintWriter = PrintWriter(System.out, true),
+    protected val output: PrintWriter = PrintWriter(System.out, true),
     private val columns: () -> Int = { Session.userInterfaceOptions.terminalOutputWidth }
 ) : DialogRenderer {
     override fun showMessage(type: Int, title: String, text: String) {
@@ -48,7 +48,7 @@ class TerminalDialogRenderer(
         "Interactive dialog input is closed; provide input or use rules without dialogs."
     )
 
-    private fun block(type: Int, title: String, text: String) {
+    protected open fun block(type: Int, title: String, text: String) {
         val kinds = listOf("PLAIN", "ERROR", "INFORMATION", "WARNING", "QUESTION")
         val kind = kinds.getOrNull(type) ?: kinds.first()
         line("-".repeat(width()))
@@ -57,9 +57,9 @@ class TerminalDialogRenderer(
         line("-".repeat(width()))
     }
 
-    private fun width(): Int = columns().coerceAtLeast(1)
+    protected fun width(): Int = columns().coerceAtLeast(1)
 
-    private fun line(text: String) {
+    protected fun line(text: String) {
         for (original in text.lines()) {
             var remainder = original
             while (remainder.length > width()) {

@@ -1,15 +1,15 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.console.plain
 
+import org.islandoftex.arara.api.configuration.ExecutionMode
+import org.islandoftex.arara.api.files.ProjectFile
+import org.islandoftex.arara.api.rules.DirectiveConditional
+import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.cli.console.ConsoleRenderer
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.cli.utils.abbreviate
 import org.islandoftex.arara.cli.utils.center
 import org.islandoftex.arara.cli.utils.wrap
-import org.islandoftex.arara.api.files.ProjectFile
-import org.islandoftex.arara.api.configuration.ExecutionMode
-import org.islandoftex.arara.api.rules.DirectiveConditional
-import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
@@ -29,20 +29,14 @@ class PlainConsoleRenderer : ConsoleRenderer {
     /**
      * The length of the longest result match as integer.
      */
-    private val longestMatch: Int by lazy {
-        // lazy computation to wait for the language to be initialized
-        listOf(
-            LanguageController.messages.INFO_LABEL_ON_SUCCESS,
-            LanguageController.messages.INFO_LABEL_ON_FAILURE,
-            LanguageController.messages.INFO_LABEL_ON_ERROR
-        ).map { it.length }.maxOrNull()!!
-    }
+    private val longestMatch: Int
+        get() = maxOf(
+            LanguageController.messages.INFO_LABEL_ON_SUCCESS.length,
+            LanguageController.messages.INFO_LABEL_ON_FAILURE.length,
+            LanguageController.messages.INFO_LABEL_ON_ERROR.length
+        )
 
-    /**
-     * If the longest match is longer than the width, then it will be truncated
-     * to this length.
-     */
-    private val shortenedLongestMatch = 10
+    private val shortenedLongestMatch = SHORT_LABEL_WIDTH
 
     private var displayLine = true
     private var displayResult = false
@@ -300,5 +294,9 @@ class PlainConsoleRenderer : ConsoleRenderer {
             file.path.fileName, DisplayUtils.byteSizeToString(file.path.fileSize), file.path.lastModified.toString()
         ))
         println()
+    }
+
+    private companion object {
+        const val SHORT_LABEL_WIDTH = 10
     }
 }
