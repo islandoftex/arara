@@ -270,11 +270,14 @@ class CLI : CliktCommand("arara") {
     override fun run() {
         val configuration = ConfigurationSnapshot.capture()
         val previousHooks = LinearExecutor.hooks
+        val previousRenderer = DisplayUtils.renderer
+        DisplayUtils.renderer = org.islandoftex.arara.cli.console.plain.PlainConsoleRenderer()
         try {
             runSession(configuration)
         } finally {
             configuration.restore()
             LinearExecutor.hooks = previousHooks
+            DisplayUtils.renderer = previousRenderer
         }
     }
 
@@ -310,7 +313,7 @@ class CLI : CliktCommand("arara") {
         // the terminal
         LoggingUtils.init()
 
-        println("${DisplayUtils.logoString}\n")
+        DisplayUtils.printBanner()
 
         val executionStart = TimeSource.Monotonic.markNow()
         updateConfigurationFromCommandLine()

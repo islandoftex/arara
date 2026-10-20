@@ -67,7 +67,6 @@ fun ProjectFile.printFileInformation() {
                 path.lastModified.toString()
         ).let {
             logger.info { it }
-            DisplayUtils.printWrapped(it)
-            println()
+            DisplayUtils.printFileInformation(this)
         }
 }
