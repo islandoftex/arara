@@ -43,6 +43,8 @@ class DutchLanguage : Messages(
     ERROR_LUA_BAD_ARGUMENT = "ongeldig argument nr. %s voor '%s' (%s verwacht, %s gekregen)",
     ERROR_LUA_BOOLEAN_RESULT = "ongeldig resultaat van '%s' (boolean verwacht, %s gekregen)",
     ERROR_LUA_HELPER_NO_ARGS = "%s vereist minstens één argument.",
+    ERROR_LOAD_COULD_NOT_LOAD_DATABASE = "Database '%s' kon niet worden geladen. Controleer bestandstoegang en de inhoud van de YAML-cache.",
+    ERROR_SAVE_COULD_NOT_SAVE_DATABASE = "Database '%s' kon niet worden opgeslagen. Controleer of de bovenliggende map bestaat en schrijfbaar is.",
     ERROR_BASENAME_NOT_A_FILE = "De 'basename'-methode vereist een bestand, geen directory. Het lijkt erop dat '%s' geen bestand is. Als je taken wil uitvoeren met een directory kan je een aantal methodes uit de Java API gebruiken.",
     ERROR_CALCULATEHASH_IO_EXCEPTION = "Om een of andere reden kan ik de hash niet berekenen. Ik weet niet waarom het precies fout ging. Misschien is het bestand verplaatst of verwijderd voor of tijdens de hashing, of misschien heb ik niet de juiste rechten om het bestand te lezen.",
     ERROR_CHECKBOOLEAN_NOT_VALID_BOOLEAN = "Het lijkt erop dat '%s' geen boolean-waarde is. Dit zou makkelijk op te lossen moeten zijn. Gebruik een geldige representatie voor een boolean (yes en no, true en false, 1 en 0, on en off).",

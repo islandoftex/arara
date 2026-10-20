@@ -61,6 +61,8 @@ public open class Messages(
     public val ERROR_LUA_BAD_ARGUMENT: String = "bad argument #%s to '%s' (%s expected, got %s)",
     public val ERROR_LUA_BOOLEAN_RESULT: String = "bad result from '%s' (boolean expected, got %s)",
     public val ERROR_LUA_HELPER_NO_ARGS: String = "%s requires at least one argument.",
+    public val ERROR_LOAD_COULD_NOT_LOAD_DATABASE: String = "Could not load database '%s'. Check file access and YAML cache integrity.",
+    public val ERROR_SAVE_COULD_NOT_SAVE_DATABASE: String = "Could not save database '%s'. Check that its parent directory exists and is writable.",
     public val ERROR_BASENAME_NOT_A_FILE: String = "The \"basename\" method requires a file, not a directory. It looks like \"%s\" does not appear to be a file at all. If you need to perform tasks on a directory, you could use a couple of methods from the Java API.",
     public val ERROR_CALCULATEHASH_IO_EXCEPTION: String = "For whatever reason, I could not calculate the hash. I have no idea why it failed, though. Perhaps the file was moved or deleted before or during the hashing operation. Or maybe I do not have the proper permissions to read the file.",
     public val ERROR_CHECKBOOLEAN_NOT_VALID_BOOLEAN: String = "It looks like \"%s\" is not a valid boolean value. This should be an easy fix. Make sure to use a valid string that represents boolean values (yes and no, true and false, 1 and 0, and on and off).",

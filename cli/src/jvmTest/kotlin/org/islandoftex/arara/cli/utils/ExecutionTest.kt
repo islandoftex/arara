@@ -10,6 +10,7 @@ import io.kotest.matchers.string.shouldNotContain
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.MPPPath
+import org.islandoftex.arara.api.files.toJVMPath
 import org.islandoftex.arara.cli.configuration.ConfigurationUtils
 import org.islandoftex.arara.cli.ruleset.DirectiveUtils
 import org.islandoftex.arara.core.configuration.ExecutionOptions
@@ -20,6 +21,7 @@ import org.islandoftex.arara.core.session.LinearExecutor
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream
+import java.nio.file.Files
 
 @Isolate
 class ExecutionTest : ShouldSpec({
@@ -110,10 +112,14 @@ class ExecutionTest : ShouldSpec({
     }
 
     should("track changes") {
-        val file = File(getPathForTest("changes") + "/arara.yaml")
-        if (file.exists()) file.delete()
-        outputForTest("changes") shouldContain "QuackOne"
-        outputForTest("changes") shouldNotContain "QuackOne"
+        val cache = MPPPath(getPathForTest("changes")).resolve("arara.yaml")
+        Files.deleteIfExists(cache.toJVMPath())
+        try {
+            outputForTest("changes") shouldContain "QuackOne"
+            outputForTest("changes") shouldNotContain "QuackOne"
+        } finally {
+            Files.deleteIfExists(cache.toJVMPath())
+        }
     }
 
     should("gracefully halt on halt rule") {

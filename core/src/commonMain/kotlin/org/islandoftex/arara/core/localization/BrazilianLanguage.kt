@@ -43,6 +43,8 @@ class BrazilianLanguage : Messages(
     ERROR_LUA_BAD_ARGUMENT = "argumento nº %s inválido para '%s' (esperado %s, recebido %s)",
     ERROR_LUA_BOOLEAN_RESULT = "resultado inválido de '%s' (esperado boolean, recebido %s)",
     ERROR_LUA_HELPER_NO_ARGS = "%s requer ao menos um argumento.",
+    ERROR_LOAD_COULD_NOT_LOAD_DATABASE = "Não foi possível carregar o banco de dados '%s'. Verifique o acesso ao arquivo e a integridade do cache YAML.",
+    ERROR_SAVE_COULD_NOT_SAVE_DATABASE = "Não foi possível salvar o banco de dados '%s'. Verifique se o diretório existe e permite escrita.",
     ERROR_BASENAME_NOT_A_FILE = "O método 'basename' requer um arquivo, não um diretório. Observe que '%s' não parece ser um arquivo. Se você precisa realizar alguma tarefa em um diretório, experimente os métodos disponíveis na API Java.",
     ERROR_CALCULATEHASH_IO_EXCEPTION = "Por alguma razão, eu não pude calcular o hash. Não tenho ideia porque não deu certo. Talvez o arquivo tenha sido movido ou removido antes ou durante a operação de hash. Ou talvez eu não tenha as permissões corretas para leitura do arquivo.",
     ERROR_CHECKBOOLEAN_NOT_VALID_BOOLEAN = "Observe que '%s' não é um valor lógico. Isso é fácil de resolver. Certifique-se de usar uma palavra válida que represente valores lógicos ('yes' e 'no', 'true' e 'false', '1' e '0', e 'on' e 'off').",

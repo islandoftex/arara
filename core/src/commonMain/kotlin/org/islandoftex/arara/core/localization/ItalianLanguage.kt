@@ -43,6 +43,8 @@ class ItalianLanguage : Messages(
     ERROR_LUA_BAD_ARGUMENT = "argomento n. %s non valido per '%s' (atteso %s, ricevuto %s)",
     ERROR_LUA_BOOLEAN_RESULT = "risultato non valido da '%s' (atteso boolean, ricevuto %s)",
     ERROR_LUA_HELPER_NO_ARGS = "%s richiede almeno un argomento.",
+    ERROR_LOAD_COULD_NOT_LOAD_DATABASE = "Impossibile caricare il database '%s'. Verificare l'accesso al file e l'integrità della cache YAML.",
+    ERROR_SAVE_COULD_NOT_SAVE_DATABASE = "Impossibile salvare il database '%s'. Verificare che la cartella esista e sia scrivibile.",
     ERROR_BASENAME_NOT_A_FILE = "Il metodo 'basename' richiede un file, non una directory. '%s' non sembra proprio essere un file. Se devi eseguire un compito su una directory, puoi adoperare uno dei metodi delle API Java.",
     ERROR_CALCULATEHASH_IO_EXCEPTION = "Per qualche motivo, non ho potuto calcolare un hash. Purtroppo non ho idea del perché sia andata male. Forse il file è stato spostato o cancellato durante l'operazione di hashing. O forse non ho i permessi necessari per leggere il file.",
     ERROR_CHECKBOOLEAN_NOT_VALID_BOOLEAN = "Sembra che '%s' non sia un valore booleano valido. Penso che sia facile correggerlo. Assicurati di adoperare una stringa valida che rappresenti un valore booleano (yes e no, true e false, 1 e 0, oppure on e off).",

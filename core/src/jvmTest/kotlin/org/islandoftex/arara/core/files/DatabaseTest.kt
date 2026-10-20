@@ -42,9 +42,9 @@ class DatabaseTest : ShouldSpec({
             (MPPPath(".") in db) shouldBe true
             (MPPPath(".") in dbCopy) shouldBe true
             (MPPPath("quack") in db) shouldBe true
-            (MPPPath("quack") in db) shouldBe true
+            (MPPPath("quack") in dbCopy) shouldBe true
             (MPPPath("no") in db) shouldBe false
-            (MPPPath("no") in db) shouldBe false
+            (MPPPath("no") in dbCopy) shouldBe false
         }
     }
 })

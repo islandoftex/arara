@@ -43,6 +43,8 @@ class GermanLanguage : Messages(
     ERROR_LUA_BAD_ARGUMENT = "Ungültiges Argument Nr. %s für '%s' (%s erwartet, %s erhalten)",
     ERROR_LUA_BOOLEAN_RESULT = "Ungültiges Ergebnis von '%s' (boolean erwartet, %s erhalten)",
     ERROR_LUA_HELPER_NO_ARGS = "%s erfordert mindestens ein Argument.",
+    ERROR_LOAD_COULD_NOT_LOAD_DATABASE = "Die Datenbank '%s' konnte nicht geladen werden. Prüfen Sie Zugriffsrechte und den Inhalt des YAML-Caches.",
+    ERROR_SAVE_COULD_NOT_SAVE_DATABASE = "Die Datenbank '%s' konnte nicht gespeichert werden. Prüfen Sie, ob das übergeordnete Verzeichnis existiert und beschreibbar ist.",
     ERROR_BASENAME_NOT_A_FILE = "Die Methode des \"Dateinamens\" (\"basename\") benötigt eine Datei und kein Verzeichnis. Es scheint, als sei \"%s\" keine Datei. Falls du Aufgaben auf ein Verzeichnis bzw. Ordner anwenden willst, kannst du eine Vielzahl von JAVA API-Methoden verwenden.",
     ERROR_CALCULATEHASH_IO_EXCEPTION = "Aus was für einem Grund auch immer kann ich die Prüfziffer (checksum) nicht berechnen. Ich habe keine Idee, warum es fehlschlägt. Vielleicht wurde die Datei bevor oder während der Prüfziffer-Operation bewegt oder gelöscht. Möglicherweise habe ich nicht die geeigneten Rechte, um die Datei zu lesen.",
     ERROR_CHECKBOOLEAN_NOT_VALID_BOOLEAN = "Es scheint, als sei \"%s\" kein logischer Ausdruck (boolean value). Das sollte leicht zu beheben sein. Stelle sicher, dass der Eingabestring ein zugelassener logischer Ausdruck ist (\"yes\" oder \"no\", \"true\" oder \"false\", \"1\" oder \"0\" sowie \"on\" oder \"off\").",

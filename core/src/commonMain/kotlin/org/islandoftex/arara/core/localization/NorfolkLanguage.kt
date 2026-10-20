@@ -43,6 +43,8 @@ class NorfolkLanguage : Messages(
     ERROR_LUA_BAD_ARGUMENT = "Argument #%s to '%s' ent right, bor (%s wanted, got %s)",
     ERROR_LUA_BOOLEAN_RESULT = "Result from '%s' ent right, bor (boolean wanted, got %s)",
     ERROR_LUA_HELPER_NO_ARGS = "%s needs at least one argument, bor.",
+    ERROR_LOAD_COULD_NOT_LOAD_DATABASE = "I couldn't load that database '%s', bor. Check the file access and YAML cache content.",
+    ERROR_SAVE_COULD_NOT_SAVE_DATABASE = "I couldn't save that database '%s', bor. Check its directory exists and yew can write there.",
     ERROR_BASENAME_NOT_A_FILE = "Yew're gotta hev a file for the 'basename', not a directory. That '%s' yew give me ent a file. Do yew need ter do jarbs on a directory, yew myte try the Java API.",
     ERROR_CALCULATEHASH_IO_EXCEPTION = "Thass a rum ole dew, bor, I can't work out th' hash. I ent got no idea why thass gorn wrong. Praps the file was hulled abowt afore or time the hashing operation was doing else maybe I're gotta he'some proper permissions to snout abowt in the file.",
     ERROR_CHECKBOOLEAN_NOT_VALID_BOOLEAN = "That look like '%s' ent a proper boolean value but dunt yew git yerself inta a rite ole puckaterry. Do yew jist make sure to use proper boolean values (yes and no, true and false, 1 and 0, and on and off).",

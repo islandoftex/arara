@@ -258,6 +258,34 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath, private
             contains(output, "Interpolations-Tag nicht abgeschlossen.")
             check("MVEL" !in output) { "Lua interpolation reported as MVEL: $output" }
         },
+        "database_changes_persist_between_processes" to { root ->
+            val existing = "!database\nmap: {}\n"
+            root.resolve("arara.yaml").writeText(existing)
+            luaRule(root, "if not changed(current_file()) then halt($FAILURE_STATUS) end; return true")
+            val flags = listOf("--engine", "lua")
+            execute(root, 0, flags)
+            check(root.resolve("arara.yaml").isRegularFile) { "Missing default arara.yaml cache" }
+            execute(root, FAILURE_STATUS, flags)
+            root.resolve("run.tex").writeText("\n% updated source\n", append = true)
+            execute(root, 0, flags)
+        },
+        "configured_database_rejects_malformed_yaml_without_overwriting" to { root ->
+            root.resolve("cache").createDirectories()
+            root.resolve("arararc.lua").writeText(
+                "return { paths = { cwd }, database = 'cache/custom.yaml' }\n"
+            )
+            luaRule(root, "changed(current_file()); return true")
+            val flags = listOf("--engine", "lua")
+            execute(root, 0, flags)
+            val cache = root.resolve("cache/custom.yaml")
+            check(cache.isRegularFile) { "Configured database path was not used" }
+            check(!root.resolve("custom.yaml").exists) { "Database parent directory was discarded" }
+            val malformed = "!database\nmap: [unterminated\n"
+            cache.writeText(malformed)
+            val output = execute(root, APPLICATION_ERROR, flags).replace(Regex("\\s+"), " ")
+            contains(output, "YAML cache integrity")
+            check(cache.readText() == malformed) { "Malformed cache was overwritten" }
+        },
         "ordinary_lua_is_not_executed_as_a_specification" to { root ->
             rule(root, "return true;")
             root.resolve("arararc.yaml").writeText(

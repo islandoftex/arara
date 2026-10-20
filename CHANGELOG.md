@@ -59,6 +59,9 @@ on.
 
 ### Fixed
 
+* File-change databases are written in deterministic path order. Load and save
+  errors identify the database path and retain the underlying failure.
+
 * Path reads, writes, metadata and directory operations report `AraraIOException`
   with the original I/O failure. Directive extraction handles read failures through
   its localized error path. CRC32 hashing streams files instead of loading them whole.

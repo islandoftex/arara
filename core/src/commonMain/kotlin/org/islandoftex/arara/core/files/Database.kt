@@ -13,7 +13,7 @@ import org.islandoftex.arara.core.utils.formatString
  * The database model, which keeps track on file changes.
  *
  * This database is a map because it maps files to hashes. So the key will
- * always be a file representation and the value always a string.
+ * always be a file representation and the value always a hash.
  *
  * @author Island of TeX
  * @version 5.0
@@ -23,7 +23,7 @@ import org.islandoftex.arara.core.utils.formatString
 data class Database(
     /**
      * The whole database is implemented as a map, where
-     * the key is the absolute canonical file and the value
+     * the key is the absolute, normalized file and the value
      * is its corresponding CRC32 hash.
      */
     private val map: MutableMap<String, Long> = mutableMapOf()
@@ -79,21 +79,21 @@ data class Database(
     }
 
     /**
-     * Save the database.
+     * Save the database as YAML with entries sorted by path.
      *
      * @param path Where to save it.
      */
     @Throws(AraraException::class)
     override fun save(path: MPPPath) {
         runCatching {
-            val content = "!database\n" +
-                Yaml.Default.encodeToString(serializer(), this)
+            val sorted = map.entries.sortedBy { it.key }.associate { it.toPair() }.toMutableMap()
+            val content = "!database\n" + Yaml.Default.encodeToString(serializer(), Database(sorted))
             path.normalize().writeText(content)
         }.getOrElse {
             throw AraraException(
-                LanguageController.messages.ERROR_SAVE_COULD_NOT_SAVE_XML
-                    .formatString(path.fileName),
-                it
+                LanguageController.messages.ERROR_SAVE_COULD_NOT_SAVE_DATABASE
+                    .formatString(path.toString()),
+                it as? Exception ?: RuntimeException(it)
             )
         }
     }
@@ -123,9 +123,9 @@ data class Database(
                 }.getOrElse {
                     throw AraraException(
                         LanguageController
-                            .messages.ERROR_LOAD_COULD_NOT_LOAD_XML
-                            .formatString(path.fileName),
-                        it
+                            .messages.ERROR_LOAD_COULD_NOT_LOAD_DATABASE
+                            .formatString(path.toString()),
+                        it as? Exception ?: RuntimeException(it)
                     )
                 }
             }
