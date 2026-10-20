@@ -56,6 +56,10 @@ on.
 
 ### Fixed
 
+* Path reads, writes, metadata and directory operations report `AraraIOException`
+  with the original I/O failure. Directive extraction handles read failures through
+  its localized error path. CRC32 hashing streams files instead of loading them whole.
+
 * Lua rule schema, helper conversion and interpolation errors use the selected
   language. Lua interpolation no longer reports failures as MVEL errors.
 

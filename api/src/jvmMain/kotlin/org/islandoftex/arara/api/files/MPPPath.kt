@@ -4,6 +4,7 @@ package org.islandoftex.arara.api.files
 import org.islandoftex.arara.api.AraraIOException
 import org.islandoftex.arara.api.time.DateTime
 import java.io.File
+import java.io.IOException
 import java.nio.file.Path
 import java.nio.file.Paths
 import kotlin.io.path.ExperimentalPathApi
@@ -78,13 +79,13 @@ public actual class MPPPath {
      * Get the file size of this file in bytes.
      */
     public actual val fileSize: Long
-        get() = referencePath.fileSize()
+        get() = io { referencePath.fileSize() }
 
     /**
      * Get the last modification date of this file as timestamp.
      */
     public actual val lastModified: DateTime
-        get() = DateTime(referencePath.getLastModifiedTime().toMillis())
+        get() = io { DateTime(referencePath.getLastModifiedTime().toMillis()) }
 
     /**
      * Get the parent object of the currently represented path. If it has no
@@ -156,8 +157,10 @@ public actual class MPPPath {
      * impossible.
      */
     @Throws(AraraIOException::class)
-    public actual fun readLines(): List<String> =
-            referencePath.readLines()
+    public actual fun readLines(): List<String> = io {
+        if (exists && !isRegularFile) throw AraraIOException("Can only read lines from files.")
+        referencePath.readLines()
+    }
 
     /**
      * Read whole text from the file specified at the current path. Fails with
@@ -165,9 +168,10 @@ public actual class MPPPath {
      * impossible.
      */
     @Throws(AraraIOException::class)
-    public actual fun readText(): String =
-        if (isRegularFile) referencePath.readText()
-        else throw AraraIOException("Can only read text from files.")
+    public actual fun readText(): String = io {
+        if (exists && !isRegularFile) throw AraraIOException("Can only read text from files.")
+        referencePath.readText()
+    }
 
     /**
      * Write [text] to the file specified at the current path. Overwrite by
@@ -175,7 +179,7 @@ public actual class MPPPath {
      * exception if the file is a directory or access is impossible.
      */
     @Throws(AraraIOException::class)
-    public actual fun writeText(text: String, append: Boolean): Unit =
+    public actual fun writeText(text: String, append: Boolean): Unit = io {
         if (!isDirectory) {
             if (append) {
                 if (exists) {
@@ -192,6 +196,7 @@ public actual class MPPPath {
         else {
             throw AraraIOException("Can only write text to files.")
         }
+    }
 
     override fun toString(): String =
         referencePath.toString()
@@ -227,7 +232,7 @@ public actual class MPPPath {
      * or a regular file exists at the location.
      */
     @Throws(AraraIOException::class)
-    public actual fun createDirectories() {
+    public actual fun createDirectories(): Unit = io {
         if (!exists) {
             referencePath.createDirectories()
         } else {
@@ -241,15 +246,14 @@ public actual class MPPPath {
      * Treat this path as a directory identifier and remove it at
      * this location including its contents.
      * Does nothing if this directory does not exist at the current location.
-     * As VfsFile::delete can only remove empty directories, a recursive
-     * function call is made to clear the directory first.
+     * Directory links are removed without deleting their targets.
      *
      * Fails with an [AraraIOException] if the directory could not be removed
      * or a regular file exists at the location.
      */
     @Throws(AraraIOException::class)
     @OptIn(ExperimentalPathApi::class)
-    public actual fun removeDirectory() {
+    public actual fun removeDirectory(): Unit = io {
         if (exists) {
             if (isDirectory) {
                 referencePath.deleteRecursively()
@@ -258,6 +262,12 @@ public actual class MPPPath {
                 throw AraraIOException("Target directory is a file.")
             }
         }
+    }
+
+    private inline fun <T> io(operation: () -> T): T = try {
+        operation()
+    } catch (exception: IOException) {
+        throw AraraIOException(exception.toString(), exception)
     }
 
 }

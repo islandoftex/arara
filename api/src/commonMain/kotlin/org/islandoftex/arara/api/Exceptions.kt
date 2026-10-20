@@ -57,4 +57,7 @@ public class SafeRunViolationException(msg: String) : AraraException(msg)
  * [org.islandoftex.arara.api.files.MPPPath] this exception is thrown if an
  * error occurs.
  */
-public class AraraIOException(msg: String) : AraraException(msg)
+public class AraraIOException : AraraException {
+    public constructor(msg: String) : super(msg)
+    public constructor(msg: String, exception: Exception) : super(msg, exception)
+}
