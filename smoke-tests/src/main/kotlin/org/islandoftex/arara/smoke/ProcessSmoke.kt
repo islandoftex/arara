@@ -2,8 +2,11 @@
 package org.islandoftex.arara.smoke
 
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.boolean
+import kotlinx.serialization.json.int
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.json.long
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.toJVMFile
 import org.islandoftex.arara.api.files.toJVMPath
@@ -370,6 +373,43 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath, private
             check(!root.resolve("configured.jsonl").readText().startsWith("{")) { "Text shorthand was ignored" }
             execute(root, 0, listOf("--log", "--log-format", "json"))
             root.resolve("configured.jsonl").readLines().forEach { Json.parseToJsonElement(it).jsonObject }
+        },
+        "json_events_keep_native_and_application_outcomes_distinct" to { root ->
+            rule(root, native(FAILURE_STATUS.toString()))
+            luaRule(root, luaNative(FAILURE_STATUS.toString()), "code == $FAILURE_STATUS")
+            val runIds = mutableSetOf<String>()
+            for (engine in listOf("yaml", "lua")) {
+                val expected = if (engine == "yaml") FAILURE_STATUS else 0
+                execute(root, expected, listOf("--engine", engine, "--log-format", "json",
+                    "--console", "styled", "--language", "de"))
+                val events = root.resolve("arara.log").readLines().map { Json.parseToJsonElement(it).jsonObject }
+                fun event(name: String) = events.single { it["event"]?.jsonPrimitive?.content == name }
+                val ruleEvent = event("rule.resolved").getValue("data").jsonObject
+                check(ruleEvent.getValue("engine").jsonPrimitive.content == engine)
+                check(ruleEvent.getValue("path").jsonPrimitive.content == root.resolve("probe.$engine").toString())
+                val command = event("command.completed").getValue("data").jsonObject
+                check(command.getValue("exitCode").jsonPrimitive.int == FAILURE_STATUS)
+                check(!command.getValue("exitCode").jsonPrimitive.isString)
+                check(command.getValue("durationMs").jsonPrimitive.long >= 0)
+                val task = event("task.result").getValue("data").jsonObject
+                check(task.getValue("success").jsonPrimitive.boolean == (expected == 0))
+                val outcome = event(if (expected == 0) "run.completed" else "run.failed").getValue("data").jsonObject
+                check(outcome.getValue("exitCode").jsonPrimitive.int == expected)
+                val ids = events.map { it.getValue("runId").jsonPrimitive.content }.toSet()
+                check(ids.size == 1 && runIds.add(ids.single())) { "Run IDs were missing or reused" }
+            }
+        },
+        "json_events_describe_process_failures_without_fake_exit_codes" to { root ->
+            rule(root, native("sleep"))
+            execute(root, APPLICATION_ERROR, listOf("--log-format", "json", "--timeout", "500"))
+            val events = root.resolve("arara.log").readLines().map { Json.parseToJsonElement(it).jsonObject }
+            val failure = events.single { it["event"]?.jsonPrimitive?.content == "command.failed" }
+            val data = failure.getValue("data").jsonObject
+            check(data.getValue("failureKind").jsonPrimitive.content == "TIMEOUT")
+            check("exitCode" !in data)
+            check("TimeoutException" in failure.getValue("exception").jsonPrimitive.content)
+            val run = events.single { it["event"]?.jsonPrimitive?.content == "run.failed" }
+            check(run.getValue("data").jsonObject.getValue("exitCode").jsonPrimitive.int == APPLICATION_ERROR)
         },
         "database_changes_persist_between_processes" to { root ->
             val existing = "!database\nmap: {}\n"

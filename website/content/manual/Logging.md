@@ -278,3 +278,33 @@ of the rule engine, console presentation and console language.
 
 Changing the format reopens the destination using its append setting. Use separate
 files for different formats; appended files must use the selected format throughout.
+
+## Structured events
+
+Records use schema version `1`. CLI invocations add a `runId` shared across their
+log destinations. Application records add an `event` name and typed `data` fields:
+
+| Event | Data fields |
+| --- | --- |
+| `run.started`, `application.version` | `version` |
+| `project.started` | `name`, `workingDirectory` |
+| `file.started` | `path`, `sizeBytes` |
+| `task.started` | `rule`, `task` |
+| `rule.resolved` | `rule`, `path`, `engine` |
+| `command.output` | `output`, `empty` |
+| `command.completed` | `argv`, `durationMs`, `exitCode`; available `workingDirectory`, `inputFile` |
+| `command.failed` | `argv`, `durationMs`, `failureKind`; available `workingDirectory`, `inputFile` |
+| `task.result` | `success` |
+| `run.completed`, `run.failed` | `exitCode`, `success` |
+| `run.elapsed` | `durationMs` |
+| `run.exception`, `run.exception.details` | No additional data; see `message` and `exception` |
+
+Numbers and booleans are JSON values, not strings. A command's exit code is
+separate from the task's success predicate and the final application exit code.
+Process failures have a failure category instead of an invented exit code.
+Exception events include a stack trace when available. Other log sources remain
+valid JSON records without application event fields. Consumers should ignore
+unknown event names and additional fields within a supported schema version.
+
+For example, `jq 'select(.event == "command.completed") | .data.exitCode' arara.log`
+extracts native process exit codes without parsing message text.

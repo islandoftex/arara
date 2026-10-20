@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.interpreter
 
-import io.github.oshai.kotlinlogging.KotlinLogging
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.cli.utils.DisplayUtils
@@ -20,8 +19,6 @@ import kotlin.time.TimeSource
  * @since 4.0
  */
 internal object CommandRunner {
-    private val logger = KotlinLogging.logger { }
-
     /**
      * Runs the command in the underlying operating system.
      *
@@ -42,12 +39,12 @@ internal object CommandRunner {
         )
         val milliseconds = start.elapsedNow().inWholeMilliseconds
         return result.let {
-            logOutput(when (it) {
+            RunLog.commandOutput(when (it) {
                 is SystemCommandResult.Completed -> it.output
                 is SystemCommandResult.Failed -> it.output
             })
             if (it is SystemCommandResult.Failed) {
-                logger.error { "System command failed (${it.kind}) after $milliseconds ms" }
+                RunLog.commandFailed(command, it.kind.name, milliseconds, it.exception)
                 DisplayUtils.renderer.printCommandFailure(it.output)
                 throw AraraException(
                     LanguageController.messages.run {
@@ -63,23 +60,8 @@ internal object CommandRunner {
                 )
             }
             it as SystemCommandResult.Completed
-            logger.info { "System command exited with value ${it.exitCode} after $milliseconds ms" }
+            RunLog.commandCompleted(command, it.exitCode, milliseconds)
             it
-        }
-    }
-
-    private fun logOutput(output: String) {
-        logger.info {
-            if (output.isBlank()) "The tool produced no output."
-            else """
-                ${RunLog.outputSeparator(
-                "BEGIN OUTPUT BUFFER"
-            )}
-                $output
-                ${RunLog.outputSeparator(
-                "END OUTPUT BUFFER"
-            )}
-            """.trimIndent()
         }
     }
 }

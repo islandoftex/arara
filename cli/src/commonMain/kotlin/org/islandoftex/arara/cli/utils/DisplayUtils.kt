@@ -84,7 +84,7 @@ object DisplayUtils {
         val text = (exception.message ?: "EXCEPTION PROVIDES NO MESSAGE") +
             if (exception.hasException()) " " + LanguageController.messages.INFO_DISPLAY_EXCEPTION_MORE_DETAILS else ""
         val details = exception.exception?.let { it.message ?: it.toString() }
-        RunLog.exception(exception.message, details)
+        RunLog.exception(exception.message, details, exception.exception ?: exception)
         renderer.printException(text, details)
     }
 

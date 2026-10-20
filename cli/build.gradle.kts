@@ -22,6 +22,7 @@ val toolchain = runCatching { (extra["arara.jvm.target"] as String).toInt() }
 // ----------------------------------------------------------------------
 
 kotlin {
+    compilerOptions.freeCompilerArgs.add("-Xexpect-actual-classes")
 
     // ----------------------------------------------------------------------
     // define the JVM toolchain (we can also set the vendor, if needed)

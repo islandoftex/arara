@@ -299,6 +299,7 @@ class CLI : CliktCommand("arara") {
      */
     override fun run() {
         val configuration = ConfigurationSnapshot.capture()
+        val previousRun = LoggingUtils.beginRun()
         val previousHooks = LinearExecutor.hooks
         val previousRenderer = DisplayUtils.renderer
         val previousOutcomes = DisplayUtils.outcomes
@@ -316,6 +317,7 @@ class CLI : CliktCommand("arara") {
             DisplayUtils.outcomes = previousOutcomes
             DisplayUtils.currentFile = previousFile
             Dialogs.renderer = previousDialogs
+            LoggingUtils.restoreRun(previousRun)
         }
     }
 
@@ -374,6 +376,7 @@ class CLI : CliktCommand("arara") {
         try {
             LinearExecutor.hooks = ExecutorHooks(
                 executeBeforeExecution = {
+                    RunLog.executionStarted(AraraAPI.version)
                     Session.updateEnvironmentVariables()
                     // directive processing has to be initialized, so that the core
                     // component respects our MVEL processing

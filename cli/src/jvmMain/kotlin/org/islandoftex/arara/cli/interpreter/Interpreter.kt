@@ -19,6 +19,7 @@ import org.islandoftex.arara.api.session.ExecutionStatus
 import org.islandoftex.arara.cli.ruleset.RuleEngine
 import org.islandoftex.arara.cli.ruleset.RuleFiles
 import org.islandoftex.arara.cli.utils.DisplayUtils
+import org.islandoftex.arara.cli.utils.RunLog
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.rules.CommandEvaluator
 import org.islandoftex.arara.core.session.HaltRequest
@@ -221,9 +222,7 @@ class Interpreter(
         }
 
         val file = RuleFiles.find(directive, executionOptions, workingDirectory, engine)
-        logger.info {
-            "Rule file: \"$file\" (engine: ${engine.name.lowercase()})"
-        }
+        RunLog.rule(directive.identifier, file.toString(), engine.name.lowercase())
 
         // parse the rule identified by the directive (may throw an exception)
         val rule = RuleFiles.parseRule(file, directive.identifier)

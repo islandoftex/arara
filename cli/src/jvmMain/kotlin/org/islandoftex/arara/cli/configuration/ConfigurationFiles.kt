@@ -1,22 +1,22 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.configuration
 
-import java.nio.charset.Charset
-import java.nio.file.Path
-import java.util.Properties
-import kotlin.io.path.bufferedReader
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.cli.utils.LoggingUtils
+import org.islandoftex.arara.core.configuration.LocalConfiguration
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
-import org.islandoftex.arara.core.configuration.LocalConfiguration
-import org.islandoftex.arara.mvel.configuration.YamlLocalConfiguration
 import org.islandoftex.arara.lua.configuration.LuaLocalConfiguration
+import org.islandoftex.arara.mvel.configuration.YamlLocalConfiguration
 import org.islandoftex.arara.mvel.utils.MvelState
+import java.nio.charset.Charset
+import java.nio.file.Path
+import java.util.Properties
+import kotlin.io.path.bufferedReader
 
 /**
  * Resolves configuration files and loads configuration and call properties.

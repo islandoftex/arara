@@ -17,7 +17,8 @@ on.
 ### Added
 
 * JSON Lines diagnostic logs via `--log-format json`, YAML `logformat: json`,
-  or Lua `log.format = "json"`. Logging is disabled by default.
+  or Lua `log.format = "json"`. Logging is disabled by default. JSON records
+  include versioned event names, typed fields and a per-invocation run identifier.
 
 * Debug logs trace session variable additions, overwrites, removals, clears and
   environment refreshes by key or count, without recording variable values.

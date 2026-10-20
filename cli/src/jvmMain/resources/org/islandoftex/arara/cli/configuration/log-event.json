@@ -1,6 +1,9 @@
 {
   "schemaVersion": 1,
-  "timestamp": {"$resolver": "timestamp", "pattern": {"format": "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", "timeZone": "UTC"}},
+  "timestamp": {"$resolver": "timestamp", "pattern": {"format": "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", "timeZone": "UTC", "locale": "en_US"}},
+  "runId": {"$resolver": "mdc", "key": "araraRunId"},
+  "event": {"$resolver": "map", "key": "event"},
+  "data": {"$resolver": "map", "pattern": "(?!event$).*"},
   "level": {"$resolver": "level", "field": "name"},
   "logger": {"$resolver": "logger", "field": "name"},
   "message": {"$resolver": "message", "stringified": true},
