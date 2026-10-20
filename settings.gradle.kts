@@ -6,9 +6,13 @@ plugins {
 rootProject.name = "arara"
 
 dependencyResolutionManagement {
-	repositories {
-		mavenCentral()
-	}
+    repositories {
+        mavenCentral()
+        // Shadow's optional R8 configuration is also resolved by dependency scanning.
+        google {
+            content { includeModule("com.android.tools", "r8") }
+        }
+    }
 }
 
 include(

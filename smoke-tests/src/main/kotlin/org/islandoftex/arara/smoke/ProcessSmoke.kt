@@ -24,8 +24,14 @@ private data class Result(val status: Int, val output: String)
 private data class CaseResult(val name: String, val failure: Throwable?)
 
 /** Checks use MPPPath; ProcessBuilder requires a File at its working-directory boundary. */
-private fun run(command: List<String>, directory: MPPPath, input: String = ""): Result {
-    val process = ProcessBuilder(command).directory(directory.toJVMFile()).redirectErrorStream(true).start()
+private fun run(command: List<String>, directory: MPPPath, input: String = "",
+                environment: Map<String, String?> = emptyMap()): Result {
+    val process = ProcessBuilder(command).directory(directory.toJVMFile()).redirectErrorStream(true)
+        .apply {
+            environment.forEach { (key, value) ->
+                if (value == null) environment().remove(key) else environment()[key] = value
+            }
+        }.start()
     val output = ByteArrayOutputStream()
     val reader = thread(isDaemon = true, name = "smoke-output") {
         process.inputStream.use { it.copyTo(output) }
@@ -80,9 +86,10 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath, private
         .joinToString(", ", "return getCommand([", "]);") { quoted(it) }
 
     private fun execute(root: MPPPath, expected: Int, flags: List<String> = emptyList(),
-                        reference: String = "run.tex", input: String = ""): String {
+                        reference: String = "run.tex", input: String = "",
+                        environment: Map<String, String?> = emptyMap()): String {
         val result = run(listOf(java.toString(), "-Duser.home=$root", "-jar", jar.toString(),
-            "-L", "en", "-d", root.toString()) + flags + reference, root, input)
+            "-L", "en", "-d", root.toString()) + flags + reference, root, input, environment)
         check(result.status == expected) { "Expected exit $expected, got ${result.status}\n${result.output}" }
         return result.output
     }
@@ -260,12 +267,16 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath, private
         },
         "styled_presentation_preserves_engines_and_failure_output" to { root ->
             rule(root, native("7"))
-            val output = execute(root, FAILURE_STATUS, listOf("--console", "styled"))
+            val environment = mapOf(
+                "CI" to "true", "GITLAB_CI" to "true", "TERM" to "xterm", "FORCE_COLOR" to "3", "NO_COLOR" to null
+            )
+            val output = execute(root, FAILURE_STATUS, listOf("--console", "styled"), environment = environment)
             contains(output, "FAILURE")
             contains(output, "SMOKE_STDERR")
             check("\u001b" !in output) { "Piped styled output contains ANSI escapes" }
             luaRule(root, "return true")
-            val lua = execute(root, 0, listOf("--engine", "lua", "--console", "styled"))
+            val lua = execute(root, 0, listOf("--engine", "lua", "--console", "styled"), environment = environment)
+            check("\u001b" !in lua) { "Piped Lua styled output contains ANSI escapes" }
             contains(lua, "SUCCESS")
             contains(lua, "run.tex")
         },

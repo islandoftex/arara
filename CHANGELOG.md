@@ -75,6 +75,8 @@ on.
 
 ### Fixed
 
+* Styled output remains free of ANSI escapes when redirected, including in CI environments.
+
 * File-change databases are written in deterministic path order. Load and save
   errors identify the database path and retain the underlying failure.
 

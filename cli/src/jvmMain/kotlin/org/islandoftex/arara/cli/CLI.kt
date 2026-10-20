@@ -24,6 +24,7 @@ import com.github.ajalt.clikt.parameters.types.choice
 import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.parameters.types.path
 import com.github.ajalt.clikt.parameters.types.restrictTo
+import com.github.ajalt.mordant.rendering.AnsiLevel
 import com.github.ajalt.mordant.rendering.Theme
 import com.github.ajalt.mordant.terminal.Terminal
 import org.islandoftex.arara.api.AraraAPI
@@ -75,7 +76,12 @@ class CLI : CliktCommand("arara") {
 
     init {
         context {
+            // Mordant's JVM fallback can infer an interactive terminal from CI environment variables.
+            val hasConsole = System.console() != null
             terminal = Terminal(
+                ansiLevel = if (hasConsole) null else AnsiLevel.NONE,
+                hyperlinks = if (hasConsole) null else false,
+                interactive = hasConsole,
                 theme = Theme {
                     flags["markdown.code.block.border"] = false
                 }
