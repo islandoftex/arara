@@ -16,6 +16,9 @@ on.
 
 ### Added
 
+* JSON Lines diagnostic logs via `--log-format json`, YAML `logformat: json`,
+  or Lua `log.format = "json"`. Logging is disabled by default.
+
 * Debug logs trace session variable additions, overwrites, removals, clears and
   environment refreshes by key or count, without recording variable values.
 
@@ -43,6 +46,11 @@ on.
 * `ClassLoading.closeLoaders()` lets hosts release loaded rule archives.
 
 ### Changed
+
+* **Breaking change:** Logging uses a single `none`, `text` or `json` format.
+  Replace YAML `logging: true` with `logformat: text`, Lua `log.enabled` with
+  `log.format`, and API `LoggingOptions.enableLogging` with `format`.
+  `-l` / `--log` remains shorthand for `--log-format text`.
 
 * **Breaking change:** `dbname`/`database` honors the complete configured path
   instead of discarding parent directories. Relative paths resolve against the

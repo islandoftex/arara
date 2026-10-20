@@ -9,8 +9,8 @@ import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.utils.formatString
 import org.islandoftex.arara.lua.LuaScriptEnvironment
 import org.islandoftex.arara.lua.rules.LuaConversion
-import org.luaj.vm2.LuaError
 import org.luaj.vm2.LuaBoolean
+import org.luaj.vm2.LuaError
 import org.luaj.vm2.LuaNumber
 import org.luaj.vm2.LuaString
 import org.luaj.vm2.LuaTable
@@ -40,7 +40,7 @@ object LuaLocalConfiguration {
         Fields.keys(table, setOf(
             "paths", "file_types", "language", "console", "loops", "verbose", "header", "database", "log", "preamble"
         ), "configuration")
-        val log = Fields.group(table, "log", setOf("enabled", "file"))
+        val log = Fields.group(table, "log", setOf("file", "format"))
         val preamble = Fields.group(table, "preamble", setOf("default", "prepend", "definitions"))
         val loops = Fields.integer(table["loops"], "loops")
         require(loops == null || loops > 0) { messages.ERROR_CONFIGURATION_LOOPS_INVALID_RANGE }
@@ -56,10 +56,10 @@ object LuaLocalConfiguration {
             console = Fields.string(table["console"], "console"),
             loops = loops,
             verbose = Fields.boolean(table["verbose"], "verbose"),
-            logging = Fields.boolean(log["enabled"], "log.enabled"),
             header = Fields.boolean(table["header"], "header"),
             dbname = Fields.string(table["database"], "database"),
             logname = Fields.string(log["file"], "log.file"),
+            logformat = Fields.string(log["format"], "log.format"),
             preambles = definitions(preamble["definitions"]),
             defaultPreamble = Fields.string(preamble["default"], "preamble.default"),
             prependPreambleIfDirectivesGiven = prepend,

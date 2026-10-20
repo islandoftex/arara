@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-License-Identifier: BSD-3-Clause -->
+<Configuration>
+    <Appenders>
+        <!--
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+        -->
+        <File name="File" append="${ctx:araraAppendLog:-false}" fileName="${ctx:araraLogFile}">
+            <JsonTemplateLayout eventTemplateUri="classpath:org/islandoftex/arara/cli/configuration/log-event.json"
+                                eventDelimiter="&#10;" />
+        </File>
+    </Appenders>
+
+    <Loggers>
+        <Logger name="org.zeroturnaround.exec" level="OFF"/>
+        <Root level="ALL">
+            <AppenderRef ref="File"/>
+        </Root>
+    </Loggers>
+</Configuration>

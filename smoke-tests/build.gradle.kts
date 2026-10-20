@@ -9,6 +9,7 @@ kotlin {
 
 dependencies {
     implementation(project(":api"))
+    implementation(libs.kotlinx.serialization.json)
 }
 
 tasks.register<Jar>("runnerJar") {

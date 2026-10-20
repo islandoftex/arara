@@ -67,12 +67,13 @@ object ConfigurationFiles {
      * Loads the application configuration.
      *
      * @param file The YAML or Lua configuration file.
+     * @param configureLogging Apply the destination immediately; CLI callers defer this until overrides are applied.
      *
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
     @Throws(AraraException::class)
-    fun load(file: MPPPath, currentProject: Project) {
+    fun load(file: MPPPath, currentProject: Project, configureLogging: Boolean = true) {
         // then validate it and update the configuration accordingly
         val resource = loadLocalConfiguration(file, currentProject)
         LinearExecutor.executionOptions = resource.toExecutionOptions(
@@ -94,7 +95,7 @@ object ConfigurationFiles {
         // just to be sure, update the current locale in order to
         // display localized messages and reset logging status
         LanguageController.loadMessagesFor(Session.userInterfaceOptions.locale)
-        LoggingUtils.setupLogging(Session.loggingOptions)
+        if (configureLogging) LoggingUtils.setupLogging(Session.loggingOptions)
     }
 
     /** Loads UTF-8 call properties, retaining the existing best-effort behavior on failure. */

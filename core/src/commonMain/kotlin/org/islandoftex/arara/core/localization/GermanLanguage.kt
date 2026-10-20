@@ -65,6 +65,7 @@ class GermanLanguage : Messages(
     ERROR_INTERPRETER_COMMAND_UNSUCCESSFUL_EXIT = "Das Kommando \"%s\" wurde unerwarteterweise mit einem Nicht-Null-Rückgabewert beendet. Bitte analysieren Sie den Output des Kommandos und ziehen Sie daraus Schlüsse auf mögliche Lösungen des Problems.",
     ERROR_INTERPRETER_EXIT_RUNTIME_ERROR = "Ich kann den Status der Fertigmeldung (exit status) von einer der genutzten Anweisungen nicht auswerten. Dieser Teil ist ziemlich knifflig, denn er bezieht Aspekte der zugrundeliegenden Sprache mit ein. Ich werde mein Bestes tun, um dir in jeglicher Art und Weise zu helfen.",
     ERROR_INTERPRETER_FLAG_RUNTIME_EXCEPTION = "Ich kann den Statusindikator (flag expression) eines Argumentes nicht auswerten. Dieser Teil ist ziemlich knifflig, denn er bezieht Aspekte der zugrundeliegenden Sprache mit ein. Ich werde mein Bestes tun, um dir in jeglicher Art und Weise zu helfen.",
+    ERROR_LOG_FORMAT_UNKNOWN = "Unbekanntes Protokollformat '%s'. Verwenden Sie none, text oder json.",
     ERROR_CONSOLE_MODE_UNKNOWN = "Unbekannter Konsolenmodus '%s'. Verwenden Sie plain oder styled.",
     ERROR_PARSE_RULE_UNSUPPORTED_FORMAT = "Nicht unterstütztes Regelformat für '%s': '%s'. Verwenden Sie eine YAML- oder Lua-Regeldatei.",
     ERROR_INTERPRETER_RULE_NOT_FOUND = "Ich konnte keine Regel mit dem Namen \"%s\" in den hinterlegten Regelverzeichnissen finden. Vielleicht ein falsch geschriebenes Wort? Ich habe nach dem Dateinamen \"%s\" in den nachstehenden Verzeichnissen mit entsprechender Priorität gesucht: %s",

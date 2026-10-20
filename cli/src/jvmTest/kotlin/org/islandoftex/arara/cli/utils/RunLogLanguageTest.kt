@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.utils
 
+import org.islandoftex.arara.api.configuration.LogFormat
 import org.islandoftex.arara.api.files.toMPPPath
 import org.islandoftex.arara.api.localization.MPPLocale
 import org.islandoftex.arara.cli.configuration.ConfigurationSnapshot
@@ -24,7 +25,7 @@ class RunLogLanguageTest {
                 LanguageController.loadMessagesFor(locale)
                 val log = root.resolve("$language.log")
                 LoggingUtils.init()
-                LoggingUtils.setupLogging(LoggingOptions(true, false, log))
+                LoggingUtils.setupLogging(LoggingOptions(LogFormat.TEXT, false, log))
                 RunLog.entry("literal %s", "script message")
                 RunLog.taskResult(false)
                 RunLog.executionTime(1.25)

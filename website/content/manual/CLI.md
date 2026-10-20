@@ -225,11 +225,14 @@ current option, it will be denoted by `parameter` in the description.
     be extracted. This option can also be disabled by default in the
     configuration file.
 
-- `-l` / `--log`: This option enables the logging feature of our tool. All
+- `-l` / `--log`: Shorthand for `--log-format text`. All
   streams from all system commands will be logged and, at the end of the
   execution, a consolidated log file named `arara.log` will be generated. This
   option can also be activated by default in the configuration file. Refer to
   [Logging](@/manual/Logging.md) for more details on the logging feature.
+
+- `--log-format`: Selects `none` (default), `text` or `json`. This option
+  overrides configuration and `-l` / `--log`.
 
 - `-L` / `--language`: This option sets the language of the current execution of
   arara according to the language code identified by the `code` value provided

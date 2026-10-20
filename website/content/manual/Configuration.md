@@ -74,7 +74,7 @@ return {
     header = true,
     language = "en",
     database = "arara.yaml",
-    log = { enabled = true, file = cwd .. "/arara.log" },
+    log = { format = "text", file = cwd .. "/arara.log" },
     preamble = {
         default = "build",
         prepend = "without-directives",
@@ -93,7 +93,7 @@ or `without-directives`. Definitions are lists of directive lines.
 | `paths`, `language`, `loops`, `verbose`, `header` | Same name |
 | `file_types` | `filetypes` |
 | `database` | `dbname` |
-| `log.enabled`, `log.file` | `logging`, `logname` |
+| `log.format`, `log.file` | `logformat`, `logname` |
 | `preamble.default`, `preamble.definitions` | `defaultPreamble`, `preambles` |
 | `preamble.prepend` | `prependPreambleIfDirectivesGiven` |
 
@@ -213,14 +213,12 @@ resolution for a path in plain string should be kept as simple as possible, so
     verbose: true
     ```
 
-- **[O]** *(boolean)* `logging` (default: `false`): This key activates or
-  deactivates the logging feature of arara as the default behaviour, according
-  to the associated boolean value. Also, it is very important to observe that
-  the `--log` command line option can override this setting if, and only if,
-  this variable holds `false` as the value.
+- **[O]** *(string)* `logformat` (default: `none`): Selects `none`, `text` or
+  `json`. `none` disables logging. `--log-format` overrides configuration;
+  `-l` / `--log` selects text unless an explicit `--log-format` is supplied.
 
-    ```
-    logging: true
+    ```yaml
+    logformat: text
     ```
 
 - **[O]** *(boolean)* `header` (default: `true`): This key modifies the
@@ -244,8 +242,8 @@ resolution for a path in plain string should be kept as simple as possible, so
   log file name, according to the associated plain string value, plus the
   `log` extension. The value cannot be empty or contain invalid
   characters. There is no orb tag evaluation in this specific context, only a
-  plain string value. The log file will be written by our tool if, and only
-  if, the `--log` command line option is used.
+  plain string value. The log file is written when the selected format is
+  `text` or `json`.
 
   {% messagebox(title="Log paths") %}
   From version 6.0 on, the log file may now be specified as path *anywhere* on

@@ -2,6 +2,7 @@
 package org.islandoftex.arara.cli.utils
 
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.configuration.LogFormat
 import org.islandoftex.arara.api.files.toMPPPath
 import org.islandoftex.arara.cli.configuration.ConfigurationSnapshot
 import org.islandoftex.arara.core.configuration.LoggingOptions
@@ -23,7 +24,7 @@ class SessionLogTest {
             LoggingUtils.init()
             Session.clear()
             val log = root.resolve("session.log")
-            LoggingUtils.setupLogging(LoggingOptions(true, false, log))
+            LoggingUtils.setupLogging(LoggingOptions(LogFormat.TEXT, false, log))
             val opaque = object {
                 override fun toString(): String = error("Session tracing must not inspect values")
             }
@@ -68,11 +69,11 @@ class SessionLogTest {
             Session.clear()
             val first = root.resolve("first.log")
             val second = root.resolve("second.log")
-            LoggingUtils.setupLogging(LoggingOptions(true, false, first))
+            LoggingUtils.setupLogging(LoggingOptions(LogFormat.TEXT, false, first))
             Session.put("first", 1)
             LoggingUtils.init()
             Session.put("disabled", 2)
-            LoggingUtils.setupLogging(LoggingOptions(true, false, second))
+            LoggingUtils.setupLogging(LoggingOptions(LogFormat.TEXT, false, second))
             Session.put("resumed", 3)
             LoggingUtils.init()
             assertTrue("Session variable 'first' set." in first.readText())

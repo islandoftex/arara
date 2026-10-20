@@ -95,7 +95,9 @@ object TaskHelper {
                 to their directives. Options apply to the execution of all documents.
                 .SH OPTIONS
                 .IP \fB--log\fP
-                Generate a log output.
+                Write a text log (shorthand for --log-format=text).
+                .IP \fB--log-format\fP none|text|json
+                Select the diagnostic log format (default: none).
                 .IP \fB--verbose\fP / \fB--silent\fP
                 Print or suppress command output.
                 .IP \fB--dry-run\fP

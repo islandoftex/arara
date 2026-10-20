@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.smoke
 
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.toJVMFile
 import org.islandoftex.arara.api.files.toJVMPath
@@ -343,6 +346,30 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath, private
                     "Session mutation records included variable values"
                 }
             }
+        },
+        "json_logging_is_available_in_the_packaged_jar" to { root ->
+            rule(root, "return true;")
+            execute(root, 0)
+            check(!root.resolve("arara.log").exists) { "Default format created a log file" }
+            val output = execute(root, 0, listOf("--log-format", "json"))
+            contains(output, "SUCCESS")
+            val records = root.resolve("arara.log").readLines().map { Json.parseToJsonElement(it).jsonObject }
+            check(records.isNotEmpty()) { "JSON logging produced no events" }
+            check(records.any { it["message"]?.jsonPrimitive?.content == "Run completed with exit code 0" }) {
+                "JSON log has no closing run record"
+            }
+            root.resolve("arararc.lua").writeText(
+                "return { paths = { cwd }, log = { " +
+                    "file = cwd .. '/configured.jsonl', format = 'json' } }")
+            execute(root, 0)
+            root.resolve("configured.jsonl").readLines().forEach { Json.parseToJsonElement(it).jsonObject }
+            val previous = root.resolve("configured.jsonl").readText()
+            execute(root, 0, listOf("-l", "--log-format", "none"))
+            check(root.resolve("configured.jsonl").readText() == previous) { "NONE did not override logging" }
+            execute(root, 0, listOf("-l"))
+            check(!root.resolve("configured.jsonl").readText().startsWith("{")) { "Text shorthand was ignored" }
+            execute(root, 0, listOf("--log", "--log-format", "json"))
+            root.resolve("configured.jsonl").readLines().forEach { Json.parseToJsonElement(it).jsonObject }
         },
         "database_changes_persist_between_processes" to { root ->
             val existing = "!database\nmap: {}\n"

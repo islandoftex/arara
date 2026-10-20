@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionOptions
+import org.islandoftex.arara.api.configuration.LogFormat
 import org.islandoftex.arara.api.configuration.LoggingOptions
 import org.islandoftex.arara.api.configuration.UserInterfaceOptions
 import org.islandoftex.arara.api.files.MPPPath
@@ -30,10 +31,10 @@ data class LocalConfiguration(
     private val console: String? = null,
     private val loops: Int? = null,
     private val verbose: Boolean? = null,
-    private val logging: Boolean? = null,
     private val header: Boolean? = null,
     private val dbname: String? = null,
     private val logname: String? = null,
+    private val logformat: String? = null,
     val preambles: Map<String, String> = mapOf(),
     val defaultPreamble: String? = null,
     val prependPreambleIfDirectivesGiven: Boolean = true,
@@ -122,8 +123,16 @@ data class LocalConfiguration(
         val logName = logname?.let { MPPPath(it) }
             ?: baseOptions.logFile
         return org.islandoftex.arara.core.configuration.LoggingOptions(
-            enableLogging = logging ?: baseOptions.enableLogging,
-            logFile = logName
+            logFile = logName,
+            format = when (logformat) {
+                null -> baseOptions.format
+                "none" -> LogFormat.NONE
+                "text" -> LogFormat.TEXT
+                "json" -> LogFormat.JSON
+                else -> throw AraraException(
+                    LanguageController.messages.ERROR_LOG_FORMAT_UNKNOWN.formatString(logformat)
+                )
+            }
         )
     }
 

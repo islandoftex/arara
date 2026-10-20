@@ -2,10 +2,11 @@
 package org.islandoftex.arara.mvel.configuration
 
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.configuration.LogFormat
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.toMPPPath
-import org.islandoftex.arara.core.configuration.LocalConfiguration
 import org.islandoftex.arara.core.configuration.ExecutionOptions
+import org.islandoftex.arara.core.configuration.LocalConfiguration
 import org.islandoftex.arara.core.files.Project
 import java.nio.file.Files
 import kotlin.test.Test
@@ -34,7 +35,7 @@ class YamlLocalConfigurationTest {
             filetypes: [{ extension: texw, pattern: '^%!' }]
             loops: 3
             verbose: true
-            logging: true
+            logformat: text
             header: false
             dbname: nested/cache.yaml
             logname: nested/run.log
@@ -50,7 +51,7 @@ class YamlLocalConfigurationTest {
             assertTrue(options.verbose)
             assertFalse(options.parseOnlyHeader)
             assertEquals(project.workingDirectory.resolve("nested/cache.yaml"), options.databaseName)
-            assertTrue(model.toLoggingOptions().enableLogging)
+            assertEquals(LogFormat.TEXT, model.toLoggingOptions().format)
             assertEquals(MPPPath("nested/run.log"), model.toLoggingOptions().logFile)
             assertEquals(mapOf("sample" to "% arara: echo"), model.preambles)
             assertEquals("sample", model.defaultPreamble)

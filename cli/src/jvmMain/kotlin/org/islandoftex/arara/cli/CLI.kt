@@ -19,6 +19,7 @@ import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.help
 import com.github.ajalt.clikt.parameters.options.option
+import com.github.ajalt.clikt.parameters.options.switch
 import com.github.ajalt.clikt.parameters.options.versionOption
 import com.github.ajalt.clikt.parameters.types.choice
 import com.github.ajalt.clikt.parameters.types.int
@@ -30,6 +31,7 @@ import com.github.ajalt.mordant.terminal.Terminal
 import org.islandoftex.arara.api.AraraAPI
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
+import org.islandoftex.arara.api.configuration.LogFormat
 import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.toMPPPath
@@ -110,8 +112,8 @@ class CLI : CliktCommand("arara") {
         .choice("yaml" to RuleEngine.YAML, "lua" to RuleEngine.LUA).default(RuleEngine.YAML)
 
     private val log by option("-l", "--log")
-        .help("Generate a log output")
-        .flag()
+        .help("Write a text diagnostic log (shorthand for --log-format=text)")
+        .switch("-l" to LogFormat.TEXT, "--log" to LogFormat.TEXT)
     private val verbose by option("-v", "--verbose")
         .help("Print the command output")
         .flag("-s", "--silent")
@@ -150,6 +152,10 @@ class CLI : CliktCommand("arara") {
         .help("Pass a properties file to the application to be used within the session.")
         .path(mustExist = true, canBeDir = false, mustBeReadable = true)
         .convert { Properties().apply { ConfigurationFiles.loadProperties(this, it) } }
+
+    private val logFormat by option("--log-format")
+        .help("Set the diagnostic log format: none (default), text or json")
+        .choice("none" to LogFormat.NONE, "text" to LogFormat.TEXT, "json" to LogFormat.JSON)
 
     private val console by option("-c", "--console")
         .help("Set the console presentation: plain or styled")
@@ -245,12 +251,9 @@ class CLI : CliktCommand("arara") {
             )
 
         Session.loggingOptions = LoggingOptions(
-            enableLogging = if (log)
-                true
-            else
-                Session.loggingOptions.enableLogging,
             appendLog = Session.loggingOptions.appendLog,
-            logFile = Session.loggingOptions.logFile
+            logFile = Session.loggingOptions.logFile,
+            format = logFormat ?: log ?: Session.loggingOptions.format
         )
     }
 
@@ -324,9 +327,10 @@ class CLI : CliktCommand("arara") {
         LanguageController.loadMessagesFor(language?.let { MPPLocale(it) } ?: Session.userInterfaceOptions.locale)
         ConfigurationFiles.configFileForProject(project)?.let {
             DisplayUtils.configurationFileName = it.toString()
-            ConfigurationFiles.load(it, project)
+            ConfigurationFiles.load(it, project, configureLogging = false)
         }
         updateConfigurationFromCommandLine()
+        LoggingUtils.setupLogging(Session.loggingOptions)
         applyConsole()
     }
 
@@ -377,7 +381,6 @@ class CLI : CliktCommand("arara") {
                 },
                 executeBeforeProject = { project ->
                     configureProject(project, configuration)
-                    LoggingUtils.setupLogging(Session.loggingOptions)
                     RunLog.project(project.name, project.workingDirectory.toString())
                 },
                 executeBeforeFile = {

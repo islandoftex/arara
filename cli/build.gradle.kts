@@ -2,6 +2,7 @@
 @file:OptIn(ExperimentalKotlinGradlePluginApi::class)
 
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import com.github.jengelman.gradle.plugins.shadow.transformers.Log4j2PluginsCacheFileTransformer
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
@@ -80,11 +81,13 @@ kotlin {
                 implementation(libs.slf4j.api)
                 implementation(libs.log4j.core)
                 implementation(libs.log4j.impl)
+                runtimeOnly(libs.log4j.json)
             }
         }
 
         jvmTest {
             dependencies {
+                implementation(libs.kotlinx.serialization.json)
                 implementation(libs.kotest.runner.jvm)
                 implementation(libs.kotest.assertions.jvm)
             }
@@ -135,9 +138,15 @@ tasks {
         archiveAppendix.set("with-deps")
         archiveClassifier.set("")
 
+        transform<Log4j2PluginsCacheFileTransformer>()
+        filesMatching("META-INF/org/apache/logging/log4j/core/config/plugins/Log4j2Plugins.dat") {
+            duplicatesStrategy = DuplicatesStrategy.INCLUDE
+        }
+
         minimize {
             exclude(dependency("org.jetbrains.kotlin:.*"))
             exclude(dependency("org.apache.logging.log4j:log4j-slf4j2-impl:.*"))
+            exclude(dependency("org.apache.logging.log4j:log4j-layout-template-json:.*"))
             exclude(dependency("org.mvel:mvel2:.*"))
             exclude(dependency("com.github.ajalt.mordant:.*"))
         }

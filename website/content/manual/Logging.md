@@ -261,3 +261,20 @@ Session environment refreshed (42 variables).
 
 Variable values are not recorded by this tracing. Reads do not produce records,
 and failed removals do not claim that a variable was removed.
+
+# JSON Lines output
+
+`--log-format json` writes one JSON object per line. YAML configurations use
+`logformat: json`; Lua configurations use `log = { format = "json" }`.
+`--log-format text` (or `-l` / `--log`) selects text logging;
+`--log-format none` disables it, which is the default. Explicit `--log-format`
+selection overrides both configuration and the text shorthand.
+The destination remains `arara.log` unless configured otherwise.
+
+Each record has `schemaVersion` (currently `1`), a UTC `timestamp`, `level`,
+`logger`, `message`, and an `exception` stack trace when available. Embedded
+newlines and quotes are escaped within their JSON string. Log format is independent
+of the rule engine, console presentation and console language.
+
+Changing the format reopens the destination using its append setting. Use separate
+files for different formats; appended files must use the selected format throughout.

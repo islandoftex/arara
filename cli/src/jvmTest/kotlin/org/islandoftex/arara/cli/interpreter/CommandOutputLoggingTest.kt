@@ -2,6 +2,7 @@
 package org.islandoftex.arara.cli.interpreter
 
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.configuration.LogFormat
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.toMPPPath
 import org.islandoftex.arara.cli.utils.LoggingUtils
@@ -45,7 +46,7 @@ class CommandOutputLoggingTest {
             val java = MPPPath(System.getProperty("java.home")).resolve("bin").resolve(name)
             val log = directory.resolve("command.log")
             LoggingUtils.init()
-            LoggingUtils.setupLogging(LoggingOptions(true, false, log))
+            LoggingUtils.setupLogging(LoggingOptions(LogFormat.TEXT, false, log))
             LinearExecutor.executionOptions = ExecutionOptions(timeoutValue = 3.seconds)
             check(Command(listOf(java.toString(), "-cp", directory.toString(), "OutputFixture", mode)))
             LoggingUtils.init()

@@ -65,6 +65,7 @@ class NorfolkLanguage : Messages(
     ERROR_INTERPRETER_COMMAND_UNSUCCESSFUL_EXIT = "That ole command \"%s\" dint go roight. Do you have a peek at the output do you want ter know wass doing.",
     ERROR_INTERPRETER_EXIT_RUNTIME_ERROR = "That ent gorn right wi' th' exit status of onnem commands you giv' me. Wuh, yew're gotta he'sum idear wot this is orl abowt ter git th' hang o'this bit else yew myte be in a rite ole puckaterry but I'll help yew git it done if I can, my bewty.",
     ERROR_INTERPRETER_FLAG_RUNTIME_EXCEPTION = "That ent gorn right wi' th' flag for onnem arguments you giv' me. Wuh, yew're gotta he'sum idear wot this is orl abowt ter git th' hang o'this bit else yew myte be in a rite ole puckaterry but I'll help yew git it done if I can, my bewty.",
+    ERROR_LOG_FORMAT_UNKNOWN = "I don't know that log format '%s', bor. Use none, text or json.",
     ERROR_CONSOLE_MODE_UNKNOWN = "I don't know that console mode '%s', bor. Use plain or styled.",
     ERROR_PARSE_RULE_UNSUPPORTED_FORMAT = "I can't read that rule format for '%s': '%s', bor. Use a YAML or Lua rule file.",
     ERROR_INTERPRETER_RULE_NOT_FOUND = "Thass a rum ole dew but there ent no '%s' in any onnem rule paths. Praps you ent spelled that right. I coont find '%s' in any onner paths: %s",

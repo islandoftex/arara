@@ -101,7 +101,7 @@ class LuaConfigurationTest {
             language: de
             loops: 3
             verbose: true
-            logging: true
+            logformat: text
             header: false
             dbname: cache.yaml
             logname: '$logPath'
@@ -112,7 +112,7 @@ class LuaConfigurationTest {
         val lua = root.resolve("arararc.lua").apply { writeText("""
             return { paths = { '.' }, file_types = { { extension = 'src', pattern = '^@ +' } },
                 language = 'de', loops = 3, verbose = true, header = false, database = 'cache.yaml',
-                log = { enabled = true, file = cwd .. '/custom.log' },
+                log = { format = 'text', file = cwd .. '/custom.log' },
                 preamble = { default = 'build', prepend = 'without-directives',
                     definitions = { build = { '@ arara: marker' } } } }
         """.trimIndent()) }
