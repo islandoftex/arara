@@ -43,6 +43,7 @@ import org.islandoftex.arara.cli.ruleset.RuleEngine
 import org.islandoftex.arara.cli.ui.TerminalDialogRenderer
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.cli.utils.LoggingUtils
+import org.islandoftex.arara.cli.utils.RunLog
 import org.islandoftex.arara.cli.utils.printFileInformation
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.configuration.LoggingOptions
@@ -371,6 +372,7 @@ class CLI : CliktCommand("arara") {
                 executeBeforeProject = { project ->
                     configureProject(project, configuration)
                     LoggingUtils.setupLogging(Session.loggingOptions)
+                    RunLog.project(project.name, project.workingDirectory.toString())
                 },
                 executeBeforeFile = {
                     // TODO: do we have to reset some more file-specific config?
@@ -407,6 +409,7 @@ class CLI : CliktCommand("arara") {
             // print the execution time if the command line parsing does not
             // return false as result (it makes no sense to print the execution
             // time for a help message)
+            RunLog.executionOutcome(executionStatus.exitCode)
             DisplayUtils.printRunSummary(executionStatus.exitCode == 0)
             DisplayUtils.printTime(executionStart.elapsedNow().toDouble(DurationUnit.SECONDS))
 

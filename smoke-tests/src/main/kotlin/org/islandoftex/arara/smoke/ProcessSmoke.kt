@@ -294,6 +294,20 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath, private
             }
             check(logFor("plain") == logFor("styled")) { "Console mode changed the diagnostic log" }
         },
+        "diagnostic_log_records_exact_rule_command_and_application_outcomes" to { root ->
+            rule(root, native("7"))
+            execute(root, 7, listOf("--log"))
+            val log = root.resolve("arara.log").readText()
+            contains(log, "Rule file: \"${root.resolve("probe.yaml")}\" (engine: yaml)")
+            contains(log, "working directory: $root")
+            contains(log, "System command exited with value 7 after ")
+            contains(log, "Run failed with exit code 7")
+            rule(root, native("sleep"))
+            execute(root, APPLICATION_ERROR, listOf("--log", "--timeout", "500"))
+            val timeout = root.resolve("arara.log").readText()
+            contains(timeout, "System command failed (TIMEOUT) after ")
+            contains(timeout, "Run failed with exit code 2")
+        },
         "database_changes_persist_between_processes" to { root ->
             val existing = "!database\nmap: {}\n"
             root.resolve("arara.yaml").writeText(existing)

@@ -45,6 +45,15 @@ object RunLog {
         "Elapsed time: ${duration.inWholeSeconds}.${milliseconds.toString().padStart(MILLISECOND_DIGITS, '0')} seconds"
     }
 
+    fun project(name: String, directory: String) = logger.info {
+        "Project \"$name\" (working directory: $directory)"
+    }
+
+    fun executionOutcome(exitCode: Int) {
+        if (exitCode == 0) logger.info { "Run completed with exit code $exitCode" }
+        else logger.error { "Run failed with exit code $exitCode" }
+    }
+
     private const val MILLISECONDS_PER_SECOND = 1000
     private const val MILLISECOND_DIGITS = 3
 }

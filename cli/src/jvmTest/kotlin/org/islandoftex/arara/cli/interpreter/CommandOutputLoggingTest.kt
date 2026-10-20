@@ -28,6 +28,7 @@ class CommandOutputLoggingTest {
             source.writeText("""
                 public class OutputFixture {
                     public static void main(String[] args) throws Exception {
+                        if (args[0].equals("silent")) return;
                         System.out.println("stdout regression marker");
                         System.err.println("stderr regression marker");
                         System.out.flush();
@@ -49,8 +50,12 @@ class CommandOutputLoggingTest {
             check(Command(listOf(java.toString(), "-cp", directory.toString(), "OutputFixture", mode)))
             LoggingUtils.init()
             val text = log.readText()
-            assertEquals(1, Regex("stdout regression marker").findAll(text).count())
-            assertEquals(1, Regex("stderr regression marker").findAll(text).count())
+            val expectedMarkers = if (mode == "silent") 0 else 1
+            assertEquals(expectedMarkers, Regex("stdout regression marker").findAll(text).count())
+            assertEquals(expectedMarkers, Regex("stderr regression marker").findAll(text).count())
+            if (mode == "sleep") assertTrue("System command failed (TIMEOUT) after " in text)
+            else assertTrue("System command exited with value ${if (mode == "silent") "0" else mode} after " in text)
+            if (mode == "silent") assertTrue("The tool produced no output." in text)
         } finally {
             LoggingUtils.init()
             LinearExecutor.executionOptions = previous
@@ -65,6 +70,11 @@ class CommandOutputLoggingTest {
             assertEquals(LanguageController.messages.ERROR_RUN_TIMEOUT_EXCEPTION, failure.message)
             assertTrue(failure.exception is TimeoutException)
         }
+    }
+
+    @Test
+    fun silentCommandsHaveAnExplicitOutputRecord() {
+        withCommand("silent") { assertEquals(0, CommandRunner.run(it)) }
     }
 
     @Test

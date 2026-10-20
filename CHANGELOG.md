@@ -16,6 +16,9 @@ on.
 
 ### Added
 
+* Diagnostic logs identify the selected rule file and engine, project directory,
+  command duration and outcome, silent tool output, and the final application exit code.
+
 * Optional styled terminal output via `--console styled` or configuration
   `console: styled` (Lua: `console = "styled"`). Plain output remains the default.
   Styled runs include dialog frames, file summaries and captured failure output.

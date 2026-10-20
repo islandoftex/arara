@@ -2,6 +2,7 @@
 package org.islandoftex.arara.cli.interpreter
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import kotlin.time.TimeSource
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.cli.utils.RunLog
@@ -32,36 +33,45 @@ internal object CommandRunner {
     @Throws(AraraException::class)
     internal fun run(command: Command): Int = runResult(command).exitCode
 
-    internal fun runResult(command: Command): SystemCommandResult.Completed = Environment.executeSystemCommandResult(
-        command,
-        !LinearExecutor.executionOptions.verbose,
-        LinearExecutor.executionOptions.timeoutValue
-    ).let {
-        logOutput(when (it) {
-            is SystemCommandResult.Completed -> it.output
-            is SystemCommandResult.Failed -> it.output
-        })
-        if (it is SystemCommandResult.Failed) {
-            DisplayUtils.renderer.printCommandFailure(it.output)
-            throw AraraException(
-                LanguageController.messages.run {
-                    when (it.kind) {
-                        SystemCommandResult.FailureKind.IO -> ERROR_RUN_IO_EXCEPTION
-                        SystemCommandResult.FailureKind.TIMEOUT -> ERROR_RUN_TIMEOUT_EXCEPTION
-                        SystemCommandResult.FailureKind.INTERRUPTED -> ERROR_RUN_INTERRUPTED_EXCEPTION
-                        SystemCommandResult.FailureKind.INVALID_EXIT_VALUE -> ERROR_RUN_INVALID_EXIT_VALUE_EXCEPTION
-                        SystemCommandResult.FailureKind.OTHER -> ERROR_RUN_GENERIC_EXCEPTION
-                    }
-                },
-                it.exception
-            )
+    internal fun runResult(command: Command): SystemCommandResult.Completed {
+        val start = TimeSource.Monotonic.markNow()
+        val result = Environment.executeSystemCommandResult(
+            command,
+            !LinearExecutor.executionOptions.verbose,
+            LinearExecutor.executionOptions.timeoutValue
+        )
+        val milliseconds = start.elapsedNow().inWholeMilliseconds
+        return result.let {
+            logOutput(when (it) {
+                is SystemCommandResult.Completed -> it.output
+                is SystemCommandResult.Failed -> it.output
+            })
+            if (it is SystemCommandResult.Failed) {
+                logger.error { "System command failed (${it.kind}) after $milliseconds ms" }
+                DisplayUtils.renderer.printCommandFailure(it.output)
+                throw AraraException(
+                    LanguageController.messages.run {
+                        when (it.kind) {
+                            SystemCommandResult.FailureKind.IO -> ERROR_RUN_IO_EXCEPTION
+                            SystemCommandResult.FailureKind.TIMEOUT -> ERROR_RUN_TIMEOUT_EXCEPTION
+                            SystemCommandResult.FailureKind.INTERRUPTED -> ERROR_RUN_INTERRUPTED_EXCEPTION
+                            SystemCommandResult.FailureKind.INVALID_EXIT_VALUE -> ERROR_RUN_INVALID_EXIT_VALUE_EXCEPTION
+                            SystemCommandResult.FailureKind.OTHER -> ERROR_RUN_GENERIC_EXCEPTION
+                        }
+                    },
+                    it.exception
+                )
+            }
+            it as SystemCommandResult.Completed
+            logger.info { "System command exited with value ${it.exitCode} after $milliseconds ms" }
+            it
         }
-        it as SystemCommandResult.Completed
     }
 
     private fun logOutput(output: String) {
         logger.info {
-            """
+            if (output.isBlank()) "The tool produced no output."
+            else """
                 ${RunLog.outputSeparator(
                 "BEGIN OUTPUT BUFFER"
             )}

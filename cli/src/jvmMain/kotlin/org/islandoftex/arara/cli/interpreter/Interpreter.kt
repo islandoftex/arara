@@ -222,7 +222,7 @@ class Interpreter(
 
         val file = RuleFiles.find(directive, executionOptions, workingDirectory, engine)
         logger.info {
-            "Rule location: \"${file.parent}\""
+            "Rule file: \"$file\" (engine: ${engine.name.lowercase()})"
         }
 
         // parse the rule identified by the directive (may throw an exception)

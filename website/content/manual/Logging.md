@@ -247,3 +247,7 @@ file system. However, keep in mind that this behavior may be altered for future
 updates in safe mode. Please refer to [Configuration](@/manual/Configuration.md) for
 more details.
 {% end %}
+
+Log records include each project's working directory, the resolved rule file and
+engine, command duration and exit code, captured tool output (or an explicit
+silent-output record), and the application's final exit code.
