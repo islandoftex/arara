@@ -16,7 +16,7 @@ class ProcessFailureTest : ShouldSpec({
         val directory = Files.createTempDirectory("arara missing command ").toMPPPath()
         try {
             val failure = shouldThrow<AraraException> {
-                InterpreterUtils.run(Command(listOf(directory.resolve("missing").toString())))
+                CommandRunner.run(Command(listOf(directory.resolve("missing").toString())))
             }
             failure.message shouldBe LanguageController.messages.ERROR_RUN_IO_EXCEPTION
             (failure.exception is IOException) shouldBe true

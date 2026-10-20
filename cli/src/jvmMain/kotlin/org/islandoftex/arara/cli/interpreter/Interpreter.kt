@@ -9,6 +9,7 @@ import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.api.rules.DirectiveConditional
+import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.api.rules.Rule
 import org.islandoftex.arara.api.rules.RuleCommand
 import org.islandoftex.arara.api.rules.RuleArgument
@@ -21,6 +22,7 @@ import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.rules.CommandEvaluator
 import org.islandoftex.arara.core.session.HaltRequest
+import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.ui.InputHandling
 import org.islandoftex.arara.api.AraraExceptionWithHeader
 import org.islandoftex.arara.mvel.rules.DirectiveConditionalEvaluator
@@ -98,7 +100,7 @@ class Interpreter(
         var commandExitCode = 1
 
         if (executionOptions.executionMode != ExecutionMode.DRY_RUN) {
-            val code = InterpreterUtils.run(command)
+            val code = CommandRunner.run(command)
             commandExitCode = if (code == 0) 1 else code
             success = exitCheck(code)
         } else {
@@ -232,7 +234,7 @@ class Interpreter(
         val evaluator = if (engine == RuleEngine.LUA) LuaConditionalEvaluator(executionOptions)
             else DirectiveConditionalEvaluator(executionOptions)
         val available =
-            if (InterpreterUtils.runPriorEvaluation(directive.conditional))
+            if (runPriorEvaluation(directive.conditional))
                 evaluator.evaluate(directive.conditional)
             else true
 
@@ -369,5 +371,25 @@ class Interpreter(
             argument.defaultValue?.let { default ->
                 argument.processor(default, context)
             } ?: emptyList<String>()
+    }
+
+    /**
+     * Checks if the current conditional has a prior evaluation.
+     *
+     * @param conditional The current conditional object.
+     * @return A boolean value indicating if the current conditional has a prior
+     * evaluation.
+     */
+    private fun runPriorEvaluation(conditional: DirectiveConditional): Boolean {
+        return if (LinearExecutor.executionOptions.executionMode == ExecutionMode.DRY_RUN) {
+            false
+        } else {
+            when (conditional.type) {
+                DirectiveConditionalType.IF,
+                DirectiveConditionalType.WHILE,
+                DirectiveConditionalType.UNLESS -> true
+                else -> false
+            }
+        }
     }
 }
