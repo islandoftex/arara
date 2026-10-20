@@ -290,7 +290,7 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath, private
                 execute(root, 0, listOf("--console", mode, "--log"))
                 return root.resolve("arara.log").readText()
                     .replace(Regex("(?m)^.*? (TRACE|DEBUG|INFO|WARN|ERROR) +- "), "$1 - ")
-                    .replace(Regex("Total: [0-9.,]+ seconds"), "Total: TIME seconds")
+                    .replace(Regex("Elapsed time: [0-9.,]+ seconds"), "Elapsed time: TIME seconds")
             }
             check(logFor("plain") == logFor("styled")) { "Console mode changed the diagnostic log" }
         },

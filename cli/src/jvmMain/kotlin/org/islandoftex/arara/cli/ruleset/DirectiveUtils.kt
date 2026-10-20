@@ -8,7 +8,7 @@ import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.rules.Directive
-import org.islandoftex.arara.cli.utils.DisplayUtils
+import org.islandoftex.arara.cli.utils.RunLog
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.rules.DirectiveFetchingHooks
 import org.islandoftex.arara.core.rules.Directives
@@ -36,9 +36,7 @@ object DirectiveUtils {
             processPotentialDirective = { line, directive ->
                 directive.trim().also {
                     logger.info {
-                        LanguageController.messages
-                            .LOG_INFO_POTENTIAL_PATTERN_FOUND
-                            .format(line, it)
+                        "Potential directive at line $line: $it"
                     }
                 }
             },
@@ -160,12 +158,12 @@ object DirectiveUtils {
         }.also { result ->
             logger.info {
                 """
-                    ${LanguageController.messages.LOG_INFO_VALIDATED_DIRECTIVES}
-                    ${DisplayUtils.displayOutputSeparator(
-                    LanguageController.messages.LOG_INFO_DIRECTIVES_BLOCK
+                    All directives were validated.
+                    ${RunLog.outputSeparator(
+                    "DIRECTIVES"
                 )}
                     ${result.joinToString("\n")}
-                    ${DisplayUtils.displaySeparator()}
+                    ${RunLog.separator()}
                 """.trimIndent()
             }
         }

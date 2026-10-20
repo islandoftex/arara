@@ -68,14 +68,10 @@ contains structured blocks, it is highly advisable to selectively choose the
 ones relevant to the current discussion.
 {% end %}
 
-It is important to observe that localized messages are also applied to the log
-file. If a language other than English is selected, either through the
-`--language` command line option or the equivalent key in the configuration
-file, the logging framework will honour the current setting and entries will be
-available in the specified language. Having a log file in your own language
-might mitigate the traumatic experience of error tracking for TeX newbies. From
-version 6.0 on, if you pass an invalid language code (for instance, `-L foo` in
-the command line), arara will default to English and issue a log warning:
+Application log labels are English regardless of the selected console language.
+Rule names, script messages, tool output and exception details retain their original
+text. Console messages remain localized. Invalid language codes fall back to English
+and produce a warning:
 
 ```text
 Language foo not available; defaulting to English.

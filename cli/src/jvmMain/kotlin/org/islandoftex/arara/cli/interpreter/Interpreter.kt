@@ -64,7 +64,7 @@ class Interpreter(
     ): Boolean = value.also {
         if (!value) lastFailureCode = 1
         logger.info {
-            LanguageController.messages.LOG_INFO_BOOLEAN_MODE.format(it)
+            "Boolean value: $it"
         }
 
         if (executionOptions.executionMode == ExecutionMode.DRY_RUN) {
@@ -95,7 +95,7 @@ class Interpreter(
         exitCheck: (Int) -> Boolean
     ): Boolean {
         logger.info {
-            LanguageController.messages.LOG_INFO_SYSTEM_COMMAND.format(command)
+            "System command: $command"
         }
         var success = true
         var commandExitCode = 1
@@ -217,16 +217,12 @@ class Interpreter(
     @Throws(AraraException::class)
     fun execute(directive: Directive): ExecutionStatus {
         logger.info {
-            LanguageController.messages.LOG_INFO_INTERPRET_RULE.format(
-                directive.identifier
-            )
+            "Interpreting rule \"${directive.identifier}\""
         }
 
         val file = RuleFiles.find(directive, executionOptions, workingDirectory, engine)
         logger.info {
-            LanguageController.messages.LOG_INFO_RULE_LOCATION.format(
-                file.parent
-            )
+            "Rule location: \"${file.parent}\""
         }
 
         // parse the rule identified by the directive (may throw an exception)

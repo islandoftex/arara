@@ -60,6 +60,9 @@ on.
 * Remove the unfinished Kotlin scripting DSL module and `.kts` rule lookup.
   YAML/MVEL and Lua rules remain supported.
 
+* Application log labels are consistently English, independently of the console
+  language and presentation. Script, tool and exception text remains unchanged.
+
 * Build the website and PDF documentation through Gradle using Kotlin helpers.
 * animate+convert rules: change default program from `convert` to `magick`
   (`convert` was deprecated in ImageMagick v7)

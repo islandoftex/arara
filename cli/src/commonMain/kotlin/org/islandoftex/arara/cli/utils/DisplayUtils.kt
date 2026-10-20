@@ -1,24 +1,20 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.utils
 
-import io.github.oshai.kotlinlogging.KotlinLogging
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.cli.console.ConsoleRenderer
 import org.islandoftex.arara.cli.console.plain.PlainConsoleRenderer
-import org.islandoftex.arara.core.configuration.ConfigurationUtils
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.utils.formatString
 import kotlin.math.ln
 import kotlin.math.pow
-import kotlin.time.Duration.Companion.seconds
 
 /** Stable display entry points with presentation-independent logging. */
 @Suppress("TooManyFunctions")
 object DisplayUtils {
-    private val logger = KotlinLogging.logger { }
     var renderer: ConsoleRenderer = PlainConsoleRenderer()
     internal var outcomes = linkedMapOf<String, Int?>()
     internal var currentFile: String? = null
@@ -30,13 +26,6 @@ object DisplayUtils {
             | (_| | | | (_| | | | (_| |
              \__,_|_|  \__,_|_|  \__,_|
     """.trimIndent()
-
-    internal val applicationPath: String
-        get() = try {
-            ConfigurationUtils.applicationPath.toString()
-        } catch (_: AraraException) {
-            "[unknown application path]"
-        }
 
     internal fun prepareFiles(files: List<ProjectFile>) {
         outcomes = files.associate { it.path.toString() to null }.toMap(LinkedHashMap())
@@ -81,13 +70,12 @@ object DisplayUtils {
     fun printConditional(conditional: DirectiveConditional) = renderer.printConditional(conditional)
 
     fun printEntry(name: String, task: String) {
-        logger.info { LanguageController.messages.LOG_INFO_INTERPRET_TASK.formatString(task, name) }
+        RunLog.entry(name, task)
         renderer.printEntry(name, task)
     }
 
     fun printEntryResult(value: Boolean) {
-        logger.info { LanguageController.messages.LOG_INFO_TASK_RESULT + " " + if (value)
-            LanguageController.messages.INFO_LABEL_ON_SUCCESS else LanguageController.messages.INFO_LABEL_ON_FAILURE }
+        RunLog.taskResult(value)
         renderer.printEntryResult(value)
     }
 
@@ -96,21 +84,12 @@ object DisplayUtils {
         val text = (exception.message ?: "EXCEPTION PROVIDES NO MESSAGE") +
             if (exception.hasException()) " " + LanguageController.messages.INFO_DISPLAY_EXCEPTION_MORE_DETAILS else ""
         val details = exception.exception?.let { it.message ?: it.toString() }
-        logger.error { text }
-        if (details != null) logger.error { details }
+        RunLog.exception(exception.message, details)
         renderer.printException(text, details)
     }
 
     fun printTime(seconds: Double) {
-        val duration = seconds.seconds
-        val time = duration.inWholeSeconds.toString() + Session.userInterfaceOptions.locale.decimalSeparator +
-            (duration - duration.inWholeSeconds.seconds).inWholeMilliseconds
-        logger.info { LanguageController.messages.INFO_DISPLAY_EXECUTION_TIME.formatString(time) }
+        RunLog.executionTime(seconds)
         renderer.printTime(seconds)
     }
-
-    // Log geometry stays independent of the active terminal presentation.
-    fun displaySeparator(): String = "-".repeat(Session.userInterfaceOptions.terminalOutputWidth)
-    fun displayOutputSeparator(message: String): String =
-        " $message ".center(Session.userInterfaceOptions.terminalOutputWidth, '-')
 }

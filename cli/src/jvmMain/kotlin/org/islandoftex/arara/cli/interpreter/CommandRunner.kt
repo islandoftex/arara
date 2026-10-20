@@ -4,6 +4,7 @@ package org.islandoftex.arara.cli.interpreter
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.session.Command
+import org.islandoftex.arara.cli.utils.RunLog
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
@@ -61,12 +62,12 @@ internal object CommandRunner {
     private fun logOutput(output: String) {
         logger.info {
             """
-                ${DisplayUtils.displayOutputSeparator(
-                LanguageController.messages.LOG_INFO_BEGIN_BUFFER
+                ${RunLog.outputSeparator(
+                "BEGIN OUTPUT BUFFER"
             )}
                 $output
-                ${DisplayUtils.displayOutputSeparator(
-                LanguageController.messages.LOG_INFO_END_BUFFER
+                ${RunLog.outputSeparator(
+                "END OUTPUT BUFFER"
             )}
             """.trimIndent()
         }
