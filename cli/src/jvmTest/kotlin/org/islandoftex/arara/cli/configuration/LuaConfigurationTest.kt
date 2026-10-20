@@ -43,8 +43,8 @@ class LuaConfigurationTest {
         root.resolve(".araraconfig.lua").createDirectories()
         home.resolve(".araraconfig.yaml").writeText("!config\nloops: 2")
         val local = root.resolve("arararc.lua").apply { writeText("return { loops = 3 }") }
-        assertEquals(local, ConfigurationUtils.configFileForProject(project))
-        ConfigurationUtils.load(local, project)
+        assertEquals(local, ConfigurationFiles.configFileForProject(project))
+        ConfigurationFiles.load(local, project)
         assertEquals(3, LinearExecutor.executionOptions.maxLoops)
     }
 
@@ -58,11 +58,11 @@ class LuaConfigurationTest {
         for (directory in listOf(root, home)) {
             val files = names.map { directory.resolve(it).apply { writeText("unused") } }
             for (file in files) {
-                assertEquals(file, ConfigurationUtils.configFileForProject(project))
+                assertEquals(file, ConfigurationFiles.configFileForProject(project))
                 Files.delete(file.toJVMPath())
             }
         }
-        assertEquals(null, ConfigurationUtils.configFileForProject(project))
+        assertEquals(null, ConfigurationFiles.configFileForProject(project))
     }
 
     @Test
@@ -70,8 +70,8 @@ class LuaConfigurationTest {
         val project = Project("Test", root, emptySet())
         home.resolve(".araraconfig.lua").writeText("return { loops = 2 }")
         val local = root.resolve("arararc.yaml").apply { writeText("!config\nloops: 3") }
-        assertEquals(local, ConfigurationUtils.configFileForProject(project))
-        ConfigurationUtils.load(local, project)
+        assertEquals(local, ConfigurationFiles.configFileForProject(project))
+        ConfigurationFiles.load(local, project)
         assertEquals(3, LinearExecutor.executionOptions.maxLoops)
     }
 
@@ -80,14 +80,14 @@ class LuaConfigurationTest {
         val project = Project("Test", root, emptySet())
         val yaml = root.resolve("arararc.yaml").apply { writeText("!config\nloops: 2") }
         val lua = root.resolve("arararc.lua").apply { writeText("return { verbose = 'true' }") }
-        assertEquals(lua, ConfigurationUtils.configFileForProject(project))
-        assertFailsWith<AraraException> { ConfigurationUtils.load(lua, project) }
+        assertEquals(lua, ConfigurationFiles.configFileForProject(project))
+        assertFailsWith<AraraException> { ConfigurationFiles.load(lua, project) }
         Files.delete(lua.toJVMPath())
         yaml.writeText("invalid YAML configuration")
-        assertEquals(yaml, ConfigurationUtils.configFileForProject(project))
-        assertFailsWith<AraraException> { ConfigurationUtils.load(yaml, project) }
+        assertEquals(yaml, ConfigurationFiles.configFileForProject(project))
+        assertFailsWith<AraraException> { ConfigurationFiles.load(yaml, project) }
         val unknown = root.resolve("configuration.txt").apply { writeText("return {}") }
-        assertFailsWith<AraraException> { ConfigurationUtils.load(unknown, project) }
+        assertFailsWith<AraraException> { ConfigurationFiles.load(unknown, project) }
     }
 
     @Test
@@ -117,10 +117,10 @@ class LuaConfigurationTest {
                     definitions = { build = { '@ arara: marker' } } } }
         """.trimIndent()) }
         val base = ConfigurationSnapshot.capture()
-        ConfigurationUtils.load(yaml, project)
+        ConfigurationFiles.load(yaml, project)
         val fromYaml = ConfigurationSnapshot.capture()
         base.restore()
-        ConfigurationUtils.load(lua, project)
+        ConfigurationFiles.load(lua, project)
         assertEquals(fromYaml, ConfigurationSnapshot.capture())
     }
 

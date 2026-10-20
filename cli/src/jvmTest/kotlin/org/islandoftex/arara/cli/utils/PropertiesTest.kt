@@ -3,6 +3,7 @@ package org.islandoftex.arara.cli.utils
 
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.shouldBe
+import org.islandoftex.arara.cli.configuration.ConfigurationFiles
 import java.util.Properties
 import kotlin.io.path.Path
 
@@ -10,7 +11,7 @@ class PropertiesTest : ShouldSpec({
     context("UTF-8 support for properties files") {
         val path = Path("src/jvmTest/resources/executiontests/properties/duck.properties")
         val charset = Charsets.UTF_8
-        val translations: Properties = Properties().apply { load(path, charset) }
+        val translations: Properties = Properties().apply { ConfigurationFiles.loadProperties(this, path, charset) }
 
         should("not be empty") {
             translations.isNotEmpty() shouldBe true

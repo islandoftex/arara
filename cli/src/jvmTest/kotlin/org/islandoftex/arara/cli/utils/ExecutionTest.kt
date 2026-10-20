@@ -11,7 +11,7 @@ import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.toJVMPath
-import org.islandoftex.arara.cli.configuration.ConfigurationUtils
+import org.islandoftex.arara.cli.configuration.ConfigurationFiles
 import org.islandoftex.arara.cli.ruleset.DirectiveUtils
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.files.FileSearching
@@ -30,9 +30,9 @@ class ExecutionTest : ShouldSpec({
 
         LinearExecutor.hooks = ExecutorHooks(
             executeBeforeProject = { project ->
-                ConfigurationUtils.configFileForProject(project)?.let {
+                ConfigurationFiles.configFileForProject(project)?.let {
                     DisplayUtils.configurationFileName = it.toString()
-                    ConfigurationUtils.load(it, project)
+                    ConfigurationFiles.load(it, project)
                 }
             },
             executeBeforeFile = {

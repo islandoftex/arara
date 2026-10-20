@@ -37,13 +37,11 @@ import org.islandoftex.arara.api.localization.MPPLocale
 import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.api.session.ExecutionStatus
 import org.islandoftex.arara.cli.configuration.ConfigurationSnapshot
-import org.islandoftex.arara.cli.configuration.ConfigurationUtils
+import org.islandoftex.arara.cli.configuration.ConfigurationFiles
 import org.islandoftex.arara.cli.ruleset.DirectiveUtils
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.cli.utils.LoggingUtils
-import org.islandoftex.arara.cli.utils.load
 import org.islandoftex.arara.cli.utils.printFileInformation
-import org.islandoftex.arara.cli.utils.toMap
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.configuration.LoggingOptions
 import org.islandoftex.arara.core.configuration.UserInterfaceOptions
@@ -143,7 +141,7 @@ class CLI : CliktCommand("arara") {
     private val properties: Properties? by option("-F", "--properties-file")
         .help("Pass a properties file to the application to be used within the session.")
         .path(mustExist = true, canBeDir = false, mustBeReadable = true)
-        .convert { Properties().apply { load(it) } }
+        .convert { Properties().apply { ConfigurationFiles.loadProperties(this, it) } }
 
     private val reference by argument("file")
         .help("The file(s) to evaluate and process")
@@ -286,9 +284,9 @@ class CLI : CliktCommand("arara") {
     ) {
         configuration.restore(configureLogging = false)
         LanguageController.loadMessagesFor(language?.let { MPPLocale(it) } ?: Session.userInterfaceOptions.locale)
-        ConfigurationUtils.configFileForProject(project)?.let {
+        ConfigurationFiles.configFileForProject(project)?.let {
             DisplayUtils.configurationFileName = it.toString()
-            ConfigurationUtils.load(it, project)
+            ConfigurationFiles.load(it, project)
         }
         updateConfigurationFromCommandLine()
     }
@@ -324,7 +322,7 @@ class CLI : CliktCommand("arara") {
 
         // add all key/value pairs found in the properties file, if
         // provided in the command line
-        properties?.toMap()?.forEach { (key, value) -> Session.put("arg:$key", value) }
+        properties?.let(ConfigurationFiles::toMap)?.forEach { (key, value) -> Session.put("arg:$key", value) }
 
         // add all command line call parameters to the session
         // (command line parameters take precedence over properties)

@@ -1,6 +1,10 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.configuration
 
+import java.nio.charset.Charset
+import java.nio.file.Path
+import java.util.Properties
+import kotlin.io.path.bufferedReader
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.Project
@@ -15,13 +19,13 @@ import org.islandoftex.arara.lua.configuration.LuaLocalConfiguration
 import org.islandoftex.arara.mvel.utils.MvelState
 
 /**
- * Implements configuration utilitary methods.
+ * Resolves configuration files and loads configuration and call properties.
  *
  * @author Island of TeX
  * @version 5.0
  * @since 4.0
  */
-object ConfigurationUtils {
+object ConfigurationFiles {
     /**
      * The configuration file in use.
      *
@@ -92,4 +96,13 @@ object ConfigurationUtils {
         LanguageController.loadMessagesFor(Session.userInterfaceOptions.locale)
         LoggingUtils.setupLogging(Session.loggingOptions)
     }
+
+    /** Loads UTF-8 call properties, retaining the existing best-effort behavior on failure. */
+    fun loadProperties(properties: Properties, path: Path, charset: Charset = Charsets.UTF_8) {
+        runCatching { path.bufferedReader(charset).use { properties.load(it) } }
+    }
+
+    /** Converts property keys and values to strings for session arguments. */
+    fun toMap(properties: Properties): Map<String, String> =
+        properties.entries.associate { "${it.key}" to "${it.value}" }
 }
