@@ -16,7 +16,6 @@ include(
     "core",
     "lua",
     "mvel",
-    "kotlin-dsl",
     "cli",
     "docs",
     "smoke-tests"

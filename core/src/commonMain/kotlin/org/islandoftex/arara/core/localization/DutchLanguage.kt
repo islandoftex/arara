@@ -65,6 +65,7 @@ class DutchLanguage : Messages(
     ERROR_INTERPRETER_COMMAND_UNSUCCESSFUL_EXIT = "Het commando \"%s\" is onverwacht beëindigd met een afsluitwaarde die niet gelijk is aan nul. Bekijk het resultaat van het commando en anaylseer het om uw volgende stappen te bepalen.",
     ERROR_INTERPRETER_EXIT_RUNTIME_ERROR = "Ik kon de exitwaardemelding van een van de opgegeven opdrachten niet evalueren. Dit is een ingewikkeld probleem, omdat het te maken heeft met aspecten van de onderliggende expressietaal. Ik zal mijn best doen om je zoveel mogelijk hiermee te helpen.",
     ERROR_INTERPRETER_FLAG_RUNTIME_EXCEPTION = "Ik kon de optie-expressie van een van de argumenten niet evalueren. Dit is een ingewikkeld probleem, omdat het te maken heeft met aspecten van de onderliggende expressietaal. Ik zal mijn best doen om je zoveel mogelijk hiermee te helpen.",
+    ERROR_PARSE_RULE_UNSUPPORTED_FORMAT = "Niet-ondersteund regelformaat voor '%s': '%s'. Gebruik een YAML- of Lua-regelbestand.",
     ERROR_INTERPRETER_RULE_NOT_FOUND = "Ik kon de regel met de naam '%s' niet vinden in de opgegeven regelpaden. Misschien een spelfout? Ik heb geprobeerd het bestand '%s' te vinden in de volgende paden in volgorde van prioriteit: %s",
     ERROR_INTERPRETER_UNKNOWN_KEYS = "Ik heb de volgende onbekende verwijzingen gevonden in de directive: %s. Dit zou makkelijk op te lossen moeten zijn: verwijder deze uit de verwijzingstabel.",
     ERROR_INTERPRETER_USER_REQUESTED_HALT = "arara word nu beëindigd op uw (of een regel) verzoek.",

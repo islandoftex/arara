@@ -61,12 +61,10 @@ spotless {
                 "core/build.gradle.kts",
                 "lua/build.gradle.kts",
                 "mvel/build.gradle.kts",
-                "kotlin-dsl/build.gradle.kts",
                 "cli/build.gradle.kts",
                 "docs/build.gradle.kts",
                 "smoke-tests/build.gradle.kts"
         )
-        targetExclude("src/test/**/*.kts")
         // ktlint updated its rule set so that a majority of our files newly
         // triggers lints that are not as easy to fix, therefore we disabled
         // it for now
@@ -82,12 +80,10 @@ spotless {
                 "core/src/**/*.kt",
                 "lua/src/**/*.kt",
                 "mvel/src/**/*.kt",
-                "kotlin-dsl/src/**/*.kt",
                 "cli/src/**/*.kt",
                 "buildSrc/src/**/*.kt",
                 "smoke-tests/src/**/*.kt"
         )
-        targetExclude("src/test/**/*.kts")
         // ktlint updated its rule set so that a majority of our files newly
         // triggers lints that are not as easy to fix, therefore we disabled
         // it for now
@@ -111,7 +107,6 @@ detekt {
             "lua/src/jvmMain/kotlin",
             "mvel/src/commonMain/kotlin",
             "mvel/src/jvmMain/kotlin",
-            "kotlin-dsl/src/main/kotlin",
             "cli/src/commonMain/kotlin",
             "cli/src/jvmMain/kotlin",
             "buildSrc/src/main/kotlin",

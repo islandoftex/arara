@@ -53,6 +53,9 @@ on.
 * **Breaking change:** Project names and normalized file paths must be unique
   across the invocation. Repeated or shared file paths are rejected instead of
   being executed twice. Overlapping file ownership is rejected before execution.
+* Remove the unfinished Kotlin scripting DSL module and `.kts` rule lookup.
+  YAML/MVEL and Lua rules remain supported.
+
 * Build the website and PDF documentation through Gradle using Kotlin helpers.
 * animate+convert rules: change default program from `convert` to `magick`
   (`convert` was deprecated in ImageMagick v7)

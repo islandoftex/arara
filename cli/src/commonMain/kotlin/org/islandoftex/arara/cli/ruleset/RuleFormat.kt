@@ -10,11 +10,6 @@ enum class RuleFormat(val extension: String) {
      */
     MVEL("yaml"),
 
-    /**
-     * The new and experimental Kotlin DSL format from version 6 on.
-     */
-    KOTLIN_DSL("kts"),
-
     /** Lua rule tables evaluated with Luak. */
     LUA("lua")
 }

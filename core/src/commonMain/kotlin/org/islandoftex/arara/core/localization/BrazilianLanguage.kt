@@ -66,6 +66,7 @@ class BrazilianLanguage : Messages(
     ERROR_INTERPRETER_COMMAND_UNSUCCESSFUL_EXIT = "O comando \"%s\" inesperadamente encerrou com um código de saída diferente de zero. Por favor, verifique a saída do comando para avaliar os próximos passos.",
     ERROR_INTERPRETER_USER_REQUESTED_HALT = "arara será interrompida neste momento conforme sua requisição (ou de uma regra).",
     ERROR_INTERPRETER_FLAG_RUNTIME_EXCEPTION = "Não consegui avaliar a expressão associada à presença de um dos argumentos. Esta parte é complicada, pois envolve aspectos da linguagem de expressão subjacente. Eu farei o possível para te ajudar da melhor forma que puder.",
+    ERROR_PARSE_RULE_UNSUPPORTED_FORMAT = "Formato de regra não suportado para '%s': '%s'. Use um arquivo de regra YAML ou Lua.",
     ERROR_INTERPRETER_RULE_NOT_FOUND = "Não consegui encontrar uma regra chamada '%s' nos caminhos de regras especificados. Talvez uma palavra digitada incorretamente? Eu estava procurando por um arquivo chamado '%s' nos seguintes caminhos, em ordem de prioridade: %s",
     ERROR_INTERPRETER_UNKNOWN_KEYS = "Encontrei as seguintes chaves desconhecidas na diretiva: %s. Isso é fácil de resolver, apenas remova essas chaves do seu mapa.",
     ERROR_INTERPRETER_WRONG_EXIT_CLOSURE_RETURN = "A expressão 'exit' referente ao código de saída deve sempre retornar um valor lógico (mesmo se não há computação propriamente dita). Isso é fácil de resolver: apenas certifique-se de corrigir o tipo de retorno e tente novamente.",

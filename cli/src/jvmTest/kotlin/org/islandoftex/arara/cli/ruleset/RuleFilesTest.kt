@@ -4,6 +4,10 @@ package org.islandoftex.arara.cli.ruleset
 import java.nio.file.Files
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.core.localization.LanguageController
+import org.islandoftex.arara.core.utils.formatString
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.toMPPPath
 import org.islandoftex.arara.core.configuration.ExecutionOptions
@@ -16,10 +20,12 @@ class RuleFilesTest {
         try {
             val first = root.resolve("first").apply { createDirectories() }
             val second = root.resolve("second").apply { createDirectories() }
-            val prefixed = first.resolve("arara-rule-probe.yaml").apply { writeText("") }
-            second.resolve("probe.yaml").writeText("")
+            first.resolve("probe.kts").writeText("error(\"must not execute\")")
+            val yaml = second.resolve("probe.yaml").apply { writeText("") }
             val directive = DirectiveImpl("probe", emptyMap(), DirectiveConditional(), listOf(1))
             val options = ExecutionOptions(rulePaths = linkedSetOf(MPPPath("first"), second))
+            assertEquals(yaml, RuleFiles.find(directive, options, root, RuleEngine.YAML))
+            val prefixed = first.resolve("arara-rule-probe.yaml").apply { writeText("") }
             assertEquals(prefixed, RuleFiles.find(directive, options, root, RuleEngine.YAML))
             val direct = first.resolve("probe.yaml").apply { writeText("") }
             assertEquals(direct, RuleFiles.find(directive, options, root, RuleEngine.YAML))
@@ -32,5 +38,13 @@ class RuleFilesTest {
         } finally {
             root.removeDirectory()
         }
+    }
+
+    @Test
+    fun unsupportedRuleFormatsReportAnAraraException() {
+        val file = MPPPath("probe.kts")
+        val failure = assertFailsWith<AraraException> { RuleFiles.parseRule(file, "probe") }
+        assertEquals(LanguageController.messages.ERROR_PARSE_RULE_UNSUPPORTED_FORMAT
+            .formatString("probe", file.toString()), failure.message)
     }
 }

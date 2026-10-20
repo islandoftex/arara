@@ -9,7 +9,7 @@
   repo is a mirror. The working branch is `development` (the default, per
   `origin/HEAD`); `master` receives releases. See README for the upstream note.
 - Subprojects declared in `settings.gradle.kts`: `api`, `core`, `lua`, `mvel`,
-  `kotlin-dsl`, `cli`, `docs`, `smoke-tests`. `buildSrc/` holds custom Gradle tasks
+  `cli`, `docs`, `smoke-tests`. `buildSrc/` holds custom Gradle tasks
   (CTAN/TDS packaging, publication) under `org.islandoftex.arara.build`.
 - Dependency versions live in `gradle/libs.versions.toml` (the version catalog).
   Edit versions there, not in individual `build.gradle.kts` files.
@@ -36,8 +36,6 @@
   before global, Lua before YAML within a directory, independently of `--engine`.
   Integer helper arguments require 32-bit values; Longs must be exactly
   representable in Luak.
-- `kotlin-dsl` — optional Kotlin scripting DSL for rules; pulls
-  `kotlin-scripting-*` and a `runtimeOnly` `compiler-embeddable` (heavy).
 - `cli` — the actual application; entrypoint is
   `org.islandoftex.arara.cli.CLIKt` (`cli/src/jvmMain/.../CLI.kt`). Produces the
   shaded `arara-cli-with-deps-*.jar` via the `shadowJar` task. Depends on
@@ -193,5 +191,5 @@ by pre-commit).
   `ExperimentalUnsignedTypes`) — configured per-source-set in each module's
   `build.gradle.kts`; you usually do not need to add them at call sites.
 - Tests use Kotest (`kotest-runner-junit5-jvm`, 6.0.0.M12 milestone — note the
-  pre-stable version) in `core`, `mvel`, `kotlin-dsl`, `cli`; `lua` uses plain
+  pre-stable version) in `core`, `mvel`, `cli`; `lua` uses plain
   `kotlin("test-common")`.
