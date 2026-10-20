@@ -16,8 +16,7 @@ import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.api.session.ExecutionStatus
 import org.islandoftex.arara.cli.ruleset.RuleEngine
 import org.islandoftex.arara.lua.rules.LuaConditionalEvaluator
-import org.islandoftex.arara.cli.ruleset.RuleFormat
-import org.islandoftex.arara.cli.ruleset.RuleUtils
+import org.islandoftex.arara.cli.ruleset.RuleFiles
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.rules.CommandEvaluator
@@ -45,36 +44,6 @@ class Interpreter(
 
     // Read only after failure: booleans set 1; commands set their nonzero exit status (or 1).
     private var lastFailureCode = 1
-
-    /**
-     * Gets the rule according to the provided directive.
-     *
-     * @param directive The provided directive.
-     * @return The absolute canonical path of the rule, given the provided
-     * directive.
-     * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
-     */
-    @Throws(AraraException::class)
-    private fun getRule(directive: Directive, workingDirectory: MPPPath): MPPPath =
-        executionOptions.rulePaths.let { paths ->
-            paths.flatMap { path ->
-                val formats = if (engine == RuleEngine.LUA) listOf(RuleFormat.LUA)
-                    else listOf(RuleFormat.MVEL, RuleFormat.KOTLIN_DSL)
-                formats.map { format ->
-                    InterpreterUtils.construct(path, directive.identifier, format, workingDirectory)
-                } + InterpreterUtils.construct(path, "arara-rule-" + directive.identifier,
-                    formats.first(), workingDirectory)
-            }.firstOrNull { it.exists } ?: throw AraraException(
-                LanguageController.messages.ERROR_INTERPRETER_RULE_NOT_FOUND.format(
-                    directive.identifier,
-                    directive.identifier + if (engine == RuleEngine.LUA) ".lua" else ".yaml",
-                    paths.joinToString("; ", "(", ")") {
-                        it.normalize().toString()
-                    }
-                )
-            )
-        }
 
     // TODO: in the following, extract the printing into the higher level
     // function
@@ -245,7 +214,7 @@ class Interpreter(
             )
         }
 
-        val file = getRule(directive, workingDirectory)
+        val file = RuleFiles.find(directive, executionOptions, workingDirectory, engine)
         logger.info {
             LanguageController.messages.LOG_INFO_RULE_LOCATION.format(
                 file.parent
@@ -253,7 +222,7 @@ class Interpreter(
         }
 
         // parse the rule identified by the directive (may throw an exception)
-        val rule = RuleUtils.parseRule(file, directive.identifier)
+        val rule = RuleFiles.parseRule(file, directive.identifier)
         return executeRule(rule, directive, file)
     }
 
