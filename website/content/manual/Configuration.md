@@ -444,3 +444,10 @@ global and local approaches, it is highly advisable to run our tool with the
 `--log` command line option enabled, in order to easily identify which file was
 considered for that specific execution. The logging feature is discussed later
 on, in [Logging](@/manual/Logging.md).
+
+### Console presentation
+
+`console` selects `plain` (default) or `styled` in YAML and Lua configurations.
+`--console plain` or `--console styled` overrides configuration. Styled output uses
+terminal colors when available and ASCII markers without ANSI escapes in pipes.
+Rule-engine selection is independent of the console presentation.

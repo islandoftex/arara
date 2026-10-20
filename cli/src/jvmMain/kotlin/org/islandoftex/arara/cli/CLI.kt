@@ -36,6 +36,7 @@ import org.islandoftex.arara.api.files.toMPPPath
 import org.islandoftex.arara.api.localization.MPPLocale
 import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.api.session.ExecutionStatus
+import org.islandoftex.arara.cli.console.ConsoleMode
 import org.islandoftex.arara.cli.configuration.ConfigurationSnapshot
 import org.islandoftex.arara.cli.configuration.ConfigurationFiles
 import org.islandoftex.arara.cli.ruleset.DirectiveUtils
@@ -143,6 +144,20 @@ class CLI : CliktCommand("arara") {
         .path(mustExist = true, canBeDir = false, mustBeReadable = true)
         .convert { Properties().apply { ConfigurationFiles.loadProperties(this, it) } }
 
+    private val console by option("-c", "--console")
+        .help("Set the console presentation: plain or styled")
+        .choice("plain" to ConsoleMode.PLAIN, "styled" to ConsoleMode.STYLED)
+
+    private var appliedConsole: ConsoleMode? = null
+
+    private fun applyConsole() {
+        val mode = ConsoleMode.resolve(console, Session.userInterfaceOptions.consoleMode)
+        if (mode != appliedConsole) {
+            DisplayUtils.renderer = mode.renderer(terminal)
+            appliedConsole = mode
+        }
+    }
+
     private val reference by argument("file")
         .help("The file(s) to evaluate and process")
         .multiple(required = true)
@@ -191,7 +206,8 @@ class CLI : CliktCommand("arara") {
         Session.userInterfaceOptions = UserInterfaceOptions(
             locale = language?.let { MPPLocale(it) }
                 ?: Session.userInterfaceOptions.locale,
-            terminalOutputWidth = Session.userInterfaceOptions.terminalOutputWidth
+            terminalOutputWidth = Session.userInterfaceOptions.terminalOutputWidth,
+            consoleMode = Session.userInterfaceOptions.consoleMode
         )
         LanguageController.loadMessagesFor(Session.userInterfaceOptions.locale)
 
@@ -271,6 +287,7 @@ class CLI : CliktCommand("arara") {
         val configuration = ConfigurationSnapshot.capture()
         val previousHooks = LinearExecutor.hooks
         val previousRenderer = DisplayUtils.renderer
+        appliedConsole = null
         DisplayUtils.renderer = org.islandoftex.arara.cli.console.plain.PlainConsoleRenderer()
         try {
             runSession(configuration)
@@ -292,6 +309,7 @@ class CLI : CliktCommand("arara") {
             ConfigurationFiles.load(it, project)
         }
         updateConfigurationFromCommandLine()
+        applyConsole()
     }
 
     private fun prepareProjects(
@@ -313,6 +331,7 @@ class CLI : CliktCommand("arara") {
         // the terminal
         LoggingUtils.init()
 
+        applyConsole()
         DisplayUtils.printBanner()
 
         val executionStart = TimeSource.Monotonic.markNow()

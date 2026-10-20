@@ -16,6 +16,9 @@ on.
 
 ### Added
 
+* Optional styled terminal output via `--console styled` or configuration
+  `console: styled` (Lua: `console = "styled"`). Plain output remains the default.
+
 * Project specifications receive `user.home`, `user.name` and `cwd`, matching
   Lua configuration scripts. Each script load uses independent globals.
 

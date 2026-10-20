@@ -84,6 +84,7 @@ public open class Messages(
     public val ERROR_INTERPRETER_USER_REQUESTED_HALT: String = "arara will now halt on your (or a rule's) request to halt arara.",
     public val ERROR_INTERPRETER_EXIT_RUNTIME_ERROR: String = "I could not evaluate the exit status expression of one of the provided commands. This part is quite tricky, since it involves aspects of the underlying expression language. I will do my best to help you in any way I can.",
     public val ERROR_INTERPRETER_FLAG_RUNTIME_EXCEPTION: String = "I could not evaluate the flag expression of one of the arguments. This part is quite tricky, since it involves aspects of the underlying expression language. I will do my best to help you in any way I can.",
+    public val ERROR_CONSOLE_MODE_UNKNOWN: String = "Unknown console mode '%s'. Use plain or styled.",
     public val ERROR_PARSE_RULE_UNSUPPORTED_FORMAT: String = "Unsupported rule format for '%s': '%s'. Use a YAML or Lua rule file.",
     public val ERROR_INTERPRETER_RULE_NOT_FOUND: String = "I could not find a rule named \"%s\" in the provided rule paths. Perhaps a misspelled word? I was looking for a file named \"%s\" in the following paths in order of priority: %s",
     public val ERROR_INTERPRETER_UNKNOWN_KEYS: String = "I found these unknown keys in the directive: %s. This should be an easy fix, just remove them from your map.",

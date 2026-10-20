@@ -27,6 +27,7 @@ data class LocalConfiguration(
     private val paths: List<String> = emptyList(),
     private val filetypes: List<SerialFileType> = emptyList(),
     private val language: String? = null,
+    private val console: String? = null,
     private val loops: Int? = null,
     private val verbose: Boolean? = null,
     private val logging: Boolean? = null,
@@ -139,7 +140,8 @@ data class LocalConfiguration(
         return org.islandoftex.arara.core.configuration.UserInterfaceOptions(
             locale = language?.let { MPPLocale(it) }
                 ?: baseOptions.locale,
-            terminalOutputWidth = baseOptions.terminalOutputWidth
+            terminalOutputWidth = baseOptions.terminalOutputWidth,
+            consoleMode = console ?: baseOptions.consoleMode
         )
     }
 
