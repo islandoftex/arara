@@ -530,6 +530,43 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath, private
             )
             execute(root, 0, flags = listOf("named.proj.lua"))
         },
+        "verbosity_overrides_apply_to_each_project_without_leaking_configuration" to { root ->
+            val project = root.resolve("verbose project").apply { createDirectories() }
+            initialize(project)
+            project.resolve("arararc.lua").writeText("return { paths = { cwd }, verbose = true }\n")
+            root.resolve("mixed.proj.lua").writeText(
+                "return { working_directory = 'verbose project', files = { ['run.tex'] = {} } }\n"
+            )
+            rule(root, native("0"))
+            rule(project, native("0"))
+            luaRule(root, luaNative("0"))
+            luaRule(project, luaNative("0"))
+            listOf("yaml", "lua").forEach { engine ->
+                listOf(
+                    emptyList<String>() to 1,
+                    listOf("--silent") to 0,
+                    listOf("--verbose") to 2,
+                    listOf("--silent", "--verbose") to 0
+                ).forEach { (flags, expected) ->
+                    val output = execute(root, 0, listOf("--engine", engine) + flags + "mixed.proj.lua")
+                    val directories = output.lineSequence().filter { it.startsWith("SMOKE_CWD=") }.toSet()
+                    val expectedDirectories = when (expected) {
+                        0 -> emptySet()
+                        1 -> setOf("SMOKE_CWD=$project")
+                        else -> setOf("SMOKE_CWD=$project", "SMOKE_CWD=$root")
+                    }
+                    check(directories == expectedDirectories) {
+                        "$engine flags=$flags: unexpected verbose project directories $directories\n$output"
+                    }
+                    listOf("SMOKE_STDOUT", "SMOKE_STDERR").forEach { marker ->
+                        val count = Regex(marker).findAll(output).count()
+                        check(count == expected) {
+                            "$engine flags=$flags: expected $expected tool output records, got $count\n$output"
+                        }
+                    }
+                }
+            }
+        },
         "shared_project_input_is_rejected_before_execution" to { root ->
             rule(root, "halt($FAILURE_STATUS);")
             root.resolve("named.proj.lua").writeText("return { files = { ['run.tex'] = {} } }\n")
