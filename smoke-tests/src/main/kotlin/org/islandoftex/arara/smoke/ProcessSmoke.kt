@@ -103,6 +103,37 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath, private
     private fun contains(output: String, text: String) = check(text in output) { "Missing $text\n$output" }
 
     val cases: Map<String, (MPPPath) -> Unit> = linkedMapOf(
+        "packaged_version_and_completion" to { root ->
+            val command = listOf(java.toString(), "-jar", jar.toString())
+            val version = run(command + "--version", root)
+            check(version.status == 0) { version.output }
+            contains(version.output, "arara")
+            contains(version.output, "Island of TeX")
+            val completion = run(command + listOf("--generate-completion", "bash"), root)
+            check(completion.status == 0) { completion.output }
+            contains(completion.output, "--engine")
+            contains(completion.output, "--log-format")
+        },
+        "call_properties_override_property_files_in_both_engines" to { root ->
+            root.resolve("arguments.properties").writeText("marker=from-file\n")
+            listOf("yaml", "lua").forEach { engine ->
+                if (engine == "lua") {
+                    luaRule(root, "return get_session().get('arg:marker') == 'from-flag'")
+                } else {
+                    rule(root, "return getSession().get('arg:marker').equals('from-flag');")
+                }
+                execute(root, 0, listOf("--engine", engine, "--call-property", "marker=from-flag",
+                    "--properties-file", "arguments.properties"))
+            }
+        },
+        "lua_configuration_defines_custom_file_types" to { root ->
+            root.resolve("arararc.lua").writeText(
+                "return { paths = { cwd }, file_types = { { extension = 'src', pattern = '^@ +' } } }\n"
+            )
+            root.resolve("custom.src").writeText("@ arara: probe\n")
+            rule(root, "return true;")
+            contains(execute(root, 0, reference = "custom.src"), "SUCCESS")
+        },
         "official_engine_bibliography_and_converter_rules" to { root ->
             officialRules(root)
             root.resolve("run.tex").writeText(
