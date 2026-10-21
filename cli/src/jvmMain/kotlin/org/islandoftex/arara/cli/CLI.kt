@@ -116,7 +116,10 @@ class CLI : CliktCommand("arara") {
         .switch("-l" to LogFormat.TEXT, "--log" to LogFormat.TEXT)
     private val verbose by option("-v", "--verbose")
         .help("Print the command output")
-        .flag("-s", "--silent")
+        .flag()
+    private val silent by option("-s", "--silent")
+        .help("Suppress command output, overriding configuration and --verbose")
+        .flag()
     private val dryRun by option("-n", "--dry-run")
         .help(
             "Go through all the motions of running a command, but " +
@@ -235,10 +238,11 @@ class CLI : CliktCommand("arara") {
                     ?: LinearExecutor.executionOptions.maxLoops,
                 timeoutValue = timeout?.let { it.milliseconds }
                     ?: LinearExecutor.executionOptions.timeoutValue,
-                verbose = if (verbose)
-                    true
-                else
-                    LinearExecutor.executionOptions.verbose,
+                verbose = when {
+                    silent -> false
+                    verbose -> true
+                    else -> LinearExecutor.executionOptions.verbose
+                },
                 executionMode = when {
                     dryRun -> ExecutionMode.DRY_RUN
                     safeRun -> ExecutionMode.SAFE_RUN

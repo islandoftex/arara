@@ -95,6 +95,9 @@ on.
 
 ### Fixed
 
+* `--silent` overrides configured verbosity and takes priority over `--verbose`
+  regardless of flag order.
+
 * Styled output remains free of ANSI escapes when redirected, including in CI environments.
 
 * File-change databases are written in deterministic path order. Load and save

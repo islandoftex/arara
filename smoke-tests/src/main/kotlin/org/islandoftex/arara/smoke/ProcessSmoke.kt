@@ -241,6 +241,34 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath, private
             contains(output, "SMOKE_STDERR")
             contains(output, "SMOKE_CWD=$root")
         },
+        "verbosity_flags_override_yaml_and_lua_configuration" to { root ->
+            rule(root, native("0"))
+            listOf("yaml", "lua").forEach { format ->
+                val config = root.resolve("arararc.$format")
+                listOf(false, true).forEach { configured ->
+                    config.writeText(if (format == "yaml") "!config\npaths: ['.']\nverbose: $configured\n"
+                        else "return { paths = { cwd }, verbose = $configured }\n")
+                    val cases = listOf(
+                        emptyList<String>() to configured,
+                        listOf("-v") to true,
+                        listOf("--verbose") to true,
+                        listOf("-s") to false,
+                        listOf("--silent") to false,
+                        listOf("-v", "-s") to false,
+                        listOf("-s", "-v") to false
+                    )
+                    cases.forEach { (flags, expected) ->
+                        val output = execute(root, 0, flags)
+                        listOf("SMOKE_STDOUT", "SMOKE_STDERR").forEach { marker ->
+                            check((marker in output) == expected) {
+                                "$format verbose=$configured flags=$flags: unexpected tool output\n$output"
+                            }
+                        }
+                    }
+                }
+                Files.delete(config.toJVMPath())
+            }
+        },
         "successful_native_command" to { root ->
             rule(root, native("0"))
             execute(root, 0)

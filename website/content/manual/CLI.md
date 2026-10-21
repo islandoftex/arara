@@ -165,7 +165,8 @@ Usage: arara [<options>] <file>...
 
 Options:
   -l, --log                     Generate a log output
-  -v, --verbose / -s, --silent  Print the command output
+  -v, --verbose                Print the command output
+  -s, --silent                 Suppress command output
   -n, --dry-run                 Go through all the motions of running a
                                 command, but with no actual calls
   -S, --safe-run                Run in safe mode and disable potentially
@@ -482,7 +483,7 @@ current option, it will be denoted by `parameter` in the description.
   activating the default silent mode), if previously enabled by a proper
   configuration file (see [Configuration file](@/manual/Configuration.md)). It is
   important to note that this command line option has higher priority over the
-  `--verbose` counterpart.
+  `--verbose` counterpart, regardless of their order.
 
 - `-S` / `--safe-run`: This option enables the safe mode of arara, protecting
   the system  by disallowing certain user actions. Currently, the following
