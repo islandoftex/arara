@@ -82,6 +82,9 @@ on.
 * animate+convert rules: change default program from `convert` to `magick`
   (`convert` was deprecated in ImageMagick v7)
 
+* Update Kotlin to 2.4, Gradle and dependencies while retaining Java 11 runtime
+  compatibility.
+
 ### Fixed
 
 * Styled output remains free of ANSI escapes when redirected, including in CI environments.

@@ -2,31 +2,32 @@
 # --------------------------------
 # Kotlin itself
 # --------------------------------
-kotlin = "2.2.0"
+kotlin = "2.4.21"
 # --------------------------------
 # Plugins
 # --------------------------------
 detektPlugin = "1.23.8"
 dokkaPlugin = "2.2.0"
-shadowPlugin = "9.5.1"
+shadowPlugin = "9.6.1"
 spotlessChangelogPlugin = "3.1.2"
-spotlessPlugin = "8.8.0"
-versionsPlugin = "0.54.0"
+spotlessPlugin = "8.10.4"
+versionsPlugin = "0.66.0"
 # --------------------------------
 # Libraries
 # --------------------------------
 clikt = "5.1.0"
+# JUnit 6 requires Java 17; keep the Java 11 test workers on the latest 5.x.
 junit = "5.14.4"
-kaml = "0.89.0"
-kotest = "6.2.2"
+kaml = "0.104.0"
+kotest = "6.2.6"
 kotlinLogging = "8.0.4"
-kotlinxCoroutines = "1.7.3"
-kotlinxSerialization = "1.9.0"
+kotlinxCoroutines = "1.11.0"
+kotlinxSerialization = "1.12.0"
 log4j = "2.26.1"
 luak = "3.4.0"
-mordant = "3.0.2"
-mvel = "2.5.2.Final"
-slf4j = "2.0.18"
+mordant = "3.1.0"
+mvel = "2.6.0.Final"
+slf4j = "2.0.20"
 yamlkt = "0.13.0"
 ztExec = "1.13.0"
 # --------------------------------

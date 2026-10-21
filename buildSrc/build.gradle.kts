@@ -8,7 +8,7 @@ plugins {
     `kotlin-dsl`
 }
 
-val websiteToolsTest by tasks.registering(JavaExec::class) {
+val websiteToolsTest = tasks.register<JavaExec>("websiteToolsTest") {
     group = "verification"
     dependsOn(tasks.testClasses)
     classpath = sourceSets.test.get().runtimeClasspath
@@ -18,4 +18,6 @@ val websiteToolsTest by tasks.registering(JavaExec::class) {
     inputs.dir(projectDir.parentFile.resolve("website/themes/devlab-theme"))
 }
 
+// Regression checks use a standalone Kotlin main rather than a JUnit engine.
+tasks.test { failOnNoDiscoveredTests.set(false) }
 tasks.check { dependsOn(websiteToolsTest) }

@@ -19,15 +19,12 @@ kotlin {
                 optIn("kotlin.time.ExperimentalTime")
                 optIn("kotlin.ExperimentalUnsignedTypes")
             }
-
-            dependencies {
-                api(project(":api"))
-                implementation(libs.kotlin.logging)
-            }
         }
 
         commonMain {
             dependencies {
+                api(project(":api"))
+                implementation(libs.kotlin.logging)
                 implementation(libs.yamlkt)
                 implementation(libs.kotlinx.serialization)
             }

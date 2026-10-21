@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: BSD-3-Clause
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
-import org.gradle.api.internal.project.ProjectInternal
-import org.gradle.api.java.archives.internal.DefaultManifest
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.islandoftex.arara.build.AraraPublication
@@ -13,7 +11,7 @@ import org.islandoftex.arara.build.TDSTreeBuilderTask
 import org.islandoftex.arara.build.TDSZipBuilderTask
 import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.gradle.jvm.toolchain.JavaToolchainService
-import org.jetbrains.dokka.gradle.DokkaTask
+import org.jetbrains.dokka.gradle.DokkaExtension
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import java.nio.file.Path
@@ -195,19 +193,14 @@ subprojects {
 
         apply(plugin = "org.jetbrains.dokka")
 
-        val mainManifest: Manifest = DefaultManifest((project as ProjectInternal).fileResolver)
-                .apply {
-                    attributes["Implementation-Title"] = "arara-${project.name}"
-                    attributes["Implementation-Version"] = version
-
-                    if (project.name == "cli") {
-                        attributes["Main-Class"] = "org.islandoftex.arara.cli.CLIKt"
-                    }
-
-                    // for Java 9+ compatibility of log4j
-                    attributes["Multi-Release"] = "true"
-                    attributes["Automatic-Module-Name"] = rootProject.group
-                }
+        val mainAttributes = mutableMapOf(
+            "Implementation-Title" to "arara-${project.name}",
+            "Implementation-Version" to version,
+            "Multi-Release" to "true",
+            "Automatic-Module-Name" to rootProject.group
+        ).apply {
+            if (project.name == "cli") put("Main-Class", "org.islandoftex.arara.cli.CLIKt")
+        }
 
         apply(plugin = "org.jetbrains.kotlin.multiplatform")
 
@@ -249,6 +242,21 @@ subprojects {
             }
         }
 
+        configure<DokkaExtension> {
+            moduleName.set("arara (${project.name})")
+            dokkaSourceSets.configureEach {
+                jdkVersion.set(araraJVMInt)
+                skipDeprecated.set(false)
+                reportUndocumented.set(true)
+                skipEmptyPackages.set(true)
+                sourceLink {
+                    localDirectory.set(file("./"))
+                    remoteUrl.set(uri("https://gitlab.com/islandoftex/arara/-/blob/development/${project.name}"))
+                    remoteLineSuffix.set("#L")
+                }
+            }
+        }
+
         tasks {
 
             named<Test>("jvmTest") {
@@ -270,31 +278,12 @@ subprojects {
 
             withType<Jar> {
                 archiveBaseName.set("arara-${project.name}")
-                manifest.attributes.putAll(mainManifest.attributes)
+                manifest.attributes(mainAttributes)
             }
 
             withType<JavaCompile> {
                 sourceCompatibility = araraJVMString
                 targetCompatibility = araraJVMString
-            }
-
-            named<DokkaTask>("dokkaHtml").configure {
-                dokkaSourceSets.configureEach {
-                    jdkVersion.set(araraJVMInt)
-                    moduleName.set("arara (${project.name})")
-                    includeNonPublic.set(false)
-                    skipDeprecated.set(false)
-                    reportUndocumented.set(true)
-                    skipEmptyPackages.set(true)
-                    platform.set(org.jetbrains.dokka.Platform.common)
-                    sourceLink {
-                        localDirectory.set(file("./"))
-                        remoteUrl.set(uri("https://gitlab.com/islandoftex/arara").toURL())
-                        remoteLineSuffix.set("#L")
-                    }
-                    noStdlibLink.set(false)
-                    noJdkLink.set(false)
-                }
             }
         }
 

@@ -23,7 +23,6 @@ open class TDSTreeBuilderTask : DefaultTask() {
         inputs.file(project.layout.buildDirectory.file("arara-${project.version}-docsrc.zip").get().asFile)
         // depend on documentation (it should be compiled)
         inputs.dir("docs")
-        inputs.dir("cli")
         inputs.dir("rules")
         outputs.dir(project.layout.buildDirectory.dir("tds").get().asFile.absolutePath)
     }

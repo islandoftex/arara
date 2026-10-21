@@ -1,6 +1,6 @@
 repos:
 - repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v4.2.0
+  rev: v6.0.0
   hooks:
   - id: check-added-large-files
   - id: check-case-conflict
@@ -20,7 +20,7 @@ repos:
   - id: mixed-line-ending
   - id: trailing-whitespace
 - repo: https://github.com/Lucas-C/pre-commit-hooks
-  rev: v1.1.13
+  rev: v1.5.6
   hooks:
   - id: forbid-crlf
   - id: remove-crlf
@@ -33,6 +33,6 @@ repos:
     args: ['spotlessCheck']
     types: [rust]
 - repo: https://github.com/nix-community/nixpkgs-fmt
-  rev: v1.2.0
+  rev: v1.3.0
   hooks:
   - id: nixpkgs-fmt

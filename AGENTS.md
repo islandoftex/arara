@@ -3,7 +3,7 @@
 ## Project shape
 
 - Kotlin Multiplatform (KMP) Gradle build, JVM-only targets. Minimum JRE 11.
-  Kotlin 2.2, configured in `gradle.properties` (`arara.jvm.target`,
+  Kotlin 2.4, configured in `gradle.properties` (`arara.jvm.target`,
   `arara.kotlin.api`, `arara.kotlin.language`).
 - Development happens on GitLab (`gitlab.com/islandoftex/arara`); the GitHub
   repo is a mirror. The working branch is `development` (the default, per
@@ -190,6 +190,5 @@ by pre-commit).
   (`AraraMessages`, `ExperimentalTime`, `RequiresOptIn`,
   `ExperimentalUnsignedTypes`) — configured per-source-set in each module's
   `build.gradle.kts`; you usually do not need to add them at call sites.
-- Tests use Kotest (`kotest-runner-junit5-jvm`, 6.0.0.M12 milestone — note the
-  pre-stable version) in `core`, `mvel`, `cli`; `lua` uses plain
-  `kotlin("test-common")`.
+- Tests use Kotest (`kotest-runner-junit5-jvm`, 6.2.6) in `core`, `mvel`,
+  `cli`; `lua` uses plain `kotlin("test-common")`.

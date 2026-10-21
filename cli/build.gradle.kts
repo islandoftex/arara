@@ -140,6 +140,9 @@ tasks {
         archiveClassifier.set("")
 
         transform<Log4j2PluginsCacheFileTransformer>()
+        filesMatching("META-INF/*.kotlin_module") {
+            duplicatesStrategy = DuplicatesStrategy.INCLUDE
+        }
         filesMatching("META-INF/org/apache/logging/log4j/core/config/plugins/Log4j2Plugins.dat") {
             duplicatesStrategy = DuplicatesStrategy.INCLUDE
         }

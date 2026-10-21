@@ -7,9 +7,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout'
-        uses: actions/checkout@master
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+          lfs: true
       - name: 'Build and deploy'
-        uses: shalzz/zola-deploy-action@master
+        uses: shalzz/zola-deploy-action@v0.23.6
         env:
           PAGES_BRANCH: gh-pages
           BUILD_DIR: website

@@ -2,7 +2,7 @@
   description = "arara - the cool TeX automation tool";
 
   inputs = {
-    nixpkgs.url = "nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     devlab-theme = {
       url = "git+https://codeberg.org/RiPetitor/devlab-theme.git?rev=2b638831313058ba92d17095fce15454fda02eba";
       flake = false;
@@ -11,11 +11,10 @@
   };
 
   outputs =
-    {
-      flake-utils,
-      devlab-theme,
-      nixpkgs,
-      ...
+    { flake-utils
+    , devlab-theme
+    , nixpkgs
+    , ...
     }:
     flake-utils.lib.eachSystem [ "x86_64-linux" ] (
       system:

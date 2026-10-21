@@ -7,7 +7,7 @@ import org.gradle.api.tasks.bundling.Zip
  * Zip the result of [TDSTreeBuilderTask] to create a valid
  * TDS zip.
  */
-open class TDSZipBuilderTask : Zip() {
+abstract class TDSZipBuilderTask : Zip() {
     init {
         group = "distribution"
         description = "Create a TDS compliant ZIP file."
@@ -16,7 +16,8 @@ open class TDSZipBuilderTask : Zip() {
         outputs.file(project.layout.buildDirectory.file("arara.tds.zip").get().asFile)
         outputs.upToDateWhen { false }
 
-        archiveFileName.set(project.layout.buildDirectory.file("arara.tds.zip").get().asFile.absolutePath)
+        destinationDirectory.set(project.layout.buildDirectory)
+        archiveFileName.set("arara.tds.zip")
         from(project.layout.buildDirectory.dir("tds").get().asFile)
     }
 }

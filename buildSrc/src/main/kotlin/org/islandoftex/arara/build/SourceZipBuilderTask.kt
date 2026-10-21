@@ -7,7 +7,7 @@ import org.gradle.api.tasks.bundling.Zip
 /**
  * Zip relevant source files to meet CTAN's requirements.
  */
-open class SourceZipBuilderTask : Zip() {
+abstract class SourceZipBuilderTask : Zip() {
     init {
         group = "distribution"
         description = "Create a source ZIP as required by CTAN."
@@ -23,7 +23,8 @@ open class SourceZipBuilderTask : Zip() {
         outputs.files(project.layout.buildDirectory.file("arara-${project.version}-src.zip").get().asFile)
         outputs.upToDateWhen { false }
 
-        archiveFileName.set(project.layout.buildDirectory.file("arara-${project.version}-src.zip").get().asFile.absolutePath)
+        destinationDirectory.set(project.layout.buildDirectory)
+        archiveFileName.set("arara-${project.version}-src.zip")
         from(project.projectDir.resolve("api"))
         from(project.projectDir.resolve("core"))
         from(project.projectDir.resolve("cli"))
