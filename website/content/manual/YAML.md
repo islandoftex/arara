@@ -134,6 +134,12 @@ line breaks are always folded. Since arara uses MVEL as its underlying scripting
 language (see [MVEL](@/manual/MVEL.md) for reference), it might be
 advisable to quote scalars when starting with forbidden symbols in YAML.
 
+Directive parameters must form a mapping with non-null values. Quoted scalars
+remain strings. Plain `true`/`false` (also `True`/`False` and `TRUE`/`FALSE`)
+become booleans; decimal integers use `Int` or `Long`, and decimal fractions or
+exponents use `Double`. Integers outside the `Long` range remain strings.
+Values such as `yes`, `no`, `on`, `off`, and `0xff` remain strings.
+
 # Tags
 
 According to the specification, in YAML, untagged nodes are given a type

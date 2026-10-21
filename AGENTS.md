@@ -47,8 +47,9 @@
 - `rules/` — built-in YAML rule definitions shipped with the distribution
   (74 files like `arara-rule-pdflatex.yaml`). These are data, not Kotlin.
 
-Kotaml handles YAML rules, configuration and file databases. The CLI still uses
-`yamlkt` for directive parameters to preserve scalar quoting and value types.
+Kotaml handles all YAML parsing: rules, configuration, file databases and directive
+parameters. Directive conversion preserves quoted strings and uses conservative
+boolean and decimal numeric conversion for plain scalars.
 
 ## Generated / gitignored files — do not edit by hand
 

@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.ruleset
 
+import com.charleskorn.kaml.Yaml
 import io.github.oshai.kotlinlogging.KotlinLogging
-import kotlinx.serialization.decodeFromString
-import net.mamoe.yamlkt.Yaml
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.ProjectFile
@@ -81,7 +80,7 @@ object DirectiveUtils {
             return mapOf()
 
         val map = kotlin.runCatching {
-            Yaml.Default.decodeFromString<Map<String, Any>>(text)
+            YamlNodeConversion.toParameterMap(Yaml.default.parseToYamlNode(text))
         }.getOrElse {
             throw AraraException(
                 LanguageController.messages.ERROR_VALIDATE_YAML_EXCEPTION

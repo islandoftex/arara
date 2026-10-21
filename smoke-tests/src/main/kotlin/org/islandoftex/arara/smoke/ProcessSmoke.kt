@@ -218,6 +218,16 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath, private
             rule(root, "return true;")
             execute(root, APPLICATION_ERROR, listOf("--engine", "lua"))
         },
+        "invalid_directive_parameters_fail_in_both_engines" to { root ->
+            rule(root, "return true;")
+            luaRule(root, "return true")
+            listOf("yaml", "lua").forEach { engine ->
+                listOf("{ value: null }", "[one, two]", "{ value: [unterminated }").forEach { value ->
+                    root.resolve("run.tex").writeText("% arara: probe: $value\n")
+                    execute(root, APPLICATION_ERROR, listOf("--engine", engine))
+                }
+            }
+        },
         "yaml_remains_the_default" to { root ->
             rule(root, "return true;")
             luaRule(root, "return false")

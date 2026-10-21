@@ -77,7 +77,7 @@ kotlin {
                 implementation(libs.clikt)
                 implementation(libs.mordant.core)
                 implementation(libs.clikt.markdown)
-                implementation(libs.yamlkt)
+                implementation(libs.kotaml)
                 implementation(libs.mvel)
                 implementation(libs.slf4j.api)
                 implementation(libs.log4j.core)

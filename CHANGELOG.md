@@ -48,6 +48,11 @@ on.
 
 ### Changed
 
+* **Breaking change:** Directive parameters use consistent YAML scalar conversion:
+  plain `True` and `False` are booleans, exponent notation produces floating-point
+  values, and null values are rejected. Quote scalars to retain strings. Integers
+  outside the `Long` range remain strings instead of being silently truncated.
+
 * **Breaking change:** Logging uses a single `none`, `text` or `json` format.
   Replace YAML `logging: true` with `logformat: text`, Lua `log.enabled` with
   `log.format`, and API `LoggingOptions.enableLogging` with `format`.
@@ -85,8 +90,8 @@ on.
 * Update Kotlin to 2.4, Gradle and dependencies while retaining Java 11 runtime
   compatibility.
 
-* YAML rules, configuration and file databases use Kotaml, the supported Kaml
-  fork. Existing YAML databases remain readable.
+* YAML rules, configuration, file databases and directive parameters use
+  Kotaml, the supported Kaml fork. Existing YAML databases remain readable.
 
 ### Fixed
 
