@@ -17,7 +17,7 @@ object TaskHelper {
     @Throws(IOException::class)
     fun createScript(file: Path) {
         try {
-            Files.write(
+            Files.writeString(
                 file,
                 """
                 #!/bin/sh
@@ -37,7 +37,7 @@ object TaskHelper {
                 fi
 
                 exec java -jar "${'$'}jarpath" "${'$'}@"
-                """.trimIndent().lines()
+                """.trimIndent() + "\n"
             )
 
         } catch (_: IOException) {
@@ -54,13 +54,14 @@ object TaskHelper {
      * Creates a man page for arara.
      * @param file The file reference.
      * @param version The program's version.
+     * @param date The formatted release or build date.
      * @throws IOException The file could not be written.
      */
     @Throws(IOException::class)
     @Suppress("LongMethod")
     fun createManPage(file: Path, version: String, date: String) {
         try {
-            Files.write(
+            Files.writeString(
                 file,
                 """
                 .TH ARARA 1 "$date" "v$version"
@@ -116,7 +117,7 @@ object TaskHelper {
                 Issue tracker at
                 .UR https://gitlab.com/islandoftex/arara/-/issues
                 .UE .
-                """.trimIndent().lines()
+                """.trimIndent() + "\n"
             )
         } catch (_: IOException) {
             throw IOException(

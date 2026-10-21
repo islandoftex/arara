@@ -7,6 +7,7 @@ import org.gradle.api.file.DuplicatesStrategy
 import org.gradle.api.tasks.Sync
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.api.tasks.bundling.Zip
+import java.nio.file.Files
 import java.time.LocalDate
 import java.time.ZoneOffset
 
@@ -31,6 +32,13 @@ class AraraPackaging : Plugin<Project> {
                 exclude("*/build/**", "build/**", "**/.gradle/**", "**/.git", "**/.git/**", "website/public/**")
                 exclude("docs/*.pdf", "docs/resources/version.txt", "**/arara.log")
                 exclude("api/src/jvmMain/kotlin/org/islandoftex/arara/api/AraraAPI.kt")
+            }
+            eachFile {
+                val marker = "version https://git-lfs.github.com/spec/v1"
+                val prefix = Files.newInputStream(file.toPath()).use {
+                    String(it.readNBytes(marker.length), Charsets.US_ASCII)
+                }
+                check(prefix != marker) { "Unresolved Git LFS pointer in source archive: $path" }
             }
             filesMatching("gradlew") { permissions { unix("0755") } }
         }

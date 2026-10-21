@@ -8,6 +8,8 @@ plugins {
     `kotlin-dsl`
 }
 
+dependencies { testImplementation(gradleTestKit()) }
+
 val websiteToolsTest = tasks.register<JavaExec>("websiteToolsTest") {
     group = "verification"
     dependsOn(tasks.testClasses)
@@ -21,3 +23,12 @@ val websiteToolsTest = tasks.register<JavaExec>("websiteToolsTest") {
 // Regression checks use a standalone Kotlin main rather than a JUnit engine.
 tasks.test { failOnNoDiscoveredTests.set(false) }
 tasks.check { dependsOn(websiteToolsTest) }
+
+val packagingTest = tasks.register<JavaExec>("packagingTest") {
+    group = "verification"
+    dependsOn(tasks.testClasses)
+    classpath = sourceSets.test.get().runtimeClasspath
+    mainClass.set("org.islandoftex.arara.build.PackagingChecksKt")
+    args(gradle.gradleHomeDir!!.absolutePath, sourceSets.main.get().output.classesDirs.asPath)
+}
+tasks.check { dependsOn(packagingTest) }
