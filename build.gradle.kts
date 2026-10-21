@@ -23,7 +23,7 @@ plugins {
     alias(libs.plugins.shadow) apply false // Apache 2.0
     alias(libs.plugins.versions) // Apache 2.0
     alias(libs.plugins.spotlessChangelog) // Apache 2.0
-    alias(libs.plugins.dokka) apply false // Apache 2.0
+    alias(libs.plugins.dokka) // Apache 2.0
     alias(libs.plugins.detekt) // Apache 2.0
     alias(libs.plugins.spotless) // Apache 2.0
 }
@@ -175,6 +175,16 @@ allprojects {
 // workaround from https://github.com/gradle/gradle/issues/18237#issuecomment-928074251
 val engine = libs.junit.jupiter.engine
 
+configure<DokkaExtension> {
+    moduleName.set("arara")
+}
+
+dependencies {
+    listOf("api", "core", "lua", "mvel", "cli").forEach { module ->
+        add("dokka", project(":$module"))
+    }
+}
+
 subprojects {
 
     if (!path.contains("docs") && name != "smoke-tests") {
@@ -232,6 +242,10 @@ subprojects {
 
         configure<DokkaExtension> {
             moduleName.set("arara (${project.name})")
+            dokkaPublications.named("html") {
+                suppressInheritedMembers.set(true)
+                suppressObviousFunctions.set(true)
+            }
             dokkaSourceSets.configureEach {
                 jdkVersion.set(araraJVMInt)
                 skipDeprecated.set(false)

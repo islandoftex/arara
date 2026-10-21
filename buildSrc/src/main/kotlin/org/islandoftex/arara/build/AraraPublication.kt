@@ -6,6 +6,7 @@ import org.gradle.api.Project
 import org.gradle.api.credentials.HttpHeaderCredentials
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
+import org.gradle.api.tasks.bundling.Jar
 import org.gradle.authentication.http.HttpHeaderAuthentication
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.configure
@@ -21,6 +22,10 @@ open class AraraPublication : Plugin<Project> {
     @Suppress("LongMethod")
     override fun apply(target: Project) {
         target.apply(plugin = "maven-publish")
+        val documentationJar = target.tasks.register("javadocJar", Jar::class.java) {
+            archiveClassifier.set("javadoc")
+            from(target.tasks.named("dokkaGeneratePublicationHtml"))
+        }
         target.configure<PublishingExtension> {
             publications.withType<MavenPublication>().configureEach {
 
@@ -38,6 +43,7 @@ open class AraraPublication : Plugin<Project> {
                         throw IllegalArgumentException("Unknown publication type $name")
                 }
 
+                artifact(documentationJar)
                 groupId = target.group.toString()
                 version = target.version.toString()
 

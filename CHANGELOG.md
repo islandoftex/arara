@@ -16,6 +16,10 @@ on.
 
 ### Added
 
+* Maven publications include HTML API reference jars alongside Kotlin source
+  artifacts. A combined API reference is available through
+  `dokkaGeneratePublicationHtml`.
+
 * JSON Lines diagnostic logs via `--log-format json`, YAML `logformat: json`,
   or Lua `log.format = "json"`. Logging is disabled by default. JSON records
   include versioned event names, typed fields and a per-invocation run identifier.
