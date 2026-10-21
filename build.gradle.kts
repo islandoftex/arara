@@ -28,18 +28,6 @@ plugins {
     alias(libs.plugins.spotless) // Apache 2.0
 }
 
-if (!project.hasProperty("JobToken")) {
-    logger.warn(
-            """
-            Island of TeX ----------------------------------------------
-            Will be unable to publish (jobToken missing)
-            Ignore this warning if you are not running the publish task
-            for the GitLab package registry.
-            ------------------------------------------------------------
-        """.trimIndent()
-    )
-}
-
 spotlessChangelog {
     changelogFile("CHANGELOG.md")
     setAppendDashSnapshotUnless_dashPrelease(true)
@@ -197,7 +185,7 @@ subprojects {
             "Implementation-Title" to "arara-${project.name}",
             "Implementation-Version" to version,
             "Multi-Release" to "true",
-            "Automatic-Module-Name" to rootProject.group
+            "Automatic-Module-Name" to "${rootProject.group}.${project.name}"
         ).apply {
             if (project.name == "cli") put("Main-Class", "org.islandoftex.arara.cli.CLIKt")
         }

@@ -11,6 +11,7 @@ import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.credentials
+import org.gradle.kotlin.dsl.withType
 import java.net.URI
 
 /**
@@ -21,8 +22,7 @@ open class AraraPublication : Plugin<Project> {
     override fun apply(target: Project) {
         target.apply(plugin = "maven-publish")
         target.configure<PublishingExtension> {
-            publications.configureEach {
-                this as MavenPublication
+            publications.withType<MavenPublication>().configureEach {
 
                 artifactId = "arara-" + when (name) {
                     "kotlinMultiplatform" ->
@@ -42,7 +42,7 @@ open class AraraPublication : Plugin<Project> {
                 version = target.version.toString()
 
                 pom {
-                    name.set(artifactId)
+                    name.set("arara (${target.name} module)")
                     description.set(
                             "arara is a TeX automation tool based on rules and directives. " +
                                     "It gives you a way to enhance your TeX experience."
@@ -55,8 +55,8 @@ open class AraraPublication : Plugin<Project> {
                     }
                     licenses {
                         license {
-                            name.set("New BSD License")
-                            url.set("http://www.opensource.org/licenses/bsd-license.php")
+                            name.set("BSD 3-Clause License")
+                            url.set("https://opensource.org/licenses/BSD-3-Clause")
                             distribution.set("repo")
                         }
                     }
@@ -110,10 +110,9 @@ open class AraraPublication : Plugin<Project> {
                         name = "GitLab"
                         url = URI("https://gitlab.com/api/v4/projects/$it/packages/maven")
                         credentials(HttpHeaderCredentials::class) {
-                            if (target.hasProperty("jobToken")) {
-                                name = "Job-Token"
-                                value = target.property("jobToken").toString()
-                            }
+                            name = "Job-Token"
+                            value = target.providers.gradleProperty("jobToken")
+                                .orElse(target.providers.environmentVariable("CI_JOB_TOKEN")).orNull
                         }
                         authentication {
                             create<HttpHeaderAuthentication>("header")

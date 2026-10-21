@@ -153,9 +153,8 @@ without downloading Gradle dependencies.
   The chained entry point is `./gradlew assembleCTAN`, which transitively runs
   `:cli:shadowJar`, `:docs:buildDocs`, and the source/docs zips. Use
   `-Prelease=true` for a real release build (CI sets `PRELEASE`).
-- Publishing to the GitLab Maven registry requires `-PjobToken=...` (CI job
-  token). Without `JobToken` the root build prints a warning but still
-  configures publications; local builds can ignore it.
+- Publishing to the GitLab Maven registry uses `-PjobToken=...` or the
+  `CI_JOB_TOKEN` environment variable. Local builds do not require credentials.
 
 ## Nix
 

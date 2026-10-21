@@ -95,6 +95,9 @@ on.
 
 ### Fixed
 
+* Published JVM jars have distinct automatic module names, allowing multiple
+  arara modules on the Java module path.
+
 * `--silent` overrides configured verbosity and takes priority over `--verbose`
   regardless of flag order.
 
