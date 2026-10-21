@@ -5,6 +5,7 @@ import org.gradle.api.publish.maven.tasks.PublishToMavenRepository
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.islandoftex.arara.build.AraraPackaging
+import org.islandoftex.arara.build.VerifyPublicationArtifacts
 import org.islandoftex.arara.build.AraraPublication
 import org.islandoftex.arara.build.VerifyPublicationConsumer
 import org.gradle.jvm.toolchain.JavaLanguageVersion
@@ -181,6 +182,15 @@ val runPublicationConsumer = tasks.register<VerifyPublicationConsumer>("runPubli
     consumerJavaHome.set(project.extensions.getByType<JavaToolchainService>().launcherFor {
         languageVersion.set(JavaLanguageVersion.of(araraJVMInt))
     }.map { it.metadata.installationPath })
+}
+
+tasks.register<VerifyPublicationArtifacts>("checkPublications") {
+    group = "verification"
+    description = "Stage and verify Maven artifacts and run a Kotlin library consumer on Java 11."
+    dependsOn(runPublicationConsumer)
+    repositoryDirectory.set(publicationRepository)
+    moduleNames.set(publicationModules)
+    publicationVersion.set(project.version.toString())
 }
 
 subprojects {

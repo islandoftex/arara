@@ -87,6 +87,26 @@ test:process-smoke:
       - build/test-results/processSmoke/results.xml
     expire_in: 1 week
 
+test:publications:
+  extends: .corretto
+  stage: test
+  needs: ["build:linux:jdk21"]
+  image: amazoncorretto:21
+  script:
+    - ./gradlew checkPublications dokkaGeneratePublicationHtml
+  cache:
+    - <<: *cachedefinition
+      policy: pull
+    - key: "java11-toolchain-linux-amd64-v1"
+      paths:
+        - .gradle/jdks/
+      policy: pull-push
+      when: always
+  artifacts:
+    paths:
+      - build/dokka/html
+    expire_in: 1 week
+
 test:dependencies:
   extends: .corretto
   stage: test
