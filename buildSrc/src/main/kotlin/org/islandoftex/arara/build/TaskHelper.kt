@@ -4,9 +4,6 @@ package org.islandoftex.arara.build
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.attribute.PosixFilePermission
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 /**
  * Collection of auxiliary functions to aid generating CTAN zips.
@@ -42,18 +39,7 @@ object TaskHelper {
                 exec java -jar "${'$'}jarpath" "${'$'}@"
                 """.trimIndent().lines()
             )
-            Files.setPosixFilePermissions(
-                file,
-                setOf(
-                    PosixFilePermission.OWNER_READ,
-                    PosixFilePermission.GROUP_READ,
-                    PosixFilePermission.OTHERS_READ,
-                    PosixFilePermission.OWNER_WRITE,
-                    PosixFilePermission.OWNER_EXECUTE,
-                    PosixFilePermission.GROUP_EXECUTE,
-                    PosixFilePermission.OTHERS_EXECUTE
-                )
-            )
+
         } catch (_: IOException) {
             throw IOException(
                 "I could not create the shell script for " +
@@ -72,13 +58,12 @@ object TaskHelper {
      */
     @Throws(IOException::class)
     @Suppress("LongMethod")
-    fun createManPage(file: Path, version: String) {
-        val today = LocalDate.now().format(DateTimeFormatter.ofPattern("dd MMMM yyyy"))
+    fun createManPage(file: Path, version: String, date: String) {
         try {
             Files.write(
                 file,
                 """
-                .TH ARARA 1 "$today" "v$version"
+                .TH ARARA 1 "$date" "v$version"
                 .SH NAME
                 arara \- a TeX automation tool based on rules and directives.
                 .SH SYNOPSIS

@@ -99,6 +99,10 @@ on.
 
 ### Fixed
 
+* CTAN source archives retain module directories and include MVEL, build logic,
+  the Gradle wrapper and documentation sources. Distribution archives exclude
+  build caches and use reproducible ZIP metadata.
+
 * Published JVM jars have distinct automatic module names, allowing multiple
   arara modules on the Java module path.
 

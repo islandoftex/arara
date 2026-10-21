@@ -2,13 +2,8 @@
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
+import org.islandoftex.arara.build.AraraPackaging
 import org.islandoftex.arara.build.AraraPublication
-import org.islandoftex.arara.build.CTANTreeBuilderTask
-import org.islandoftex.arara.build.CTANZipBuilderTask
-import org.islandoftex.arara.build.DocumentationSourceZipBuilderTask
-import org.islandoftex.arara.build.SourceZipBuilderTask
-import org.islandoftex.arara.build.TDSTreeBuilderTask
-import org.islandoftex.arara.build.TDSZipBuilderTask
 import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.gradle.jvm.toolchain.JavaToolchainService
 import org.jetbrains.dokka.gradle.DokkaExtension
@@ -117,30 +112,6 @@ tasks {
         checkForGradleUpdate = false
     }
 
-    register("assembleCTANSourceZip", SourceZipBuilderTask::class.java)
-
-    register("assembleDocumentationSourceZip", DocumentationSourceZipBuilderTask::class.java) {
-        dependsOn(":docs:buildDocs")
-    }
-
-    register("assembleTDSTree", TDSTreeBuilderTask::class.java) {
-        dependsOn(":cli:shadowJar")
-        dependsOn(":docs:buildDocs")
-        dependsOn("assembleCTANSourceZip")
-        dependsOn("assembleDocumentationSourceZip")
-    }
-
-    register("assembleTDSZip", TDSZipBuilderTask::class.java) {
-        dependsOn("assembleTDSTree")
-    }
-
-    register("assembleCTANTree", CTANTreeBuilderTask::class.java) {
-        dependsOn("assembleTDSZip")
-    }
-
-    register("assembleCTAN", CTANZipBuilderTask::class.java) {
-        dependsOn("assembleCTANTree")
-    }
 
 }
 
@@ -334,3 +305,5 @@ tasks.register<Copy>("stageProcessSmokeJar") {
     }
     into(layout.buildDirectory.dir("processSmoke"))
 }
+
+apply<AraraPackaging>()

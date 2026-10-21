@@ -152,12 +152,12 @@ HTML API reference jars (the `javadoc` classifier).
   `./gradlew` resolves `version = spotlessChangelog.versionNext`. Add a
   `breaking change` marker in the changelog to bump major; see
   `build.gradle.kts`.
-- CTAN/TDS artifacts are built by custom tasks in `buildSrc/`
-  (`TDSTreeBuilderTask`, `TDSZipBuilderTask`, `CTANTreeBuilderTask`,
-  `CTANZipBuilderTask`, `SourceZipBuilderTask`, `DocumentationSourceZipBuilderTask`).
-  The chained entry point is `./gradlew assembleCTAN`, which transitively runs
-  `:cli:shadowJar`, `:docs:buildDocs`, and the source/docs zips. Use
-  `-Prelease=true` for a real release build (CI sets `PRELEASE`).
+- CTAN/TDS artifacts use native `Sync` and `Zip` tasks registered by
+  `AraraPackaging` in `buildSrc`. `./gradlew assembleCTAN` builds the shaded jar,
+  PDFs, source archives, TDS tree and CTAN tree. Existing archive names remain
+  under `build/`. `-PpackagingDate=YYYY-MM-DD` fixes the man-page date for
+  reproducible builds; the default is the current UTC date.
+  Use `-Prelease=true` for a release build (CI sets `PRELEASE`).
 - Publishing to the GitLab Maven registry uses `-PjobToken=...` or the
   `CI_JOB_TOKEN` environment variable. Local builds do not require credentials.
 
