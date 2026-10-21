@@ -13,7 +13,10 @@ public object OS {
                 .getOrDefault("Linux").lowercase()
     }
 
+    /** Whether the platform is identified as Windows. */
     public val isWindows: Boolean by lazy { fullName.contains("win") }
+    /** Whether the platform is identified as Linux, Unix or AIX. */
     public val isLinux: Boolean by lazy { setOf("nix", "nux", "aix").any { fullName.contains(it) } }
+    /** Whether the platform is identified as macOS. */
     public val isMac: Boolean by lazy { fullName.contains("mac") }
 }

@@ -140,6 +140,11 @@ validate local assets. `./gradlew -p buildSrc check` runs their regression
 checks. `nix build .#website` compiles the same helpers and runs the same checks
 without downloading Gradle dependencies.
 
+`./gradlew dokkaGeneratePublicationHtml` builds the combined API reference in
+`build/dokka/html`. `:api:dokkaGeneratePublicationHtml` rejects documentation
+warnings for the public API module. Maven publications carry Kotlin sources and
+HTML API reference jars (the `javadoc` classifier).
+
 ## Release / packaging
 
 - Versioning is driven by `spotlessChangelog` from `CHANGELOG.md` (`tagPrefix

@@ -17,11 +17,14 @@ public actual class MPPLocale actual constructor(tag: String) {
      */
     public fun toJVMLocale(): Locale = locale
 
+    /** Hash of the underlying JVM locale. */
     override fun hashCode(): Int =
         locale.hashCode()
+    /** The underlying JVM locale identifier. */
     override fun toString(): String =
         locale.toString()
 
+    /** Whether both wrappers contain the same JVM locale. */
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

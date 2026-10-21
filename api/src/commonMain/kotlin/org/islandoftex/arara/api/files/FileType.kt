@@ -15,6 +15,7 @@ public interface FileType {
      */
     public val pattern: String
 
+    /** Sentinel values used to represent an unknown file type. */
     public companion object {
         /**
          * This constant identifies an invalid extension. As unices do not

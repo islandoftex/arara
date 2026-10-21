@@ -8,8 +8,8 @@ import org.islandoftex.arara.api.files.MPPPath
  */
 public interface Command {
     /**
-     * A list of elements which are components of a command. The command-line
-     * call will join all these elements with spaces.
+     * The argument vector passed to the process, starting with the executable.
+     * Each element remains a separate argument; no shell tokenization is applied.
      */
     public val elements: List<String>
 

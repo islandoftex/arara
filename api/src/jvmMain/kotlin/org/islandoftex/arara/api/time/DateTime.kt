@@ -9,11 +9,17 @@ import java.time.ZoneId
  * Platform-independent object to represent a date and time.
  */
 public actual class DateTime {
+    /** Calendar year in the selected time zone. */
     public val year: Int
+    /** Month of year, from 1 to 12. */
     public val month: Int
+    /** Day of month, from 1 to 31. */
     public val day: Int
+    /** Hour of day, from 0 to 23. */
     public val hour: Int
+    /** Minute of hour, from 0 to 59. */
     public val minute: Int
+    /** Second of minute, from 0 to 59. */
     public val second: Int
 
     private val timezone: ZoneId = ZoneId.systemDefault()
@@ -53,6 +59,7 @@ public actual class DateTime {
         }
     }
 
+    /** Local date and time in `yyyy-MM-dd HH:mm:ss` form. */
     override fun toString(): String = "%d-%02d-%02d %02d:%02d:%02d"
             .format(year, month, day, hour, minute, second)
 

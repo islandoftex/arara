@@ -198,12 +198,15 @@ public actual class MPPPath {
         }
     }
 
+    /** The platform path spelling, without resolving symbolic links. */
     override fun toString(): String =
         referencePath.toString()
 
+    /** Hash of the underlying platform path. */
     override fun hashCode(): Int =
         referencePath.hashCode()
 
+    /** Lexical platform path equality; does not compare file contents or resolve symbolic links. */
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

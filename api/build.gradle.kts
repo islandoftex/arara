@@ -67,3 +67,9 @@ tasks.matching {
 }.configureEach {
     dependsOn("createAraraAPIObject")
 }
+
+configure<org.jetbrains.dokka.gradle.DokkaExtension> {
+    dokkaPublications.named("html") {
+        failOnWarning.set(true)
+    }
+}
