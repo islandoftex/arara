@@ -8,7 +8,9 @@ plugins {
     `kotlin-dsl`
 }
 
-dependencies { testImplementation(gradleTestKit()) }
+dependencies {
+    implementation(gradleTestKit())
+}
 
 val websiteToolsTest = tasks.register<JavaExec>("websiteToolsTest") {
     group = "verification"

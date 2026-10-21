@@ -144,6 +144,9 @@ without downloading Gradle dependencies.
 `build/dokka/html`. `:api:dokkaGeneratePublicationHtml` rejects documentation
 warnings for the public API module. Maven publications carry Kotlin sources and
 HTML API reference jars (the `javadoc` classifier).
+`./gradlew runPublicationConsumer` stages Maven publications under
+`build/publication-check/repository`. Gradle TestKit builds and runs an independent
+Kotlin consumer of core and its transitive API dependency on Java 11.
 
 ## Release / packaging
 

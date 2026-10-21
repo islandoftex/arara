@@ -110,6 +110,14 @@ open class AraraPublication : Plugin<Project> {
                 }
             }
 
+            repositories {
+                maven {
+                    name = "PublicationCheck"
+                    url = target.rootProject.layout.buildDirectory
+                        .dir("publication-check/repository").get().asFile.toURI()
+                }
+            }
+
             System.getenv("CI_PROJECT_ID")?.let {
                 repositories {
                     maven {

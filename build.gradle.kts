@@ -1,10 +1,12 @@
 // SPDX-License-Identifier: BSD-3-Clause
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import org.gradle.jvm.tasks.Jar as JvmJar
+import org.gradle.api.publish.maven.tasks.PublishToMavenRepository
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.islandoftex.arara.build.AraraPackaging
 import org.islandoftex.arara.build.AraraPublication
+import org.islandoftex.arara.build.VerifyPublicationConsumer
 import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.gradle.jvm.toolchain.JavaToolchainService
 import org.jetbrains.dokka.gradle.DokkaExtension
@@ -13,6 +15,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import java.nio.file.Path
 
 plugins {
+    id("jvm-toolchains")
     kotlin("jvm") version libs.versions.kotlin apply false
     kotlin("multiplatform") version libs.versions.kotlin apply false // Apache 2.0
     kotlin("plugin.serialization") version libs.versions.kotlin apply false // Apache 2.0
@@ -157,6 +160,29 @@ dependencies {
     }
 }
 
+val publicationModules = listOf("api", "core", "lua", "mvel", "cli")
+val publicationRepository = layout.buildDirectory.dir("publication-check/repository")
+val preparePublicationCheck = tasks.register<Delete>("preparePublicationCheck") {
+    delete(publicationRepository)
+}
+
+val runPublicationConsumer = tasks.register<VerifyPublicationConsumer>("runPublicationConsumer") {
+    group = "verification"
+    description = "Build and run a Kotlin consumer of staged Maven publications on Java 11."
+    dependsOn(publicationModules.map { ":$it:publishAllPublicationsToPublicationCheckRepository" })
+    repositoryDirectory.set(publicationRepository)
+    publicationVersion.set(project.version.toString())
+    kotlinVersion.set(libs.versions.kotlin)
+    fixtureDirectory.set(layout.projectDirectory.dir("buildSrc/src/test/resources/publication"))
+    workingDirectory.set(layout.buildDirectory.dir("publication-check/consumer"))
+    testKitDirectory.set(layout.projectDirectory.dir(".gradle/publication-test-kit"))
+    gradleInstallation.set(gradle.gradleHomeDir)
+    gradleUserHome.set(gradle.gradleUserHomeDir)
+    consumerJavaHome.set(project.extensions.getByType<JavaToolchainService>().launcherFor {
+        languageVersion.set(JavaLanguageVersion.of(araraJVMInt))
+    }.map { it.metadata.installationPath })
+}
+
 subprojects {
 
     if (!path.contains("docs") && name != "smoke-tests") {
@@ -269,6 +295,9 @@ subprojects {
         }
 
         apply<AraraPublication>()
+        tasks.withType<PublishToMavenRepository>().configureEach {
+            if (repository.name == "PublicationCheck") dependsOn(preparePublicationCheck)
+        }
     }
 }
 
