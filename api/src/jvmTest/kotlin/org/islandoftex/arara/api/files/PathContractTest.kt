@@ -18,7 +18,8 @@ class PathContractTest {
         val path = MPPPath(raw.toString())
         val absolute = raw.toAbsolutePath().normalize()
         assertFalse(path.isAbsolute)
-        assertEquals(raw, path.toJVMPath())
+        assertEquals(raw, path.providedPath)
+        assertEquals(absolute, path.toJVMPath())
         assertEquals(path, MPPPath(absolute.toString()))
         assertEquals(path.hashCode(), MPPPath(absolute.toString()).hashCode())
         assertEquals(absolute.toString(), path.toString())
@@ -107,10 +108,42 @@ class PathContractTest {
     }
 
     @Test
-    fun nativeBridgesPreserveProvidedRelativeSpellings() {
+    fun nativeBridgesExportNormalizedAbsolutePaths() {
         val native: Path = Paths.get("relative", "..", "file.tex")
-        assertEquals(native, native.toMPPPath().toJVMPath())
-        assertEquals(native.toFile(), native.toFile().toMPPPath().toJVMFile())
+        assertEquals(native.toAbsolutePath().normalize(), native.toMPPPath().toJVMPath())
+        assertEquals(native.toAbsolutePath().normalize().toFile(), native.toFile().toMPPPath().toJVMFile())
         assertEquals(native.toAbsolutePath().normalize(), native.toMPPPath().normalize().toJVMPath())
+    }
+
+    @Test
+    fun changingUserDirDoesNotChangeTheNativeResolutionBase() {
+        val previous = System.getProperty("user.dir")
+        val before = MPPPath("working-directory-contract")
+        try {
+            System.setProperty("user.dir", Paths.get(previous, "other").toString())
+            assertEquals(before, MPPPath("working-directory-contract"))
+        } finally {
+            System.setProperty("user.dir", previous)
+        }
+    }
+
+    @Test
+    fun nativeFilesystemProvidersAreNotRedirectedToTheSystemFilesystem() {
+        val root = Files.createTempDirectory("arara zip provider ")
+        val uri = java.net.URI.create("jar:" + root.resolve("paths.zip").toUri())
+        try {
+            java.nio.file.FileSystems.newFileSystem(uri, mapOf("create" to "true")).use { fs ->
+                val directory = fs.getPath("/book").toMPPPath()
+                directory.createDirectories()
+                val file = directory.resolve("chapter.tex")
+                file.writeText("zip content")
+                assertEquals("zip content", file.readText())
+                assertEquals(fs, file.toJVMPath().fileSystem)
+                assertEquals(listOf(file), directory.listFiles())
+                assertEquals(listOf(file), directory.listEntries())
+            }
+        } finally {
+            root.toMPPPath().removeDirectory()
+        }
     }
 }

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.api.files
 
+import okio.BufferedSource
 import org.islandoftex.arara.api.AraraIOException
 import org.islandoftex.arara.api.time.DateTime
 
@@ -34,12 +35,12 @@ public expect class MPPPath {
     public val fileName: String
 
     /**
-     * Get the file size of this file in bytes.
+     * Get the byte size; throws [AraraIOException] when size is unavailable.
      */
     public val fileSize: Long
 
     /**
-     * Get the last modification date of this file as timestamp.
+     * Get the modification time; throws [AraraIOException] when it is unavailable.
      */
     public val lastModified: DateTime
 
@@ -50,19 +51,19 @@ public expect class MPPPath {
     public val parent: MPPPath
 
     /**
-     * Indicates whether the file exists.
+     * Best-effort existence check; false if missing or inspection fails.
      */
     public val exists: Boolean
 
     /**
      * Indicates whether the file is a directory. If `false` it does not mean,
-     * the file is a regular file.
+     * the file is a regular file. Inspection failures return false.
      */
     public val isDirectory: Boolean
 
     /**
      * Indicates whether the file is a regular file. If `false` it does not
-     * mean, the file is a directory.
+     * mean, the file is a directory. Inspection failures return false.
      */
     public val isRegularFile: Boolean
 
@@ -153,4 +154,33 @@ public expect class MPPPath {
      */
     @Throws(AraraIOException::class)
     public fun removeDirectory()
+
+    /**
+     * Absolute normalized Okio path, interpreted using the host's native syntax.
+     */
+    public fun toOkioPath(): okio.Path
+
+    /**
+     * Strict metadata lookup; missing paths and inspection errors raise [AraraIOException].
+     */
+    @Throws(AraraIOException::class)
+    public fun metadata(): PathMetadata
+
+    /**
+     * Read a regular file using a source closed when [block] returns. I/O failures are wrapped.
+     */
+    @Throws(AraraIOException::class)
+    public fun <T> read(block: (BufferedSource) -> T): T
+
+    /**
+     * Direct children, including directories and special files; lookup failures throw.
+     */
+    @Throws(AraraIOException::class)
+    public fun listEntries(): List<MPPPath>
+
+    /**
+     * Regular files in path order. Follows directory links; traversal failures and cycles throw.
+     */
+    @Throws(AraraIOException::class)
+    public fun listFiles(recursive: Boolean = false): List<MPPPath>
 }

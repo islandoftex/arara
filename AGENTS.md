@@ -17,7 +17,10 @@
 ### Module roles (dependencies, not obvious from names)
 
 - `api` — public KMP API surfaces (`MPPPath`, `FileType`, directives,etc.). Built
-  with `explicitApi()`. Depends on nothing.
+  with `explicitApi()`. Exposes Okio for scoped reads and normalized path exports.
+  MPPPath keeps native JVM path algebra/identity and instance-bound filesystem I/O;
+  derived paths retain their backend. Test injection is internal, without global state.
+  `ForeignPath` is explicit POSIX/Windows lexical algebra with no filesystem access.
 - `core` — runtime engine (configuration, file searching, rules, sessions,
   executor). `api(project(":api"))`.
 - `mvel` — MVEL expression interpreter used by rules. JVM-only; pulls

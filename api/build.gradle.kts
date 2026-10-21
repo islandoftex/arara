@@ -19,12 +19,17 @@ kotlin {
             languageSettings.optIn("kotlin.RequiresOptIn")
         }
 
-        commonMain {}
+        commonMain {
+            dependencies {
+                api(libs.okio)
+            }
+        }
 
         jvmMain {}
 
         jvmTest {
             dependencies {
+                implementation(libs.okio.fakefilesystem)
                 implementation(libs.kotest.runner.jvm)
                 implementation(libs.kotest.assertions.jvm)
             }

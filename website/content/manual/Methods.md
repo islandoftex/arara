@@ -412,13 +412,13 @@ references, when applied.
     on the provided parameters. In this case, the method list all files from the
     provided `File` reference according to the `List<String>` extensions as a
     list of strings, and returns a `List<File>` object representing all matching
-    files. The leading full stop in each extension must be omitted, unless it is
-    part of the search pattern. The third parameter holds a `boolean` value and
-    acts as a switch indicating whether the search must be recursive, i.e,
-    whether all subdirectories must be searched as well. If the reference is not
-    a proper directory or an exception is raised due to access permission
-    constraints, the `❖ listFilesByExtensions` method returns an
-    empty list.
+    files, sorted by path. The leading full stop in each extension must be
+    omitted, unless it is part of the search pattern. The third parameter holds
+    a `boolean` value and acts as a switch indicating whether the search must
+    be recursive, i.e, whether all subdirectories must be searched as well. If
+    the reference is not a proper directory or an exception is raised due to
+    access permission constraints, the `❖ listFilesByExtensions` method returns
+    an empty list.
 
   ```java
   files = listFilesByExtensions(toFile('/home/islandoftex/Documents'),
@@ -448,14 +448,15 @@ references, when applied.
     on the provided parameters. In this case, the method lists all files from
     the provided `File` reference according to the `List<String>` patterns as a
     list of strings, and returns a `List<File>` object representing all matching
-    files. The pattern specification is described below. The third parameter
-    holds a `boolean` value and acts as a switch indicating whether the search
-    must be recursive, i.e, whether all subdirectories must be searched as
-    well. If the reference is not a proper directory or an exception is raised
-    due to access permission constraints, the `❖ listFilesByPatterns`
-    method returns an empty list. It is very important to observe that this file
-    search operation might be slow depending on the provided directory. It is
-    highly advisable to not rely on recursive searches whenever possible.
+    files, sorted by path. The pattern specification is described below. The
+    third parameter holds a `boolean` value and acts as a switch indicating
+    whether the search must be recursive, i.e, whether all subdirectories must
+    be searched as well. If the reference is not a proper directory or an
+    exception is raised due to access permission constraints, the
+    `❖ listFilesByPatterns` method returns an empty list. It is very important
+    to observe that this file search operation might be slow depending on the
+    provided directory. It is highly advisable to not rely on recursive
+    searches whenever possible.
 
   {% messagebox(title="Patterns for file search operations") %}
   arara employs wildcard filters as patterns for file search operations. Testing

@@ -3,10 +3,10 @@ package org.islandoftex.arara.core.files
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.AraraIOException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.configuration.ExecutionOptions
 import org.islandoftex.arara.api.files.MPPPath
-import org.islandoftex.arara.api.files.toJVMFile
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.utils.formatString
@@ -38,23 +38,9 @@ object FileSearching {
         extensions: List<String>,
         recursive: Boolean
     ): List<MPPPath> =
-        runCatching {
-            directory.normalize().toJVMFile().let {
-                if (recursive)
-                    it.walk().filter { entry -> entry.isFile }
-                else
-                    it.walk().maxDepth(1).filter { entry -> entry.isFile }
-            }
-        }.getOrDefault(
-            // if something bad happens,
-            // gracefully fallback to
-            // an empty file list
-            emptySequence()
-        ).filter {
-                extensions.contains(it.extension)
-        }.map {
-            MPPPath(it.absolutePath).normalize()
-        }.toList()
+        searchFiles(directory, recursive).filter {
+            extensions.contains(it.fileName.substringAfterLast('.', ""))
+        }
 
     /**
      * List all files from the provided directory matching the list of file
@@ -70,32 +56,15 @@ object FileSearching {
         patterns: List<String>,
         recursive: Boolean
     ): List<MPPPath> =
-        // return the result of the provided
-        // search, with the wildcard filter
-        // and a potential recursive search
         patterns.map { it.globToRegex() }.let { regexes ->
-
-            runCatching {
-                directory.normalize().toJVMFile().let {
-
-                    // return the result of the
-                    // provided search
-                    if (recursive)
-                        it.walk().filter { entry -> entry.isFile }
-                    else
-                        it.walk().maxDepth(1).filter { entry -> entry.isFile }
-                }
-            }.getOrDefault(
-                // if something bad happens,
-                // gracefully fallback to
-                // an empty file list
-                emptySequence()
-            ).filter { file ->
-                    regexes.any { it.matches(file.name) }
-            }.map {
-                MPPPath(it.absolutePath).normalize()
-            }.toList()
+            searchFiles(directory, recursive).filter { file -> regexes.any { it.matches(file.fileName) } }
         }
+
+    private fun searchFiles(directory: MPPPath, recursive: Boolean): List<MPPPath> = try {
+        directory.listFiles(recursive)
+    } catch (_: AraraIOException) {
+        emptyList()
+    }
 
     /**
      * Discovers the file through string reference lookup and sets the

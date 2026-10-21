@@ -16,6 +16,10 @@ on.
 
 ### Added
 
+* `ForeignPath` provides explicit POSIX/Windows path algebra without filesystem
+  access. `MPPPath` adds strict metadata, scoped streaming reads and directory
+  listing APIs backed by Okio.
+
 * Maven publications include HTML API reference jars alongside Kotlin source
   artifacts. A combined API reference is available through
   `dokkaGeneratePublicationHtml`.
@@ -51,6 +55,10 @@ on.
 * `ClassLoading.closeLoaders()` lets hosts release loaded rule archives.
 
 ### Changed
+
+* **Breaking change:** `MPPPath.toJVMPath()` and `toJVMFile()` now export absolute,
+  normalized paths, matching `toString()` and the new `toOkioPath()`. The original
+  spelling remains internal; native parsing, identity and resolution semantics remain.
 
 * **Breaking change:** The dialog helper `showDropdown` is now `showList`
   (`show_dropdown` becomes `show_list` in Lua). The old names are no longer
@@ -102,6 +110,9 @@ on.
 
 * Terminal dialog labels, selection prompts and unavailable/closed-input errors
   use the selected language in both plain and styled presentations.
+
+* `MPPPath` uses an instance-bound Okio filesystem for I/O. File listings have
+  stable path ordering and detect directory-link cycles.
 
 ### Fixed
 

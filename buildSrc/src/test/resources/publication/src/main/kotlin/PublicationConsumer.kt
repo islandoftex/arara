@@ -1,9 +1,13 @@
 // SPDX-License-Identifier: BSD-3-Clause
 import org.islandoftex.arara.api.files.MPPPath
+import org.islandoftex.arara.api.files.ForeignPath
+import org.islandoftex.arara.api.files.PathSyntax
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 
 fun main() {
     val path = MPPPath(".").resolve("publication-check")
+    check(path.toOkioPath().isAbsolute)
+    check(ForeignPath.parse("C:/book/../chapter.tex", PathSyntax.WINDOWS).normalize().fileName == "chapter.tex")
     val options = ExecutionOptions()
     check(path.toString().isNotEmpty() && !options.verbose) {
         "Published library defaults are not usable"

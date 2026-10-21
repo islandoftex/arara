@@ -3,6 +3,7 @@ package org.islandoftex.arara.core.session
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.AraraIOException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.toJVMFile
 import org.islandoftex.arara.api.session.Command
@@ -155,7 +156,13 @@ object Environment {
                 // based on the path separator symbol
                 System.getenv("PATH")
                     ?.split(File.pathSeparator)
-                    ?.mapNotNull { MPPPath(it).toJVMFile().listFiles() }
+                    ?.mapNotNull {
+                        try {
+                            MPPPath(it).listEntries()
+                        } catch (_: AraraIOException) {
+                            null
+                        }
+                    }
 
                     // if the search does not return an empty
                     // list, one of the filenames got a match,
@@ -163,7 +170,7 @@ object Environment {
                     // in the system path
                     ?.firstOrNull {
                         it.any { file ->
-                            filenames.contains(file.name) &&
+                            filenames.contains(file.fileName) &&
                                 !file.isDirectory
                         }
                     }?.let { true }

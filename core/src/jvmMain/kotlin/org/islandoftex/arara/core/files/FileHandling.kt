@@ -2,11 +2,9 @@
 package org.islandoftex.arara.core.files
 
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.AraraIOException
 import org.islandoftex.arara.api.files.MPPPath
-import org.islandoftex.arara.api.files.toJVMPath
-import java.nio.file.Files
 import org.islandoftex.arara.core.localization.LanguageController
-import java.io.IOException
 import java.util.zip.CRC32
 
 object FileHandling {
@@ -51,7 +49,7 @@ object FileHandling {
     @Throws(AraraException::class)
     fun calculateHash(path: MPPPath): Long =
         try {
-            Files.newInputStream(path.normalize().toJVMPath()).use { input ->
+            path.read { input ->
                 val checksum = CRC32()
                 val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
                 var count = input.read(buffer)
@@ -61,10 +59,10 @@ object FileHandling {
                 }
                 checksum.value
             }
-        } catch (exception: IOException) {
+        } catch (exception: AraraIOException) {
             throw AraraException(
                 LanguageController.messages.ERROR_CALCULATEHASH_IO_EXCEPTION,
-                exception
+                exception.exception ?: exception
             )
         }
 
