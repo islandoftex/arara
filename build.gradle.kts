@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
+import org.gradle.jvm.tasks.Jar as JvmJar
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.islandoftex.arara.build.AraraPackaging
@@ -209,6 +210,13 @@ subprojects {
                     }
                 }
             }
+        }
+
+        // With one platform, KMP does not populate the root sources jar itself.
+        val commonSources = extensions.getByType<KotlinMultiplatformExtension>()
+            .sourceSets.named("commonMain").map { it.kotlin }
+        tasks.named<JvmJar>("sourcesJar") {
+            from(commonSources) { into("commonMain") }
         }
 
         configure<DokkaExtension> {

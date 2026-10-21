@@ -99,6 +99,13 @@ on.
 
 ### Fixed
 
+* Multiplatform Maven source jars include the common Kotlin sources in this
+  JVM-only build.
+
+* The published core library declares its SLF4J API runtime dependency, so
+  embedding applications need not supply it separately. The logging backend
+  remains the host application's choice.
+
 * CTAN source archives retain module directories and include MVEL, build logic,
   the Gradle wrapper and documentation sources. Distribution archives exclude
   build caches and use reproducible ZIP metadata.

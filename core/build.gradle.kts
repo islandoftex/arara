@@ -33,6 +33,7 @@ kotlin {
         jvmMain {
             dependencies {
                 implementation(libs.ztexec)
+                runtimeOnly(libs.slf4j.api)
             }
         }
 
