@@ -70,6 +70,23 @@ class DatabasePersistenceTest {
     }
 
     @Test
+    fun legacyFlowMapsAndFullWidthHashesRemainReadable() = fixture { root, cache ->
+        val entries = linkedMapOf(
+            root.resolve("relative path.tex").normalize() to 4294967295L,
+            root.resolve("windows\\file.tex").normalize() to Long.MAX_VALUE,
+            root.resolve("001").normalize() to Long.MIN_VALUE
+        )
+        val flow = entries.entries.joinToString(", ") { (path, hash) ->
+            "'${path.toString().replace("'", "''")}': $hash"
+        }
+        cache.writeText("!database\nmap: { $flow }\n")
+        val database = Database.load(cache)
+        entries.forEach { (path, hash) -> assertEquals(hash, database[path]) }
+        database.save(cache)
+        assertEquals(database, Database.load(cache))
+    }
+
+    @Test
     fun malformedCachesAreRejectedWithoutChangingTheirContents() = fixture { root, cache ->
         val invalid = listOf(
             "foreign: content", "not-a-database",

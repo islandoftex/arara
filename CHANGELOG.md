@@ -85,7 +85,8 @@ on.
 * Update Kotlin to 2.4, Gradle and dependencies while retaining Java 11 runtime
   compatibility.
 
-* YAML rule and configuration loading uses Kotaml, the supported Kaml fork.
+* YAML rules, configuration and file databases use Kotaml, the supported Kaml
+  fork. Existing YAML databases remain readable.
 
 ### Fixed
 

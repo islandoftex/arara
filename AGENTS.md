@@ -47,6 +47,9 @@
 - `rules/` — built-in YAML rule definitions shipped with the distribution
   (74 files like `arara-rule-pdflatex.yaml`). These are data, not Kotlin.
 
+Kotaml handles YAML rules, configuration and file databases. The CLI still uses
+`yamlkt` for directive parameters to preserve scalar quoting and value types.
+
 ## Generated / gitignored files — do not edit by hand
 
 - `api/src/jvmMain/kotlin/org/islandoftex/arara/api/AraraAPI.kt` is **generated**

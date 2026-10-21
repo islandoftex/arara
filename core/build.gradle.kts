@@ -25,7 +25,7 @@ kotlin {
             dependencies {
                 api(project(":api"))
                 implementation(libs.kotlin.logging)
-                implementation(libs.yamlkt)
+                implementation(libs.kotaml)
                 implementation(libs.kotlinx.serialization)
             }
         }
