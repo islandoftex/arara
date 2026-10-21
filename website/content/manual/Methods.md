@@ -1052,6 +1052,8 @@ The first argument selects a message label:
 - `4`: Question
 - Any other value: Plain
 
+Dialog labels, selection prompts and input errors use the configured language;
+titles, messages and option text remain as supplied by the rule.
 Messages wrap at the configured terminal output width; dialog calls no longer
 take a pixel-width argument.
 

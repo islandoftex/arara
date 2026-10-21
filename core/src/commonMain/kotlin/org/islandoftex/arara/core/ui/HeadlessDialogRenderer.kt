@@ -2,11 +2,12 @@
 package org.islandoftex.arara.core.ui
 
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.core.localization.LanguageController
 
 /** The library never assumes its host has a graphical or terminal interface. */
 object HeadlessDialogRenderer : DialogRenderer {
     private fun unavailable(): Nothing = throw AraraException(
-        "Interactive dialogs are unavailable: the host has not configured a dialog renderer."
+        LanguageController.messages.ERROR_DIALOGS_NOT_CONFIGURED
     )
 
     override fun showMessage(type: Int, title: String, text: String): Unit = unavailable()

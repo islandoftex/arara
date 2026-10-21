@@ -33,6 +33,10 @@ public open class Messages(
      * The translators credited for this message set.
      */
     public val translators: List<String> = listOf("Paulo Roberto Massa Cereda"),
+    /** A dialog could not read an answer because terminal input ended. */
+    public val ERROR_DIALOG_INPUT_CLOSED: String = "It looks like the terminal input ended while a dialog was waiting for an answer, so I cannot read your choice. Please run arara in an interactive terminal so the dialog can be answered.",
+    /** A dialog was requested without a host renderer. */
+    public val ERROR_DIALOGS_NOT_CONFIGURED: String = "It looks like this run has no dialog support configured, so I cannot show the dialog a rule asked for. Please provide a dialog implementation in the application running arara, or avoid rules with interactive dialogs.",
     /** Script field type error; argument: field path. */
     public val ERROR_SCRIPT_STRING: String = "%s must be a string.",
     /** Script table type error; argument: field path. */
@@ -396,6 +400,14 @@ public open class Messages(
      * The label shown when a rule has no authors.
      */
     public val INFO_LABEL_NO_AUTHORS: String = "No authors provided",
+    /** The warning dialog label. */
+    public val INFO_LABEL_ON_WARNING: String = "WARNING",
+    /** The question dialog label. */
+    public val INFO_LABEL_ON_QUESTION: String = "QUESTION",
+    /** The information dialog label. */
+    public val INFO_LABEL_ON_INFO: String = "INFO",
+    /** The numbered selection prompt; the range is appended literally. */
+    public val INFO_LABEL_DIALOG_PROMPT: String = "Choose an option",
     /**
      * The label shown for the details of an entry.
      */

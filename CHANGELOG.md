@@ -100,6 +100,9 @@ on.
 * YAML rules, configuration, file databases and directive parameters use
   Kotaml, the supported Kaml fork. Existing YAML databases remain readable.
 
+* Terminal dialog labels, selection prompts and unavailable/closed-input errors
+  use the selected language in both plain and styled presentations.
+
 ### Fixed
 
 * Multiplatform Maven source jars include the common Kotlin sources in this

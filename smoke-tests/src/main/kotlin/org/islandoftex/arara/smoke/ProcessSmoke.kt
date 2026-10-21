@@ -308,7 +308,7 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath, private
         },
         "terminal_eof_is_an_application_error" to { root ->
             rule(root, "return showInput(0, 'Smoke input', 'Type the answer') == 'answer';")
-            contains(execute(root, APPLICATION_ERROR), "input is closed")
+            contains(execute(root, APPLICATION_ERROR), "terminal input ended")
         },
         "safe_mode_blocks_class_loading" to { root ->
             rule(root, "loadClass('missing.jar', 'Missing'); return true;")

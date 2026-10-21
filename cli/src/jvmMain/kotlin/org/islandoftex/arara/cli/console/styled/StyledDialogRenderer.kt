@@ -15,13 +15,14 @@ class StyledDialogRenderer(
 ) : TerminalDialogRenderer(input, output, { terminal.size.width.coerceAtLeast(1) }) {
     override fun block(type: Int, title: String, text: String) {
         val rule = if (terminal.terminalInfo.ansiLevel == AnsiLevel.NONE) "-" else "─"
+        val titleLine = heading(type, title)
         val heading = when (type) {
-            ERROR -> terminal.theme.danger(title)
-            WARNING -> terminal.theme.warning(title)
-            else -> terminal.theme.info(title)
+            ERROR -> terminal.theme.danger(titleLine)
+            WARNING -> terminal.theme.warning(titleLine)
+            else -> terminal.theme.info(titleLine)
         }
         line(rule.repeat(width()))
-        output.println(if (terminal.terminalInfo.ansiLevel == AnsiLevel.NONE) title else heading)
+        output.println(if (terminal.terminalInfo.ansiLevel == AnsiLevel.NONE) titleLine else heading)
         output.flush()
         line(text)
         line(rule.repeat(width()))

@@ -3,6 +3,7 @@ package org.islandoftex.arara.cli.ui
 
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.core.session.Session
+import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.ui.DialogRenderer
 import java.io.BufferedReader
 import java.io.PrintWriter
@@ -35,26 +36,37 @@ open class TerminalDialogRenderer(
         block(type, title, text)
         entries.forEachIndexed { index, value -> line("${index + 1}. $value") }
         while (true) {
-            line("Choose 1-${entries.size}, or 0 to cancel:")
+            val range = "0-${entries.size}"
+            line("${LanguageController.messages.INFO_LABEL_DIALOG_PROMPT} ($range):")
             output.print("> ")
             output.flush()
-            val chosen = answer().trim().toIntOrNull()
+            val raw = answer().trim()
+            val chosen = raw.toIntOrNull()
             if (chosen != null && chosen in 0..entries.size) return chosen
-            line("Enter a number from 0 to ${entries.size}.")
         }
     }
 
     private fun answer(): String = input.readLine() ?: throw AraraException(
-        "Interactive dialog input is closed; provide input or use rules without dialogs."
+        LanguageController.messages.ERROR_DIALOG_INPUT_CLOSED
     )
 
     protected open fun block(type: Int, title: String, text: String) {
-        val kinds = listOf("PLAIN", "ERROR", "INFORMATION", "WARNING", "QUESTION")
-        val kind = kinds.getOrNull(type) ?: kinds.first()
         line("-".repeat(width()))
-        line("[$kind] $title")
+        line(heading(type, title))
         line(text)
         line("-".repeat(width()))
+    }
+
+    protected fun heading(type: Int, title: String): String {
+        val messages = LanguageController.messages
+        val label = when (type) {
+            ERROR -> messages.INFO_LABEL_ON_ERROR
+            INFORMATION -> messages.INFO_LABEL_ON_INFO
+            WARNING -> messages.INFO_LABEL_ON_WARNING
+            QUESTION -> messages.INFO_LABEL_ON_QUESTION
+            else -> return title
+        }
+        return "[$label] $title"
     }
 
     protected fun width(): Int = columns().coerceAtLeast(1)
@@ -72,4 +84,12 @@ open class TerminalDialogRenderer(
         }
         output.flush()
     }
+
+    private companion object {
+        const val ERROR = 1
+        const val INFORMATION = 2
+        const val WARNING = 3
+        const val QUESTION = 4
+    }
+
 }

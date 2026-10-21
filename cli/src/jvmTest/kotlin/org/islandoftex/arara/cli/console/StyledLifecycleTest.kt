@@ -25,7 +25,7 @@ class StyledLifecycleTest {
         )
         assertEquals(2, renderer.showList(4, "Pick one", "A choice", arrayOf("first", "second")))
         assertTrue("Pick one" in output.toString())
-        assertTrue("Enter a number" in output.toString())
+        assertTrue("Choose an option" in output.toString())
         assertFalse("\u001b" in output.toString())
         val closed = StyledDialogRenderer(
             Terminal(AnsiLevel.NONE), BufferedReader(StringReader("")), PrintWriter(output)

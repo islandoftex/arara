@@ -19,7 +19,7 @@ class TerminalDialogRendererTest {
         val output = StringWriter()
         val renderer = renderer("text\n-1\n3\n2\n", output)
         assertEquals(2, renderer.showOptions(4, "Choice", "Pick one", arrayOf("One", "Two")))
-        assertEquals(3, Regex("Enter a number").findAll(output.toString()).count())
+        assertEquals(4, Regex("Choose an option").findAll(output.toString()).count())
         assertTrue(output.toString().contains("1. One"))
         assertTrue(output.toString().contains("2. Two"))
     }
@@ -55,7 +55,7 @@ class TerminalDialogRendererTest {
     fun messagesDoNotReadInputAndWrapAtTheConfiguredWidth() {
         val output = StringWriter()
         renderer("", output).showMessage(99, "A title", "a".repeat(60))
-        assertTrue(output.toString().contains("[PLAIN] A title"))
+        assertTrue(output.toString().contains("A title"))
         assertTrue(output.toString().lines().all { it.length <= 24 })
     }
 }
