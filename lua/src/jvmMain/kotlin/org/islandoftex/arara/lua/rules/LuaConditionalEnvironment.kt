@@ -146,10 +146,10 @@ internal object LuaConditionalEnvironment {
             )
         }
         bindDialog(
-            globals, "showDropdown"
+            globals, "showList"
         ) { type, title, text, values ->
             LuaValue.valueOf(
-                ConditionalMethods.showDropdown(
+                ConditionalMethods.showList(
                     type, title, text, *values
                 )
             )

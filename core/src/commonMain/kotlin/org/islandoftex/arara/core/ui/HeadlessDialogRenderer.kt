@@ -13,6 +13,6 @@ object HeadlessDialogRenderer : DialogRenderer {
     override fun showOptions(type: Int, title: String, text: String, buttons: Array<out Any>): Int =
         unavailable()
     override fun showInput(type: Int, title: String, text: String): String = unavailable()
-    override fun showDropdown(type: Int, title: String, text: String, elements: Array<out Any>): Int =
+    override fun showList(type: Int, title: String, text: String, elements: Array<out Any>): Int =
         unavailable()
 }

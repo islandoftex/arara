@@ -49,7 +49,7 @@ object MvelState {
             val methodsKotlin = ConditionalMethods::class.java.methods
             listOf(
                 "exists", "missing", "changed", "unchanged",
-                "found", "toFile", "showDropdown", "showInput",
+                "found", "toFile", "showList", "showInput",
                 "showOptions", "currentFile", "loadClass", "loadObject"
             ).forEach { name: String ->
                 map[name] = methodsKotlin.first { it.name == name }

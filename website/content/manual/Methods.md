@@ -1059,7 +1059,8 @@ take a pixel-width argument.
 Remove the pixel-width argument from calls such as
 `showInput(250, 4, 'Title', 'Question')`; use
 `showInput(4, 'Title', 'Question')` instead. Remove the `laf` configuration key.
-The helper names and one-based selection indices remain unchanged.
+Rename `showDropdown` to `showList` (Lua: `show_dropdown` to `show_list`).
+The old helper names are no longer available. Selection indices still start at one.
 {% end %}
 
 - **[R]** `showMessage(int type, String title, String text): void`
@@ -1082,14 +1083,13 @@ The helper names and one-based selection indices remain unchanged.
   % arara: --> 'Do you like ice cream?', 'Yes!', 'No!') == 1
   ```
 
-- **[C|R]** `showDropdown(int type, String title, String text, Object... options): int`
+- **[C|R]** `showList(int type, String title, String text, Object... options): int`
 
-  Uses the same numbered terminal selection as `showOptions`. The name is kept
-  for existing rules; no graphical dropdown is displayed and no item is
-  selected automatically.
+  Uses the same numbered terminal selection as `showOptions`, including `0`
+  to cancel. No item is selected automatically.
 
   ```tex
-  % arara: pdflatex if showDropdown(4, 'Important!',
+  % arara: pdflatex if showList(4, 'Important!',
   % arara: --> 'Who deserves the tick?', 'David Carlisle',
   % arara: --> 'Enrico Gregorio', 'Joseph Wright',
   % arara: --> 'Heiko Oberdiek') == 2

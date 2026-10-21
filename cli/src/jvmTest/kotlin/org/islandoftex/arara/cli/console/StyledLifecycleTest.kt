@@ -23,7 +23,7 @@ class StyledLifecycleTest {
             Terminal(AnsiLevel.NONE, width = 40),
             BufferedReader(StringReader("bad\n2\n")), PrintWriter(output)
         )
-        assertEquals(2, renderer.showDropdown(4, "Pick one", "A choice", arrayOf("first", "second")))
+        assertEquals(2, renderer.showList(4, "Pick one", "A choice", arrayOf("first", "second")))
         assertTrue("Pick one" in output.toString())
         assertTrue("Enter a number" in output.toString())
         assertFalse("\u001b" in output.toString())

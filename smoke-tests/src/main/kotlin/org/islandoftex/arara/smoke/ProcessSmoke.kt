@@ -158,6 +158,17 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath, private
             execute(root, 0, listOf("--engine", "lua"))
             check(!root.resolve("created directory").exists)
         },
+        "dialog_choices_in_both_engines_and_presentations" to { root ->
+            rule(root, "return showOptions(4, 'Options', 'Pick one', 'Only') == 0 && " +
+                "showList(4, 'List', 'Optional', 'Only') == 0;")
+            luaRule(root, "return show_options(4, 'Options', 'Pick one', 'Only') == 0 and " +
+                "show_list(4, 'List', 'Optional', 'Only') == 0")
+            listOf("yaml", "lua").forEach { engine ->
+                listOf("plain", "styled").forEach { console ->
+                    execute(root, 0, listOf("--engine", engine, "--console", console), input = "0\n0\n")
+                }
+            }
+        },
         "lua_terminal_input_and_safe_class_loading" to { root ->
             luaRule(root, "return show_input(0, 'Lua input', 'Type the answer') == 'answer'")
             contains(execute(root, 0, listOf("--engine", "lua"), input = "answer\n"), "Lua input")

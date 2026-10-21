@@ -15,8 +15,18 @@ class LuaHelperBindingsTest {
         assertTrue(globals.load("return is_string(trim_spaces(' a '))").call().toboolean())
         val command = globals.load("return get_command_with_working_directory('.', 'echo', {'a', 'b'})").call()
         assertTrue(LuaConversion.toCommand(command) != null)
-        assertTrue(globals.get("show_dropdown").isfunction())
-        assertTrue(globals.get("showDropdown").isfunction())
+        assertTrue(globals.get("show_list").isfunction())
+        assertTrue(globals.get("showList").isfunction())
+    }
+
+    @Test
+    fun listHelpersReplaceTheOldDropdownNamesInBothEnvironments() {
+        for (globals in listOf(LuaRuleEnvironment.newGlobals(), LuaConditionalEnvironment.newGlobals())) {
+            assertTrue(globals.get("showList").isfunction())
+            assertTrue(globals.get("show_list").isfunction())
+            assertTrue(globals.get("showDropdown").isnil())
+            assertTrue(globals.get("show_dropdown").isnil())
+        }
     }
 
     @Test

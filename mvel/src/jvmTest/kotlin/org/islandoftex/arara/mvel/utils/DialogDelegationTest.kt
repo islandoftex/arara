@@ -8,6 +8,7 @@ import org.islandoftex.arara.core.ui.DialogRenderer
 import org.islandoftex.arara.core.ui.Dialogs
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 class DialogDelegationTest {
     @Test
@@ -26,7 +27,7 @@ class DialogDelegationTest {
                 return 2
             }
             override fun showInput(type: Int, title: String, text: String): String = "answer"
-            override fun showDropdown(type: Int, title: String, text: String, elements: Array<out Any>): Int = 1
+            override fun showList(type: Int, title: String, text: String, elements: Array<out Any>): Int = 1
         }
         try {
             rules.showMessage(type = 2, title = "Title", text = "Body")
@@ -36,7 +37,11 @@ class DialogDelegationTest {
             assertEquals("answer", conditions.showInput(type = 4, title = "Input", text = "Text"))
             assertEquals("answer", org.mvel2.MVEL.eval("showInput(4, 'Input', 'Text')", MvelState.conditionalMethods))
             assertEquals(2, org.mvel2.MVEL.eval("showOptions(4, 'Choose', 'Text', 'A', 'B')", MvelState.conditionalMethods))
-            assertEquals(1, conditions.showDropdown(type = 4, title = "List", text = "Text", elements = arrayOf("A")))
+            assertEquals(1, org.mvel2.MVEL.eval("showList(4, 'List', 'Text', 'A')", MvelState.conditionalMethods))
+            assertFailsWith<Exception> {
+                org.mvel2.MVEL.eval("showDropdown(4, 'List', 'Text', 'A')", MvelState.conditionalMethods)
+            }
+            assertEquals(1, conditions.showList(type = 4, title = "List", text = "Text", elements = arrayOf("A")))
         } finally {
             Dialogs.renderer = previous
         }

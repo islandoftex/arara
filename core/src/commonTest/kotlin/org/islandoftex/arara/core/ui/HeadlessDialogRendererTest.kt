@@ -13,7 +13,7 @@ class HeadlessDialogRendererTest {
             { HeadlessDialogRenderer.showMessage(type = 0, title = "Title", text = "Body") },
             { HeadlessDialogRenderer.showInput(type = 0, title = "Title", text = "Body") },
             { HeadlessDialogRenderer.showOptions(type = 0, title = "Title", text = "Body", buttons = emptyArray()) },
-            { HeadlessDialogRenderer.showDropdown(type = 0, title = "Title", text = "Body", elements = emptyArray()) }
+            { HeadlessDialogRenderer.showList(type = 0, title = "Title", text = "Body", elements = emptyArray()) }
         )
         calls.forEach { call ->
             val error = assertFailsWith<AraraException> { call() }

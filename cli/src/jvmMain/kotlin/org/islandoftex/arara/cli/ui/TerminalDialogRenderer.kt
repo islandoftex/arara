@@ -27,7 +27,7 @@ open class TerminalDialogRenderer(
     override fun showOptions(type: Int, title: String, text: String, buttons: Array<out Any>): Int =
         selection(type, title, text, buttons)
 
-    override fun showDropdown(type: Int, title: String, text: String, elements: Array<out Any>): Int =
+    override fun showList(type: Int, title: String, text: String, elements: Array<out Any>): Int =
         selection(type, title, text, elements)
 
     private fun selection(type: Int, title: String, text: String, entries: Array<out Any>): Int {

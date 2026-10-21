@@ -26,17 +26,23 @@ class TerminalDialogRendererTest {
 
     @Test
     fun bothSelectionHelpersSupportCancellationAndEmptyLists() {
-        assertEquals(0, renderer("0\n").showDropdown(0, "List", "Body", arrayOf("One")))
+        assertEquals(0, renderer("0\n").showList(0, "List", "Body", arrayOf("One")))
         assertEquals(0, renderer("0\n").showOptions(0, "Options", "Body", arrayOf("One")))
-        assertEquals(0, renderer("").showDropdown(0, "Empty", "Body", emptyArray()))
+        assertEquals(0, renderer("").showList(0, "Empty", "Body", emptyArray()))
         assertEquals(0, renderer("").showOptions(0, "Empty", "Body", emptyArray()))
+    }
+
+    @Test
+    fun blankSelectionsRepromptInBothHelpers() {
+        assertEquals(1, renderer("\n1\n").showOptions(0, "Options", "Body", arrayOf("One")))
+        assertEquals(1, renderer("\n1\n").showList(0, "List", "Body", arrayOf("One")))
     }
 
     @Test
     fun closedInputFailsInsteadOfSelectingOrAcceptingAnAnswer() {
         assertFailsWith<AraraException> { renderer("").showInput(0, "Input", "Body") }
         assertFailsWith<AraraException> { renderer("bad\n").showOptions(0, "Options", "Body", arrayOf("One")) }
-        assertFailsWith<AraraException> { renderer("").showDropdown(0, "List", "Body", arrayOf("One")) }
+        assertFailsWith<AraraException> { renderer("").showList(0, "List", "Body", arrayOf("One")) }
     }
 
     @Test

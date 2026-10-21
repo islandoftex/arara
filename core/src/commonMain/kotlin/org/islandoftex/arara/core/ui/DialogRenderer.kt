@@ -13,7 +13,7 @@ interface DialogRenderer {
     fun showInput(type: Int, title: String, text: String): String
 
     /** Ask for an element selection, returning its one-based index or zero. */
-    fun showDropdown(type: Int, title: String, text: String, elements: Array<out Any>): Int
+    fun showList(type: Int, title: String, text: String, elements: Array<out Any>): Int
 
 }
 

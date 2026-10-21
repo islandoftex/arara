@@ -52,6 +52,10 @@ on.
 
 ### Changed
 
+* **Breaking change:** The dialog helper `showDropdown` is now `showList`
+  (`show_dropdown` becomes `show_list` in Lua). The old names are no longer
+  available in rules or the host dialog interface.
+
 * **Breaking change:** Directive parameters use consistent YAML scalar conversion:
   plain `True` and `False` are booleans, exponent notation produces floating-point
   values, and null values are rejected. Quote scalars to retain strings. Integers
@@ -75,8 +79,7 @@ on.
   Unnamed single projects take their specification's basename.
 * **Breaking change:** Swing dialogs are replaced by terminal dialogs. Remove
   the `laf` configuration key and explicit pixel-width arguments from dialog
-  helpers. The existing helper names (including `showDropdown`) and one-based
-  selections remain; zero cancels a selection. Closed input reports an error
+  helpers. Selection indices start at one; zero cancels a selection. Closed input reports an error
   instead of silently accepting a default.
 * **Breaking change:** Project names and normalized file paths must be unique
   across the invocation. Repeated or shared file paths are rejected instead of

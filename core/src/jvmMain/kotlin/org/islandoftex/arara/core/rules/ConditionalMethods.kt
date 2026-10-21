@@ -201,12 +201,12 @@ object ConditionalMethods {
      * @return The index of the selected element, starting from 1.
      */
     @JvmStatic
-    fun showDropdown(
+    fun showList(
         type: Int,
         title: String,
         text: String,
         vararg elements: Any
-    ): Int = dialogs.showDropdown(type, title, text, elements)
+    ): Int = dialogs.showList(type, title, text, elements)
 
     /**
      * Gets the file reference for the current directive. It is important to
