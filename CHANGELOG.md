@@ -85,6 +85,8 @@ on.
 * Update Kotlin to 2.4, Gradle and dependencies while retaining Java 11 runtime
   compatibility.
 
+* YAML rule and configuration loading uses Kotaml, the supported Kaml fork.
+
 ### Fixed
 
 * Styled output remains free of ANSI escapes when redirected, including in CI environments.

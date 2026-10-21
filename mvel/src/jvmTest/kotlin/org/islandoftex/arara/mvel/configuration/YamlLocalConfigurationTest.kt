@@ -60,6 +60,23 @@ class YamlLocalConfigurationTest {
     }
 
     @Test
+    fun quotedPathsAndLiteralPreamblesKeepTheirText() {
+        withConfiguration("""
+            !config
+            logname: 'false'
+            preambles:
+              primary: |
+                % arara: echo: { options: ['true', '001'] }
+                % arara: clean
+            defaultPreamble: primary
+        """) { model ->
+            assertEquals(MPPPath("false"), model.toLoggingOptions().logFile)
+            assertEquals("% arara: echo: { options: ['true', '001'] }\n% arara: clean\n",
+                model.preambles.getValue("primary"))
+        }
+    }
+
+    @Test
     fun malformedYamlAndInvalidLoopCountsStillFail() {
         assertFailsWith<AraraException> { withConfiguration("loops: 3") { } }
         assertFailsWith<AraraException> { withConfiguration("!config\nunknown: true") { } }

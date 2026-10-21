@@ -21,7 +21,7 @@
 - `core` — runtime engine (configuration, file searching, rules, sessions,
   executor). `api(project(":api"))`.
 - `mvel` — MVEL expression interpreter used by rules. JVM-only; pulls
-  `org.mvel:mvel2`, `kaml`. Interpreter-neutral rule and conditional helpers
+  `org.mvel:mvel2`, `kotaml` (the compatible Kaml fork). Interpreter-neutral rule and conditional helpers
   live in `core.rules`; MVEL's registry binds their JVM static methods.
   Shared configuration models live in `core.configuration`; MVEL retains the
   YAML loader (`YamlLocalConfiguration`).
