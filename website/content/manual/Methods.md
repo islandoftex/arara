@@ -1,7 +1,7 @@
 +++
 title = "Methods"
 description = "Methods"
-weight = 7
+weight = 8
 +++
 
 arara features several helper methods available in directive conditional and
@@ -12,7 +12,7 @@ the Java runtime environment can be used within MVEL expressions, so your
 mileage might vary.
 
 {% messagebox(title="A note on writing code") %}
-As seen in [MVEL](@/manual/MVEL.md), Java and MVEL code be used interchangeably
+As seen in [MVEL](@/manual/MVEL.md), Java and MVEL code can be used interchangeably
 within expressions and orb tags, including instantiation of classes into objects
 and invocation of methods. However, be mindful of explicitly importing Java
 packages and classes through the classic `import` statement, as MVEL does not
@@ -37,12 +37,51 @@ corresponding method is available in the rule context. At last, an entry marked
 by **[E]** denotes that the corresponding method is available in the orb tag
 expansion within a special `options` parameter in the directive context.
 
+# Lua calls
+
+The typed signatures and Java-labelled examples below use MVEL notation. Lua
+helpers have both camelCase and snake_case names: `toFile` and `to_file`, for
+instance, refer to the same helper. Examples in this chapter use snake_case for
+Lua. The context marks still distinguish rule functions from conditionals.
+The Lua code blocks below are rule-function fragments unless a directive is
+shown.
+
+Lua uses tables for lists and maps, with list indices starting at one. Pass a
+list as `{ "one", "two" }`, rather than MVEL's `[ 'one', 'two' ]`. Paths and
+commands returned by helpers are opaque values; pass them to another helper
+instead of calling Java methods on them. The `ctx.reference` table in rule
+functions is described in [Lua rules](@/manual/Lua.md#commands-and-arguments).
+
+Some MVEL helpers have no Lua wrapper: `getOriginalFile`, `getOrNull` and
+`checkClass`. Lua provides table indexing and `type()` for the latter two
+operations; `get_original_reference()` returns the original file reference.
+
 # Files
 
 This section introduces methods related to file handling, searching and
-hashing. It is important to observe that no exception is thrown in case of an
-anomalous method call. In this particular scenario, the methods return empty
-references, when applied.
+hashing. The individual descriptions specify whether an unsuccessful operation
+returns an empty result, returns false or raises an error.
+
+In Lua, the explicit file form uses a handle from `to_file`; a string passed
+to `exists`, `missing`, `changed`, `unchanged` or `found` is an extension of the
+current file:
+
+```lua
+local source = to_file("thesis.tex")
+local source_exists = exists(source)
+local pdf_exists = exists("pdf")
+local matches = found(to_file("thesis.log"), "undefined references")
+local lines = read_from_file(source)
+local written = write_to_file("notes.txt", { "first", "second" }, false)
+```
+
+A relative path passed to `to_file` is resolved from the process working
+directory. The extension form instead uses the current file's path.
+
+The last argument of `write_to_file` is a boolean: `true` appends and `false`
+overwrites. File-reading errors produce an empty list; write errors produce
+`false`. File-change checks update a persistent record, explained in
+[The file database](@/manual/Database.md).
 
 - **[R]** `getOriginalFile(): String` This method returns the original file
     name, as plain string, regardless of a potential override through the
@@ -50,7 +89,7 @@ references, when applied.
     [Important concepts](@/manual/Concepts.md).
 
   ```java
-  if (file == getOriginalFile()) {
+  if (reference.fileName == getOriginalFile()) {
       System.out.println("The 'file' variable
          was not overridden.");
   }
@@ -75,7 +114,7 @@ references, when applied.
     reference.
 
   ```tex
-  % arara: pdflatex if currentFile().getName() == 'thesis.tex'
+  % arara: pdflatex if currentFile().fileName == 'thesis.tex'
   ```
 
 - **[C|R]** `toFile(String reference): File` This method returns a file (or
@@ -186,9 +225,8 @@ references, when applied.
   |      No      |       No      |       —      |     —     |   No   |
   |      No      |      Yes      |       —      |   Remove  |   Yes  |
 
-  It is important to observe that this method *always* performs a database
-  operation, either an insertion, removal or update on the corresponding
-  entry. When using `❖ changed` within a logical expression, make
+  This method updates the database when an entry is inserted, removed or
+  changed; an unchanged entry does not need to be rewritten. When using `❖ changed` within a logical expression, make
   sure the evaluation order is correct, specially regarding the use of
   short-circuiting operations. In some scenarios, order does matter.
 
@@ -234,9 +272,8 @@ references, when applied.
   |      No      |       No      |       —      |     —     |   No   |
   |      No      |      Yes      |       —      |   Remove  |   Yes  |
 
-  It is important to observe that this method *always* performs a database
-  operation, either an insertion, removal or update on the corresponding
-  entry. When using `❖ changed` within a logical expression, make
+  This method updates the database when an entry is inserted, removed or
+  changed; an unchanged entry does not need to be rewritten. When using `❖ changed` within a logical expression, make
   sure the evaluation order is correct, specially regarding the use of
   short-circuiting operations. In some scenarios, order does matter.
 
@@ -261,9 +298,8 @@ references, when applied.
   |      No      |       No      |       —      |     —     |   Yes  |
   |      No      |      Yes      |       —      |   Remove  |   No   |
 
-  It is important to observe that this method *always* performs a database
-  operation, either an insertion, removal or update on the corresponding
-  entry. When using `❖ unchanged` within a logical expression, make
+  This method updates the database when an entry is inserted, removed or
+  changed; an unchanged entry does not need to be rewritten. When using `❖ unchanged` within a logical expression, make
   sure the evaluation order is correct, specially regarding the use of
   short-circuiting operations. In some scenarios, order does matter.
 
@@ -290,9 +326,8 @@ references, when applied.
   |      No      |       No      |       —      |     —     |   Yes  |
   |      No      |      Yes      |       —      |   Remove  |   No   |
 
-  It is important to observe that this method *always* performs a database
-  operation, either an insertion, removal or update on the corresponding
-  entry. When using `❖ unchanged` within a logical expression, make
+  This method updates the database when an entry is inserted, removed or
+  changed; an unchanged entry does not need to be rewritten. When using `❖ unchanged` within a logical expression, make
   sure the evaluation order is correct, specially regarding the use of
   short-circuiting operations. In some scenarios, order does matter.
 
@@ -646,6 +681,14 @@ as valid alternatives for traditional conditional flows, when applied.
 
 # Strings
 
+In Lua, `build_string` joins non-empty values with spaces and
+`replicate_pattern` applies a format to each list entry:
+
+```lua
+local options = build_string("--draft", "", "--synctex=1")
+local names = replicate_pattern("chapter-%s.tex", { "one", "two" })
+```
+
 String manipulation constitutes one of the foundations of rule interpretation in
 our tool. This section introduces methods for handling such types, as a means to
 offer high level constructs for users.
@@ -879,6 +922,12 @@ specific features of the underlying operating system.
 
 # Type checking
 
+Lua helpers `is_string`, `is_boolean`, `is_list` and `is_map` test Lua values.
+Both `is_list` and `is_map` recognize tables; they do not distinguish a sequence
+from a keyed table. Check the expected keys or sequence entries when that
+distinction matters. The `checkClass` method below belongs to MVEL's Java type
+system.
+
 In certain scenarios, a plain string representation of directive parameters
 might be inadequate or insufficient given the rule requirements. To this end,
 this section introduces methods related to type checking as a means to provide
@@ -963,28 +1012,40 @@ cycle.
 
 {% messagebox(title="Status for class loading and instantiation") %}
 The class loading and instantiation methods provided by arara typically return a
-pair composed of an integer value and a class or object reference. This integer
-value acts as a status of the underlying operation itself and might indicate
+pair composed of a status value and a class or object reference. The status
+acts as a description of the underlying operation itself and might indicate
 potential issues. The possible values are:
 
-- `0`: Successful execution
-- `1`: File does not exist
-- `2`: File URL is incorrect
-- `3`: Class was not found
-- `4`: Access policy violation
-- `5`: Instantiation exception
+- `SUCCESS`: Successful execution
+- `FILE_NOT_FOUND`: File does not exist
+- `MALFORMED_URL`: File URL is incorrect
+- `CLASS_NOT_FOUND`: Class was not found
+- `ILLEGAL_ACCESS`: Access policy violation
+- `INSTANTIATION_EXCEPTION`: Instantiation exception
 
-Please make sure to *always* check the returned integer status when using class
+Please make sure to *always* check the returned status when using class
 loading and instantiation methods in directive and rule contexts. This feature
 is quite powerful yet tricky and subtle!
 {% end %}
+
+Lua returns a table with `status` (one of the names above) and `value` (the
+opaque class or object reference), rather than an ordered pair:
+
+```lua
+local result = load_class("mymath.jar", "com.github.cereda.mymath.Arithmetic")
+if result.status ~= "SUCCESS" then
+  throw_error("Could not load the arithmetic class")
+end
+```
+
+The Java-method syntax in MVEL examples does not apply to Lua's opaque values.
+Both loading helpers are rejected in safe mode.
 
 - **[C|R]** `loadClass(File file, String name):
     Pair<ClassLoading.ClassLoadingStatus, Object>` This method loads a class
     based on the canonical name from the provided `File` reference and returns
     an ordered pair containing the status and the class reference itself. The
-    file must contain the Java bytecode, either directly accessible from a
-    `class` file or packaged inside a `jar` file. If an exception is raised,
+    reference must name a class-path directory or a `jar` archive. If an exception is raised,
     this method returns the `Object` class reference as second entry of the
     pair.
 
@@ -997,8 +1058,7 @@ is quite powerful yet tricky and subtle!
     Pair<ClassLoading.ClassLoadingStatus, Object>` This method loads a class
     based on the canonical name from the provided `String` reference and returns
     an ordered pair containing the status and the class reference itself. The
-    file must contain the Java bytecode, either directly accessible from a
-    `class` file or packaged inside a `jar` file.  If an exception is raised,
+    reference must name a class-path directory or a `jar` archive.  If an exception is raised,
     this method returns the `Object` class reference as second entry of the
     pair.
 
@@ -1011,8 +1071,8 @@ is quite powerful yet tricky and subtle!
     Pair<ClassLoading.ClassLoadingStatus, Object>` This method loads a class
     based on the canonical name from the provided `File` reference and returns
     an ordered pair containing the status and a proper corresponding object
-    instantiation. The file must contain the Java bytecode, either directly
-    accessible from a `class` file or packaged inside a `jar` file. If an
+    instantiation. The reference must name a class-path directory or a `jar`
+    archive. If an
     exception is raised, this method returns an `Object` object as second entry
     of the pair.
 
@@ -1025,8 +1085,8 @@ is quite powerful yet tricky and subtle!
     Pair<ClassLoading.ClassLoadingStatus, Object>` This method loads a class
     based on the canonical name from the provided `String` reference and returns
     an ordered pair containing the status and a proper corresponding object
-    instantiation. The file must contain the Java bytecode, either directly
-    accessible from a `class` file or packaged inside a `jar` file. If an
+    instantiation. The reference must name a class-path directory or a `jar`
+    archive. If an
     exception is raised, this method returns an `Object` object as second entry
     of the pair.
 
@@ -1116,6 +1176,17 @@ or use rules without interactive questions.
 {% end %}
 
 # Commands
+
+Lua command helpers accept nested argument tables and return a command handle:
+
+```lua
+return get_command_with_working_directory("build", "pdflatex",
+    { "--interaction=nonstopmode", "main file.tex" })
+```
+
+The file name remains one argument; it does not need shell quoting. The working
+directory is relative to the process directory unless an absolute path is given.
+The `get_command` variant uses the current project's working directory.
 
 arara features the `Command` object, a new approach for handling system commands
 based on a high level structure with explicit argument parsing.
@@ -1312,6 +1383,19 @@ consistently shared across rule contexts.
   ```java
   name = getSession().get('name');
   ```
+
+  In Lua, the session is a table of operations called with a dot, not a colon:
+
+  ```lua
+  local session = get_session()
+  session.put("source", to_file("thesis.tex"))
+  local source = session.get("source")
+  local present = exists(source)
+  session.remove("source")
+  ```
+
+  File and command handles keep their types when stored in the session.
+  Session values last for the current process, unlike the file database.
 
 - **[R]** `throwError(String message): void` This method deliberately throws an
     error to be intercepted later on during execution. Consider using such

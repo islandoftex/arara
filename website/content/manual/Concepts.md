@@ -554,15 +554,13 @@ directive*. Let us see an example:
 
 It is important to observe that there is no need of them to be in contiguous
 lines, i.e, provided that the syntax for parametrized directives hold for the
-line composition, lines can be distributed all over the code. In fact, the log
-file (when enabled) will contain a list of all line numbers that compose a
-directive. This feature is discussed later on.
+line composition, lines can be distributed all over the code. The source line
+numbers are tracked together as one directive.
 
 {% messagebox(title="Keep lines together") %}
 Although it is possible to spread lines of a multiline directive all over the
 code, it is considered good practice to keep them together for easier reading
-and editing. In any case, you can always see which lines compose a directive by
-inspecting the log file.
+and editing.
 {% end %}
 
 arara provides logical expressions and special operators processed at runtime
@@ -635,57 +633,20 @@ command line flag. We discuss this feature later on.
 
 All directives, regardless of their type, are internally mapped alongside with
 the `reference` parameter, discussed earlier on, as a special variable in the
-rule context. When inspecting the log file, you will find all map keys and
-values for each extracted directive (actually, there is an entire log section
-devoted to detailing directives found in the code). See, for instance, the
-report of the directive extraction and normalization process performed by arara
-when inspecting `doc2.tex`, available in the log file. Note that timestamps were
-deliberately removed in order to declutter the output, and line breaks were
-included in order to easily spot the log entries.
-
-```tex
-% arara: pdflatex
-% arara: pdflatex: { shell: yes }
-\documentclass{article}
-
-\begin{document}
-Hello world.
-\end{document}
-\end{ncodebox}
-```
-
-```
-Directive: { identifier: pdflatex, parameters:
-{reference=/home/islandoftex/doc2.tex},
-conditional: { NONE }, lines: [1] }
-
-Directive: { identifier: pdflatex, parameters:
-{shell=yes, reference=/home/islandoftex/doc2.tex},
-conditional: { NONE }, lines: [2] }
-```
+rule context. The diagnostic log identifies the interpreted rule, its engine
+and the selected rule file; see [Logging](@/manual/Logging.md) for the available
+records.
 
 The directive context also features another special parameter named `files`
 which expects a non-empty list of file names as plain string values. For each
 element of this list, arara will replicate the current directive and point the
 element being iterated as current `reference` value (resolved to a proper
-absolute, canonical path of the file name). See, for instance, the report of the
-directive extraction and normalization process performed by arara when
-inspecting `doc3.tex`, available in the log file.
+absolute, normalized path of the file name). For instance, consider `doc3.tex`:
 
 ```tex
 % arara: pdflatex: { files: [ doc1.tex, doc2.tex ] }
 Hello world.
 \bye
-```
-
-```
-Directive: { identifier: pdflatex, parameters:
-{reference=/home/islandoftex/doc1.tex},
-conditional: { NONE }, lines: [1] }
-
-Directive: { identifier: pdflatex, parameters:
-{reference=/home/islandoftex/doc2.tex},
-conditional: { NONE }, lines: [1] }
 ```
 
 It is important to observe that, in this case, `doc3.tex` is a plain TeX file,

@@ -1,7 +1,7 @@
 +++
 title = "Deploying the tool"
 description = "Deploying the tool"
-weight = 10
+weight = 11
 +++
 
 As previously mentioned, arara runs on top of a Java virtual machine, available

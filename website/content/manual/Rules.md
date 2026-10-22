@@ -1,7 +1,7 @@
 +++
 title = "The official rule pack"
 description = "The official rule pack"
-weight = 8
+weight = 9
 +++
 
 arara ships with a pack of default rules, placed inside a special subdirectory

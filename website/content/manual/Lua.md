@@ -1,7 +1,7 @@
 +++
 title = "Lua rules"
 description = "Lua rule format and expressions"
-weight = 13
+weight = 14
 +++
 
 `arara --engine lua document.tex` selects Lua rule files and expressions.
@@ -112,9 +112,9 @@ Shared helpers have camelCase and snake_case spellings, such as `getCommand`
 and `get_command`. Paths returned by `to_file` are opaque handles. Session
 operations use dot calls: `get_session().put("key", value)`.
 
-Helper arguments must have the documented types: a number does not silently
-become a string, and a string such as `"false"` does not stand in for a boolean
-argument. The error identifies the helper and the argument that did not match.
+Helpers validate their input types: `trim_spaces` requires a string, for
+instance, and the append argument of `write_to_file` requires a boolean. The
+error identifies the helper and the argument that did not match.
 The helper reference and Lua examples are in [Methods](@/manual/Methods.md).
 
 # Conditionals and options
