@@ -7,5 +7,6 @@ import org.islandoftex.arara.api.localization.MPPLocale
 data class UserInterfaceOptions(
     override val locale: MPPLocale = MPPLocale("en"),
     override val terminalOutputWidth: Int = 65,
-    override val consoleMode: String? = null
+    override val consoleMode: String? = null,
+    override val enableAnimations: Boolean = true
 ) : UserInterfaceOptions

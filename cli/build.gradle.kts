@@ -39,7 +39,6 @@ kotlin {
         configurations {
             jvmMainImplementation {
                 exclude(group = "com.github.ajalt.mordant", module = "mordant-jvm-ffm")
-                exclude(group = "com.github.ajalt.mordant", module = "mordant-jvm-jna")
             }
         }
 
@@ -59,6 +58,7 @@ kotlin {
                 implementation(libs.kotlin.reflect)
                 implementation(libs.clikt)
                 implementation(libs.mordant.core)
+                runtimeOnly(libs.mordant.jna)
                 implementation(libs.clikt.markdown)
                 implementation(libs.kotaml)
                 implementation(libs.mvel)
@@ -100,6 +100,7 @@ distributions {
             classpath = jvmRuntimeClasspath
             outputDir = layout.buildDirectory.file("scripts").get().asFile
             applicationName = project.name
+            defaultJvmOpts = listOf("--enable-native-access=ALL-UNNAMED")
         }
 
         contents {
@@ -114,6 +115,14 @@ distributions {
 }
 
 tasks {
+
+    withType<JavaExec>().configureEach {
+        jvmArgs("--enable-native-access=ALL-UNNAMED")
+    }
+
+    withType<Test>().configureEach {
+        jvmArgs("--enable-native-access=ALL-UNNAMED")
+    }
 
     build {
         dependsOn("shadowJar")
@@ -130,6 +139,8 @@ tasks {
     named<ShadowJar>("shadowJar").configure {
         archiveAppendix.set("with-deps")
         archiveClassifier.set("")
+        // java -jar needs the same native terminal access as the generated launchers.
+        manifest.attributes["Enable-Native-Access"] = "ALL-UNNAMED"
 
         transform<Log4j2PluginsCacheFileTransformer>()
         filesMatching("META-INF/*.kotlin_module") {
@@ -145,6 +156,7 @@ tasks {
             exclude(dependency("org.apache.logging.log4j:log4j-layout-template-json:.*"))
             exclude(dependency("org.mvel:mvel2:.*"))
             exclude(dependency("com.github.ajalt.mordant:.*"))
+            exclude(dependency("net.java.dev.jna:.*"))
         }
     }
 }

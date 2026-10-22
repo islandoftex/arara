@@ -99,7 +99,7 @@ or `without-directives`. Definitions are lists of directive lines.
 
 | Lua key | YAML equivalent |
 | --- | --- |
-| `paths`, `language`, `loops`, `verbose`, `header` | Same name |
+| `paths`, `language`, `loops`, `verbose`, `header`, `animations` | Same name |
 | `file_types` | `filetypes` |
 | `database` | `dbname` |
 | `log.format`, `log.file` | `logformat`, `logname` |
@@ -208,6 +208,14 @@ resolution for a path in plain string should be kept as simple as possible, so
 
     ```yaml
     loops: 30
+    ```
+
+- **[O]** *(boolean)* `animations` (default: `true`): Enables live progress for
+  long-running styled tasks on interactive terminals. Set it to `false` to keep
+  task output static. Lua configurations use the same key.
+
+    ```yaml
+    animations: false
     ```
 
 - **[O]** *(boolean)* `verbose` (default: `false`): This key activates or

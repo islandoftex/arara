@@ -672,6 +672,11 @@ boolean entries, but not skipped directives. Dry runs are labelled as simulation
 rather than successful executions. `--console plain` retains the classic layout
 and is the default. The option overrides the configuration's `console` value.
 
+On interactive terminals with cursor support, long-running styled tasks show a
+spinner and elapsed time after one second. Set `animations: false` in YAML or
+`animations = false` in Lua configuration to disable it. Verbose runs, dry runs
+and redirected output remain static. Dialogs suspend progress before prompting.
+
 Styled output uses compact rows on wide terminals and wraps details on narrow
 ones. It falls back to ASCII markers without ANSI escapes in pipes.
 `--verbose` includes command details and streams tool output; otherwise a failed

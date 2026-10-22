@@ -19,6 +19,12 @@ interface ConsoleRenderer {
     fun displaySeparator(): String
     fun displayOutputSeparator(message: String): String
 
+    /** Suspend live feedback before another component prints or asks for input. */
+    fun suspendProgress() { }
+
+    /** Release presentation-owned resources; host streams remain open. */
+    fun close() { }
+
     fun printProjectInformation(name: String, directory: String) { }
 
     fun printRunSummary(summary: RunSummary) =

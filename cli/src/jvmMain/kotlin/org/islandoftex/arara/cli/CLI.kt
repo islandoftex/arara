@@ -169,10 +169,13 @@ class CLI : CliktCommand("arara") {
     private fun applyConsole() {
         val mode = ConsoleMode.resolve(console, Session.userInterfaceOptions.consoleMode)
         if (mode != appliedConsole) {
+            DisplayUtils.renderer.close()
             DisplayUtils.renderer = mode.renderer(terminal)
             Dialogs.renderer = when (mode) {
-                ConsoleMode.PLAIN -> TerminalDialogRenderer()
-                ConsoleMode.STYLED -> org.islandoftex.arara.cli.console.styled.StyledDialogRenderer(terminal)
+                ConsoleMode.PLAIN -> TerminalDialogRenderer(beforeDialog = { DisplayUtils.renderer.suspendProgress() })
+                ConsoleMode.STYLED -> org.islandoftex.arara.cli.console.styled.StyledDialogRenderer(
+                    terminal, beforeDialog = { DisplayUtils.renderer.suspendProgress() }
+                )
             }
             appliedConsole = mode
         }
@@ -227,7 +230,8 @@ class CLI : CliktCommand("arara") {
             locale = language?.let { MPPLocale(it) }
                 ?: Session.userInterfaceOptions.locale,
             terminalOutputWidth = Session.userInterfaceOptions.terminalOutputWidth,
-            consoleMode = Session.userInterfaceOptions.consoleMode
+            consoleMode = Session.userInterfaceOptions.consoleMode,
+            enableAnimations = Session.userInterfaceOptions.enableAnimations
         )
         LanguageController.loadMessagesFor(Session.userInterfaceOptions.locale)
 
@@ -314,12 +318,16 @@ class CLI : CliktCommand("arara") {
         try {
             runSession(configuration)
         } finally {
-            configuration.restore()
-            LinearExecutor.hooks = previousHooks
-            DisplayUtils.renderer = previousRenderer
-            DisplayUtils.presentation = previousPresentation
-            Dialogs.renderer = previousDialogs
-            LoggingUtils.restoreRun(previousRun)
+            try {
+                DisplayUtils.renderer.close()
+            } finally {
+                configuration.restore()
+                LinearExecutor.hooks = previousHooks
+                DisplayUtils.renderer = previousRenderer
+                DisplayUtils.presentation = previousPresentation
+                Dialogs.renderer = previousDialogs
+                LoggingUtils.restoreRun(previousRun)
+            }
         }
     }
 

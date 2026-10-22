@@ -12,7 +12,8 @@ import java.io.PrintWriter
 open class TerminalDialogRenderer(
     private val input: BufferedReader = System.`in`.bufferedReader(),
     protected val output: PrintWriter = PrintWriter(System.out, true),
-    private val columns: () -> Int = { Session.userInterfaceOptions.terminalOutputWidth }
+    private val columns: () -> Int = { Session.userInterfaceOptions.terminalOutputWidth },
+    protected val beforeDialog: () -> Unit = {}
 ) : DialogRenderer {
     override fun showMessage(type: Int, title: String, text: String) {
         block(type, title, text)
@@ -51,6 +52,7 @@ open class TerminalDialogRenderer(
     )
 
     protected open fun block(type: Int, title: String, text: String) {
+        beforeDialog()
         line("-".repeat(width()))
         line(heading(type, title))
         line(text)

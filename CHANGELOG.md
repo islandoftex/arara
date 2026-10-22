@@ -38,7 +38,9 @@ on.
   `console: styled` (Lua: `console = "styled"`). Plain output remains the default.
   Styled runs include dialog frames, project headings and per-project file
   summaries with task counts, timings and outcomes. Narrow terminals use wrapped
-  details; dry runs are labelled as simulations. Captured failure output marks
+  details; dry runs are labelled as simulations. Long-running interactive tasks
+  show a delayed spinner and elapsed time; `animations: false` (Lua:
+  `animations = false`) disables it. Captured failure output marks
   truncation and points to the full log when logging is enabled.
 
 * Project specifications receive `user.home`, `user.name` and `cwd`, matching

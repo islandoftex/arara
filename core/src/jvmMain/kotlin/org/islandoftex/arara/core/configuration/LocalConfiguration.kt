@@ -37,7 +37,8 @@ data class LocalConfiguration(
     val preambles: Map<String, String> = mapOf(),
     val defaultPreamble: String? = null,
     val prependPreambleIfDirectivesGiven: Boolean = true,
-    @Transient private val expandPathTokens: Boolean = true
+    @Transient private val expandPathTokens: Boolean = true,
+    private val animations: Boolean? = null
 ) {
     /**
      * Convert the relevant properties of the configuration to execution
@@ -149,7 +150,8 @@ data class LocalConfiguration(
             locale = language?.let { MPPLocale(it) }
                 ?: baseOptions.locale,
             terminalOutputWidth = baseOptions.terminalOutputWidth,
-            consoleMode = console ?: baseOptions.consoleMode
+            consoleMode = console ?: baseOptions.consoleMode,
+            enableAnimations = animations ?: baseOptions.enableAnimations
         )
     }
 

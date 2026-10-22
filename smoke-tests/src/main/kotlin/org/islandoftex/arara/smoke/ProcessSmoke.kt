@@ -14,6 +14,7 @@ import org.islandoftex.arara.api.files.toMPPPath
 import java.io.ByteArrayOutputStream
 import java.nio.file.Files
 import java.util.concurrent.TimeUnit
+import java.util.jar.JarFile
 import javax.xml.stream.XMLOutputFactory
 import javax.xml.stream.XMLStreamWriter
 import kotlin.concurrent.thread
@@ -103,6 +104,26 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath, private
     private fun contains(output: String, text: String) = check(text in output) { "Missing $text\n$output" }
 
     val cases: Map<String, (MPPPath) -> Unit> = linkedMapOf(
+        "packaged_native_terminal_provider_and_access" to { _ ->
+            JarFile(jar.toJVMFile()).use { archive ->
+                val provider = "com.github.ajalt.mordant.terminal.terminalinterface.jna.TerminalInterfaceProviderJna"
+                check(archive.getJarEntry(provider.replace('.', '/') + ".class") != null) {
+                    "The shaded jar lost the native terminal provider"
+                }
+                val service = checkNotNull(archive.getJarEntry(
+                    "META-INF/services/com.github.ajalt.mordant.terminal.TerminalInterfaceProvider"
+                )) { "Missing terminal provider service registration" }
+                val registration = archive.getInputStream(service).bufferedReader().use { it.readText() }
+                check(provider in registration) { "Native terminal provider is not registered" }
+                check(archive.getJarEntry("com/sun/jna/Native.class") != null) { "The shaded jar lost JNA" }
+                check(archive.entries().asSequence().any { it.name.endsWith("libjnidispatch.so") }) {
+                    "The shaded jar lost JNA's native libraries"
+                }
+                check(archive.manifest.mainAttributes.getValue("Enable-Native-Access") == "ALL-UNNAMED") {
+                    "The executable jar does not enable its native terminal access"
+                }
+            }
+        },
         "packaged_version_and_completion" to { root ->
             val command = listOf(java.toString(), "-jar", jar.toString())
             val version = run(command + "--version", root)
@@ -452,6 +473,24 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath, private
             check("\u001b" !in lua) { "Piped Lua styled output contains ANSI escapes" }
             contains(lua, "SUCCESS")
             contains(lua, "run.tex")
+        },
+        "redirected_long_running_tasks_never_animate_in_either_configuration_format" to { root ->
+            rule(root, native("sleep"))
+            for (format in listOf("yaml", "lua")) {
+                val config = root.resolve("arararc.$format")
+                for (enabled in listOf(false, true)) {
+                    config.writeText(if (format == "yaml")
+                        "!config\npaths: ['.']\nconsole: styled\nanimations: $enabled\n"
+                        else "return { paths = { cwd }, console = 'styled', animations = $enabled }")
+                    val output = execute(root, APPLICATION_ERROR, listOf("--timeout", "1500"), environment = mapOf(
+                        "TERM" to "xterm", "FORCE_COLOR" to "3", "CI" to "true"
+                    ))
+                    check("\u001b" !in output) { "Redirected task emitted terminal controls" }
+                    check("⠋" !in output) { "Redirected task emitted progress frames" }
+                    contains(output, "FAILURE")
+                }
+                Files.delete(config.toJVMPath())
+            }
         },
         "styled_verbose_streams_once_and_dry_run_does_not_launch" to { root ->
             rule(root, native("7"))

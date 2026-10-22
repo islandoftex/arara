@@ -20,6 +20,10 @@ public interface UserInterfaceOptions {
      * messages not the messages of external tools that are called.
      */
     public val terminalOutputWidth: Int
+
+    /** Whether styled tasks may animate on an interactive terminal with cursor support. */
+    public val enableAnimations: Boolean get() = true
+
     /** Console presentation requested by configuration, or the host default. */
     public val consoleMode: String? get() = null
 }

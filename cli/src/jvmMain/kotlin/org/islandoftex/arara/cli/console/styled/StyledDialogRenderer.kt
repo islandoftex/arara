@@ -11,9 +11,11 @@ import java.io.PrintWriter
 class StyledDialogRenderer(
     private val terminal: Terminal,
     input: BufferedReader = System.`in`.bufferedReader(),
-    output: PrintWriter = PrintWriter(System.out, true)
-) : TerminalDialogRenderer(input, output, { terminal.size.width.coerceAtLeast(1) }) {
+    output: PrintWriter = PrintWriter(System.out, true),
+    beforeDialog: () -> Unit = {}
+) : TerminalDialogRenderer(input, output, { terminal.size.width.coerceAtLeast(1) }, beforeDialog) {
     override fun block(type: Int, title: String, text: String) {
+        beforeDialog()
         val rule = if (terminal.terminalInfo.ansiLevel == AnsiLevel.NONE) "-" else "─"
         val titleLine = heading(type, title)
         val heading = when (type) {

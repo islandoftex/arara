@@ -98,3 +98,12 @@ the process. Save and restore values changed by an embedding, and serialize runs
 using this state rather than treating the executor as an independent instance
 per request. Successful class loaders stay available for lazy class and resource
 loading; call `ClassLoading.closeLoaders()` when the host no longer needs them.
+
+The CLI closes the console renderers it creates and restores the host's renderer.
+A host using a `StyledConsoleRenderer` directly must call `close()` when finished
+to stop live progress and release its timer. Call `suspendProgress()` before
+printing through another component or opening a custom dialog.
+
+Hosts using the CLI's native terminal detection should launch with
+`--enable-native-access=ALL-UNNAMED`. The packaged arara launchers enable this
+access themselves.

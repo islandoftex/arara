@@ -20,9 +20,16 @@ import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import kotlin.time.Duration.Companion.seconds
+import kotlin.time.TimeSource
 
 @Suppress("TooManyFunctions")
-class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
+class StyledConsoleRenderer internal constructor(
+    private val terminal: Terminal,
+    clock: TimeSource,
+    schedulerFactory: () -> ProgressScheduler
+) : ConsoleRenderer {
+    constructor(terminal: Terminal) : this(terminal, TimeSource.Monotonic, { ExecutorProgressScheduler() })
+
     private val longestMatch: Int
         get() = maxOf(
             layout.cells(LanguageController.messages.infoLabelOnSuccess),
@@ -31,6 +38,7 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
         )
 
     private val layout = StyledLayout(terminal)
+    private val progress = LiveProgress(terminal, layout, clock, schedulerFactory)
     private var compactEntry = false
     private var displayLine = false
     private var displayResult = false
@@ -47,6 +55,15 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
     private val isDecorated: Boolean =
         terminal.terminalInfo.ansiLevel != AnsiLevel.NONE
 
+    private val canAnimate: Boolean
+        get() = Session.userInterfaceOptions.enableAnimations && isDecorated &&
+            terminal.terminalInfo.outputInteractive && cursorAvailable
+
+    // Mordant 3.1's supportsAnsiCursor flag is false on ordinary terminals.
+    // Its cursor API returns no movements when cursor control is unavailable.
+    private val cursorAvailable: Boolean
+        get() = terminal.cursor.getMoves { startOfLine() }.isNotEmpty()
+
     private val rule: String
         get() = if (isDecorated) StyledTheme.ruleGlyph else StyledTheme.ruleFallback
 
@@ -56,17 +73,20 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
     private val muted get() = terminal.theme.muted
 
     override fun printBanner() {
+        suspendProgress()
         layout.print(StyledTheme.logo(DisplayUtils.logoString))
         layout.print(muted("arara ${AraraAPI.version}"))
         terminal.println("")
     }
 
     override fun printProjectInformation(name: String, directory: String) {
+        suspendProgress()
         layout.print("${LanguageController.messages.infoLabelProject} $name ($directory)")
         terminal.println("")
     }
 
     override fun printFileInformation(file: ProjectFile) {
+        suspendProgress()
         displayRolling = false
         displayLine = false
         displayResult = false
@@ -86,6 +106,8 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
     }
 
     override fun printEntry(name: String, task: String) {
+        suspendProgress()
+        compactEntry = false
         displayLine = true
         displayResult = false
         if (isDryRunMode) {
@@ -98,14 +120,20 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
     }
 
     private fun buildShortEntry(name: String, task: String) {
-        val reserved = layout.cells(successGlyph()) + 1 + longestMatch
-        val headWidth = layout.width - reserved - ENTRY_SPACING
+        val animated = canAnimate
+        val limit = layout.width - if (animated) 1 else 0
+        val wordWidth = maxOf(longestMatch, if (animated) LiveProgress.CLOCK_WIDTH else 0)
+        val reserved = layout.cells(successGlyph()) + 1 + wordWidth
+        val headWidth = limit - reserved - ENTRY_SPACING
         compactEntry = headWidth >= MINIMUM_HEAD_WIDTH
         val head = "${runningGlyph()} $name · $task"
         if (compactEntry) {
             val fitted = layout.fit(head, headWidth)
-            val fill = layout.width - layout.cells(fitted) - reserved - HEADER_SPACING
+            val fill = limit - layout.cells(fitted) - reserved - HEADER_SPACING
             terminal.print(fitted + " " + muted(leader.repeat(fill)) + " ")
+            if (animated) {
+                progress.start(limit - reserved, reserved, Session.userInterfaceOptions.locale.decimalSeparator)
+            }
         } else {
             layout.print(head)
         }
@@ -133,6 +161,7 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
     }
 
     override fun printEntryResult(value: Boolean) {
+        stopProgress()
         displayLine = false
         displayResult = true
 
@@ -158,6 +187,7 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
     }
 
     override fun printException(text: String, details: String?) {
+        stopProgress()
         displayException = true
 
         if (displayResult)
@@ -168,6 +198,8 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
             if (compactEntry && !isVerboseMode) terminal.println(error) else layout.print(error)
             terminal.println("")
         }
+        displayLine = false
+        compactEntry = false
         layout.print(terminal.theme.danger(text))
         if (details != null) {
             terminal.println("")
@@ -184,6 +216,7 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
     }
 
     override fun printWrapped(text: String) {
+        suspendProgress()
         layout.print(text)
     }
 
@@ -210,6 +243,7 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
     }
 
     override fun printTime(seconds: Double) {
+        suspendProgress()
         if (displayLine || displayException)
             terminal.println("")
 
@@ -257,6 +291,7 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
     }
 
     override fun printCommandFailure(output: String) {
+        suspendProgress()
         if (!isVerboseMode && output.isNotBlank()) {
             val lines = output.trimEnd().lineSequence().toList()
             terminal.println("")
@@ -272,7 +307,10 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
         }
     }
 
-    override fun printRunSummary(summary: RunSummary) = StyledSummaryRenderer(terminal, layout).print(summary)
+    override fun printRunSummary(summary: RunSummary) {
+        suspendProgress()
+        StyledSummaryRenderer(terminal, layout).print(summary)
+    }
 
     override fun printRunSummary(success: Boolean, files: List<Pair<String, Int?>>) = printRunSummary(
         RunSummary(success, isDryRunMode, files.map { (path, code) ->
@@ -280,6 +318,26 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
             FileSummary(file, "", file.parent, exitCode = code)
         })
     )
+
+    private fun stopProgress() {
+        if (progress.stop() && displayLine && compactEntry) {
+            terminal.println("")
+            compactEntry = false
+        }
+    }
+
+    override fun suspendProgress() {
+        stopProgress()
+        if (displayLine && compactEntry) {
+            terminal.println("")
+            compactEntry = false
+        }
+    }
+
+    override fun close() {
+        suspendProgress()
+        progress.close()
+    }
 
     private companion object {
         const val FAILURE_TAIL_LINES = 12
