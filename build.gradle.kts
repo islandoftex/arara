@@ -184,9 +184,10 @@ tasks.register<VerifyPublicationArtifacts>("checkPublications") {
     publicationVersion.set(project.version.toString())
 }
 
-subprojects {
+val multiplatformPluginId = libs.plugins.kotlin.multiplatform.get().pluginId
 
-    if (!path.contains("docs") && name != "smoke-tests") {
+subprojects {
+    plugins.withId(multiplatformPluginId) {
 
         apply(plugin = "org.jetbrains.dokka")
 
@@ -198,8 +199,6 @@ subprojects {
         ).apply {
             if (project.name == "cli") put("Main-Class", "org.islandoftex.arara.cli.CLIKt")
         }
-
-        apply(plugin = "org.jetbrains.kotlin.multiplatform")
 
         configure<KotlinMultiplatformExtension> {
             jvmToolchain(araraJVMInt)
@@ -260,12 +259,12 @@ subprojects {
                 }
             }
 
-            withType<Jar> {
+            withType<Jar>().configureEach {
                 archiveBaseName.set("arara-${project.name}")
                 manifest.attributes(mainAttributes)
             }
 
-            withType<JavaCompile> {
+            withType<JavaCompile>().configureEach {
                 options.release.set(araraJVMInt)
             }
         }

@@ -14,6 +14,9 @@
   (CTAN/TDS packaging, publication) under `org.islandoftex.arara.build`.
 - Dependency versions live in `gradle/libs.versions.toml` (the version catalog).
   Edit versions there, not in individual `build.gradle.kts` files.
+  Modules apply Kotlin plugins through catalog aliases and declare their own
+  production/test dependencies. The root reacts to KMP plugin application to
+  configure shared compiler, test, documentation and publication conventions.
 
 ### Module roles (dependencies, not obvious from names)
 
