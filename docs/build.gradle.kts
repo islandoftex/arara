@@ -8,7 +8,7 @@ import org.islandoftex.arara.build.website.WebsiteContent
 val website = rootProject.layout.projectDirectory.dir("website")
 val websiteBaseUrl = providers.environmentVariable("PAGES_URL").filter { it.isNotBlank() }.orElse(WebsiteContent.SITE_URL)
 
-val prepareWebsite by tasks.registering(PrepareWebsiteTask::class) {
+val prepareWebsite = tasks.register<PrepareWebsiteTask>("prepareWebsite") {
     group = "documentation"
     websiteDirectory.set(website)
     themeDirectory.set(website.dir("themes/devlab-theme"))
@@ -17,7 +17,7 @@ val prepareWebsite by tasks.registering(PrepareWebsiteTask::class) {
     outputDirectory.set(layout.buildDirectory.dir("website/source"))
 }
 
-val buildWebsite by tasks.registering(Exec::class) {
+val buildWebsite = tasks.register<Exec>("buildWebsite") {
     group = "documentation"
     dependsOn(prepareWebsite)
     inputs.dir(prepareWebsite.flatMap { it.outputDirectory })
@@ -36,14 +36,14 @@ val buildWebsite by tasks.registering(Exec::class) {
     }
 }
 
-val checkWebsite by tasks.registering(CheckWebsiteTask::class) {
+val checkWebsite = tasks.register<CheckWebsiteTask>("checkWebsite") {
     group = "verification"
     dependsOn(buildWebsite)
     siteDirectory.set(website.dir("public"))
     siteUrl.set(websiteBaseUrl)
 }
 
-val writeVersionFile by tasks.registering {
+val writeVersionFile = tasks.register("writeVersionFile") {
     val output = layout.projectDirectory.file("resources/version.txt")
     inputs.property("version", project.version.toString())
     outputs.file(output)

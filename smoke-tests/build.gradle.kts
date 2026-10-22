@@ -4,7 +4,7 @@ plugins {
 }
 
 kotlin {
-    jvmToolchain(21)
+    jvmToolchain(providers.gradleProperty("arara.jvm.target").get().toInt())
 }
 
 dependencies {

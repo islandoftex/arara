@@ -11,6 +11,7 @@ import org.islandoftex.arara.build.VerifyPublicationConsumer
 import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.gradle.jvm.toolchain.JavaToolchainService
 import org.jetbrains.dokka.gradle.DokkaExtension
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import java.nio.file.Path
@@ -123,24 +124,12 @@ tasks {
 
 version = spotlessChangelog.versionNext
 
-// ----------------------------------------------------------------------
-// JVM targets and Kotlin API and language versions, with corresponding
-// defaults as fallback, defined in gradle.properties (see keys)
-// ----------------------------------------------------------------------
-val araraJVMString = runCatching { extra["arara.jvm.target"] as String }
-        .getOrDefault("21")
-
-val araraJVMTarget = runCatching { JvmTarget.fromTarget(araraJVMString) }
-        .getOrDefault(JvmTarget.JVM_21)
-
-val araraJVMInt = araraJVMString.toIntOrNull() ?: 21
-
-val araraKotlinAPI = runCatching { extra["arara.kotlin.api"] as String }
-        .getOrDefault("2.1")
-
-val araraKotlinLanguage = runCatching { extra["arara.kotlin.language"] as String }
-        .getOrDefault("2.1")
-// ----------------------------------------------------------------------
+// Compiler settings are required properties; invalid values fail during configuration.
+val araraJVMString = providers.gradleProperty("arara.jvm.target").get()
+val araraJVMTarget = JvmTarget.fromTarget(araraJVMString)
+val araraJVMInt = araraJVMString.toInt()
+val araraKotlinAPI = KotlinVersion.fromVersion(providers.gradleProperty("arara.kotlin.api").get())
+val araraKotlinLanguage = KotlinVersion.fromVersion(providers.gradleProperty("arara.kotlin.language").get())
 
 allprojects {
     group = "org.islandoftex.arara"
@@ -217,6 +206,11 @@ subprojects {
         apply(plugin = "org.jetbrains.kotlin.multiplatform")
 
         configure<KotlinMultiplatformExtension> {
+            jvmToolchain(araraJVMInt)
+            compilerOptions {
+                apiVersion.set(araraKotlinAPI)
+                languageVersion.set(araraKotlinLanguage)
+            }
 
             jvm {
                 compilerOptions {
@@ -225,27 +219,20 @@ subprojects {
             }
 
             sourceSets {
-                all {
-                    languageSettings.apply {
-                        languageVersion = araraKotlinLanguage
-                        apiVersion = araraKotlinAPI
-                    }
-                }
-
-                val commonMain by getting {
+                named("commonMain") {
                     dependencies {
                         implementation(kotlin("stdlib-common"))
                     }
                 }
 
-                val commonTest by getting {
+                named("commonTest") {
                     dependencies {
                         implementation(kotlin("test-common"))
                         implementation(kotlin("test-annotations-common"))
                     }
                 }
 
-                val jvmTest by getting {
+                named("jvmTest") {
                     dependencies {
                         implementation(kotlin("test-junit5"))
                         runtimeOnly(engine)
@@ -305,8 +292,7 @@ subprojects {
             }
 
             withType<JavaCompile> {
-                sourceCompatibility = araraJVMString
-                targetCompatibility = araraJVMString
+                options.release.set(araraJVMInt)
             }
         }
 

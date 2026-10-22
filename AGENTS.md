@@ -4,7 +4,8 @@
 
 - Kotlin Multiplatform (KMP) Gradle build, JVM-only targets. Minimum JRE 21.
   Kotlin 2.4, configured in `gradle.properties` (`arara.jvm.target`,
-  `arara.kotlin.api`, `arara.kotlin.language`).
+  `arara.kotlin.api`, `arara.kotlin.language`). Invalid compiler settings fail
+  during configuration rather than falling back to another target.
 - Development happens on GitLab (`gitlab.com/islandoftex/arara`); the GitHub
   repo is a mirror. The working branch is `development` (the default, per
   `origin/HEAD`); `master` receives releases. See README for the upstream note.
@@ -180,7 +181,7 @@ on Java 21. Artifacts are under `build/publication-check/repository`.
 `flake.nix` exposes `.#website` (the Zola site) and an independent default
 development shell. `nix develop` supplies `corretto21`, `jdk25`,
 `weasyprint`, `zola`, `zip`, and `nixpkgs-fmt` for development and documentation
-builds. Gradle runs on JDK 21; the CLI compiler uses the JDK 21 toolchain.
+builds. Gradle runs on JDK 21; all application modules compile with the JDK 21 toolchain.
 The shell registers both Nix JDK homes explicitly and disables automatic
 JDK discovery/downloads, since generic Linux JDKs cannot run in the Nix CI
 image. Existing `GRADLE_OPTS` settings are preserved.

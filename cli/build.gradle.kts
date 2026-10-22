@@ -14,26 +14,8 @@ plugins {
 
 val entryPath = "org.islandoftex.arara.cli.CLIKt"
 
-// ----------------------------------------------------------------------
-// The JVM toolchain, with its corresponding default as fallback, defined
-// in gradle.properties (see key)
-// ----------------------------------------------------------------------
-val toolchain = runCatching { (extra["arara.jvm.target"] as String).toInt() }
-        .getOrDefault(21)
-// ----------------------------------------------------------------------
-
 kotlin {
     compilerOptions.freeCompilerArgs.add("-Xexpect-actual-classes")
-
-    // ----------------------------------------------------------------------
-    // define the JVM toolchain (we can also set the vendor, if needed)
-    // ----------------------------------------------------------------------
-    // jvmToolchain {
-    //    languageVersion.set(JavaLanguageVersion.of(toolchain))
-    //    vendor.set(JvmVendorSpec.AMAZON)
-    // }
-    // ----------------------------------------------------------------------
-    jvmToolchain(toolchain)
 
     jvm {
 
@@ -103,7 +85,7 @@ distributions {
                 configurations.getByName("jvmRuntimeClasspath"),
         )
 
-        val startScripts by tasks.registering(CreateStartScripts::class) {
+        val startScripts = tasks.register<CreateStartScripts>("startScripts") {
             mainClass = entryPath
             classpath = jvmRuntimeClasspath
             outputDir = layout.buildDirectory.file("scripts").get().asFile
