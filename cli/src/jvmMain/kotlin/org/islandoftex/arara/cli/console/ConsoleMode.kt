@@ -6,7 +6,6 @@ import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.cli.console.plain.PlainConsoleRenderer
 import org.islandoftex.arara.cli.console.styled.StyledConsoleRenderer
 import org.islandoftex.arara.core.localization.LanguageController
-import org.islandoftex.arara.core.utils.formatString
 
 /** CLI selection overrides configuration; plain is the default. */
 enum class ConsoleMode {
@@ -22,7 +21,7 @@ enum class ConsoleMode {
             null, "plain" -> PLAIN
             "styled" -> STYLED
             else -> throw AraraException(
-                LanguageController.messages.ERROR_CONSOLE_MODE_UNKNOWN.formatString(configured)
+                LanguageController.messages.errorConsoleModeUnknown(configured)
             )
         }
     }

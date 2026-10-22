@@ -16,12 +16,12 @@ import org.luaj.vm2.LuaBoolean
  */
 class LuaConditionalEvaluator(executionOptions: ExecutionOptions) : DirectiveConditionalEvaluator(executionOptions) {
     override fun evaluateCondition(conditional: DirectiveConditional): Boolean {
-        val result = LuaConversion.withLuaErrorHandling(LanguageController.messages.ERROR_EVALUATE_COMPILATION_FAILED) {
+        val result = LuaConversion.withLuaErrorHandling(LanguageController.messages.errorEvaluateCompilationFailed) {
             LuaConditionalEnvironment.newGlobals()
                 .load("return (" + conditional.condition + ")", "directive-conditional").call()
         }
         val value = (result as? LuaBoolean)?.toboolean()
-            ?: throw AraraException(LanguageController.messages.ERROR_EVALUATE_NOT_BOOLEAN_VALUE)
+            ?: throw AraraException(LanguageController.messages.errorEvaluateNotBooleanValue)
         return if (conditional.type in setOf(DirectiveConditionalType.UNLESS, DirectiveConditionalType.UNTIL)) {
             !value
         } else value

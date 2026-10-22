@@ -72,7 +72,7 @@ class Interpreter(
             DisplayUtils.printAuthors(authors)
             DisplayUtils.printWrapped(
                 LanguageController.messages
-                    .INFO_INTERPRETER_DRYRUN_MODE_BOOLEAN_MODE.format(it)
+                    .infoInterpreterDryRunModeBooleanMode(it)
             )
             DisplayUtils.printConditional(conditional)
         }
@@ -112,7 +112,7 @@ class Interpreter(
             DisplayUtils.printAuthors(authors)
             DisplayUtils.printWrapped(
                 LanguageController.messages
-                    .INFO_INTERPRETER_DRYRUN_MODE_SYSTEM_COMMAND.format(command)
+                    .infoInterpreterDryRunModeSystemCommand(command.toString())
             )
             DisplayUtils.printConditional(conditional)
         }
@@ -155,7 +155,7 @@ class Interpreter(
             .also {
                 HaltRequest.exitCode?.let { code ->
                     throw HaltExpectedException(
-                        LanguageController.messages.ERROR_INTERPRETER_USER_REQUESTED_HALT,
+                        LanguageController.messages.errorInterpreterUserRequestedHalt,
                         ExecutionStatus.FinishedWithCode(code)
                     )
                 }
@@ -164,7 +164,7 @@ class Interpreter(
                 DisplayUtils.printEntry(
                     rule.displayName!!,
                     command.name
-                        ?: LanguageController.messages.INFO_LABEL_UNNAMED_TASK
+                        ?: LanguageController.messages.infoLabelUnnamedTask
                 )
 
                 failureOutput = ""
@@ -180,7 +180,7 @@ class Interpreter(
                     else ->
                         throw AraraExceptionWithHeader(
                             LanguageController
-                                .messages.ERROR_INTERPRETER_WRONG_RETURN_TYPE
+                                .messages.errorInterpreterWrongReturnType
                         )
                 }
 
@@ -190,8 +190,7 @@ class Interpreter(
                     executionOptions.haltOnErrors && !success ->
                         throw HaltExpectedException(
                             LanguageController
-                                .messages.ERROR_INTERPRETER_COMMAND_UNSUCCESSFUL_EXIT
-                                .format(command.name),
+                                .messages.errorInterpreterCommandUnsuccessfulExit(command.name.toString()),
                             ExecutionStatus.FinishedWithCode(lastFailureCode)
                         )
                     success -> ExecutionStatus.Processing()
@@ -204,7 +203,7 @@ class Interpreter(
         is CommandEvaluator -> command
         is SerialRuleCommand -> MvelCommandEvaluator(command)
         else -> throw AraraExceptionWithHeader(
-            LanguageController.messages.ERROR_INTERPRETER_WRONG_RETURN_TYPE
+            LanguageController.messages.errorInterpreterWrongReturnType
         )
     }
 
@@ -270,8 +269,9 @@ class Interpreter(
                     // prepending the header and removing the outer exception with
                     // header where possible
                     throw AraraException(
-                        LanguageController.messages.ERROR_RULE_IDENTIFIER_AND_PATH
-                            .format(directive.identifier, file.parent.toString()) + " " +
+                        LanguageController.messages.errorRuleIdentifierAndPath(
+                            directive.identifier, file.parent.toString()
+                        ) + " " +
                             e.message,
                         e.exception ?: e
                     )
@@ -316,7 +316,7 @@ class Interpreter(
         if (unknown.isNotEmpty())
             throw AraraExceptionWithHeader(
                 LanguageController.messages
-                    .ERROR_INTERPRETER_UNKNOWN_KEYS.format(
+                    .errorInterpreterUnknownKeys(
                         unknown.joinToString(", ", "(", ")")
                     )
             )
@@ -361,8 +361,7 @@ class Interpreter(
     ): List<*> {
         if (argument.isRequired && !idInDirectiveParams)
             throw AraraExceptionWithHeader(
-                LanguageController.messages.ERROR_INTERPRETER_ARGUMENT_IS_REQUIRED
-                    .format(argument.identifier)
+                LanguageController.messages.errorInterpreterArgumentIsRequired(argument.identifier)
             )
 
         return if (idInDirectiveParams)

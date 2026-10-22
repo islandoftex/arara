@@ -15,6 +15,6 @@ object YamlLocalConfiguration {
         if (!text.startsWith("!config")) throw AraraException("Configuration should start with !config")
         Yaml.default.decodeFromString(LocalConfiguration.serializer(), text)
     }.getOrElse {
-        throw AraraException(LanguageController.messages.ERROR_CONFIGURATION_GENERIC_ERROR, it)
+        throw AraraException(LanguageController.messages.errorConfigurationGenericError, it)
     }
 }

@@ -7,7 +7,6 @@ import org.islandoftex.arara.api.configuration.LoggingOptions
 import org.islandoftex.arara.api.configuration.UserInterfaceOptions
 import org.islandoftex.arara.api.session.Session
 import org.islandoftex.arara.core.localization.LanguageController
-import org.islandoftex.arara.core.utils.formatString
 
 /**
  * Implements the session, i.e. one single run of the whole arara tool.
@@ -52,8 +51,7 @@ actual object Session : Session {
             map.getValue(key)
         } else {
             throw AraraException(
-                    LanguageController.messages.ERROR_SESSION_OBTAIN_UNKNOWN_KEY
-                            .formatString(key)
+                    LanguageController.messages.errorSessionObtainUnknownKey(key)
             )
         }
     }
@@ -86,8 +84,7 @@ actual object Session : Session {
             logger.debug { "Session variable '$key' removed." }
         } else {
             throw AraraException(
-                    LanguageController.messages.ERROR_SESSION_REMOVE_UNKNOWN_KEY
-                            .formatString(key)
+                    LanguageController.messages.errorSessionRemoveUnknownKey(key)
             )
         }
     }

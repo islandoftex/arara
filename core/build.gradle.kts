@@ -15,7 +15,6 @@ kotlin {
 
         all {
             languageSettings.apply {
-                optIn("org.islandoftex.arara.api.localization.AraraMessages")
                 optIn("kotlin.time.ExperimentalTime")
                 optIn("kotlin.ExperimentalUnsignedTypes")
             }

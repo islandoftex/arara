@@ -15,7 +15,7 @@ class MvelCommandEvaluator(private val command: SerialRuleCommand) : CommandEval
         TemplateRuntime.eval(command.commandString!!, parameters.plus(MvelState.ruleMethods))
     } catch (exception: RuntimeException) {
         throw AraraExceptionWithHeader(
-            LanguageController.messages.ERROR_INTERPRETER_COMMAND_RUNTIME_ERROR,
+            LanguageController.messages.errorInterpreterCommandRuntimeError,
             exception
         )
     }
@@ -29,12 +29,12 @@ class MvelCommandEvaluator(private val command: SerialRuleCommand) : CommandEval
             )
         } catch (exception: RuntimeException) {
             throw AraraExceptionWithHeader(
-                LanguageController.messages.ERROR_INTERPRETER_EXIT_RUNTIME_ERROR,
+                LanguageController.messages.errorInterpreterExitRuntimeError,
                 exception
             )
         }
         return check as? Boolean ?: throw AraraExceptionWithHeader(
-            LanguageController.messages.ERROR_INTERPRETER_WRONG_EXIT_CLOSURE_RETURN
+            LanguageController.messages.errorInterpreterWrongExitClosureReturn
         )
     }
 }

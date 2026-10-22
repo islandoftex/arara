@@ -38,8 +38,9 @@ data class Rule(
          */
         @Throws(AraraException::class)
         fun parse(file: MPPPath, identifier: String): Rule {
-            val ruleErrorHeader = LanguageController.messages.ERROR_RULE_IDENTIFIER_AND_PATH
-                .format(identifier, file.normalize().toString()) + " "
+            val ruleErrorHeader = LanguageController.messages.errorRuleIdentifierAndPath(
+                identifier, file.normalize().toString()
+            ) + " "
             val rule = file.runCatching {
                 val text = readText()
                 if (!text.startsWith("!config"))
@@ -50,7 +51,7 @@ data class Rule(
             }.getOrElse {
                 throw AraraException(
                     ruleErrorHeader + LanguageController
-                        .messages.ERROR_PARSERULE_GENERIC_ERROR,
+                        .messages.errorParseRuleGenericError,
                     it
                 )
             }
@@ -74,14 +75,13 @@ data class Rule(
             if (rule.identifier != identifier) {
                 throw AraraException(
                     ruleErrorHeader +
-                        LanguageController.messages.ERROR_VALIDATEHEADER_WRONG_IDENTIFIER
-                            .format(rule.identifier, identifier)
+                        LanguageController.messages.errorValidateHeaderWrongIdentifier(rule.identifier, identifier)
                 )
             }
             if (rule.displayName == null) {
                 throw AraraException(
                     ruleErrorHeader + LanguageController
-                        .messages.ERROR_VALIDATEHEADER_NULL_NAME
+                        .messages.errorValidateHeaderNullName
                 )
             }
         }
@@ -99,7 +99,7 @@ data class Rule(
             if (rule.commands.any { it.commandString == null })
                 throw AraraException(
                     ruleErrorHeader + LanguageController
-                        .messages.ERROR_VALIDATEBODY_NULL_COMMAND
+                        .messages.errorValidateBodyNullCommand
                 )
 
             val arguments = rule.arguments.filter { it.validate(ruleErrorHeader) }
@@ -108,15 +108,14 @@ data class Rule(
             arguments.intersect(listOf("files", "reference")).forEach {
                 throw AraraException(
                     ruleErrorHeader + LanguageController
-                        .messages.ERROR_VALIDATEBODY_ARGUMENT_ID_IS_RESERVED
-                        .format(it)
+                        .messages.errorValidateBodyArgumentIdIsReserved(it)
                 )
             }
 
             if (arguments.size != arguments.toSet().size) {
                 throw AraraException(
                     ruleErrorHeader + LanguageController.messages
-                        .ERROR_VALIDATEBODY_DUPLICATE_ARGUMENT_IDENTIFIERS
+                        .errorValidateBodyDuplicateArgumentIdentifiers
                 )
             }
         }

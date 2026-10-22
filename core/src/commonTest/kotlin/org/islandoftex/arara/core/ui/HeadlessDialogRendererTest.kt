@@ -23,7 +23,7 @@ class HeadlessDialogRendererTest {
                 LanguageController.loadMessagesFor(MPPLocale(locale))
                 calls.forEach { call ->
                     val error = assertFailsWith<AraraException> { call() }
-                    assertEquals(LanguageController.messages.ERROR_DIALOGS_NOT_CONFIGURED, error.message)
+                    assertEquals(LanguageController.messages.errorDialogsNotConfigured, error.message)
                 }
             }
         } finally {

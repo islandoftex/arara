@@ -2,7 +2,6 @@
 package org.islandoftex.arara.core.dependencies
 
 import org.islandoftex.arara.core.localization.LanguageController
-import org.islandoftex.arara.core.utils.formatString
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.Project
 
@@ -20,7 +19,7 @@ internal class ProjectGraph : Graph<Project>({ it.name }) {
         val byName = ordered.associateBy { it.name }
         if (byName.size != ordered.size) {
             val duplicates = ordered.groupBy { it.name }.filterValues { it.size > 1 }.keys.joinToString(", ")
-            throw AraraException(LanguageController.messages.ERROR_PROJECT_DUPLICATE_NAMES.formatString(duplicates))
+            throw AraraException(LanguageController.messages.errorProjectDuplicateNames(duplicates))
         }
         ordered.forEach { addVertex(it) }
         ordered.forEach { project ->
@@ -28,8 +27,7 @@ internal class ProjectGraph : Graph<Project>({ it.name }) {
                 addEdge(
                     byName[dependency]
                         ?: throw AraraException(
-                            LanguageController.messages.ERROR_PROJECT_UNKNOWN_DEPENDENCY
-                                .formatString(project.name, dependency)
+                            LanguageController.messages.errorProjectUnknownDependency(project.name, dependency)
                         ),
                     project
                 )

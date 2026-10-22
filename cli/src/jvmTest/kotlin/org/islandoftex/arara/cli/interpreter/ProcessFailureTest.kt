@@ -18,7 +18,7 @@ class ProcessFailureTest : ShouldSpec({
             val failure = shouldThrow<AraraException> {
                 CommandRunner.run(Command(listOf(directory.resolve("missing").toString())))
             }
-            failure.message shouldBe LanguageController.messages.ERROR_RUN_IO_EXCEPTION
+            failure.message shouldBe LanguageController.messages.errorRunIoException
             (failure.exception is IOException) shouldBe true
         } finally {
             directory.removeDirectory()

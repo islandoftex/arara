@@ -19,7 +19,7 @@ class FileIoRegressionTest {
         try {
             val file = ProjectFile(root.resolve("missing.tex"), FileType("tex", "^%"))
             val failure = assertFailsWith<AraraException> { file.fetchDirectives(true) }
-            assertEquals(LanguageController.messages.ERROR_EXTRACTOR_IO_ERROR, failure.message)
+            assertEquals(LanguageController.messages.errorExtractorIoError, failure.message)
             val pathFailure = failure.exception
             assertTrue(pathFailure is AraraIOException)
             assertTrue(pathFailure.exception is IOException)
@@ -41,7 +41,7 @@ class FileIoRegressionTest {
             val failure = assertFailsWith<AraraException> {
                 FileHandling.calculateHash(root.resolve("missing.bin"))
             }
-            assertEquals(LanguageController.messages.ERROR_CALCULATEHASH_IO_EXCEPTION, failure.message)
+            assertEquals(LanguageController.messages.errorCalculateHashIoException, failure.message)
             assertTrue(failure.exception is IOException)
         } finally {
             root.removeDirectory()

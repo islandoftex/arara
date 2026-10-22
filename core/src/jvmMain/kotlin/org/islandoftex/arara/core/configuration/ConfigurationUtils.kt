@@ -46,7 +46,7 @@ actual object ConfigurationUtils {
             MPPPath(codeLocation).parent.normalize()
         }.getOrElse {
             throw AraraException(
-                LanguageController.messages.ERROR_GETAPPLICATIONPATH_ENCODING_EXCEPTION,
+                LanguageController.messages.errorGetApplicationPathEncodingException,
                 it
             )
         }

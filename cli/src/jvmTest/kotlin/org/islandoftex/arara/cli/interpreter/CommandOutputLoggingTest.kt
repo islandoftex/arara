@@ -68,7 +68,7 @@ class CommandOutputLoggingTest {
     fun timeoutLogsBothStreamsAndRetainsItsCause() {
         withCommand("sleep") { command ->
             val failure = assertFailsWith<AraraException> { CommandRunner.run(command) }
-            assertEquals(LanguageController.messages.ERROR_RUN_TIMEOUT_EXCEPTION, failure.message)
+            assertEquals(LanguageController.messages.errorRunTimeoutException, failure.message)
             assertTrue(failure.exception is TimeoutException)
         }
     }

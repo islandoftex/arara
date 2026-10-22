@@ -30,8 +30,7 @@ object MethodUtils {
             return pattern.containsMatchIn(text)
         } catch (exception: IOException) {
             throw AraraException(
-                LanguageController.messages.ERROR_CHECKREGEX_IO_EXCEPTION
-                    .format(file.fileName),
+                LanguageController.messages.errorCheckRegexIoException(file.fileName),
                 exception
             )
         }
@@ -71,7 +70,7 @@ object MethodUtils {
             values.map { pattern.format(it) }
         } catch (exception: MissingFormatArgumentException) {
             throw AraraException(
-                LanguageController.messages.ERROR_REPLICATELIST_MISSING_FORMAT_ARGUMENTS_EXCEPTION,
+                LanguageController.messages.errorReplicateListMissingFormatArgumentsException,
                 exception
             )
         }

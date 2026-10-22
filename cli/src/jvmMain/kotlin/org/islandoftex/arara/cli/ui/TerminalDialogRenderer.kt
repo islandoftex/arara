@@ -37,7 +37,7 @@ open class TerminalDialogRenderer(
         entries.forEachIndexed { index, value -> line("${index + 1}. $value") }
         while (true) {
             val range = "0-${entries.size}"
-            line("${LanguageController.messages.INFO_LABEL_DIALOG_PROMPT} ($range):")
+            line("${LanguageController.messages.infoLabelDialogPrompt} ($range):")
             output.print("> ")
             output.flush()
             val raw = answer().trim()
@@ -47,7 +47,7 @@ open class TerminalDialogRenderer(
     }
 
     private fun answer(): String = input.readLine() ?: throw AraraException(
-        LanguageController.messages.ERROR_DIALOG_INPUT_CLOSED
+        LanguageController.messages.errorDialogInputClosed
     )
 
     protected open fun block(type: Int, title: String, text: String) {
@@ -60,10 +60,10 @@ open class TerminalDialogRenderer(
     protected fun heading(type: Int, title: String): String {
         val messages = LanguageController.messages
         val label = when (type) {
-            ERROR -> messages.INFO_LABEL_ON_ERROR
-            INFORMATION -> messages.INFO_LABEL_ON_INFO
-            WARNING -> messages.INFO_LABEL_ON_WARNING
-            QUESTION -> messages.INFO_LABEL_ON_QUESTION
+            ERROR -> messages.infoLabelOnError
+            INFORMATION -> messages.infoLabelOnInfo
+            WARNING -> messages.infoLabelOnWarning
+            QUESTION -> messages.infoLabelOnQuestion
             else -> return title
         }
         return "[$label] $title"

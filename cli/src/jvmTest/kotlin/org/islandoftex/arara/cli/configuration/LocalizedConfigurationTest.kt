@@ -5,8 +5,7 @@ import com.github.ajalt.clikt.core.ProgramResult
 import com.github.ajalt.clikt.core.parse
 import org.islandoftex.arara.api.files.toMPPPath
 import org.islandoftex.arara.cli.CLI
-import org.islandoftex.arara.core.localization.GermanLanguage
-import org.islandoftex.arara.core.utils.formatString
+import org.islandoftex.arara.core.localization.GermanMessages
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 import java.nio.file.Files
@@ -31,7 +30,7 @@ class LocalizedConfigurationTest {
             }.statusCode
             assertEquals(2, status)
             val text = output.toString("UTF-8").replace(Regex("\\s+"), " ")
-            assertTrue(text.contains(GermanLanguage().ERROR_SCRIPT_BOOLEAN.formatString("verbose")))
+            assertTrue(text.contains(GermanMessages.errorScriptBoolean("verbose")))
             assertEquals(snapshot, ConfigurationSnapshot.capture())
         } finally {
             System.setOut(stdout)

@@ -5,7 +5,6 @@ import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.core.localization.LanguageController
-import org.islandoftex.arara.core.utils.formatString
 import org.islandoftex.arara.mvel.rules.Rule
 
 /**
@@ -34,8 +33,7 @@ object RuleFiles {
             org.islandoftex.arara.lua.rules.LuaRuleParser.parse(file, identifier)
         else
             throw AraraException(
-                LanguageController.messages.ERROR_PARSE_RULE_UNSUPPORTED_FORMAT
-                    .formatString(identifier, file.toString())
+                LanguageController.messages.errorParseRuleUnsupportedFormat(identifier, file.toString())
             )
     }
 
@@ -64,7 +62,7 @@ object RuleFiles {
                 } + construct(path, "arara-rule-" + directive.identifier,
                     formats.first(), workingDirectory)
             }.firstOrNull { it.exists } ?: throw AraraException(
-                LanguageController.messages.ERROR_INTERPRETER_RULE_NOT_FOUND.format(
+                LanguageController.messages.errorInterpreterRuleNotFound(
                     directive.identifier,
                     directive.identifier + if (engine == RuleEngine.LUA) ".lua" else ".yaml",
                     paths.joinToString("; ", "(", ")") {

@@ -28,7 +28,7 @@ class OptionInterpolationTest {
                 val error = assertFailsWith<AraraException> {
                     DirectiveUtils.interpolateOptions("{{ 1 }}", RuleEngine.YAML)
                 }
-                assertEquals(LanguageController.messages.ERROR_LUA_TAGS_IN_YAML, error.exception?.message)
+                assertEquals(LanguageController.messages.errorLuaTagsInYaml, error.exception?.message)
             }
         } finally {
             LanguageController.messages = previous

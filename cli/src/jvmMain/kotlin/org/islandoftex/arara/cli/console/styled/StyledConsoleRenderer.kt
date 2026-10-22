@@ -17,16 +17,15 @@ import org.islandoftex.arara.cli.utils.wrap
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
-import org.islandoftex.arara.core.utils.formatString
 import kotlin.time.Duration.Companion.seconds
 
 @Suppress("TooManyFunctions")
 class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
     private val longestMatch: Int
         get() = maxOf(
-            LanguageController.messages.INFO_LABEL_ON_SUCCESS.length,
-            LanguageController.messages.INFO_LABEL_ON_FAILURE.length,
-            LanguageController.messages.INFO_LABEL_ON_ERROR.length
+            LanguageController.messages.infoLabelOnSuccess.length,
+            LanguageController.messages.infoLabelOnFailure.length,
+            LanguageController.messages.infoLabelOnError.length
         )
 
     private var displayLine = true
@@ -162,7 +161,7 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
             terminal.println(
                 terminal.theme.danger(
                     failureGlyph() + " " +
-                        LanguageController.messages.INFO_LABEL_ON_ERROR
+                        LanguageController.messages.infoLabelOnError
                 )
             )
             terminal.println("")
@@ -177,9 +176,9 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
 
     private fun getResult(value: Boolean): String {
         return if (value)
-            LanguageController.messages.INFO_LABEL_ON_SUCCESS
+            LanguageController.messages.infoLabelOnSuccess
         else
-            LanguageController.messages.INFO_LABEL_ON_FAILURE
+            LanguageController.messages.infoLabelOnFailure
     }
 
     override fun printWrapped(text: String) {
@@ -188,11 +187,11 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
 
     override fun printAuthors(authors: List<String>) {
         val line = if (authors.size == 1)
-            LanguageController.messages.INFO_LABEL_AUTHOR
+            LanguageController.messages.infoLabelAuthor
         else
-            LanguageController.messages.INFO_LABEL_AUTHORS
+            LanguageController.messages.infoLabelAuthors
         val text = if (authors.isEmpty())
-            LanguageController.messages.INFO_LABEL_NO_AUTHORS
+            LanguageController.messages.infoLabelNoAuthors
         else
             authors.joinToString(", ") { it.trim() }
         printWrapped("$line $text")
@@ -201,7 +200,7 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
     override fun printConditional(conditional: DirectiveConditional) {
         if (conditional.type !== DirectiveConditionalType.NONE) {
             printWrapped(
-                LanguageController.messages.INFO_LABEL_CONDITIONAL +
+                LanguageController.messages.infoLabelConditional +
                     " (" + conditional.type + ") " +
                     conditional.condition
             )
@@ -218,12 +217,12 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
         val time = secondDuration.inWholeSeconds.toString() + separator +
             (secondDuration - secondDuration.inWholeSeconds.seconds)
                 .inWholeMilliseconds.toString()
-        val text = LanguageController.messages.INFO_DISPLAY_EXECUTION_TIME.formatString(time)
+        val text = LanguageController.messages.infoDisplayExecutionTime(time)
         printWrapped(text)
     }
 
     private fun displayDetailsLine() {
-        val label = LanguageController.messages.INFO_LABEL_ON_DETAILS + " "
+        val label = LanguageController.messages.infoLabelOnDetails + " "
         val line = label.take(structureWidth)
         terminal.println(muted(line.padEnd(structureWidth, rule.first())))
     }
@@ -256,7 +255,7 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
     }
 
     override fun printSkippedDirective(identifier: String) {
-        printWrapped("- $identifier · ${LanguageController.messages.INFO_CONSOLE_SKIPPED}")
+        printWrapped("- $identifier · ${LanguageController.messages.infoConsoleSkipped}")
     }
 
     override fun printCommandFailure(output: String) {
@@ -275,7 +274,7 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
         terminal.println(verdict)
         files.forEach { (path, code) ->
             val label = when (code) {
-                null -> LanguageController.messages.INFO_CONSOLE_UNPROCESSED
+                null -> LanguageController.messages.infoConsoleUnprocessed
                 0 -> getResult(true)
                 else -> getResult(false)
             }

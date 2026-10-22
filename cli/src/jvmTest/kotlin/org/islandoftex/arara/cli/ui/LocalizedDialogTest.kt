@@ -39,13 +39,13 @@ class LocalizedDialogTest {
                     val error = assertFailsWith<AraraException> {
                         renderer.showInput(0, "literal %s", "body %s")
                     }
-                    assertEquals(messages.ERROR_DIALOG_INPUT_CLOSED, error.message)
+                    assertEquals(messages.errorDialogInputClosed, error.message)
                     val text = output.toString()
-                    for (label in listOf(messages.INFO_LABEL_ON_ERROR, messages.INFO_LABEL_ON_INFO,
-                        messages.INFO_LABEL_ON_WARNING, messages.INFO_LABEL_ON_QUESTION)) {
+                    for (label in listOf(messages.infoLabelOnError, messages.infoLabelOnInfo,
+                        messages.infoLabelOnWarning, messages.infoLabelOnQuestion)) {
                         assertTrue("[$label] literal %s" in text, "$locale: $text")
                     }
-                    assertTrue("${messages.INFO_LABEL_DIALOG_PROMPT} (0-1):" in text)
+                    assertTrue("${messages.infoLabelDialogPrompt} (0-1):" in text)
                     assertTrue("choice %s" in text && "body %s" in text)
                 }
             }

@@ -276,7 +276,7 @@ class CLI : CliktCommand("arara") {
         if (resolvedPreamble != null && resolvedPreamble !in MvelState.preambles) {
             throw AraraException(
                 LanguageController.messages
-                    .ERROR_PARSER_INVALID_PREAMBLE.format(resolvedPreamble)
+                    .errorParserInvalidPreamble(resolvedPreamble)
             )
         }
         val allDirectives = resolvedPreamble
@@ -293,7 +293,7 @@ class CLI : CliktCommand("arara") {
         if (allDirectives.isEmpty())
             throw AraraException(
                 LanguageController
-                    .messages.ERROR_VALIDATE_NO_DIRECTIVES_FOUND
+                    .messages.errorValidateNoDirectivesFound
             )
         return allDirectives
     }
@@ -455,7 +455,7 @@ fun main(args: Array<String>) {
                 "${DisplayUtils.logoString}\n\n" +
                     "arara ${AraraAPI.version}\n" +
                     "Copyright (c) ${LocalDate.now().year}, Island of TeX\n" +
-                    LanguageController.messages.INFO_PARSER_NOTES + "\n\n" +
+                    LanguageController.messages.infoParserNotes + "\n\n" +
                     "New features in version ${AraraAPI.version}:\n" +
                     CLI::class.java
                         .getResource("/org/islandoftex/arara/cli/configuration/release-notes")

@@ -5,7 +5,6 @@ import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.core.localization.LanguageController
-import org.islandoftex.arara.core.utils.formatString
 import org.luaj.vm2.LuaBoolean
 import org.luaj.vm2.LuaError
 import org.luaj.vm2.LuaNumber
@@ -40,7 +39,7 @@ internal object LuaConversion {
         }
         is Map<*, *> -> within(value, visiting) {
             val keys = value.keys.map { it.toString() }
-            if (keys.toSet().size != keys.size) throw LuaHelperException(LanguageController.messages.ERROR_LUA_MAP_KEYS)
+            if (keys.toSet().size != keys.size) throw LuaHelperException(LanguageController.messages.errorLuaMapKeys)
             LuaValue.tableOf().also { table ->
                 value.forEach { (key, element) -> table.set(key.toString(), toLua(element, visiting)) }
             }
@@ -52,7 +51,7 @@ internal object LuaConversion {
     private fun longToLua(value: Long): LuaValue {
         val number = value.toDouble()
         if (number >= LONG_UPPER_BOUND || number.toLong() != value) {
-            throw LuaHelperException(LanguageController.messages.ERROR_LUA_EXACT_INTEGER.formatString(value.toString()))
+            throw LuaHelperException(LanguageController.messages.errorLuaExactInteger(value.toString()))
         }
         return LuaValue.valueOf(number)
     }
@@ -73,7 +72,7 @@ internal object LuaConversion {
                 val keys = value.keys()
                 val names = keys.map { it.tojstring() }
                 if (names.toSet().size != names.size) {
-                    throw LuaHelperException(LanguageController.messages.ERROR_LUA_TABLE_KEYS)
+                    throw LuaHelperException(LanguageController.messages.errorLuaTableKeys)
                 }
                 keys.associate { it.tojstring() to fromLua(value[it], visiting) }
             }
@@ -99,7 +98,7 @@ internal object LuaConversion {
 
     private inline fun <T> within(value: Any, visiting: MutableList<Any>, block: () -> T): T {
         if (visiting.any { it === value }) {
-            throw LuaHelperException(LanguageController.messages.ERROR_LUA_CYCLIC_VALUES)
+            throw LuaHelperException(LanguageController.messages.errorLuaCyclicValues)
         }
         visiting.add(value)
         return try {
@@ -111,8 +110,7 @@ internal object LuaConversion {
 
     fun badArgument(helper: String, index: Int, expected: String, actual: LuaValue): LuaHelperException =
         LuaHelperException(
-            LanguageController.messages.ERROR_LUA_BAD_ARGUMENT
-                .formatString(index.toString(), helper, expected, actual.typename())
+            LanguageController.messages.errorLuaBadArgument(index, helper, expected, actual.typename())
         )
 
     fun LuaValue.stringArgument(helper: String, index: Int): String =
@@ -141,9 +139,9 @@ internal object LuaConversion {
 
     fun booleanResult(value: LuaValue, source: String): Boolean =
         (value as? LuaBoolean)?.toboolean() ?: throw AraraException(
-            LanguageController.messages.ERROR_INTERPRETER_WRONG_EXIT_CLOSURE_RETURN,
+            LanguageController.messages.errorInterpreterWrongExitClosureReturn,
             LuaHelperException(
-                LanguageController.messages.ERROR_LUA_BOOLEAN_RESULT.formatString(source, value.typename())
+                LanguageController.messages.errorLuaBooleanResult(source, value.typename())
             )
         )
 

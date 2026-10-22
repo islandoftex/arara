@@ -49,11 +49,11 @@ internal object CommandRunner {
                 throw AraraException(
                     LanguageController.messages.run {
                         when (it.kind) {
-                            SystemCommandResult.FailureKind.IO -> ERROR_RUN_IO_EXCEPTION
-                            SystemCommandResult.FailureKind.TIMEOUT -> ERROR_RUN_TIMEOUT_EXCEPTION
-                            SystemCommandResult.FailureKind.INTERRUPTED -> ERROR_RUN_INTERRUPTED_EXCEPTION
-                            SystemCommandResult.FailureKind.INVALID_EXIT_VALUE -> ERROR_RUN_INVALID_EXIT_VALUE_EXCEPTION
-                            SystemCommandResult.FailureKind.OTHER -> ERROR_RUN_GENERIC_EXCEPTION
+                            SystemCommandResult.FailureKind.IO -> errorRunIoException
+                            SystemCommandResult.FailureKind.TIMEOUT -> errorRunTimeoutException
+                            SystemCommandResult.FailureKind.INTERRUPTED -> errorRunInterruptedException
+                            SystemCommandResult.FailureKind.INVALID_EXIT_VALUE -> errorRunInvalidExitValueException
+                            SystemCommandResult.FailureKind.OTHER -> errorRunGenericException
                         }
                     },
                     it.exception

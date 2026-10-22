@@ -2,7 +2,7 @@
 package org.islandoftex.arara.core.dependencies
 
 import org.islandoftex.arara.core.localization.LanguageController
-import org.islandoftex.arara.core.utils.formatString
+
 /**
  * A graph model for dependency resolution.
  */
@@ -74,7 +74,7 @@ internal open class Graph<T>(private val vertexName: (T) -> String = { it.toStri
                 work[vertex] != 0 && reachesBack(vertex)
             }.joinToString(", ", transform = vertexName)
             throw org.islandoftex.arara.api.AraraException(
-                LanguageController.messages.ERROR_PROJECT_CYCLE.formatString(cyclic)
+                LanguageController.messages.errorProjectCycle(cyclic)
             )
         }
         return order

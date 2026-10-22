@@ -31,9 +31,9 @@ class PlainConsoleRenderer : ConsoleRenderer {
      */
     private val longestMatch: Int
         get() = maxOf(
-            LanguageController.messages.INFO_LABEL_ON_SUCCESS.length,
-            LanguageController.messages.INFO_LABEL_ON_FAILURE.length,
-            LanguageController.messages.INFO_LABEL_ON_ERROR.length
+            LanguageController.messages.infoLabelOnSuccess.length,
+            LanguageController.messages.infoLabelOnFailure.length,
+            LanguageController.messages.infoLabelOnError.length
         )
 
     private val shortenedLongestMatch = SHORT_LABEL_WIDTH
@@ -170,9 +170,9 @@ class PlainConsoleRenderer : ConsoleRenderer {
             if (!isDryRunMode) {
                 println(
                     if (!isVerboseMode) {
-                        LanguageController.messages.INFO_LABEL_ON_ERROR.padStart(longestMatch)
+                        LanguageController.messages.infoLabelOnError.padStart(longestMatch)
                     } else {
-                        (" " + LanguageController.messages.INFO_LABEL_ON_ERROR)
+                        (" " + LanguageController.messages.infoLabelOnError)
                             .padStart(outputWidth, '-')
                     }
                 )
@@ -195,9 +195,9 @@ class PlainConsoleRenderer : ConsoleRenderer {
      */
     private fun getResult(value: Boolean): String {
         return if (value)
-            LanguageController.messages.INFO_LABEL_ON_SUCCESS
+            LanguageController.messages.infoLabelOnSuccess
         else
-            LanguageController.messages.INFO_LABEL_ON_FAILURE
+            LanguageController.messages.infoLabelOnFailure
     }
 
     /**
@@ -215,11 +215,11 @@ class PlainConsoleRenderer : ConsoleRenderer {
      */
     override fun printAuthors(authors: List<String>) {
         val line = if (authors.size == 1)
-            LanguageController.messages.INFO_LABEL_AUTHOR
+            LanguageController.messages.infoLabelAuthor
         else
-            LanguageController.messages.INFO_LABEL_AUTHORS
+            LanguageController.messages.infoLabelAuthors
         val text = if (authors.isEmpty())
-            LanguageController.messages.INFO_LABEL_NO_AUTHORS
+            LanguageController.messages.infoLabelNoAuthors
         else
             authors.joinToString(", ") { it.trim() }
         printWrapped("$line $text")
@@ -233,7 +233,7 @@ class PlainConsoleRenderer : ConsoleRenderer {
     override fun printConditional(conditional: DirectiveConditional) {
         if (conditional.type !== DirectiveConditionalType.NONE) {
             printWrapped(
-                LanguageController.messages.INFO_LABEL_CONDITIONAL +
+                LanguageController.messages.infoLabelConditional +
                     " (" + conditional.type + ") " +
                     conditional.condition
             )
@@ -250,16 +250,15 @@ class PlainConsoleRenderer : ConsoleRenderer {
             println()
 
         val secondDuration = seconds.seconds
-        val text = LanguageController.messages.INFO_DISPLAY_EXECUTION_TIME
-            .formatString(
-                "%s%s%s".formatString(
-                    secondDuration.inWholeSeconds.toString(),
-                    Session.userInterfaceOptions.locale
-                        .decimalSeparator.toString(),
-                    (secondDuration - secondDuration.inWholeSeconds.seconds)
-                        .inWholeMilliseconds.toString()
-                )
+        val text = LanguageController.messages.infoDisplayExecutionTime(
+            "%s%s%s".formatString(
+                secondDuration.inWholeSeconds.toString(),
+                Session.userInterfaceOptions.locale
+                    .decimalSeparator.toString(),
+                (secondDuration - secondDuration.inWholeSeconds.seconds)
+                    .inWholeMilliseconds.toString()
             )
+        )
         printWrapped(text)
     }
 
@@ -267,7 +266,7 @@ class PlainConsoleRenderer : ConsoleRenderer {
      * Displays a line containing details.
      */
     private fun displayDetailsLine() = println(
-        (LanguageController.messages.INFO_LABEL_ON_DETAILS + " ")
+        (LanguageController.messages.infoLabelOnDetails + " ")
             .abbreviate(outputWidth)
             .padEnd(outputWidth, '-')
     )
@@ -290,7 +289,7 @@ class PlainConsoleRenderer : ConsoleRenderer {
     override fun printBanner() = println("${DisplayUtils.logoString}\n")
 
     override fun printFileInformation(file: ProjectFile) {
-        printWrapped(LanguageController.messages.INFO_DISPLAY_FILE_INFORMATION.formatString(
+        printWrapped(LanguageController.messages.infoDisplayFileInformation(
             file.path.fileName, DisplayUtils.byteSizeToString(file.path.fileSize), file.path.lastModified.toString()
         ))
         println()

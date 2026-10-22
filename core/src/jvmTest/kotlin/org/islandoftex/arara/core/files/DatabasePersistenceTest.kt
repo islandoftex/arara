@@ -7,7 +7,6 @@ import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.toJVMPath
 import org.islandoftex.arara.api.files.toMPPPath
 import org.islandoftex.arara.core.localization.LanguageController
-import org.islandoftex.arara.core.utils.formatString
 import java.nio.file.Files
 import java.nio.file.attribute.FileTime
 import kotlin.test.Test
@@ -98,8 +97,7 @@ class DatabasePersistenceTest {
         for (content in invalid) {
             cache.writeText(content)
             val failure = assertFailsWith<AraraException> { FileHandling.hasChanged(root.resolve("file.tex"), cache) }
-            assertEquals(LanguageController.messages.ERROR_LOAD_COULD_NOT_LOAD_DATABASE
-                .formatString(cache.toString()), failure.message)
+            assertEquals(LanguageController.messages.errorLoadCouldNotLoadDatabase(cache.toString()), failure.message)
             assertEquals(content, cache.readText())
         }
     }

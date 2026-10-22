@@ -82,7 +82,7 @@ object DisplayUtils {
     fun printException(exception: AraraException) {
         currentFile?.let { outcomes[it] = 2 }
         val text = (exception.message ?: "EXCEPTION PROVIDES NO MESSAGE") +
-            if (exception.hasException()) " " + LanguageController.messages.INFO_DISPLAY_EXCEPTION_MORE_DETAILS else ""
+            if (exception.hasException()) " " + LanguageController.messages.infoDisplayExceptionMoreDetails else ""
         val details = exception.exception?.let { it.message ?: it.toString() }
         RunLog.exception(exception.message, details, exception.exception ?: exception)
         renderer.printException(text, details)

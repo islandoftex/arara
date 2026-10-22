@@ -190,7 +190,8 @@ by pre-commit).
 
 - Application-owned Lua validation and helper diagnostics use the selected
   message catalog. Keep field names, Lua type names and script-supplied errors
-  literal; use `formatString` for catalog placeholders without rescanning values.
+  literal. The complete `AraraMessages` interface and locale objects live in
+  `core` common code; parameterized messages use named, typed functions.
 
 
 - Prefer `MPPPath` for IO. Use `java.nio.file.Path` when `MPPPath` lacks the
@@ -203,7 +204,7 @@ by pre-commit).
 - KMP `expect`/`actual` classes are enabled via `-Xexpect-actual-classes` in
   `api` and `core`.
 - Several `@OptIn` annotations are project-wide
-  (`AraraMessages`, `ExperimentalTime`, `RequiresOptIn`,
+  (`ExperimentalTime`, `RequiresOptIn`,
   `ExperimentalUnsignedTypes`) — configured per-source-set in each module's
   `build.gradle.kts`; you usually do not need to add them at call sites.
 - Tests use Kotest (`kotest-runner-junit5-jvm`, 6.2.6) in `core`, `mvel`,

@@ -4,14 +4,14 @@ package org.islandoftex.arara.lua.localization
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.toMPPPath
-import org.islandoftex.arara.api.localization.Messages
-import org.islandoftex.arara.core.localization.BrazilianLanguage
-import org.islandoftex.arara.core.localization.DutchLanguage
-import org.islandoftex.arara.core.localization.GermanLanguage
-import org.islandoftex.arara.core.localization.ItalianLanguage
+import org.islandoftex.arara.core.localization.AraraMessages
+import org.islandoftex.arara.core.localization.EnglishMessages
+import org.islandoftex.arara.core.localization.BrazilianPortugueseMessages
+import org.islandoftex.arara.core.localization.DutchMessages
+import org.islandoftex.arara.core.localization.GermanMessages
+import org.islandoftex.arara.core.localization.ItalianMessages
 import org.islandoftex.arara.core.localization.LanguageController
-import org.islandoftex.arara.core.localization.NorfolkLanguage
-import org.islandoftex.arara.core.utils.formatString
+import org.islandoftex.arara.core.localization.NorfolkMessages
 import org.islandoftex.arara.lua.LuaInterpreter
 import org.islandoftex.arara.lua.ProjectParseException
 import org.islandoftex.arara.lua.configuration.LuaLocalConfiguration
@@ -22,11 +22,11 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
 class ScriptDiagnosticsTest {
-    private fun eachLocale(check: (Messages) -> Unit) {
+    private fun eachLocale(check: (AraraMessages) -> Unit) {
         val previous = LanguageController.messages
         try {
-            for (catalog in listOf(Messages(), GermanLanguage(), ItalianLanguage(), DutchLanguage(),
-                BrazilianLanguage(), NorfolkLanguage())) {
+            for (catalog in listOf(EnglishMessages, GermanMessages, ItalianMessages, DutchMessages,
+                BrazilianPortugueseMessages, NorfolkMessages)) {
                 LanguageController.messages = catalog
                 check(catalog)
             }
@@ -42,17 +42,17 @@ class ScriptDiagnosticsTest {
             val file = root.resolve("arararc.lua")
             eachLocale { messages ->
                 val cases = listOf(
-                    "verbose = 'true'" to messages.ERROR_SCRIPT_BOOLEAN.formatString("verbose"),
-                    "loops = 1.5" to messages.ERROR_SCRIPT_INTEGER.formatString("loops"),
-                    "loops = 0" to messages.ERROR_CONFIGURATION_LOOPS_INVALID_RANGE,
-                    "paths = { [2] = 'gap' }" to messages.ERROR_SCRIPT_LIST.formatString("paths"),
-                    "log = { file = false }" to messages.ERROR_SCRIPT_STRING.formatString("log.file"),
-                    "log = false" to messages.ERROR_SCRIPT_TABLE.formatString("log"),
-                    "log = { typo = true }" to messages.ERROR_SCRIPT_UNKNOWN_KEY.formatString("log.typo"),
+                    "verbose = 'true'" to messages.errorScriptBoolean("verbose"),
+                    "loops = 1.5" to messages.errorScriptInteger("loops"),
+                    "loops = 0" to messages.errorConfigurationLoopsInvalidRange,
+                    "paths = { [2] = 'gap' }" to messages.errorScriptList("paths"),
+                    "log = { file = false }" to messages.errorScriptString("log.file"),
+                    "log = false" to messages.errorScriptTable("log"),
+                    "log = { typo = true }" to messages.errorScriptUnknownKey("log.typo"),
                     "preamble = { prepend = 'sometimes' }" to
-                        messages.ERROR_CONFIGURATION_PREPEND.formatString("sometimes"),
+                        messages.errorConfigurationPrepend("sometimes"),
                     "preamble = { definitions = { [1] = {} } }" to
-                        messages.ERROR_SCRIPT_STRING_KEYS.formatString("preamble.definitions")
+                        messages.errorScriptStringKeys("preamble.definitions")
                 )
                 for ((fields, expected) in cases) {
                     file.writeText("return { $fields }")
@@ -70,13 +70,13 @@ class ScriptDiagnosticsTest {
     fun projectErrorsUseEachLocaleAndKeepTheOffendingField() = eachLocale { messages ->
         val parser = LuaInterpreter(MPPPath("."))
         val cases = listOf(
-            "return true" to messages.ERROR_SCRIPT_TABLE.formatString("specification"),
-            "return { files = false }" to messages.ERROR_SCRIPT_TABLE.formatString("project.files"),
-            "return { name = ' ', files = {} }" to messages.ERROR_SCRIPT_NONBLANK.formatString("project.name"),
+            "return true" to messages.errorScriptTable("specification"),
+            "return { files = false }" to messages.errorScriptTable("project.files"),
+            "return { name = ' ', files = {} }" to messages.errorScriptNonblank("project.name"),
             "return { files = { ['a.tex'] = { priority = false } } }" to
-                messages.ERROR_SCRIPT_INTEGER.formatString("project.files[a.tex].priority"),
+                messages.errorScriptInteger("project.files[a.tex].priority"),
             "return { files = { ['a.tex'] = {} }, typo = true }" to
-                messages.ERROR_SCRIPT_UNKNOWN_KEY.formatString("project.typo")
+                messages.errorScriptUnknownKey("project.typo")
         )
         for ((script, expected) in cases) {
             val error = assertFailsWith<ProjectParseException> { parser.parseProjectsFromLua(script) }

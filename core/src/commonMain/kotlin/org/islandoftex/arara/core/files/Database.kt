@@ -7,7 +7,6 @@ import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.Database
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.core.localization.LanguageController
-import org.islandoftex.arara.core.utils.formatString
 
 /**
  * The database model, which keeps track on file changes.
@@ -91,8 +90,7 @@ data class Database(
             path.normalize().writeText(content)
         }.getOrElse {
             throw AraraException(
-                LanguageController.messages.ERROR_SAVE_COULD_NOT_SAVE_DATABASE
-                    .formatString(path.toString()),
+                LanguageController.messages.errorSaveCouldNotSaveDatabase(path.toString()),
                 it as? Exception ?: RuntimeException(it)
             )
         }
@@ -123,8 +121,7 @@ data class Database(
                 }.getOrElse {
                     throw AraraException(
                         LanguageController
-                            .messages.ERROR_LOAD_COULD_NOT_LOAD_DATABASE
-                            .formatString(path.toString()),
+                            .messages.errorLoadCouldNotLoadDatabase(path.toString()),
                         it as? Exception ?: RuntimeException(it)
                     )
                 }

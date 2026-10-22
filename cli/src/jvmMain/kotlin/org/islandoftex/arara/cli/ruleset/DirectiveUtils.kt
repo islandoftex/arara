@@ -83,10 +83,9 @@ object DirectiveUtils {
             YamlNodeConversion.toParameterMap(Yaml.default.parseToYamlNode(text))
         }.getOrElse {
             throw AraraException(
-                LanguageController.messages.ERROR_VALIDATE_YAML_EXCEPTION
-                    .format(
-                        numbers.joinToString(", ", "(", ")")
-                    ),
+                LanguageController.messages.errorValidateYamlException(
+                    numbers.joinToString(", ", "(", ")")
+                ),
                 it
             )
         }
@@ -103,11 +102,11 @@ object DirectiveUtils {
             LuaInterpolation.interpolate(text)
         } else {
             if ("{{" in text) throw AraraException(
-                LanguageController.messages.ERROR_EXTRACTOR_INTERPOLATION_FAILURE,
-                IllegalArgumentException(LanguageController.messages.ERROR_LUA_TAGS_IN_YAML)
+                LanguageController.messages.errorExtractorInterpolationFailure,
+                IllegalArgumentException(LanguageController.messages.errorLuaTagsInYaml)
             )
             kotlin.runCatching { TemplateRuntime.eval(text, MvelState.directiveMethods) }.getOrElse {
-                throw AraraException(LanguageController.messages.ERROR_EXTRACTOR_INTERPOLATION_FAILURE, it)
+                throw AraraException(LanguageController.messages.errorExtractorInterpolationFailure, it)
             }
         }
         return if (value is List<*>) value.map { interpolate(it.toString()) } else interpolate(value.toString())
@@ -133,8 +132,7 @@ object DirectiveUtils {
 
             if (parameters.containsKey("reference"))
                 throw AraraException(
-                    LanguageController.messages.ERROR_VALIDATE_REFERENCE_IS_RESERVED
-                        .format(directive.lineNumbers.joinToString(", ", "(", ")"))
+                    LanguageController.messages.errorValidateReferenceIsReserved(directive.lineNumbers.joinToString(", ", "(", ")"))
                 )
 
             if (parameters.containsKey("files")) {

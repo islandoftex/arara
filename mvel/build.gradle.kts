@@ -10,7 +10,6 @@ kotlin {
     sourceSets {
 
         all {
-            languageSettings.optIn("org.islandoftex.arara.api.localization.AraraMessages")
             languageSettings.optIn("kotlin.time.ExperimentalTime")
             languageSettings.optIn("kotlin.RequiresOptIn")
         }

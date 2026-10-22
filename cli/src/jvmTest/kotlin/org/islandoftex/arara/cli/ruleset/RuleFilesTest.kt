@@ -7,7 +7,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.core.localization.LanguageController
-import org.islandoftex.arara.core.utils.formatString
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.toMPPPath
 import org.islandoftex.arara.core.configuration.ExecutionOptions
@@ -44,7 +43,6 @@ class RuleFilesTest {
     fun unsupportedRuleFormatsReportAnAraraException() {
         val file = MPPPath("probe.kts")
         val failure = assertFailsWith<AraraException> { RuleFiles.parseRule(file, "probe") }
-        assertEquals(LanguageController.messages.ERROR_PARSE_RULE_UNSUPPORTED_FORMAT
-            .formatString("probe", file.toString()), failure.message)
+        assertEquals(LanguageController.messages.errorParseRuleUnsupportedFormat("probe", file.toString()), failure.message)
     }
 }

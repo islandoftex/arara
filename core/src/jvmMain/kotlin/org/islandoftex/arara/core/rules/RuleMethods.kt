@@ -84,7 +84,7 @@ object RuleMethods {
         } else {
             throw AraraExceptionWithHeader(
                 LanguageController.messages
-                    .ERROR_BASENAME_NOT_A_FILE.format(file.fileName)
+                    .errorBasenameNotAFile(file.fileName)
             )
         }
 
@@ -113,7 +113,7 @@ object RuleMethods {
         } else {
             throw AraraExceptionWithHeader(
                 LanguageController.messages
-                    .ERROR_FILETYPE_NOT_A_FILE.format(file.fileName)
+                    .errorFiletypeNotAFile(file.fileName)
             )
         }
 

@@ -38,7 +38,7 @@ class LuaRuleCommand(
         return exitFunction?.let { fn ->
             LuaConversion.withLuaErrorHandling(
                 LanguageController.messages
-                    .ERROR_INTERPRETER_EXIT_RUNTIME_ERROR
+                    .errorInterpreterExitRuntimeError
             ) {
                 LuaConversion.booleanResult(
                     fn.call(LuaValue.valueOf(code)),
@@ -52,7 +52,7 @@ class LuaRuleCommand(
     override fun evaluate(parameters: Map<String, Any>): List<Any> =
         LuaConversion.withLuaErrorHandling(
             LanguageController.messages
-                .ERROR_INTERPRETER_COMMAND_RUNTIME_ERROR
+                .errorInterpreterCommandRuntimeError
         ) {
             val context = LuaValue.tableOf()
             parameters.forEach { (key, value) ->
@@ -85,7 +85,7 @@ class LuaRuleArgument(
         { input, context ->
             LuaConversion.withLuaErrorHandling(
                 LanguageController.messages
-                    .ERROR_INTERPRETER_FLAG_RUNTIME_EXCEPTION
+                    .errorInterpreterFlagRuntimeException
             ) {
                 flagFunction?.let { fn ->
                     val parameters = (context["parameters"] as? Map<*, *>)
