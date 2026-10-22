@@ -14,6 +14,11 @@ the corresponding identifier indicates a natural boolean switch. Similarly, the
 occurrence of an **[R]** mark indicates that the corresponding option is
 required.
 
+Every rule in this chapter is distributed in both YAML and Lua, with the same
+arguments. The default engine uses the YAML rules; `--engine lua` selects their
+Lua counterparts. Directive parameter mappings keep the same YAML syntax in
+both cases. See [Lua rules](@/manual/Lua.md) for writing custom Lua rules.
+
 {% messagebox(title="Can my rule be distributed within the official pack?") %}
 As seen in [Important concepts](@/manual/Concepts.md), the default rule path can be extended
 to include a list of directories in which our tool should search for

@@ -47,8 +47,13 @@ to have a unique prefix in the texmf tree. File names should not be relied
 upon.
 {% end %}
 
-In short, a rule is a plain text file written in the YAML format, described in
-[YAML](@/manual/YAML.md). I opted for this format because back then it was cleaner
+With the default `yaml` engine, a rule is a plain text file written in the YAML
+format, described in [YAML](@/manual/YAML.md). The rule structure and examples
+below describe this format. Lua rules return a table instead; their structure
+and examples are covered in [Lua rules](@/manual/Lua.md). Select them with
+`arara --engine lua document.tex`.
+
+I opted for YAML because back then it was cleaner
 and more intuitive to use than other markup languages such as XML, besides of
 course being a data serialization standard for programming languages.
 
@@ -182,9 +187,8 @@ properly defined inside it.
 
     - `⋄ reference`: This variable holds the canonical, absolute path
       representation of the file name as a `File` object. This is useful if it's
-      necessary to know the hierarchical structure of a project. Since the
-      reference is a Java object, we can use methods available in the `File`
-      class.
+      necessary to know the hierarchical structure of a project. The file
+      wrapper's properties and methods are listed at the end of this chapter.
 
     {% messagebox(title="Quote handling") %}
  The YAML format disallows key values starting with `@` without proper
@@ -241,7 +245,7 @@ properly defined inside it.
   - name: The PDFLaTeX engine
     command: >
       @{
-        return getCommand('pdflatex', file)
+        return getCommand('pdflatex', reference.fileName)
       }
     exit: value == 0
   ```
@@ -341,22 +345,20 @@ possible.
     detailed later on, in [Methods](@/manual/Methods.md).
 
     - `⋄ parameters`: This variable holds a map of directive
-      parameters available at runtime. For each argument identifier listed in
-      the `arguments` list in the rule context, there will be an entry in this
-      variable. This is useful to get the actual values provided during
-      execution and take proper actions. If a parameter is not set in the
-      directive context, the reference will still exist in the map, but it will
-      be mapped to an empty string.
+      parameters available at runtime. The map contains supplied directive
+      parameters and this flag's own argument value, including its default when
+      used. Other omitted arguments are not inserted as empty strings. This is
+      useful to get the actual values provided during execution and take proper
+      actions.
 
       ```java
-      check = parameters.contains("foo");
+      check = parameters.containsKey("foo");
       ```
 
     - `⋄ reference`: This variable holds the canonical, absolute path
       representation of the file name as a `File` object. This is useful if it
-      is necessary to know the hierarchical structure of a project. Since the
-      reference is a Java object, we can use methods available in the `File`
-      class.
+      is necessary to know the hierarchical structure of a project. The file
+      wrapper's properties and methods are listed at the end of this chapter.
 
       ```java
       parent = reference.getParent();
@@ -563,11 +565,23 @@ and editing. In any case, you can always see which lines compose a directive by
 inspecting the log file.
 {% end %}
 
-arara provides logical expressions, written in the MVEL language, and special
-operators processed at runtime in order to determine whether and how a directive
+arara provides logical expressions and special operators processed at runtime
+in order to determine whether and how a directive
 should be processed. This feature is named *directive conditional*, or simply
 *conditional* as an abbreviation. The following list describes all conditional
-operators available in the directive context.
+operators available in the directive context. Expressions use MVEL with the
+default `yaml` engine and Lua with `--engine lua`. The examples below use MVEL.
+
+| Operation | MVEL | Lua |
+| --- | --- | --- |
+| And | `&&` | `and` |
+| Or | `||` | `or` |
+| Not | `!` | `not` |
+| Not equal | `!=` | `~=` |
+
+For instance, the Lua equivalent of `missing('pdf') || changed('tex')` is
+`missing('pdf') or changed('tex')`. Lua conditionals must return a boolean;
+strings and numbers are not accepted as truth values.
 
 - **[a priori]** `if`: The associated MVEL expression is evaluated beforehand,
   and the directive is interpreted if, and only if, the result of such
@@ -685,7 +699,7 @@ reference. Such methods are detailed later on.
 
 {% messagebox(title="Orb tag expansion in parameter values") %}
 From version 6.0 on, arara is able to expand orb tags within a special `options`
-parameter in the directive context. For instance:
+parameter in the directive context. With the YAML engine, for instance:
 
 ```tex
 % arara: lualatex: {
@@ -698,6 +712,16 @@ parameter in the directive context. For instance:
 This feature supports the following methods with their documented meanings, as
 seen in [Methods](@/manual/Methods.md): `❖ getBasename`, `❖
 getSession` and `❖ getOriginalReference`.
+
+With `--engine lua`, use double-curly-brace tags and Lua expressions instead:
+
+```tex
+% arara: lualatex: { options: ['--jobname={{ "draft" .. "-copy" }}'] }
+```
+
+The example produces the option `--jobname=draft-copy`. The tags belong to the
+selected engine; Lua does not accept MVEL's `@{ ... }` tags. See
+[Lua rules](@/manual/Lua.md#conditionals-and-options) for the corresponding rules.
 
 Keep in mind that this feature is disabled when arara is running in safe mode,
 as seen in [Command line](@/manual/CLI.md).
