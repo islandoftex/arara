@@ -6,13 +6,14 @@ import org.islandoftex.arara.api.SafeRunViolationException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.core.files.FileHandling
+import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.ClassLoading
 import org.islandoftex.arara.core.session.ClassLoading.ClassLoadingStatus
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.ui.DialogRenderer
 import org.islandoftex.arara.core.ui.Dialogs
-import org.islandoftex.arara.core.utils.MethodUtils
+import java.io.IOException
 
 @Suppress("unused", "TooManyFunctions")
 object ConditionalMethods {
@@ -147,8 +148,15 @@ object ConditionalMethods {
      */
     @JvmStatic
     @Throws(AraraException::class)
-    fun found(file: MPPPath, regex: String): Boolean =
-        MethodUtils.checkRegex(file, regex)
+    fun found(file: MPPPath, regex: String): Boolean = try {
+        val text = file.readText()
+        regex.toRegex().containsMatchIn(text)
+    } catch (exception: IOException) {
+        throw AraraException(
+            LanguageController.messages.errorCheckRegexIoException(file.fileName),
+            exception
+        )
+    }
 
     /**
      * Returns a file object based on the provided name.

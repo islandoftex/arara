@@ -24,7 +24,7 @@ import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.rules.CommandEvaluator
 import org.islandoftex.arara.core.session.HaltRequest
 import org.islandoftex.arara.core.session.LinearExecutor
-import org.islandoftex.arara.core.ui.InputHandling
+import org.islandoftex.arara.core.rules.InputHandling
 import org.islandoftex.arara.lua.rules.LuaConditionalEvaluator
 import org.islandoftex.arara.mvel.interpreter.MvelCommandEvaluator
 import org.islandoftex.arara.mvel.rules.DirectiveConditionalEvaluator

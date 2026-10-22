@@ -3,6 +3,8 @@ package org.islandoftex.arara.mvel.utils
 
 import org.islandoftex.arara.api.AraraExceptionWithHeader
 import org.islandoftex.arara.api.session.Command
+import org.islandoftex.arara.api.files.toMPPPath
+import java.nio.file.Files
 import org.islandoftex.arara.core.rules.RuleMethods
 import org.mvel2.templates.TemplateRuntime
 import kotlin.test.Test
@@ -26,5 +28,29 @@ class SharedHelperBindingTest {
     fun authoredErrorsKeepTheSharedContextualException() {
         val error = assertFailsWith<AraraExceptionWithHeader> { RuleMethods.throwError("rule sentinel") }
         assertEquals("rule sentinel", error.message)
+    }
+
+    @Test
+    fun consolidatedHelpersKeepTheirReflectiveOverloads() {
+        val root = Files.createTempDirectory("arara MVEL helpers ").toMPPPath()
+        val target = root.resolve("output.txt")
+        try {
+            for (value in listOf(target, target.toString())) {
+                val context = MvelState.ruleMethods + ("target" to value)
+                assertEquals(true, TemplateRuntime.eval(
+                    "@{ writeToFile(target, replicatePattern('%s!', ['one', 'two']), false) }", context
+                ))
+                assertEquals(listOf("one!", "two!"), TemplateRuntime.eval("@{ readFromFile(target) }", context))
+                assertEquals(true, TemplateRuntime.eval("@{ writeToFile(target, 'three', false) }", context))
+                assertEquals("three", target.readText())
+            }
+            val context = MvelState.conditionalMethods + ("target" to target)
+            assertEquals(true, TemplateRuntime.eval("@{ found(target, 'three') }", context))
+            assertEquals(false, TemplateRuntime.eval("@{ found(target, 'absent') }", context))
+            val failed = MvelState.ruleMethods + ("target" to root)
+            assertEquals(false, TemplateRuntime.eval("@{ writeToFile(target, 'nope', false) }", failed))
+        } finally {
+            root.removeDirectory()
+        }
     }
 }

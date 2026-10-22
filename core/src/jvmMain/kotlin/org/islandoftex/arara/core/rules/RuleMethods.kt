@@ -2,6 +2,7 @@
 package org.islandoftex.arara.core.rules
 
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.AraraExceptionWithHeader
 import org.islandoftex.arara.api.AraraIOException
 import org.islandoftex.arara.api.SafeRunViolationException
 import org.islandoftex.arara.api.configuration.ExecutionMode
@@ -16,9 +17,8 @@ import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.ui.DialogRenderer
 import org.islandoftex.arara.core.ui.Dialogs
-import org.islandoftex.arara.core.utils.MethodUtils
-import org.islandoftex.arara.core.ui.InputHandling
-import org.islandoftex.arara.api.AraraExceptionWithHeader
+import java.io.IOException
+import java.util.MissingFormatArgumentException
 
 @Suppress("unused", "TooManyFunctions")
 object RuleMethods {
@@ -150,8 +150,14 @@ object RuleMethods {
      */
     @JvmStatic
     @Throws(AraraException::class)
-    fun replicatePattern(pattern: String, values: List<Any>): List<Any> =
-        MethodUtils.replicateList(pattern, values)
+    fun replicatePattern(pattern: String, values: List<Any>): List<Any> = try {
+        values.map { pattern.format(it) }
+    } catch (exception: MissingFormatArgumentException) {
+        throw AraraException(
+            LanguageController.messages.errorReplicateListMissingFormatArgumentsException,
+            exception
+        )
+    }
 
     /**
      * Throws an exception.
@@ -181,7 +187,8 @@ object RuleMethods {
      */
     @JvmStatic
     fun buildString(vararg objects: Any?): String =
-        MethodUtils.generateString(*objects.filterNotNull().toTypedArray())
+        objects.filterNotNull().map { it.toString() }
+            .filter { it.isNotEmpty() }.joinToString(" ")
 
     /**
      * Gets the command based on a list of strings.
@@ -406,8 +413,14 @@ object RuleMethods {
      * @return A logical value indicating whether it was successful.
      */
     @JvmStatic
-    fun writeToFile(file: MPPPath, text: String, append: Boolean): Boolean =
-        MethodUtils.writeToFile(file, text, append)
+    fun writeToFile(file: MPPPath, text: String, append: Boolean): Boolean = try {
+        file.writeText(text, append)
+        true
+    } catch (_: AraraIOException) {
+        false
+    } catch (_: IOException) {
+        false
+    }
 
     /**
      * Writes the string to a file, using UTF-8 as default encoding.
@@ -419,7 +432,7 @@ object RuleMethods {
      */
     @JvmStatic
     fun writeToFile(path: String, text: String, append: Boolean): Boolean =
-        MethodUtils.writeToFile(MPPPath(path), text, append)
+        writeToFile(MPPPath(path), text, append)
 
     /**
      * Writes the string list to a file, using UTF-8 as default encoding.
@@ -431,7 +444,7 @@ object RuleMethods {
      */
     @JvmStatic
     fun writeToFile(file: MPPPath, lines: List<String>, append: Boolean): Boolean =
-        MethodUtils.writeToFile(file, lines.joinToString(System.lineSeparator()), append)
+        writeToFile(file, lines.joinToString(System.lineSeparator()), append)
 
     /**
      * Writes the string list to a file, using UTF-8 as default encoding.
@@ -443,7 +456,7 @@ object RuleMethods {
      */
     @JvmStatic
     fun writeToFile(path: String, lines: List<String>, append: Boolean): Boolean =
-        MethodUtils.writeToFile(MPPPath(path), lines.joinToString(System.lineSeparator()), append)
+        writeToFile(MPPPath(path), lines.joinToString(System.lineSeparator()), append)
 
     /**
      * Reads the provided file into a list of strings.

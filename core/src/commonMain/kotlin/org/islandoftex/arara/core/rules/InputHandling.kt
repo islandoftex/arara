@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BSD-3-Clause
-package org.islandoftex.arara.core.ui
+package org.islandoftex.arara.core.rules
 
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.core.localization.LanguageController
@@ -31,11 +31,11 @@ object InputHandling {
 
     /**
      * Flattens a potential list of lists into a list of objects.
+     * The list and all nested lists must contain only non-null elements.
      *
      * @param list The list to be flattened.
      * @return The flattened list.
      */
-    // TODO: check nullity
     fun flatten(list: List<*>): List<Any> =
         list.flatMap { item ->
             if (item is List<*>)

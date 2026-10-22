@@ -107,6 +107,7 @@ class RuleFileContractTest {
         assertTrue(ConditionalMethods.found(input, "error.*3"))
         assertFalse(ConditionalMethods.found(input, "warning"))
         assertFailsWith<AraraIOException> { ConditionalMethods.found(root.resolve("missing.log"), "error") }
+        assertFailsWith<AraraIOException> { ConditionalMethods.found(root.resolve("missing.log"), "[") }
         assertFailsWith<IllegalArgumentException> { ConditionalMethods.found(input, "[") }
         assertEquals("input.log", ConditionalMethods.toFile(input.toString()).fileName)
         assertTrue(ConditionalMethods.exists(input))

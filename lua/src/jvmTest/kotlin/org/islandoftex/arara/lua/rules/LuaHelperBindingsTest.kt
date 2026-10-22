@@ -6,6 +6,8 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 import org.islandoftex.arara.api.AraraExceptionWithHeader
+import org.islandoftex.arara.api.files.toMPPPath
+import java.nio.file.Files
 
 class LuaHelperBindingsTest {
     @Test
@@ -49,5 +51,39 @@ class LuaHelperBindingsTest {
         assertTrue(globals.load("local s=get_session(); s.put('lua-bindings-test', true); " +
             "local v=s.get('lua-bindings-test'); s.remove('lua-bindings-test'); return v").call().toboolean())
         assertFailsWith<Exception> { globals.load("return exists(42)").call() }
+    }
+
+    @Test
+    fun consolidatedHelpersKeepBothSpellingsAndPathRepresentations() {
+        val root = Files.createTempDirectory("arara Lua helpers ").toMPPPath()
+        val target = root.resolve("output.txt")
+        try {
+            val globals = LuaRuleEnvironment.newGlobals()
+            for ((write, read, replicate) in listOf(
+                Triple("writeToFile", "readFromFile", "replicatePattern"),
+                Triple("write_to_file", "read_from_file", "replicate_pattern")
+            )) {
+                for (value in listOf(target, target.toString())) {
+                    globals.set("target", LuaConversion.toLua(value))
+                    assertTrue(globals.load(
+                        "return $write(target, $replicate('%s!', {'one', 'two'}), false)"
+                    ).call().toboolean())
+                    assertEquals(listOf("one!", "two!"), LuaConversion.fromLua(
+                        globals.load("return $read(target)").call()
+                    ))
+                    assertTrue(globals.load("return $write(target, 'three', false)").call().toboolean())
+                    assertEquals("three", target.readText())
+                }
+            }
+            for (environment in listOf(globals, LuaConditionalEnvironment.newGlobals())) {
+                environment.set("target", LuaConversion.toLua(target))
+                assertTrue(environment.load("return found(target, 'three')").call().toboolean())
+                assertEquals(false, environment.load("return found(target, 'absent')").call().toboolean())
+            }
+            globals.set("target", LuaConversion.toLua(root))
+            assertEquals(false, globals.load("return write_to_file(target, 'nope', false)").call().toboolean())
+        } finally {
+            root.removeDirectory()
+        }
     }
 }
