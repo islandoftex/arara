@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 plugins {
+    alias(libs.plugins.kover)
     kotlin("multiplatform")
 }
 

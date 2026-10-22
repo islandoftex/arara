@@ -25,6 +25,7 @@ plugins {
     alias(libs.plugins.spotlessChangelog) // Apache 2.0
     alias(libs.plugins.dokka) // Apache 2.0
     alias(libs.plugins.detekt) // Apache 2.0
+    alias(libs.plugins.kover) // Apache 2.0
     alias(libs.plugins.spotless) // Apache 2.0
 }
 
@@ -162,6 +163,11 @@ dependencies {
 }
 
 val publicationModules = listOf("api", "core", "lua", "mvel", "cli")
+
+// Aggregate tests across module boundaries as well as each module's own suite.
+dependencies {
+    publicationModules.forEach { add("kover", project(":$it")) }
+}
 val publicationRepository = layout.buildDirectory.dir("publication-check/repository")
 val preparePublicationCheck = tasks.register<Delete>("preparePublicationCheck") {
     delete(publicationRepository)

@@ -106,6 +106,12 @@ when changing runtime behavior or packaging. It builds its own runnable jar.
 Run them in that order; `detekt` and `spotlessCheck` are cheap and fail fast on
 style issues that are noisy to fix after writing a lot of code.
 
+`./gradlew koverHtmlReport koverXmlReport` produces aggregate coverage reports
+under `build/reports/kover`. Module tasks such as `:core:koverHtmlReport` measure
+that module's own tests; the root report merges execution across module boundaries.
+Packaged subprocess smoke checks are verified separately and do not contribute to
+these reports. Reports include all production classes.
+
 ### Lint / format (non-obvious)
 
 - **Spotless** (`build.gradle.kts`, root): applies `licenseHeader

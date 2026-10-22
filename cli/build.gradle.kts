@@ -6,6 +6,7 @@ import com.github.jengelman.gradle.plugins.shadow.transformers.Log4j2PluginsCach
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
+    alias(libs.plugins.kover)
     kotlin("multiplatform")
     alias(libs.plugins.shadow)
     distribution
