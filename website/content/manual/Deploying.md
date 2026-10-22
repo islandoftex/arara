@@ -15,7 +15,7 @@ available in our project repository or a personal build generated from source
 
 From the early development stages, our tool employs a very straightforward
 directory structure. In short, we provide the `ARARA_HOME` alias to the
-directory path in which the `arara.jar` Java archive file is located. This
+directory path in which `arara.jar` and its companion `jna.jar` are located. This
 particular file is the heart and soul of our tool and dictates the default rule
 search path, which is a special directory named `rules` available from the same
 level. This directory contains all rules specified in the YAML format. The
@@ -68,7 +68,9 @@ structure previously presented. We can test the deployment by running the
 following command in the terminal (please note the full path):
 
 ```sh
-$ java -jar /opt/islandoftex/arara/arara.jar
+$ java --module-path /opt/islandoftex/arara/jna.jar \
+      --add-modules=com.sun.jna --enable-native-access=com.sun.jna \
+      -jar /opt/islandoftex/arara/arara.jar
 Usage: arara [<options>] <file>...
 
     __ _ _ __ __ _ _ __ __ _
@@ -136,7 +138,9 @@ and passes a set of parameters to that command.
     preferably at the end:
 
   ```sh
-  alias arara='java -jar /opt/islandoftex/arara/arara.jar'
+  alias arara='java --module-path /opt/islandoftex/arara/jna.jar \
+      --add-modules=com.sun.jna --enable-native-access=com.sun.jna \
+      -jar /opt/islandoftex/arara/arara.jar'
   ```
 
   Save the file and restart your terminal. It is important to observe that the
@@ -153,7 +157,9 @@ and passes a set of parameters to that command.
 
   ```sh
   arara() {
-      java -jar /opt/islandoftex/arara/arara.jar "$@"
+      java --module-path /opt/islandoftex/arara/jna.jar \
+      --add-modules=com.sun.jna --enable-native-access=com.sun.jna \
+      -jar /opt/islandoftex/arara/arara.jar "$@"
   }
   ```
 
@@ -179,7 +185,8 @@ and passes a set of parameters to that command.
   ```sh
   #!/bin/bash
   jarpath=/opt/islandoftex/arara/arara.jar
-  java -jar "$jarpath" "$@"
+  java --module-path /opt/islandoftex/arara/jna.jar --add-modules=com.sun.jna \
+    --enable-native-access=com.sun.jna -jar "$jarpath" "$@"
   ```
 
   It is important to observe that the given full path must be properly quoted if

@@ -39,6 +39,7 @@ before_script:
     - ./gradlew --build-cache assembleDist stageProcessSmokeJar --info
     - mkdir bin
     - cp cli/build/libs/*.jar bin/
+    - cp cli/build/native/jna.jar bin/
     - cp cli/build/distributions/*.zip bin/
     # create checksum file to make sure we're distributing the right thing
     - cd bin
@@ -49,6 +50,7 @@ before_script:
       - bin
       - build/processSmoke/arara.jar
       - build/processSmoke/runner.jar
+      - build/processSmoke/jna.jar
     expire_in: 1 week
   cache:
     <<: *cachedefinition

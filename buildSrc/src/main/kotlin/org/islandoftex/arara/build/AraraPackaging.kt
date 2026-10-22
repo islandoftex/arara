@@ -70,6 +70,8 @@ class AraraPackaging : Plugin<Project> {
             into("doc/man/man1") { from(generated.flatMap { it.outputDirectory.file("arara.1") }) }
             into("scripts/arara") {
                 from(application) { rename { "arara.jar" } }
+                from(target.project(":cli").layout.buildDirectory.file("native/jna.jar"))
+                dependsOn(":cli:stageNativeRuntime")
                 from(generated.flatMap { it.outputDirectory.file("arara.sh") })
                 into("rules") { from(target.layout.projectDirectory.dir("rules")) }
             }

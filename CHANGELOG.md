@@ -61,6 +61,10 @@ on.
 
 ### Changed
 
+* **Breaking change:** The application jar ships with a separate `jna.jar`.
+  Manual Java launches must place it on the module path and enable native access
+  for `com.sun.jna`; the supplied launchers handle this automatically.
+
 * Java 21 is now the minimum runtime version (breaking change).
 
 * **Breaking change:** `MPPPath.toJVMPath()` and `toJVMFile()` now export absolute,

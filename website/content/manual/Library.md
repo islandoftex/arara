@@ -104,6 +104,6 @@ A host using a `StyledConsoleRenderer` directly must call `close()` when finishe
 to stop live progress and release its timer. Call `suspendProgress()` before
 printing through another component or opening a custom dialog.
 
-Hosts using the CLI's native terminal detection should launch with
-`--enable-native-access=ALL-UNNAMED`. The packaged arara launchers enable this
-access themselves.
+Hosts using the CLI's native terminal detection should put JNA on the module
+path and use `--add-modules=com.sun.jna --enable-native-access=com.sun.jna`.
+The packaged arara launchers supply these options.

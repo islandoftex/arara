@@ -280,7 +280,7 @@ subprojects {
 tasks.register<Exec>("processSmoke") {
     group = "verification"
     description = "Run portable process checks against the runnable jar (JDK 21+)."
-    dependsOn(":cli:shadowJar", ":smoke-tests:runnerJar")
+    dependsOn(":cli:shadowJar", ":cli:stageNativeRuntime", ":smoke-tests:runnerJar")
     val smokeJava = providers.gradleProperty("smokeJava").orElse(
         providers.systemProperty("java.home").map {
             Path.of(it, "bin", if (System.getProperty("os.name").startsWith("Windows")) "java.exe" else "java")
@@ -290,6 +290,7 @@ tasks.register<Exec>("processSmoke") {
     val report = layout.buildDirectory.file("test-results/processSmoke/results.xml")
     inputs.files(project(":smoke-tests").tasks.named("runnerJar"))
     inputs.files(project(":cli").tasks.named("shadowJar"))
+    inputs.file(project(":cli").layout.buildDirectory.file("native/jna.jar"))
     inputs.property("smokeJava", smokeJava)
     outputs.file(report)
     outputs.upToDateWhen { false }
@@ -299,22 +300,24 @@ tasks.register<Exec>("processSmoke") {
         commandLine(
             smokeJava.get(), "-jar", runner.absolutePath,
             "--jar", jar.absolutePath, "--java", smokeJava.get(),
+            "--jna", project(":cli").layout.buildDirectory.file("native/jna.jar").get().asFile.absolutePath,
             "--report", report.get().asFile.absolutePath
         )
     }
 }
 
-// Give runtime-only CI jobs both jars, independent of versioned filenames.
+// Give runtime-only CI jobs the application, native library and smoke runner.
 tasks.register<Copy>("stageProcessSmokeJar") {
     group = "verification"
     description = "Stage the application and smoke runner jars for a separate runtime job."
-    dependsOn(":cli:shadowJar", ":smoke-tests:runnerJar")
+    dependsOn(":cli:shadowJar", ":cli:stageNativeRuntime", ":smoke-tests:runnerJar")
     from(provider { project(":cli").tasks.named<Jar>("shadowJar").get().archiveFile.get().asFile }) {
         rename { "arara.jar" }
     }
     from(provider { project(":smoke-tests").tasks.named<Jar>("runnerJar").get().archiveFile.get().asFile }) {
         rename { "runner.jar" }
     }
+    from(project(":cli").layout.buildDirectory.file("native/jna.jar"))
     into(layout.buildDirectory.dir("processSmoke"))
 }
 

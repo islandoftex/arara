@@ -58,7 +58,10 @@ private fun run(command: List<String>, directory: MPPPath, input: String = "",
     }
 }
 
-private class Smoke(private val jar: MPPPath, private val java: MPPPath, private val fixture: MPPPath) {
+private class Smoke(private val jar: MPPPath, private val java: MPPPath, private val fixture: MPPPath, private val jna: MPPPath) {
+    private val launcher = listOf(java.toString(), "--module-path", jna.toString(),
+        "--add-modules=com.sun.jna", "--enable-native-access=com.sun.jna")
+
     private fun rule(root: MPPPath, expression: String) {
         root.resolve("probe.yaml").writeText(
             "!config\nidentifier: probe\nname: Smoke probe\ncommands:\n  - command: " +
@@ -95,8 +98,8 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath, private
     private fun execute(root: MPPPath, expected: Int, flags: List<String> = emptyList(),
                         reference: String = "run.tex", input: String = "",
                         environment: Map<String, String?> = emptyMap()): String {
-        val result = run(listOf(java.toString(), "-Duser.home=$root", "-jar", jar.toString(),
-            "-L", "en", "-d", root.toString()) + flags + reference, root, input, environment)
+        val result = run((launcher + listOf("-Duser.home=$root", "-jar", jar.toString(),
+            "-L", "en", "-d", root.toString())) + flags + reference, root, input, environment)
         check(result.status == expected) { "Expected exit $expected, got ${result.status}\n${result.output}" }
         return result.output
     }
@@ -115,17 +118,29 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath, private
                 )) { "Missing terminal provider service registration" }
                 val registration = archive.getInputStream(service).bufferedReader().use { it.readText() }
                 check(provider in registration) { "Native terminal provider is not registered" }
-                check(archive.getJarEntry("com/sun/jna/Native.class") != null) { "The shaded jar lost JNA" }
-                check(archive.entries().asSequence().any { it.name.endsWith("libjnidispatch.so") }) {
-                    "The shaded jar lost JNA's native libraries"
-                }
-                check(archive.manifest.mainAttributes.getValue("Enable-Native-Access") == "ALL-UNNAMED") {
-                    "The executable jar does not enable its native terminal access"
+                check(archive.getJarEntry("com/sun/jna/Native.class") == null) { "JNA must be a separate module" }
+                check(archive.manifest.mainAttributes.getValue("Enable-Native-Access") == null) {
+                    "The application must not grant native access to all classpath code"
                 }
             }
+            JarFile(jna.toJVMFile()).use { archive ->
+                check(archive.manifest.mainAttributes.getValue("Automatic-Module-Name") == "com.sun.jna")
+                check(archive.getJarEntry("com/sun/jna/Native.class") != null)
+                check(archive.entries().asSequence().any { it.name.endsWith("libjnidispatch.so") })
+            }
+        },
+        "native_access_is_limited_to_jna" to { root ->
+            val version = run(listOf(java.toString(), "-version"), root)
+            val feature = Regex("version \"(\\d+)").find(version.output)?.groupValues?.get(1)?.toInt()
+                ?: error("Cannot determine Java version: ${version.output}")
+            val restriction = if (feature >= 24) listOf("--illegal-native-access=deny") else emptyList()
+            val result = run(launcher + restriction +
+                listOf("-cp", fixture.toString(), "SmokeProcess", "native-access"), root)
+            check(result.status == 0) { result.output }
+            contains(result.output, "NATIVE_ACCESS_ISOLATED")
         },
         "packaged_version_and_completion" to { root ->
-            val command = listOf(java.toString(), "-jar", jar.toString())
+            val command = launcher + listOf("-jar", jar.toString())
             val version = run(command + "--version", root)
             check(version.status == 0) { version.output }
             contains(version.output, "arara")
@@ -138,7 +153,7 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath, private
         "help_and_empty_invocation_ignore_invalid_configuration" to { root ->
             root.resolve("arararc.yaml").writeText("!config\nloops: not-a-number\n")
             for (flags in listOf(emptyList(), listOf("--help"))) {
-                val result = run(listOf(java.toString(), "-Duser.home=$root", "-jar", jar.toString()) + flags, root)
+                val result = run((launcher + listOf("-Duser.home=$root", "-jar", jar.toString())) + flags, root)
                 check(result.status == 0) { result.output }
                 contains(result.output, "--engine")
                 contains(result.output, "--whole-file")
@@ -775,6 +790,17 @@ private fun compileFixture(root: MPPPath, javac: MPPPath) {
     source.writeText("""
         public class SmokeProcess {
             public static void main(String[] args) throws Exception {
+                if (args[0].equals("native-access")) {
+                    Module jna = Class.forName("com.sun.jna.Native").getModule();
+                    if (!"com.sun.jna".equals(jna.getName())) throw new AssertionError("Unnamed JNA");
+                    java.lang.reflect.Method access = Module.class.getMethod("isNativeAccessEnabled");
+                    if (!(Boolean) access.invoke(jna) ||
+                        (Boolean) access.invoke(SmokeProcess.class.getModule())) {
+                        throw new AssertionError("Native access is not isolated");
+                    }
+                    System.out.println("NATIVE_ACCESS_ISOLATED");
+                    return;
+                }
                 System.out.println("SMOKE_STDOUT");
                 System.err.println("SMOKE_STDERR");
                 System.out.println("SMOKE_CWD=" + System.getProperty("user.dir"));
@@ -829,7 +855,7 @@ private fun temporary(body: (MPPPath) -> Unit) {
 fun main(args: Array<String>) {
     require(args.size % 2 == 0) { "Expected --jar APP_JAR --java JAVA [--javac JAVAC] [--report XML]" }
     val options = args.toList().chunked(2).associate { (key, value) -> key to value }
-    require(options.keys.all { it in setOf("--jar", "--java", "--javac", "--report") }) { "Unknown option" }
+    require(options.keys.all { it in setOf("--jar", "--java", "--javac", "--report", "--jna") }) { "Unknown option" }
     val jar = MPPPath(options.getValue("--jar")).normalize()
     val java = MPPPath(options.getValue("--java")).normalize()
     val javac = options["--javac"]?.let { MPPPath(it).normalize() }
@@ -839,7 +865,7 @@ fun main(args: Array<String>) {
     runCatching {
         temporary { fixture ->
             compileFixture(fixture, javac)
-            Smoke(jar, java, fixture).cases.forEach { (name, test) ->
+            Smoke(jar, java, fixture, MPPPath(options["--jna"] ?: jar.resolveSibling("jna.jar").toString())).cases.forEach { (name, test) ->
                 val failure = runCatching { temporary { root -> initialize(root); test(root) } }.exceptionOrNull()
                 cases.add(CaseResult(name, failure))
                 println("${if (failure == null) "PASS" else "FAIL"} $name")

@@ -34,6 +34,10 @@ fun main(args: Array<String>) {
             apply<org.islandoftex.arara.build.AraraPackaging>()
         """.trimIndent())
         write("cli/build.gradle.kts", """
+            tasks.register<Sync>("stageNativeRuntime") {
+                from("application.txt") { rename { "jna.jar" } }
+                into(layout.buildDirectory.dir("native"))
+            }
             tasks.register<Jar>("shadowJar") {
                 from("application.txt")
                 archiveFileName.set("application.jar")
@@ -91,7 +95,7 @@ fun main(args: Array<String>) {
             it.startsWith("website/public/") || it == "docs/arara-manual.pdf" })
         val tds = entries(archives[2])
         listOf("doc/support/arara/arara-manual.pdf", "doc/support/arara/arara-quickstart.pdf",
-            "doc/man/man1/arara.1", "scripts/arara/arara.jar", "scripts/arara/rules/arara-rule-probe.lua",
+            "doc/man/man1/arara.1", "scripts/arara/arara.jar", "scripts/arara/jna.jar", "scripts/arara/rules/arara-rule-probe.lua",
             "source/support/arara/arara-1.2.3-src.zip").forEach { check(it in tds) { it } }
         check(tds.none { "/build/" in it || "/site/" in it })
         listOf(archives[0] to "gradlew", archives[2] to "scripts/arara/arara.sh",
@@ -104,8 +108,15 @@ fun main(args: Array<String>) {
                 }
             }
         }
+        ZipFile(root.resolve("build/arara.tds.zip").toFile()).use { zip ->
+            val script = zip.getInputStream(zip.getEntry("scripts/arara/arara.sh"))
+                .bufferedReader().use { it.readText() }
+            check("--add-modules=com.sun.jna" in script)
+            check("--enable-native-access=com.sun.jna" in script)
+            check("ALL-UNNAMED" !in script)
+        }
         val ctan = entries(archives[3])
-        check(setOf("arara.tds.zip", "arara/README.md", "arara/doc/arara.1", "arara/scripts/arara.sh")
+        check(setOf("arara.tds.zip", "arara/README.md", "arara/doc/arara.1", "arara/scripts/arara.sh", "arara/scripts/jna.jar")
             .all { it in ctan })
         check("arara/doc/README.md" !in ctan)
         check(Files.readString(root.resolve("build/tds/doc/man/man1/arara.1")).contains("03 February 2020"))

@@ -29,14 +29,17 @@ object TaskHelper {
                 jar="${'$'}scriptname.jar"
                 jarpath=`kpsewhich --progname="${'$'}scriptname" --format=texmfscripts "${'$'}jar"`
 
+                modulepath=`dirname "${'$'}jarpath"`/jna.jar
                 kernel=`uname -s 2>/dev/null`
                 if echo "${'$'}kernel" | grep CYGWIN >/dev/null; then
                   CYGWIN_ROOT=`cygpath -w /`
                   export CYGWIN_ROOT
+                  modulepath=`cygpath -w "${'$'}modulepath"`
                   jarpath=`cygpath -w "${'$'}jarpath"`
                 fi
 
-                exec java -jar "${'$'}jarpath" "${'$'}@"
+                exec java --module-path "${'$'}modulepath" --add-modules=com.sun.jna \
+                  --enable-native-access=com.sun.jna -jar "${'$'}jarpath" "${'$'}@"
                 """.trimIndent() + "\n"
             )
 

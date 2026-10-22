@@ -182,7 +182,7 @@ $ ./gradlew :cli:build
 Alternatively, you can also run the following command in the terminal:
 
 ```sh
-$ ./gradlew build
+$ ./gradlew build :cli:stageNativeRuntime
 ```
 
 Gradle is based around the central concept of a build life cycle. The compile
@@ -190,9 +190,9 @@ phase, as the name suggests, compiles the source code of the project using the
 underlying Java compiler. After compiling, the code can be packaged, tested and
 run. The `build` target actually compiles, tests and packages our
 tool. Afterwards, you will have a `cli/build/libs/` directory with multiple JAR
-files, one containing `with-deps`. That file is ready to run as it bundles all
-dependencies. Subsequent builds will be significantly faster than the first
-build because they do not fetch dependencies and rely on a build cache. Finally,
+files, one containing `with-deps`. That file bundles the application dependencies
+except JNA, which is provided separately as `cli/build/native/jna.jar`. Subsequent
+builds will be significantly faster than the first build because they do not fetch dependencies and rely on a build cache. Finally,
 after some time, Gradle will output the following message as result (please note
 that the entire compilation and packaging only took 4 seconds on my development
 machine due to an existing local cache):
@@ -210,15 +210,17 @@ that the Java archive file was also renamed during the move operation):
 
 ```sh
 $ mv cli/build/libs/arara-cli-with-deps-*.jar arara.jar
+$ cp cli/build/native/jna.jar .
 ```
 
 Now, our current directory contains the final `arara.jar` Java archive file
-properly built from source. This file can be safely distributed and deployed, as
-seen later on, in [Deploying](@/manual/Deploying.md). You can also test the
+and its companion `jna.jar`, properly built from source. These files can be
+distributed and deployed, as seen later on, in [Deploying](@/manual/Deploying.md). You can also test the
 resulting file by running the following command in the terminal:
 
 ```sh
-$ java -jar arara.jar
+$ java --module-path jna.jar --add-modules=com.sun.jna \
+    --enable-native-access=com.sun.jna -jar arara.jar
 Usage: arara [<options>] <file>...
 
     __ _ _ __ __ _ _ __ __ _

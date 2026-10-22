@@ -3,6 +3,7 @@
 
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import com.github.jengelman.gradle.plugins.shadow.transformers.Log4j2PluginsCacheFileTransformer
+import org.gradle.api.artifacts.component.ModuleComponentIdentifier
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
@@ -88,28 +89,48 @@ kotlin {
     }
 }
 
+val nativeRuntime = configurations.getByName("jvmRuntimeClasspath").incoming.artifactView {
+    componentFilter {
+        it is ModuleComponentIdentifier && it.group == "net.java.dev.jna" && it.module == "jna"
+    }
+}.files
+
+val stageNativeRuntime = tasks.register<Sync>("stageNativeRuntime") {
+    from(nativeRuntime) { rename { "jna.jar" } }
+    into(layout.buildDirectory.dir("native"))
+}
+
+val nativeArguments = providers.provider {
+    listOf("--module-path", nativeRuntime.singleFile.absolutePath,
+        "--add-modules=com.sun.jna", "--enable-native-access=com.sun.jna")
+}
+
 distributions {
     main {
-        val jvmRuntimeClasspath = files(
-                tasks.named("jvmJar"),
-                configurations.getByName("jvmRuntimeClasspath"),
-        )
-
+        val application = files(tasks.named("shadowJar"))
         val startScripts = tasks.register<CreateStartScripts>("startScripts") {
             mainClass = entryPath
-            classpath = jvmRuntimeClasspath
+            classpath = application
             outputDir = layout.buildDirectory.file("scripts").get().asFile
             applicationName = project.name
-            defaultJvmOpts = listOf("--enable-native-access=ALL-UNNAMED")
+            defaultJvmOpts = listOf("--add-modules=com.sun.jna", "--enable-native-access=com.sun.jna")
+            doLast {
+                // Keep Gradle's platform launchers, including their argument and JAVA_OPTS handling.
+                val unixAnchor = "-classpath \"${'$'}CLASSPATH\""
+                val windowsAnchor = "-classpath \"%CLASSPATH%\""
+                val unix = unixScript.readText()
+                val windows = windowsScript.readText()
+                check(unixAnchor in unix && windowsAnchor in windows) { "Gradle launcher template changed" }
+                unixScript.writeText(unix.replace(unixAnchor,
+                    "--module-path \"${'$'}APP_HOME/lib/jna.jar\" $unixAnchor"))
+                windowsScript.writeText(windows.replace(windowsAnchor,
+                    "--module-path \"%APP_HOME%/lib/jna.jar\" $windowsAnchor"))
+            }
         }
-
         contents {
-            from(startScripts) {
-                into("bin")
-            }
-            from(jvmRuntimeClasspath) {
-                into("lib")
-            }
+            from(startScripts) { into("bin") }
+            from(application) { into("lib") }
+            from(stageNativeRuntime) { into("lib") }
         }
     }
 }
@@ -117,11 +138,13 @@ distributions {
 tasks {
 
     withType<JavaExec>().configureEach {
-        jvmArgs("--enable-native-access=ALL-UNNAMED")
+        classpath = classpath.minus(nativeRuntime)
+        jvmArgumentProviders.add(CommandLineArgumentProvider { nativeArguments.get() })
     }
 
     withType<Test>().configureEach {
-        jvmArgs("--enable-native-access=ALL-UNNAMED")
+        classpath = classpath.minus(nativeRuntime)
+        jvmArgumentProviders.add(CommandLineArgumentProvider { nativeArguments.get() })
     }
 
     build {
@@ -139,8 +162,7 @@ tasks {
     named<ShadowJar>("shadowJar").configure {
         archiveAppendix.set("with-deps")
         archiveClassifier.set("")
-        // java -jar needs the same native terminal access as the generated launchers.
-        manifest.attributes["Enable-Native-Access"] = "ALL-UNNAMED"
+        dependencies { exclude(dependency("net.java.dev.jna:jna:.*")) }
 
         transform<Log4j2PluginsCacheFileTransformer>()
         filesMatching("META-INF/*.kotlin_module") {
@@ -156,7 +178,6 @@ tasks {
             exclude(dependency("org.apache.logging.log4j:log4j-layout-template-json:.*"))
             exclude(dependency("org.mvel:mvel2:.*"))
             exclude(dependency("com.github.ajalt.mordant:.*"))
-            exclude(dependency("net.java.dev.jna:.*"))
         }
     }
 }

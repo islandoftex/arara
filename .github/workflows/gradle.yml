@@ -34,4 +34,6 @@ jobs:
       uses: actions/upload-artifact@v7
       with:
         name: arara-${{ matrix.os }}-java${{ matrix.java }}
-        path: cli/build/libs/*-with-deps-*.jar
+        path: |
+          cli/build/libs/*-with-deps-*.jar
+          cli/build/native/jna.jar
