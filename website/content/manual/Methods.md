@@ -1362,6 +1362,7 @@ consistently shared across rule contexts.
   Halt requests are cleared at file boundaries, including for files with the
   same name.
 
+  {% messagebox(title="Halt requests in version 8") %}
   In arara 7, rules could request a halt through a session entry:
 
   ```java
@@ -1374,6 +1375,7 @@ consistently shared across rule contexts.
   ```java
   halt(42);
   ```
+  {% end %}
 
 - **[C|E|R]** `getSession(): Session` This method, as the name implies, returns
     the `Session` object for data sharing across rule contexts. Keep in mind

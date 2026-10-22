@@ -148,6 +148,7 @@ h4 {
 }
 
 pre {
+  break-inside: avoid;
   background-color: #fcfcfc !important;
   padding: 1.25em 1.5em;
   white-space: pre;
@@ -170,7 +171,7 @@ table {
   border-collapse: collapse;
   width: 100%;
   page-break-before: avoid;
-  page-break-inside: auto;
+  page-break-inside: avoid;
 }
 tr {
   page-break-inside:avoid;

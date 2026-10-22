@@ -9,6 +9,10 @@ actually a quick introduction to what you can (and cannot) expect from
 arara. For now, concepts will be informally presented and will be detailed later
 on, in the next chapters.
 
+For an existing workflow, [migration post](@/news/2026-10-22-Migration-v8.md) collects
+the changes to rules, configuration and project specifications. Developers
+embedding the tool can start with [arara as a library](@/manual/Library.md).
+
 # What is this tool?
 
 Good question! arara is a TeX automation tool based on rules and directives. It
@@ -219,13 +223,10 @@ cases, you might need to install the proper virtual machine. We tried very hard
 to keep both code and libraries compatible with older virtual machines or from
 other vendors. The application requires Java 21 or newer, from any vendor.
 
-{% messagebox(title="Outdated Java virtual machines") %}
-Dear reader, beware of outdated software, mainly Java virtual machines! Although
-arara offers support for older virtual machines, try your best to keep your
-software updated as frequently as possible. The legacy support exists only for
-historical reasons, and also due to the sheer fact that we know some people that
-still runs arara on very old hardware. If you are not in this particular
-scenario, get the latest virtual machine.
+{% messagebox(title="Java requirements in version 8") %}
+arara 8 requires Java 21 or newer. An installation used for arara 7 may need
+updating. Check the Java installation selected by your editor as well as the
+one used by the command-line launcher.
 {% end %}
 
 In [Building arara](@/manual/Building.md), we provide instructions on how to build

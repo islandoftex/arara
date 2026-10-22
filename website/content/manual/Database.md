@@ -69,6 +69,12 @@ The corresponding Lua configuration is:
 return { database = "cache/arara.yaml" }
 ```
 
+{% messagebox(title="Database paths in version 8") %}
+Earlier versions discarded the directory part of the configured database path.
+The complete path is now honored, so an existing cache may need to be moved to
+that location. The YAML format is unchanged; no conversion is required.
+{% end %}
+
 The complete configured path is used. Relative paths resolve against the
 project's working directory; absolute paths are used as given. The parent
 directory must exist and permit writing. Two projects using different working

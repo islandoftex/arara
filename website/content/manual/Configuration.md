@@ -15,8 +15,11 @@ specify a configuration file, it will overwrite the defaults with the options
 given. Parts that have not been overwritten (omitted from the configuration
 file) will follow the default values.
 
-Dialog helpers now use the terminal. Remove the obsolete `laf` key from older
-configuration files; see [Dialog boxes](@/manual/Methods.md#dialog-boxes).
+{% messagebox(title="Migration from arara 7 to arara 8") %}
+Replace YAML `logging: true` with `logformat: text`; use `logformat: none` to
+disable logging. Remove the obsolete `laf` key, as dialogs now use the terminal;
+see [Dialog boxes](@/manual/Methods.md#dialog-boxes).
+{% end %}
 
 # File lookup
 
@@ -26,6 +29,12 @@ directory. Within each directory it checks Lua before YAML, in this order:
 format's `.lua` or `.yaml` suffix. Only regular files qualify. The first match
 is loaded; an invalid configuration is an error, without falling back to another
 file. Configuration format is independent of the `--engine` rule selector.
+
+{% messagebox(title="Configuration lookup in version 8") %}
+Local configuration takes priority over global configuration, and Lua takes
+priority over YAML within each directory. Only the first file is loaded;
+settings from different configuration files are not merged.
+{% end %}
 
 arara provides two approaches regarding the location of a configuration
 file. They dictate how the execution should behave and happen from a user

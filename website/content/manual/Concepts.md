@@ -688,6 +688,21 @@ Keep in mind that this feature is disabled when arara is running in safe mode,
 as seen in [Command line](@/manual/CLI.md).
 {% end %}
 
+# Important changes in version 8
+
+{% messagebox(title="Directive parameter types") %}
+Quote directive values which must remain strings: `"True"` is text, whereas
+plain `True` is a boolean. Integers outside the supported `Long` range remain
+strings. Null parameter values are rejected.
+{% end %}
+
+{% messagebox(title="Custom rule formats") %}
+YAML/MVEL remains the default engine; Lua rules are selected with `--engine lua`.
+The unfinished Kotlin scripting DSL and `.kts` rule lookup have been removed.
+See the [migration post](@/news/2026-10-22-Migration-v8.md) for examples of
+converting custom rules to Lua.
+{% end %}
+
 # Important changes in version 7
 
 {% messagebox(title="A note to users") %}
