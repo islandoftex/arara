@@ -78,3 +78,15 @@ configure<org.jetbrains.dokka.gradle.DokkaExtension> {
         failOnWarning.set(true)
     }
 }
+
+// This floor measures this module's own test suite.
+kover {
+    reports {
+        total {
+            verify {
+                onCheck.set(false)
+                rule { minBound(80) }
+            }
+        }
+    }
+}

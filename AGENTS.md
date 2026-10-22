@@ -110,7 +110,10 @@ style issues that are noisy to fix after writing a lot of code.
 under `build/reports/kover`. Module tasks such as `:core:koverHtmlReport` measure
 that module's own tests; the root report merges execution across module boundaries.
 Packaged subprocess smoke checks are verified separately and do not contribute to
-these reports. Reports include all production classes.
+these reports. Reports include all production classes. `./gradlew koverVerify`
+checks the aggregate floors (90% lines, 70% branches) and module line floors
+(api/core 80%, lua 73%, mvel 79%, cli 90%). GitLab runs this separately on both
+supported test runtimes and retains HTML/XML reports for one week.
 
 ### Lint / format (non-obvious)
 

@@ -360,3 +360,18 @@ tasks.register<Copy>("stageProcessSmokeJar") {
 }
 
 apply<AraraPackaging>()
+
+// Aggregate execution includes tests that exercise production code in other modules.
+kover {
+    reports {
+        total {
+            verify {
+                onCheck.set(false)
+                rule {
+                    minBound(90)
+                    minBound(70, kotlinx.kover.gradle.plugin.dsl.CoverageUnit.BRANCH)
+                }
+            }
+        }
+    }
+}

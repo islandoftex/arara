@@ -65,6 +65,7 @@ build:linux:jdk21:
     - ./gradlew allTests -PtestJavaVersion="$JAVA_VERSION"
     - ./gradlew -p buildSrc check
     - ./gradlew detekt
+    - ./gradlew koverXmlReport koverHtmlReport koverVerify -PtestJavaVersion="$JAVA_VERSION"
   cache:
     <<: *cachedefinition
     policy: pull
@@ -72,6 +73,13 @@ build:linux:jdk21:
     when: always
     reports:
       junit: "*/build/test-results/jvmTest/TEST-*.xml"
+      coverage_report:
+        coverage_format: jacoco
+        path: build/reports/kover/report.xml
+    paths:
+      - build/reports/kover/
+      - "*/build/reports/kover/"
+    expire_in: 1 week
 
 test:process-smoke:
   stage: test
