@@ -114,6 +114,93 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath, private
             contains(completion.output, "--engine")
             contains(completion.output, "--log-format")
         },
+        "help_and_empty_invocation_ignore_invalid_configuration" to { root ->
+            root.resolve("arararc.yaml").writeText("!config\nloops: not-a-number\n")
+            for (flags in listOf(emptyList(), listOf("--help"))) {
+                val result = run(listOf(java.toString(), "-Duser.home=$root", "-jar", jar.toString()) + flags, root)
+                check(result.status == 0) { result.output }
+                contains(result.output, "--engine")
+                contains(result.output, "--whole-file")
+                check(!root.resolve("arara.log").exists)
+            }
+        },
+        "invalid_cli_bounds_and_choices_fail_before_execution" to { root ->
+            rule(root, "writeToFile('must-not-run.txt', 'ran'); return true;")
+            val invalid = listOf(
+                listOf("--max-loops", "0"),
+                listOf("--timeout", "0"),
+                listOf("--engine", "unknown"),
+                listOf("--console", "unknown"),
+                listOf("--log-format", "unknown")
+            )
+            for (flags in invalid) {
+                val output = execute(root, 1, flags)
+                contains(output, flags.first())
+                contains(output, "invalid value")
+                check(!root.resolve("must-not-run.txt").exists) { "Invalid CLI arguments executed a rule" }
+            }
+        },
+        "whole_file_enables_body_directives_in_both_engines" to { root ->
+            val trace = root.resolve("body-ran.txt")
+            rule(root, "writeToFile(${quoted(trace.toString())}, 'body', false); return true;")
+            luaRule(root, "write_to_file(${quoted(trace.toString())}, 'body', false); return true")
+            root.resolve("run.tex").writeText("\\documentclass{article}\n% arara: probe\n")
+            for (engine in listOf("yaml", "lua")) {
+                execute(root, APPLICATION_ERROR, listOf("--engine", engine))
+                check(!trace.exists) { "Header-only parsing executed a body directive" }
+                execute(root, 0, listOf("--engine", engine, "--whole-file"))
+                check(trace.readText() == "body")
+                Files.delete(trace.toJVMPath())
+            }
+        },
+        "command_line_loop_limit_caps_both_engines" to { root ->
+            val trace = root.resolve("loop.txt")
+            rule(root, "writeToFile(${quoted(trace.toString())}, 'x', true); return true;")
+            luaRule(root, "write_to_file(${quoted(trace.toString())}, 'x', true); return true")
+            root.resolve("run.tex").writeText("% arara: probe while true\n")
+            for (engine in listOf("yaml", "lua")) {
+                trace.writeText("")
+                execute(root, 0, listOf("--engine", engine, "--max-loops", "2"))
+                check(trace.readText() == "xx") { "$engine ignored the command line loop limit" }
+            }
+        },
+        "configured_logname_receives_messages_in_both_formats" to { root ->
+            rule(root, "return true;")
+            for (format in listOf("yaml", "lua")) {
+                val name = "$format-diagnostics.log"
+                root.resolve("arararc.$format").writeText(if (format == "yaml") {
+                    "!config\npaths: ['.']\nlogname: '$name'\n"
+                } else "return { paths = { cwd }, log = { file = '$name' } }")
+                execute(root, 0, listOf("--log-format", "text"))
+                contains(root.resolve(name).readText(), "Run completed with exit code 0")
+            }
+        },
+        "command_line_preamble_supplies_directives_in_both_engines" to { root ->
+            rule(root, "return true;")
+            luaRule(root, "return true")
+            root.resolve("run.tex").writeText("\\documentclass{article}\n")
+            for (format in listOf("yaml", "lua")) {
+                root.resolve("arararc.$format").writeText(if (format == "yaml") {
+                    "!config\npaths: ['.']\npreambles: { build: '% arara: probe' }\n"
+                } else "return { paths = { cwd }, preamble = { definitions = { build = {'% arara: probe'} } } }")
+                for (engine in listOf("yaml", "lua")) {
+                    val output = execute(root, 0, listOf("--engine", engine, "--preamble", "build"))
+                    contains(output, "SUCCESS")
+                }
+            }
+        },
+        "nested_command_lists_launch_every_task_in_both_engines" to { root ->
+            val yaml = native("0").removePrefix("return ").removeSuffix(";")
+            val lua = luaNative("0").removePrefix("return ")
+            rule(root, "return [$yaml, [$yaml]];")
+            luaRule(root, "return {$lua, {$lua}}")
+            for (engine in listOf("yaml", "lua")) {
+                val output = execute(root, 0, listOf("--engine", engine, "--verbose"))
+                for (marker in listOf("SMOKE_STDOUT", "SMOKE_STDERR")) {
+                    check(Regex(marker).findAll(output).count() == 2) { "$engine did not launch both tasks\n$output" }
+                }
+            }
+        },
         "call_properties_override_property_files_in_both_engines" to { root ->
             root.resolve("arguments.properties").writeText("marker=from-file\n")
             listOf("yaml", "lua").forEach { engine ->
