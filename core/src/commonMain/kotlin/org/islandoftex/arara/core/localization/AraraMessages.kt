@@ -437,6 +437,33 @@ interface AraraMessages {
      */
     fun errorValidateHeaderWrongIdentifier(expected: String, actual: String): String
 
+    /** Project heading in styled output. */
+    val infoLabelProject: String
+
+    /** Heading above the per-project file summaries. */
+    val infoDisplaySummaryTitle: String
+
+    /** File column heading. */
+    val infoDisplaySummaryFile: String
+
+    /** Evaluated task count column heading. */
+    val infoDisplaySummaryTasks: String
+
+    /** Elapsed file processing time column heading. */
+    val infoDisplaySummaryTime: String
+
+    /** Hint shown only when a truncated output excerpt has a complete log. */
+    val infoDisplayFullOutputInLog: String
+
+    /** Overall verdict and counts for reached files and evaluated tasks. */
+    fun infoDisplayTotalSuccess(files: Int, tasks: Int): String
+
+    /** Overall failure and counts for reached files and evaluated tasks. */
+    fun infoDisplayTotalFailure(files: Int, tasks: Int): String
+
+    /** Simulation label, without claiming that commands succeeded. */
+    fun infoDisplayDryRun(tasks: Int): String
+
     /** Summary label for files intentionally skipped by execution. */
     val infoConsoleSkipped: String
 

@@ -294,6 +294,30 @@ object EnglishMessages : AraraMessages {
     override fun errorValidateHeaderWrongIdentifier(expected: String, actual: String): String =
         "The rule has a wrong identifier. I was expecting \"${expected}\", but found \"${actual}\". This should be an easy fix: just replace the wrong identifier by the correct one."
 
+    override val infoLabelProject = "Project:"
+
+    override val infoDisplaySummaryTitle = "Execution summary"
+
+    override val infoDisplaySummaryFile = "File"
+
+    override val infoDisplaySummaryTasks = "Tasks"
+
+    override val infoDisplaySummaryTime = "Time"
+
+    override val infoDisplayFullOutputInLog =
+        "the full output is in the log file"
+
+    override fun infoDisplayTotalSuccess(files: Int, tasks: Int) =
+        "TOTAL SUCCESS · ${if (files == 1) "1 file" else "$files files"}, " +
+            "${if (tasks == 1) "1 task" else "$tasks tasks"}"
+
+    override fun infoDisplayTotalFailure(files: Int, tasks: Int) =
+        "TOTAL FAILURE · ${if (files == 1) "1 file" else "$files files"}, " +
+            "${if (tasks == 1) "1 task" else "$tasks tasks"}"
+
+    override fun infoDisplayDryRun(tasks: Int) =
+        "DRY RUN · ${if (tasks == 1) "1 task" else "$tasks tasks"}"
+
     override val infoConsoleSkipped: String =
         "Skipped"
 

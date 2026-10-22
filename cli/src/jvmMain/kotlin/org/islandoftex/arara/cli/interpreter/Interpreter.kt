@@ -240,7 +240,7 @@ class Interpreter(
 
         return when {
             !available -> {
-                DisplayUtils.renderer.printSkippedDirective(directive.identifier)
+                DisplayUtils.printSkippedDirective(directive.identifier)
                 ExecutionStatus.Processing()
             }
             HaltRequest.exitCode != null ->

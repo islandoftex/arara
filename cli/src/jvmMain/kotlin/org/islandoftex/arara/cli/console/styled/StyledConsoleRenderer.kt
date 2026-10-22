@@ -6,14 +6,16 @@ import com.github.ajalt.mordant.rendering.TextStyle
 import com.github.ajalt.mordant.terminal.Terminal
 import org.islandoftex.arara.api.AraraAPI
 import org.islandoftex.arara.api.configuration.ExecutionMode
+import org.islandoftex.arara.api.configuration.LogFormat
+import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.files.toJVMPath
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.cli.console.ConsoleRenderer
+import org.islandoftex.arara.cli.console.FileSummary
+import org.islandoftex.arara.cli.console.RunSummary
 import org.islandoftex.arara.cli.utils.DisplayUtils
-import org.islandoftex.arara.cli.utils.center
-import org.islandoftex.arara.cli.utils.wrap
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
@@ -23,12 +25,14 @@ import kotlin.time.Duration.Companion.seconds
 class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
     private val longestMatch: Int
         get() = maxOf(
-            LanguageController.messages.infoLabelOnSuccess.length,
-            LanguageController.messages.infoLabelOnFailure.length,
-            LanguageController.messages.infoLabelOnError.length
+            layout.cells(LanguageController.messages.infoLabelOnSuccess),
+            layout.cells(LanguageController.messages.infoLabelOnFailure),
+            layout.cells(LanguageController.messages.infoLabelOnError)
         )
 
-    private var displayLine = true
+    private val layout = StyledLayout(terminal)
+    private var compactEntry = false
+    private var displayLine = false
     private var displayResult = false
     private var displayRolling = false
     private var displayException = false
@@ -49,17 +53,16 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
     private val leader: String
         get() = if (isDecorated) StyledTheme.leaderGlyph else StyledTheme.leaderFallback
 
-    private val structureWidth: Int
-        get() = terminal.size.width.coerceAtLeast(1)
-
-    private val proseWidth: Int
-        get() = structureWidth.coerceAtMost(StyledTheme.proseMaximumWidth)
-
     private val muted get() = terminal.theme.muted
 
     override fun printBanner() {
-        terminal.println(StyledTheme.logo(DisplayUtils.logoString))
-        terminal.println(muted("arara ${AraraAPI.version}"))
+        layout.print(StyledTheme.logo(DisplayUtils.logoString))
+        layout.print(muted("arara ${AraraAPI.version}"))
+        terminal.println("")
+    }
+
+    override fun printProjectInformation(name: String, directory: String) {
+        layout.print("${LanguageController.messages.infoLabelProject} $name ($directory)")
         terminal.println("")
     }
 
@@ -72,16 +75,13 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
         val metadata = DisplayUtils.byteSizeToString(file.path.fileSize) +
             " · " + file.path.lastModified
         val title = hyperlink(name, file.path.toJVMPath().toUri().toASCIIString())
-        val head = "$rule$rule $name "
-        val tail = " $metadata $rule$rule"
-        val fill = (
-            structureWidth - head.length - tail.length
-            ).coerceAtLeast(1)
-        terminal.println(
-            muted("$rule$rule ") + title + muted(
-                " " + rule.repeat(fill) + " "
-            ) + muted(metadata) + muted(" $rule$rule")
-        )
+        val fill = layout.width - layout.cells(name) - layout.cells(metadata) - HEADER_SPACING
+        if (fill > 0) {
+            terminal.println(title + muted(" " + rule.repeat(fill) + " " + metadata))
+        } else {
+            layout.print(title)
+            layout.print(muted(metadata))
+        }
         terminal.println("")
     }
 
@@ -98,11 +98,17 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
     }
 
     private fun buildShortEntry(name: String, task: String) {
-        val head = "${runningGlyph()} $name · $task "
-        val reserved = successGlyph().length + 1 + longestMatch
-        val fill = (structureWidth - head.length - reserved)
-            .coerceAtLeast(1)
-        terminal.print(head + muted(leader.repeat(fill)) + " ")
+        val reserved = layout.cells(successGlyph()) + 1 + longestMatch
+        val headWidth = layout.width - reserved - ENTRY_SPACING
+        compactEntry = headWidth >= MINIMUM_HEAD_WIDTH
+        val head = "${runningGlyph()} $name · $task"
+        if (compactEntry) {
+            val fitted = layout.fit(head, headWidth)
+            val fill = layout.width - layout.cells(fitted) - reserved - HEADER_SPACING
+            terminal.print(fitted + " " + muted(leader.repeat(fill)) + " ")
+        } else {
+            layout.print(head)
+        }
     }
 
     private fun buildLongEntry(name: String, task: String) {
@@ -112,7 +118,7 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
             displayRolling = true
         }
         terminal.println(muted(displaySeparator()))
-        terminal.println("${runningGlyph()} $name · $task")
+        layout.print("${runningGlyph()} $name · $task")
         terminal.println(muted(displaySeparator()))
     }
 
@@ -122,7 +128,7 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
         } else {
             displayRolling = true
         }
-        terminal.println(muted("[DR] ${runningGlyph()} $name · $task"))
+        layout.print(muted("[DR] ${runningGlyph()} $name · $task"))
         terminal.println(muted(displaySeparator()))
     }
 
@@ -141,11 +147,10 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
                         failureGlyph() + " " + getResult(value)
                     )
                 }
-                terminal.println(styled)
+                if (compactEntry) terminal.println(styled) else layout.print(styled)
             } else {
-                val aligned = (
-                    " " + getResult(value)
-                    ).padStart(structureWidth, rule.first())
+                val result = layout.fit(getResult(value), layout.width)
+                val aligned = rule.repeat((layout.width - layout.cells(result)).coerceAtLeast(0)) + result
                 terminal.println("")
                 terminal.println(muted(aligned))
             }
@@ -158,19 +163,16 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
         if (displayResult)
             terminal.println("")
         if (displayLine && !isDryRunMode) {
-            terminal.println(
-                terminal.theme.danger(
-                    failureGlyph() + " " +
-                        LanguageController.messages.infoLabelOnError
-                )
-            )
+            val error = terminal.theme.danger(failureGlyph() + " " +
+                LanguageController.messages.infoLabelOnError)
+            if (compactEntry && !isVerboseMode) terminal.println(error) else layout.print(error)
             terminal.println("")
         }
-        terminal.println(terminal.theme.danger(text), width = proseWidth)
+        layout.print(terminal.theme.danger(text))
         if (details != null) {
             terminal.println("")
             displayDetailsLine()
-            terminal.println(muted(details), width = proseWidth)
+            layout.print(muted(details))
         }
     }
 
@@ -182,7 +184,7 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
     }
 
     override fun printWrapped(text: String) {
-        terminal.println(text.wrap(proseWidth))
+        layout.print(text)
     }
 
     override fun printAuthors(authors: List<String>) {
@@ -211,26 +213,22 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
         if (displayLine || displayException)
             terminal.println("")
 
-        val secondDuration = seconds.seconds
-        val separator = Session.userInterfaceOptions.locale
-            .decimalSeparator.toString()
-        val time = secondDuration.inWholeSeconds.toString() + separator +
-            (secondDuration - secondDuration.inWholeSeconds.seconds)
-                .inWholeMilliseconds.toString()
-        val text = LanguageController.messages.infoDisplayExecutionTime(time)
-        printWrapped(text)
+        val time = layout.seconds(seconds.seconds).removeSuffix(" s")
+        printWrapped(LanguageController.messages.infoDisplayExecutionTime(time))
     }
 
     private fun displayDetailsLine() {
-        val label = LanguageController.messages.infoLabelOnDetails + " "
-        val line = label.take(structureWidth)
-        terminal.println(muted(line.padEnd(structureWidth, rule.first())))
+        val label = layout.fit(LanguageController.messages.infoLabelOnDetails + " ", layout.width)
+        terminal.println(muted(label + rule.repeat((layout.width - layout.cells(label)).coerceAtLeast(0))))
     }
 
-    override fun displayOutputSeparator(message: String): String =
-        " $message ".center(structureWidth, rule.first())
+    override fun displayOutputSeparator(message: String): String {
+        val text = layout.fit(" $message ", layout.width)
+        val remaining = (layout.width - layout.cells(text)).coerceAtLeast(0)
+        return rule.repeat(remaining / 2) + text + rule.repeat(remaining - remaining / 2)
+    }
 
-    override fun displaySeparator(): String = rule.repeat(structureWidth)
+    override fun displaySeparator(): String = rule.repeat(layout.width)
 
     private fun runningGlyph(): String =
         if (isDecorated) StyledTheme.runningGlyph else StyledTheme.runningFallback
@@ -260,31 +258,33 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
 
     override fun printCommandFailure(output: String) {
         if (!isVerboseMode && output.isNotBlank()) {
+            val lines = output.trimEnd().lineSequence().toList()
             terminal.println("")
             terminal.println(terminal.theme.danger(displaySeparator()))
-            terminal.println(output.lineSequence().takeLastLines())
+            if (lines.size > FAILURE_TAIL_LINES) {
+                layout.print("...")
+                if (Session.loggingOptions.format != LogFormat.NONE) {
+                    layout.print(muted(LanguageController.messages.infoDisplayFullOutputInLog))
+                }
+            }
+            lines.takeLast(FAILURE_TAIL_LINES).forEach(layout::print)
             terminal.println(terminal.theme.danger(displaySeparator()))
         }
     }
 
-    override fun printRunSummary(success: Boolean, files: List<Pair<String, Int?>>) {
-        terminal.println("")
-        val verdict = if (success) terminal.theme.success(getResult(true))
-            else terminal.theme.danger(getResult(false))
-        terminal.println(verdict)
-        files.forEach { (path, code) ->
-            val label = when (code) {
-                null -> LanguageController.messages.infoConsoleUnprocessed
-                0 -> getResult(true)
-                else -> getResult(false)
-            }
-            printWrapped("${org.islandoftex.arara.api.files.MPPPath(path).fileName} · $label")
-        }
-    }
+    override fun printRunSummary(summary: RunSummary) = StyledSummaryRenderer(terminal, layout).print(summary)
 
-    private fun Sequence<String>.takeLastLines(): String = toList().takeLast(FAILURE_TAIL_LINES).joinToString("\n")
+    override fun printRunSummary(success: Boolean, files: List<Pair<String, Int?>>) = printRunSummary(
+        RunSummary(success, isDryRunMode, files.map { (path, code) ->
+            val file = MPPPath(path)
+            FileSummary(file, "", file.parent, exitCode = code)
+        })
+    )
 
     private companion object {
         const val FAILURE_TAIL_LINES = 12
+        const val HEADER_SPACING = 2
+        const val ENTRY_SPACING = 3
+        const val MINIMUM_HEAD_WIDTH = 8
     }
 }

@@ -294,6 +294,30 @@ object GermanMessages : AraraMessages {
     override fun errorValidateHeaderWrongIdentifier(expected: String, actual: String): String =
         "Die Regel hat einen falschen Bezeichner. Ich erwartete \"${expected}\" fand aber \"${actual}\". Das solle leicht zu beheben sein: Ersetze einfach den falschen durch einen korrekten Bezeichner."
 
+    override val infoLabelProject = "Projekt:"
+
+    override val infoDisplaySummaryTitle = "Zusammenfassung"
+
+    override val infoDisplaySummaryFile = "Datei"
+
+    override val infoDisplaySummaryTasks = "Aufgaben"
+
+    override val infoDisplaySummaryTime = "Zeit"
+
+    override val infoDisplayFullOutputInLog =
+        "die vollständige Ausgabe steht in der Logdatei"
+
+    override fun infoDisplayTotalSuccess(files: Int, tasks: Int) =
+        "GESAMTERFOLG · ${if (files == 1) "1 Datei" else "$files Dateien"}, " +
+            "${if (tasks == 1) "1 Aufgabe" else "$tasks Aufgaben"}"
+
+    override fun infoDisplayTotalFailure(files: Int, tasks: Int) =
+        "GESAMTFEHLER · ${if (files == 1) "1 Datei" else "$files Dateien"}, " +
+            "${if (tasks == 1) "1 Aufgabe" else "$tasks Aufgaben"}"
+
+    override fun infoDisplayDryRun(tasks: Int) =
+        "PROBELAUF · ${if (tasks == 1) "1 Aufgabe" else "$tasks Aufgaben"}"
+
     override val infoConsoleSkipped: String =
         "Übersprungen"
 

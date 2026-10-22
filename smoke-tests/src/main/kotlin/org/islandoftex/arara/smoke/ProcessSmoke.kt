@@ -459,14 +459,41 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath, private
             check(Regex("SMOKE_STDERR").findAll(verbose).count() == 1) { "Verbose output was repeated" }
             val dry = execute(root, 0, listOf("--console", "styled", "--dry-run"))
             contains(dry, "SmokeProcess")
+            contains(dry, "DRY RUN")
+            check("SUCCESS" !in dry) { "Styled dry run claimed execution success" }
             check("SMOKE_STDOUT" !in dry) { "Styled dry run launched a command" }
         },
         "styled_summary_names_unprocessed_files_after_an_exception" to { root ->
             root.resolve("first.tex").writeText("% arara: missingrule\n")
             root.resolve("second.tex").writeText("% arara: probe\n")
             val output = execute(root, APPLICATION_ERROR, listOf("--console", "styled", "first.tex"), "second.tex")
-            contains(output, "first.tex · FAILURE")
-            contains(output, "second.tex · Not processed")
+            val summary = output.substringAfter("Execution summary")
+            contains(summary, "first.tex")
+            contains(summary, "FAILURE (2)")
+            contains(summary, "second.tex")
+            contains(summary, "Not processed")
+        },
+        "styled_summary_keeps_projects_across_presentation_changes" to { root ->
+            for (name in listOf("plain", "styled")) {
+                val directory = root.resolve(name).apply { createDirectories() }
+                directory.resolve("arararc.yaml").writeText("!config\npaths: ['.']\nconsole: $name\n")
+                directory.resolve("main.tex").writeText("% arara: probe\n% arara: probe if false\n")
+                rule(directory, "return true;")
+            }
+            root.resolve("projects.proj.lua").writeText("""
+                return {
+                  { name = "plain", working_directory = "plain", files = { ["main.tex"] = {} } },
+                  { name = "styled", working_directory = "styled", dependencies = {"plain"},
+                    files = { ["main.tex"] = {} } }
+                }
+            """.trimIndent())
+            val output = execute(root, 0, reference = "projects.proj.lua")
+            contains(output, "TOTAL SUCCESS · 2 files, 2 tasks")
+            val summary = output.substringAfter("Execution summary")
+            contains(summary, "Project: plain")
+            contains(summary, "Project: styled")
+            check(Regex("main.tex").findAll(summary).count() == 2) { "Summary lost a project's file\n$output" }
+            check("\u001b" !in output) { "Piped project summary contains ANSI escapes" }
         },
         "plain_and_styled_presentations_keep_identical_diagnostic_logs" to { root ->
             rule(root, "return true;")

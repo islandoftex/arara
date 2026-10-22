@@ -294,6 +294,30 @@ object DutchMessages : AraraMessages {
     override fun errorValidateHeaderWrongIdentifier(expected: String, actual: String): String =
         "De regel heeft een verkeerde verwijsnaam. Ik verwachtte '${expected}', maar vond '${actual}'. Dit zou makkelijk op te lossen moeten zijn: vervang de verkeerde verwijsnaam met de correcte naam."
 
+    override val infoLabelProject = "Project:"
+
+    override val infoDisplaySummaryTitle = "Overzicht"
+
+    override val infoDisplaySummaryFile = "Bestand"
+
+    override val infoDisplaySummaryTasks = "Taken"
+
+    override val infoDisplaySummaryTime = "Tijd"
+
+    override val infoDisplayFullOutputInLog =
+        "de volledige uitvoer staat in het logbestand"
+
+    override fun infoDisplayTotalSuccess(files: Int, tasks: Int) =
+        "TOTAAL SUCCES · ${if (files == 1) "1 bestand" else "$files bestanden"}, " +
+            "${if (tasks == 1) "1 taak" else "$tasks taken"}"
+
+    override fun infoDisplayTotalFailure(files: Int, tasks: Int) =
+        "TOTAAL MISLUKT · ${if (files == 1) "1 bestand" else "$files bestanden"}, " +
+            "${if (tasks == 1) "1 taak" else "$tasks taken"}"
+
+    override fun infoDisplayDryRun(tasks: Int) =
+        "SIMULATIE · ${if (tasks == 1) "1 taak" else "$tasks taken"}"
+
     override val infoConsoleSkipped: String =
         "Overgeslagen"
 

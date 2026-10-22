@@ -1,0 +1,90 @@
+// SPDX-License-Identifier: BSD-3-Clause
+package org.islandoftex.arara.cli.console.styled
+
+import com.github.ajalt.mordant.rendering.Line
+import com.github.ajalt.mordant.rendering.Span
+import com.github.ajalt.mordant.rendering.Whitespace
+import com.github.ajalt.mordant.terminal.Terminal
+import com.github.ajalt.mordant.widgets.Text
+import org.islandoftex.arara.core.session.Session
+import java.util.Locale
+import kotlin.time.Duration
+
+/** Measure terminal cells rather than UTF-16 units, including wide and combining characters. */
+internal class StyledLayout(private val terminal: Terminal) {
+    val width: Int get() = terminal.size.width.coerceAtLeast(1)
+
+    fun cells(text: String): Int = Text(text).measure(terminal, Int.MAX_VALUE).max
+
+    fun fit(text: String, budget: Int): String {
+        if (budget <= 0) return ""
+        val line = text.replace('\n', ' ').replace('\r', ' ')
+        return if (cells(line) <= budget) line else abbreviate(line, budget)
+    }
+
+    private fun abbreviate(line: String, budget: Int): String {
+        val suffix = ".".repeat(minOf(ELLIPSIS_WIDTH, budget))
+        var available = budget - suffix.length
+        val spans = parse(line).single().flatMap { span ->
+            GRAPHEME.findAll(span.text).mapNotNull { match ->
+                val size = cells(match.value)
+                if (available >= size) {
+                    available -= size
+                    Span.word(match.value, span.style)
+                } else {
+                    available = -1
+                    null
+                }
+            }.toList()
+        }
+        return terminal.render(spans.joinToString("") { it.style(it.text) }, whitespace = Whitespace.PRE) + suffix
+    }
+
+    fun print(text: String) {
+        // Mordant 3.1's BREAK_WORD repeats an overlong word after splitting it.
+        // Wrap the parsed spans ourselves, retaining styles and complete graphemes.
+        val lines = parse(text).flatMap(::wrap)
+        val rendered = lines.joinToString("\n") { line -> line.spans.joinToString("") { it.style(it.text) } }
+        terminal.println(rendered, whitespace = Whitespace.PRE)
+    }
+
+    private fun parse(text: String): List<Line> =
+        Text(text, whitespace = Whitespace.PRE).render(terminal, Int.MAX_VALUE).lines
+
+    private fun wrap(line: Line): List<Line> {
+        val result = mutableListOf<Line>()
+        var spans = mutableListOf<Span>()
+        var used = 0
+        fun nextLine() {
+            result.add(Line(spans))
+            spans = mutableListOf()
+            used = 0
+        }
+        val words = line.spans.flatMap { span ->
+            WORD.findAll(span.text).map { it.value to span.style }.toList()
+        }
+        words.forEach { (value, style) ->
+            val size = cells(value)
+            if (used > 0 && used + size > width && size <= width) nextLine()
+            GRAPHEME.findAll(value).forEach { grapheme ->
+                val part = grapheme.value
+                val partWidth = cells(part)
+                if (used > 0 && used + partWidth > width) nextLine()
+                spans.add(Span.word(part, style))
+                used += partWidth
+            }
+        }
+        result.add(Line(spans))
+        return result
+    }
+
+    fun seconds(elapsed: Duration): String = String.format(Locale.ROOT, "%.1f", elapsed.inWholeMilliseconds / MILLIS)
+        .replace('.', Session.userInterfaceOptions.locale.decimalSeparator) + " s"
+
+    private companion object {
+        const val ELLIPSIS_WIDTH = 3
+        const val MILLIS = 1000.0
+        val GRAPHEME = Regex("\\X")
+        val WORD = Regex("\\s+|\\S+")
+    }
+}

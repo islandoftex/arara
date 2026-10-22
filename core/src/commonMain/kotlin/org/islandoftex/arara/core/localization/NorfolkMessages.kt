@@ -294,6 +294,30 @@ object NorfolkMessages : AraraMessages {
     override fun errorValidateHeaderWrongIdentifier(expected: String, actual: String): String =
         "My heart alive, my bewty, but that rule ent got the right identifier. That oughta be '${expected}', not '${actual}', but dunt yew git yarself in a puckaterry. Dew you jist fix that."
 
+    override val infoLabelProject = "Project:"
+
+    override val infoDisplaySummaryTitle = "How it went"
+
+    override val infoDisplaySummaryFile = "Yon file"
+
+    override val infoDisplaySummaryTasks = "Jobs"
+
+    override val infoDisplaySummaryTime = "While"
+
+    override val infoDisplayFullOutputInLog =
+        "the hull output’s in the log file, that it be"
+
+    override fun infoDisplayTotalSuccess(files: Int, tasks: Int) =
+        "PROPER SUCCESS, THAT IS · ${if (files == 1) "1 file" else "$files files"}, " +
+            "${if (tasks == 1) "1 job" else "$tasks jobs"}"
+
+    override fun infoDisplayTotalFailure(files: Int, tasks: Int) =
+        "THAT WENT WRONG, THAT DID · ${if (files == 1) "1 file" else "$files files"}, " +
+            "${if (tasks == 1) "1 job" else "$tasks jobs"}"
+
+    override fun infoDisplayDryRun(tasks: Int) =
+        "JIST A PRETEND RUN · ${if (tasks == 1) "1 job" else "$tasks jobs"}"
+
     override val infoConsoleSkipped: String =
         "Skipped, bor"
 

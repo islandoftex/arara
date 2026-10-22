@@ -36,7 +36,10 @@ on.
 
 * Optional styled terminal output via `--console styled` or configuration
   `console: styled` (Lua: `console = "styled"`). Plain output remains the default.
-  Styled runs include dialog frames, file summaries and captured failure output.
+  Styled runs include dialog frames, project headings and per-project file
+  summaries with task counts, timings and outcomes. Narrow terminals use wrapped
+  details; dry runs are labelled as simulations. Captured failure output marks
+  truncation and points to the full log when logging is enabled.
 
 * Project specifications receive `user.home`, `user.name` and `cwd`, matching
   Lua configuration scripts. Each script load uses independent globals.

@@ -2,11 +2,14 @@
 package org.islandoftex.arara.cli.utils
 
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.cli.console.ConsoleRenderer
+import org.islandoftex.arara.cli.console.RunPresentation
 import org.islandoftex.arara.cli.console.plain.PlainConsoleRenderer
 import org.islandoftex.arara.core.localization.LanguageController
+import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import kotlin.math.ln
 import kotlin.math.pow
@@ -15,8 +18,7 @@ import kotlin.math.pow
 @Suppress("TooManyFunctions")
 object DisplayUtils {
     var renderer: ConsoleRenderer = PlainConsoleRenderer()
-    internal var outcomes = linkedMapOf<String, Int?>()
-    internal var currentFile: String? = null
+    internal var presentation = RunPresentation()
 
     var configurationFileName: String = "[none]"
     val logoString: String = """
@@ -26,17 +28,16 @@ object DisplayUtils {
              \__,_|_|  \__,_|_|  \__,_|
     """.trimIndent()
 
-    internal fun prepareFiles(files: List<ProjectFile>) {
-        outcomes = files.associate { it.path.toString() to null }.toMap(LinkedHashMap())
-        currentFile = null
-    }
+    fun printFileResult(exitCode: Int) = presentation.finish(exitCode)
 
-    fun printFileResult(exitCode: Int) {
-        currentFile?.let { outcomes[it] = exitCode }
-        currentFile = null
-    }
+    fun printRunSummary(success: Boolean) = renderer.printRunSummary(presentation.summary(
+        success, LinearExecutor.executionOptions.executionMode == ExecutionMode.DRY_RUN
+    ))
 
-    fun printRunSummary(success: Boolean) = renderer.printRunSummary(success, outcomes.toList())
+    fun printSkippedDirective(identifier: String) {
+        presentation.skip()
+        renderer.printSkippedDirective(identifier)
+    }
 
     @Suppress("MagicNumber")
     internal fun byteSizeToString(size: Long): String {
@@ -56,7 +57,7 @@ object DisplayUtils {
     fun printBanner() = renderer.printBanner()
 
     fun printFileInformation(file: ProjectFile) {
-        currentFile = file.path.toString()
+        presentation.start(file, LinearExecutor.executionOptions.executionMode == ExecutionMode.DRY_RUN)
         renderer.printFileInformation(file)
     }
 
@@ -65,6 +66,7 @@ object DisplayUtils {
     fun printConditional(conditional: DirectiveConditional) = renderer.printConditional(conditional)
 
     fun printEntry(name: String, task: String) {
+        presentation.task()
         RunLog.entry(name, task)
         renderer.printEntry(name, task)
     }
@@ -75,7 +77,7 @@ object DisplayUtils {
     }
 
     fun printException(exception: AraraException) {
-        currentFile?.let { outcomes[it] = 2 }
+        presentation.finish(2)
         val text = (exception.message ?: "EXCEPTION PROVIDES NO MESSAGE") +
             if (exception.hasException()) " " + LanguageController.messages.infoDisplayExceptionMoreDetails else ""
         val details = exception.exception?.let { it.message ?: it.toString() }

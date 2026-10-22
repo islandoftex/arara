@@ -19,6 +19,11 @@ interface ConsoleRenderer {
     fun displaySeparator(): String
     fun displayOutputSeparator(message: String): String
 
+    fun printProjectInformation(name: String, directory: String) { }
+
+    fun printRunSummary(summary: RunSummary) =
+        printRunSummary(summary.success, summary.files.map { it.path.toString() to it.exitCode })
+
     fun printTaskDetails(command: String, conditional: DirectiveConditional, authors: List<String>) { }
 
     fun printSkippedDirective(identifier: String) { }

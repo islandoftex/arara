@@ -306,9 +306,8 @@ class CLI : CliktCommand("arara") {
         val previousRun = LoggingUtils.beginRun()
         val previousHooks = LinearExecutor.hooks
         val previousRenderer = DisplayUtils.renderer
-        val previousOutcomes = DisplayUtils.outcomes
-        val previousFile = DisplayUtils.currentFile
-        DisplayUtils.prepareFiles(emptyList())
+        val previousPresentation = DisplayUtils.presentation
+        DisplayUtils.presentation = org.islandoftex.arara.cli.console.RunPresentation()
         val previousDialogs = Dialogs.renderer
         appliedConsole = null
         DisplayUtils.renderer = org.islandoftex.arara.cli.console.plain.PlainConsoleRenderer()
@@ -318,8 +317,7 @@ class CLI : CliktCommand("arara") {
             configuration.restore()
             LinearExecutor.hooks = previousHooks
             DisplayUtils.renderer = previousRenderer
-            DisplayUtils.outcomes = previousOutcomes
-            DisplayUtils.currentFile = previousFile
+            DisplayUtils.presentation = previousPresentation
             Dialogs.renderer = previousDialogs
             LoggingUtils.restoreRun(previousRun)
         }
@@ -389,6 +387,7 @@ class CLI : CliktCommand("arara") {
                 executeBeforeProject = { project ->
                     configureProject(project, configuration)
                     RunLog.project(project.name, project.workingDirectory.toString())
+                    DisplayUtils.renderer.printProjectInformation(project.name, project.workingDirectory.toString())
                 },
                 executeBeforeFile = {
                     // TODO: do we have to reset some more file-specific config?
@@ -414,7 +413,7 @@ class CLI : CliktCommand("arara") {
             )
 
             val projects = prepareProjects(resolveProjects(configuration), configuration)
-            DisplayUtils.prepareFiles(projects.flatMap { it.files }.toList())
+            DisplayUtils.presentation.prepare(projects)
             ExecutionStatus.FinishedWithCode(LinearExecutor.execute(projects).exitCode)
         } catch (ex: AraraException) {
             // catch a propagated exception to replace intentionally left

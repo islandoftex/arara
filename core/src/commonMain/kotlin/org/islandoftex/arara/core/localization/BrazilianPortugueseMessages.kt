@@ -294,6 +294,30 @@ object BrazilianPortugueseMessages : AraraMessages {
     override fun errorValidateHeaderWrongIdentifier(expected: String, actual: String): String =
         "A regra possui um identificador incorreto. Eu estava esperando '${expected}', mas encontrei '${actual}'. Isso é fácil de resolver: apenas substitua o identificador incorreto pelo valor correto."
 
+    override val infoLabelProject = "Projeto:"
+
+    override val infoDisplaySummaryTitle = "Resumo da execução"
+
+    override val infoDisplaySummaryFile = "Arquivo"
+
+    override val infoDisplaySummaryTasks = "Tarefas"
+
+    override val infoDisplaySummaryTime = "Tempo"
+
+    override val infoDisplayFullOutputInLog =
+        "a saída completa está no arquivo de log"
+
+    override fun infoDisplayTotalSuccess(files: Int, tasks: Int) =
+        "SUCESSO TOTAL · ${if (files == 1) "1 arquivo" else "$files arquivos"}, " +
+            "${if (tasks == 1) "1 tarefa" else "$tasks tarefas"}"
+
+    override fun infoDisplayTotalFailure(files: Int, tasks: Int) =
+        "FALHA TOTAL · ${if (files == 1) "1 arquivo" else "$files arquivos"}, " +
+            "${if (tasks == 1) "1 tarefa" else "$tasks tarefas"}"
+
+    override fun infoDisplayDryRun(tasks: Int) =
+        "EXECUÇÃO SIMULADA · ${if (tasks == 1) "1 tarefa" else "$tasks tarefas"}"
+
     override val infoConsoleSkipped: String =
         "Ignorada"
 
