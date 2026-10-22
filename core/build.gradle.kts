@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: BSD-3-Clause
 plugins {
     alias(libs.plugins.kover)
-    kotlin("multiplatform")
-    kotlin("plugin.serialization")
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 kotlin {
@@ -23,6 +23,7 @@ kotlin {
 
         commonMain {
             dependencies {
+                implementation(libs.kotlin.stdlib.common)
                 api(project(":api"))
                 implementation(libs.kotlin.logging)
                 implementation(libs.kotaml)
@@ -39,9 +40,18 @@ kotlin {
 
         jvmTest {
             dependencies {
+                implementation(libs.kotlin.test.junit5)
+                runtimeOnly(libs.junit.jupiter.engine)
                 implementation(libs.kotest.runner.jvm)
                 implementation(libs.kotest.assertions.jvm)
                 runtimeOnly(libs.slf4j.simple)
+            }
+        }
+
+        commonTest {
+            dependencies {
+                implementation(libs.kotlin.test.common)
+                implementation(libs.kotlin.test.annotations.common)
             }
         }
     }

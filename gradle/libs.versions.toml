@@ -33,6 +33,12 @@ ztExec = "1.13.0"
 # --------------------------------
 
 [libraries]
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
+kotlin-stdlib-common = { module = "org.jetbrains.kotlin:kotlin-stdlib-common", version.ref = "kotlin" }
+kotlin-test-common = { module = "org.jetbrains.kotlin:kotlin-test-common", version.ref = "kotlin" }
+kotlin-test-annotations-common = { module = "org.jetbrains.kotlin:kotlin-test-annotations-common", version.ref = "kotlin" }
+kotlin-test-junit5 = { module = "org.jetbrains.kotlin:kotlin-test-junit5", version.ref = "kotlin" }
 clikt = { group = "com.github.ajalt.clikt", name = "clikt", version.ref = "clikt" }
 clikt-markdown = { group = "com.github.ajalt.clikt", name = "clikt-markdown", version.ref = "clikt" }
 junit-jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "junit" }
@@ -56,6 +62,9 @@ slf4j-simple = { group = "org.slf4j", name = "slf4j-simple", version.ref = "slf4
 ztexec = { group = "org.zeroturnaround", name = "zt-exec", version.ref = "ztExec" }
 
 [plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "koverPlugin" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detektPlugin" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokkaPlugin" }

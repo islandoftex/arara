@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 plugins {
     alias(libs.plugins.kover)
-    kotlin("multiplatform")
+    alias(libs.plugins.kotlin.multiplatform)
 }
 
 kotlin {
@@ -21,6 +21,7 @@ kotlin {
 
         commonMain {
             dependencies {
+                implementation(libs.kotlin.stdlib.common)
                 api(libs.okio)
             }
         }
@@ -29,9 +30,18 @@ kotlin {
 
         jvmTest {
             dependencies {
+                implementation(libs.kotlin.test.junit5)
+                runtimeOnly(libs.junit.jupiter.engine)
                 implementation(libs.okio.fakefilesystem)
                 implementation(libs.kotest.runner.jvm)
                 implementation(libs.kotest.assertions.jvm)
+            }
+        }
+
+        commonTest {
+            dependencies {
+                implementation(libs.kotlin.test.common)
+                implementation(libs.kotlin.test.annotations.common)
             }
         }
     }

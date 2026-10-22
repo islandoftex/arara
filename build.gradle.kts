@@ -18,9 +18,9 @@ import java.nio.file.Path
 
 plugins {
     id("jvm-toolchains")
-    kotlin("jvm") version libs.versions.kotlin apply false
-    kotlin("multiplatform") version libs.versions.kotlin apply false // Apache 2.0
-    kotlin("plugin.serialization") version libs.versions.kotlin apply false // Apache 2.0
+    alias(libs.plugins.kotlin.jvm) apply false
+    alias(libs.plugins.kotlin.multiplatform) apply false // Apache 2.0
+    alias(libs.plugins.kotlin.serialization) apply false // Apache 2.0
     alias(libs.plugins.shadow) apply false // Apache 2.0
     alias(libs.plugins.versions) // Apache 2.0
     alias(libs.plugins.spotlessChangelog) // Apache 2.0
@@ -137,10 +137,6 @@ allprojects {
     version = rootProject.version
 }
 
-// accessing `libs` does not work inside `subprojects` blocks (wont-fix issue),
-// workaround from https://github.com/gradle/gradle/issues/18237#issuecomment-928074251
-val engine = libs.junit.jupiter.engine
-
 configure<DokkaExtension> {
     moduleName.set("arara")
 }
@@ -215,28 +211,6 @@ subprojects {
             jvm {
                 compilerOptions {
                     jvmTarget.set(araraJVMTarget)
-                }
-            }
-
-            sourceSets {
-                named("commonMain") {
-                    dependencies {
-                        implementation(kotlin("stdlib-common"))
-                    }
-                }
-
-                named("commonTest") {
-                    dependencies {
-                        implementation(kotlin("test-common"))
-                        implementation(kotlin("test-annotations-common"))
-                    }
-                }
-
-                named("jvmTest") {
-                    dependencies {
-                        implementation(kotlin("test-junit5"))
-                        runtimeOnly(engine)
-                    }
                 }
             }
         }

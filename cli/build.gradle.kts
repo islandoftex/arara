@@ -7,7 +7,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
     alias(libs.plugins.kover)
-    kotlin("multiplatform")
+    alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.shadow)
     distribution
 }
@@ -45,6 +45,7 @@ kotlin {
 
         commonMain {
             dependencies {
+                implementation(libs.kotlin.stdlib.common)
                 implementation(project(":core"))
                 implementation(project(":lua"))
                 implementation(libs.kotlin.logging)
@@ -55,7 +56,7 @@ kotlin {
             dependencies {
                 implementation(project(":core"))
                 implementation(project(":mvel"))
-                implementation(kotlin("reflect", libs.versions.kotlin.get()))
+                implementation(libs.kotlin.reflect)
                 implementation(libs.clikt)
                 implementation(libs.mordant.core)
                 implementation(libs.clikt.markdown)
@@ -70,9 +71,18 @@ kotlin {
 
         jvmTest {
             dependencies {
+                implementation(libs.kotlin.test.junit5)
+                runtimeOnly(libs.junit.jupiter.engine)
                 implementation(libs.kotlinx.serialization.json)
                 implementation(libs.kotest.runner.jvm)
                 implementation(libs.kotest.assertions.jvm)
+            }
+        }
+
+        commonTest {
+            dependencies {
+                implementation(libs.kotlin.test.common)
+                implementation(libs.kotlin.test.annotations.common)
             }
         }
     }
