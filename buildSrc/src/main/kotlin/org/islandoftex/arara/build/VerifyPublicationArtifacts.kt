@@ -18,7 +18,7 @@ import java.nio.file.Path
 import java.util.jar.JarFile
 import javax.xml.parsers.DocumentBuilderFactory
 
-private const val JAVA_11_CLASS_VERSION = 55
+private const val JAVA_21_CLASS_VERSION = 65
 
 /** Checks the artifacts actually written to the isolated Maven repository. */
 @DisableCachingByDefault(because = "Verifies freshly staged Maven publications")
@@ -83,8 +83,8 @@ abstract class VerifyPublicationArtifacts : DefaultTask() {
                         input.readInt() // magic
                         input.readUnsignedShort() // minor version
                         val major = input.readUnsignedShort()
-                        check(major <= JAVA_11_CLASS_VERSION) {
-                            "${entry.name} requires a JVM newer than Java 11"
+                        check(major <= JAVA_21_CLASS_VERSION) {
+                            "${entry.name} requires a JVM newer than Java 21"
                         }
                     }
                 }

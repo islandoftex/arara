@@ -12,5 +12,5 @@ fun main() {
     check(path.toString().isNotEmpty() && !options.verbose) {
         "Published library defaults are not usable"
     }
-    println("Published core and transitive API are usable from Kotlin on Java 11.")
+    println("Published core and transitive API are usable from Kotlin on Java 21.")
 }

@@ -16,7 +16,6 @@ versionsPlugin = "0.66.0"
 # Libraries
 # --------------------------------
 clikt = "5.1.0"
-# JUnit 6 requires Java 17; keep the Java 11 test workers on the latest 5.x.
 junit = "5.14.4"
 kotaml = "0.111.0"
 kotest = "6.2.6"

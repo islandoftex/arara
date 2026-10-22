@@ -127,12 +127,12 @@ version = spotlessChangelog.versionNext
 // defaults as fallback, defined in gradle.properties (see keys)
 // ----------------------------------------------------------------------
 val araraJVMString = runCatching { extra["arara.jvm.target"] as String }
-        .getOrDefault("11")
+        .getOrDefault("21")
 
 val araraJVMTarget = runCatching { JvmTarget.fromTarget(araraJVMString) }
-        .getOrDefault(JvmTarget.JVM_11)
+        .getOrDefault(JvmTarget.JVM_21)
 
-val araraJVMInt = araraJVMString.toIntOrNull() ?: 11
+val araraJVMInt = araraJVMString.toIntOrNull() ?: 21
 
 val araraKotlinAPI = runCatching { extra["arara.kotlin.api"] as String }
         .getOrDefault("2.1")
@@ -169,7 +169,7 @@ val preparePublicationCheck = tasks.register<Delete>("preparePublicationCheck") 
 
 val runPublicationConsumer = tasks.register<VerifyPublicationConsumer>("runPublicationConsumer") {
     group = "verification"
-    description = "Build and run a Kotlin consumer of staged Maven publications on Java 11."
+    description = "Build and run a Kotlin consumer of staged Maven publications on Java 21."
     dependsOn(publicationModules.map { ":$it:publishAllPublicationsToPublicationCheckRepository" })
     repositoryDirectory.set(publicationRepository)
     publicationVersion.set(project.version.toString())
@@ -186,7 +186,7 @@ val runPublicationConsumer = tasks.register<VerifyPublicationConsumer>("runPubli
 
 tasks.register<VerifyPublicationArtifacts>("checkPublications") {
     group = "verification"
-    description = "Stage and verify Maven artifacts and run a Kotlin library consumer on Java 11."
+    description = "Stage and verify Maven artifacts and run a Kotlin library consumer on Java 21."
     dependsOn(runPublicationConsumer)
     repositoryDirectory.set(publicationRepository)
     moduleNames.set(publicationModules)
@@ -314,7 +314,7 @@ subprojects {
 // Exercise the packaged application without requiring a TeX installation.
 tasks.register<Exec>("processSmoke") {
     group = "verification"
-    description = "Run portable process checks against the runnable jar (JDK 11+)."
+    description = "Run portable process checks against the runnable jar (JDK 21+)."
     dependsOn(":cli:shadowJar", ":smoke-tests:runnerJar")
     val smokeJava = providers.gradleProperty("smokeJava").orElse(
         providers.systemProperty("java.home").map {

@@ -86,11 +86,11 @@
           SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
           # Generic Linux toolchains downloaded by Foojay do not run in the Nix image.
           shellHook = ''
-            export GRADLE_OPTS="''${GRADLE_OPTS:-} -Dorg.gradle.project.org.gradle.java.installations.paths=${pkgs.corretto21.home},${pkgs.jdk11.home} -Dorg.gradle.project.org.gradle.java.installations.auto-detect=false -Dorg.gradle.project.org.gradle.java.installations.auto-download=false"
+            export GRADLE_OPTS="''${GRADLE_OPTS:-} -Dorg.gradle.project.org.gradle.java.installations.paths=${pkgs.corretto21.home},${pkgs.jdk25.home} -Dorg.gradle.project.org.gradle.java.installations.auto-detect=false -Dorg.gradle.project.org.gradle.java.installations.auto-download=false"
           '';
           buildInputs = with pkgs; [
             corretto21
-            jdk11
+            jdk25
             nixpkgs-fmt
             python3Packages.weasyprint
             zip

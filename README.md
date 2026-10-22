@@ -3,7 +3,7 @@
 # arara
 
 ![Language: Kotlin](https://img.shields.io/badge/Language-Kotlin-blue.svg?style=flat-square)
-![Minimum JRE: 11](https://img.shields.io/badge/Minimum_JRE-11-blue.svg?style=flat-square)
+![Minimum JRE: 21](https://img.shields.io/badge/Minimum_JRE-21-blue.svg?style=flat-square)
 ![Current version](https://img.shields.io/badge/dynamic/json.svg?color=blue&label=Latest%20release&query=%24.0.name&url=https%3A%2F%2Fgitlab.com%2Fapi%2Fv4%2Fprojects%2F14349047%2Frepository%2Ftags&style=flat-square)
 
 `arara` is a TeX automation tool based on rules and directives. It gives you a

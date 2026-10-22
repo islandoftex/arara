@@ -18,7 +18,7 @@ val entryPath = "org.islandoftex.arara.cli.CLIKt"
 // in gradle.properties (see key)
 // ----------------------------------------------------------------------
 val toolchain = runCatching { (extra["arara.jvm.target"] as String).toInt() }
-        .getOrDefault(11)
+        .getOrDefault(21)
 // ----------------------------------------------------------------------
 
 kotlin {

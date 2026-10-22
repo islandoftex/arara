@@ -16,7 +16,7 @@ stages:
 before_script:
   - export GRADLE_USER_HOME=`pwd`/.gradle
 
-# Gradle plugins require JDK 17+; application bytecode still targets Java 11.
+# The application requires Java 21; CI also verifies the latest LTS, Java 25.
 # Minimal Corretto images omit xargs, which the Gradle wrapper requires.
 .corretto:
   before_script:
@@ -62,12 +62,16 @@ build:linux:jdk21:
 .testtemplate: &testdefinition
   stage: test
   script:
-    - ./gradlew allTests
+    - ./gradlew allTests -PtestJavaVersion="$JAVA_VERSION"
     - ./gradlew -p buildSrc check
     - ./gradlew detekt
   cache:
     <<: *cachedefinition
     policy: pull
+  artifacts:
+    when: always
+    reports:
+      junit: "*/build/test-results/jvmTest/TEST-*.xml"
 
 test:process-smoke:
   stage: test
@@ -75,7 +79,7 @@ test:process-smoke:
   image: amazoncorretto:$JAVA_VERSION
   parallel:
     matrix:
-      - JAVA_VERSION: ["11", "21"]
+      - JAVA_VERSION: ["21", "25"]
   script:
     - java -jar build/processSmoke/runner.jar --jar build/processSmoke/arara.jar --java "$JAVA_HOME/bin/java"
   artifacts:
@@ -95,13 +99,8 @@ test:publications:
   script:
     - ./gradlew checkPublications dokkaGeneratePublicationHtml
   cache:
-    - <<: *cachedefinition
-      policy: pull
-    - key: "java11-toolchain-linux-amd64-v1"
-      paths:
-        - .gradle/jdks/
-      policy: pull-push
-      when: always
+    <<: *cachedefinition
+    policy: pull
   artifacts:
     paths:
       - build/dokka/html
@@ -129,38 +128,29 @@ test:spotless:
     <<: *cachedefinition
     policy: pull
 
-# Gradle runs on 21; its test workers run on the cached Java 11 toolchain.
-test:linux:jdk11:
+test:linux:jdk21:
+  variables:
+    JAVA_VERSION: "21"
   extends: .corretto
-  stage: test
   needs: ["build:linux:jdk21"]
   image: amazoncorretto:21
-  script:
-    - ./gradlew allTests -PtestJavaVersion=11
+  <<: *testdefinition
+
+test:linux:jdk25:
+  variables:
+    JAVA_VERSION: "25"
+  extends: .corretto
+  needs: ["build:linux:jdk21"]
+  image: amazoncorretto:25
+  <<: *testdefinition
   cache:
     - <<: *cachedefinition
       policy: pull
-    - key: "java11-toolchain-linux-amd64-v1"
+    - key: "java21-toolchain-linux-amd64-v1"
       paths:
         - .gradle/jdks/
       policy: pull-push
       when: always
-  artifacts:
-    when: always
-    reports:
-      junit: "*/build/test-results/jvmTest/TEST-*.xml"
-
-test:linux:jdk17:
-  extends: .corretto
-  needs: ["build:linux:jdk21"]
-  image: amazoncorretto:17
-  <<: *testdefinition
-
-test:linux:jdk21:
-  extends: .corretto
-  needs: ["build:linux:jdk21"]
-  image: amazoncorretto:21
-  <<: *testdefinition
 
 .pagestemplate: &pagesdefinition
   stage: pages
@@ -226,8 +216,8 @@ publish:gitlab:
 publish:snapshot_tdszip:
   needs:
     - build:linux:jdk21
-    - test:linux:jdk11
-    - test:linux:jdk17
+    - test:linux:jdk21
+    - test:linux:jdk25
     - test:process-smoke
     - job: pages:for-manual
       artifacts: true

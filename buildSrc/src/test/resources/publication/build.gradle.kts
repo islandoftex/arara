@@ -22,9 +22,9 @@ configurations.configureEach {
 }
 
 kotlin {
-    jvmToolchain(11)
+    jvmToolchain(21)
 }
 
-tasks.compileJava { options.release.set(11) }
+tasks.compileJava { options.release.set(21) }
 
 application { mainClass.set("PublicationConsumerKt") }

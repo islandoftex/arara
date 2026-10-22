@@ -56,6 +56,8 @@ on.
 
 ### Changed
 
+* Java 21 is now the minimum runtime version (breaking change).
+
 * **Breaking change:** `MPPPath.toJVMPath()` and `toJVMFile()` now export absolute,
   normalized paths, matching `toString()` and the new `toOkioPath()`. The original
   spelling remains internal; native parsing, identity and resolution semantics remain.

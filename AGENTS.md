@@ -2,7 +2,7 @@
 
 ## Project shape
 
-- Kotlin Multiplatform (KMP) Gradle build, JVM-only targets. Minimum JRE 11.
+- Kotlin Multiplatform (KMP) Gradle build, JVM-only targets. Minimum JRE 21.
   Kotlin 2.4, configured in `gradle.properties` (`arara.jvm.target`,
   `arara.kotlin.api`, `arara.kotlin.language`).
 - Development happens on GitLab (`gitlab.com/islandoftex/arara`); the GitHub
@@ -71,15 +71,14 @@ boolean and decimal numeric conversion for plain scalars.
 
 Run from the repo root with `./gradlew`. Current Gradle plugins require
 JDK 17+ to build; the Nix development shell supplies JDK 21. The application
-still targets JRE 11.
+targets JRE 21.
 
 - `./gradlew build` — compile + `jvmTest` for all subprojects.
 - `./gradlew allTests` — run all KMP tests (this is what CI runs).
-  Use `-PtestJavaVersion=11` to run test workers on Java 11 while Gradle
-  continues to run on JDK 17+. The existing Foojay resolver provisions a
-  missing toolchain; GitLab caches `.gradle/jdks/` separately across pipelines.
-  The first run or a cache miss downloads it; subsequent runs reuse it.
-- `./gradlew processSmoke` — test the runnable jar with a JDK 11+, without TeX.
+  Use `-PtestJavaVersion=25` to run test workers on Java 25. The Foojay
+  resolver provisions missing toolchains outside Nix; GitLab jobs supply their
+  selected runtime directly and cache the Java 21 compiler toolchain for Java 25 jobs.
+- `./gradlew processSmoke` — test the runnable jar with a JDK 21+, without TeX.
   Select another runtime with `-PsmokeJava=/path/to/java`. JUnit output goes to
   `build/test-results/processSmoke/results.xml`; see `smoke-tests/README.md`.
 - `./gradlew :cli:test` or `./gradlew :core:jvmTest` — tests for one subproject.
@@ -100,7 +99,7 @@ full local pre-push sequence is:
 ./gradlew spotlessCheck detekt allTests
 ```
 
-`processSmoke` is a separate CI gate: GitLab tests Java 11/21; the GitHub
+`processSmoke` is a separate CI gate: GitLab tests Java 21/25; the GitHub
 mirror tests Java 21 on Linux/macOS/Windows. Run it after the sequence above
 when changing runtime behavior or packaging. It builds its own runnable jar.
 
@@ -149,9 +148,7 @@ warnings for the public API module. Maven publications carry Kotlin sources and
 HTML API reference jars (the `javadoc` classifier).
 `./gradlew checkPublications` checks staged Maven artifacts and uses Gradle TestKit
 to build and run an independent Kotlin consumer of core and its transitive API
-on Java 11. Artifacts are under `build/publication-check/repository`.
-GitLab reuses the Java 11 toolchain cache.
-
+on Java 21. Artifacts are under `build/publication-check/repository`.
 
 ## Release / packaging
 
@@ -172,9 +169,9 @@ GitLab reuses the Java 11 toolchain cache.
 ## Nix
 
 `flake.nix` exposes `.#website` (the Zola site) and an independent default
-development shell. `nix develop` supplies `corretto21`, `jdk11`,
+development shell. `nix develop` supplies `corretto21`, `jdk25`,
 `weasyprint`, `zola`, `zip`, and `nixpkgs-fmt` for development and documentation
-builds. Gradle runs on JDK 21; the CLI compiler uses the JDK 11 toolchain.
+builds. Gradle runs on JDK 21; the CLI compiler uses the JDK 21 toolchain.
 The shell registers both Nix JDK homes explicitly and disables automatic
 JDK discovery/downloads, since generic Linux JDKs cannot run in the Nix CI
 image. Existing `GRADLE_OPTS` settings are preserved.
