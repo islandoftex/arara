@@ -8,7 +8,6 @@ import org.islandoftex.arara.cli.console.ConsoleRenderer
 import org.islandoftex.arara.cli.console.plain.PlainConsoleRenderer
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Session
-import org.islandoftex.arara.core.utils.formatString
 import kotlin.math.ln
 import kotlin.math.pow
 
@@ -48,13 +47,9 @@ object DisplayUtils {
                 val baseSize = size / conversionFactor.pow(exp.toDouble())
                 val ones = baseSize.toInt()
                 val tenths = ((baseSize - ones) * 10).toInt()
-                "%s%s%s %sB".formatString(
-                    ones.toString(),
-                    Session.userInterfaceOptions.locale
-                        .decimalSeparator.toString(),
-                    tenths.toString(),
-                    "kMGTPE"[exp - 1].toString()
-                )
+                val separator = Session.userInterfaceOptions.locale.decimalSeparator
+                val prefix = "kMGTPE"[exp - 1]
+                "$ones$separator$tenths ${prefix}B"
             }
     }
 

@@ -13,7 +13,6 @@ import org.islandoftex.arara.cli.utils.wrap
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
-import org.islandoftex.arara.core.utils.formatString
 import kotlin.time.Duration.Companion.seconds
 
 /**
@@ -250,15 +249,10 @@ class PlainConsoleRenderer : ConsoleRenderer {
             println()
 
         val secondDuration = seconds.seconds
-        val text = LanguageController.messages.infoDisplayExecutionTime(
-            "%s%s%s".formatString(
-                secondDuration.inWholeSeconds.toString(),
-                Session.userInterfaceOptions.locale
-                    .decimalSeparator.toString(),
-                (secondDuration - secondDuration.inWholeSeconds.seconds)
-                    .inWholeMilliseconds.toString()
-            )
-        )
+        val wholeSeconds = secondDuration.inWholeSeconds
+        val milliseconds = (secondDuration - wholeSeconds.seconds).inWholeMilliseconds
+        val separator = Session.userInterfaceOptions.locale.decimalSeparator
+        val text = LanguageController.messages.infoDisplayExecutionTime("$wholeSeconds$separator$milliseconds")
         printWrapped(text)
     }
 

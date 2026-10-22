@@ -2,20 +2,6 @@
 package org.islandoftex.arara.core.utils
 
 /**
- * Format a string using [stringReplacements] to replace occurrences of
- * `%s` in the string. As such mostly compatible with the usual
- * `kotlin.text.format` function for strings. Replacement values are literal and
- * never scanned for further placeholders. Missing values leave their placeholders
- * intact; surplus values are ignored.
- */
-fun String.formatString(vararg stringReplacements: String): String {
-    var index = 0
-    return replace(Regex("%s")) { match ->
-        if (index < stringReplacements.size) stringReplacements[index++] else match.value
-    }
-}
-
-/**
  * Converts a standard POSIX Shell globbing pattern into a regular expression
  * pattern. The result can be used with the standard [Regex] API to recognize
  * strings which match the glob pattern.

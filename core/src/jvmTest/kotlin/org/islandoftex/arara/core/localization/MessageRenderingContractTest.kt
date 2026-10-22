@@ -8,53 +8,30 @@ import kotlin.test.assertEquals
 class MessageRenderingContractTest {
     @Test
     fun `every translation retains its rendered text and literal arguments`() {
-        val catalogs = mapOf(
-            "Messages" to EnglishMessages,
-            "GermanLanguage" to GermanMessages,
-            "ItalianLanguage" to ItalianMessages,
-            "DutchLanguage" to DutchMessages,
-            "BrazilianLanguage" to BrazilianPortugueseMessages,
-            "NorfolkLanguage" to NorfolkMessages
-        )
-        val rendered = Properties()
+        val catalogs = listOf(EnglishMessages, GermanMessages, ItalianMessages, DutchMessages,
+            BrazilianPortugueseMessages, NorfolkMessages)
+        val expected = Properties()
         requireNotNull(javaClass.getResourceAsStream("/localization/rendered-messages.properties"))
-            .bufferedReader(Charsets.UTF_8).use { rendered.load(it) }
-        for (key in rendered.stringPropertyNames()) {
-            val locale = key.substringBefore('.')
-            val member = key.substringAfter('.')
-            val catalog = catalogs.getValue(locale)
-            val words = member.lowercase().split('_')
-            var name = words.first() + words.drop(1).joinToString("") { it.replaceFirstChar(Char::uppercase) }
-            name = name.replace("Calculatehash", "CalculateHash")
-            name = name.replace("Checkboolean", "CheckBoolean")
-            name = name.replace("Checkregex", "CheckRegex")
-            name = name.replace("Discoverfile", "DiscoverFile")
-            name = name.replace("Getapplicationpath", "GetApplicationPath")
-            name = name.replace("Parserule", "ParseRule")
-            name = name.replace("Replicatelist", "ReplicateList")
-            name = name.replace("Validatebody", "ValidateBody")
-            name = name.replace("Validateheader", "ValidateHeader")
-            name = name.replace("Dryrun", "DryRun")
-            val method = AraraMessages::class.java.methods.single {
-                it.name == name || it.name == "get${name.replaceFirstChar(Char::uppercase)}"
+            .bufferedReader(Charsets.UTF_8).use { expected.load(it) }
+        val methods = AraraMessages::class.java.methods.filter { it.returnType == String::class.java }
+        val keys = mutableSetOf<String>()
+        for (catalog in catalogs) {
+            for (method in methods) {
+                val member = if (method.name.startsWith("get")) {
+                    method.name.removePrefix("get").replaceFirstChar(Char::lowercase)
+                } else method.name
+                val key = "${catalog.javaClass.simpleName}.$member"
+                keys.add(key)
+                val arguments = method.parameterTypes.mapIndexed { index, type ->
+                    when (type) {
+                        Boolean::class.javaPrimitiveType -> true
+                        Int::class.javaPrimitiveType -> index + 1
+                        else -> "marker-${index + 1}-${'$'}-\\-%s"
+                    }
+                }.toTypedArray<Any>()
+                assertEquals(expected.getProperty(key), method.invoke(catalog, *arguments), key)
             }
-            val arguments = method.parameterTypes.mapIndexed { index, type ->
-                when (type) {
-                    Boolean::class.javaPrimitiveType -> true
-                    Int::class.javaPrimitiveType -> index + 1
-                    else -> "marker-${index + 1}-${'$'}-\\-%s"
-                }
-            }.toTypedArray<Any>()
-            var expected = rendered.getProperty(key)
-            arguments.forEachIndexed { index, argument ->
-                if (argument !is String) {
-                    expected = expected.replace("marker-${index + 1}-${'$'}-\\-%s", argument.toString())
-                }
-            }
-            assertEquals(expected, method.invoke(catalog, *arguments), "$locale: $member")
         }
-        assertEquals(catalogs.size * AraraMessages::class.java.methods.count {
-            it.returnType == String::class.java
-        }, rendered.size)
+        assertEquals(keys, expected.stringPropertyNames(), "Every catalog member needs a rendering fixture")
     }
 }
