@@ -10,7 +10,19 @@ kotlin {
 dependencies {
     implementation(project(":api"))
     implementation(libs.kotlinx.serialization.json)
+    testImplementation(libs.kotlin.test.junit5)
+    testRuntimeOnly(libs.junit.jupiter.engine)
 }
+
+tasks.test {
+    useJUnitPlatform()
+    javaLauncher.set(javaToolchains.launcherFor {
+        languageVersion.set(JavaLanguageVersion.of(providers.gradleProperty("testJavaVersion")
+            .orElse(providers.gradleProperty("arara.jvm.target")).get().toInt()))
+    })
+}
+
+tasks.register("allTests") { dependsOn(tasks.test) }
 
 tasks.register<Jar>("runnerJar") {
     dependsOn(tasks.classes)

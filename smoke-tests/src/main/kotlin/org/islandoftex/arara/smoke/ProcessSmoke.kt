@@ -11,54 +11,17 @@ import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.toJVMFile
 import org.islandoftex.arara.api.files.toJVMPath
 import org.islandoftex.arara.api.files.toMPPPath
-import java.io.ByteArrayOutputStream
 import java.nio.file.Files
-import java.util.concurrent.TimeUnit
 import java.util.jar.JarFile
-import javax.xml.stream.XMLOutputFactory
-import javax.xml.stream.XMLStreamWriter
-import kotlin.concurrent.thread
 
-private const val PROCESS_TIMEOUT_SECONDS = 30L
-private const val READER_TIMEOUT_MILLIS = 5000L
 private const val FAILURE_STATUS = 7
 private const val APPLICATION_ERROR = 2
 
 private fun quoted(value: String): String = "\"" + value.replace("\\", "\\\\")
     .replace("\"", "\\\"").replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t") + "\""
 
-private data class Result(val status: Int, val output: String)
-private data class CaseResult(val name: String, val failure: Throwable?)
-
-/** Checks use MPPPath; ProcessBuilder requires a File at its working-directory boundary. */
-private fun run(command: List<String>, directory: MPPPath, input: String = "",
-                environment: Map<String, String?> = emptyMap()): Result {
-    val process = ProcessBuilder(command).directory(directory.toJVMFile()).redirectErrorStream(true)
-        .apply {
-            environment.forEach { (key, value) ->
-                if (value == null) environment().remove(key) else environment()[key] = value
-            }
-        }.start()
-    val output = ByteArrayOutputStream()
-    val reader = thread(isDaemon = true, name = "smoke-output") {
-        process.inputStream.use { it.copyTo(output) }
-    }
-    try {
-        process.outputStream.bufferedWriter(Charsets.UTF_8).use { it.write(input) }
-        check(process.waitFor(PROCESS_TIMEOUT_SECONDS, TimeUnit.SECONDS)) {
-            "Process timed out: $command\n${output.toString(Charsets.UTF_8)}"
-        }
-        reader.join(READER_TIMEOUT_MILLIS)
-        check(!reader.isAlive) { "Process output did not close: $command" }
-        return Result(process.exitValue(), output.toString(Charsets.UTF_8))
-    } finally {
-        process.descendants().use { children -> children.forEach { it.destroyForcibly() } }
-        if (process.isAlive) process.destroyForcibly()
-        reader.join(READER_TIMEOUT_MILLIS)
-    }
-}
-
-private class Smoke(private val jar: MPPPath, private val java: MPPPath, private val fixture: MPPPath, private val jna: MPPPath) {
+private class Smoke(private val jar: MPPPath, private val java: MPPPath,
+    private val fixture: MPPPath, private val jna: MPPPath) {
     private val launcher = listOf(java.toString(), "--module-path", jna.toString(),
         "--add-modules=com.sun.jna", "--enable-native-access=com.sun.jna")
 
@@ -107,6 +70,35 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath, private
     private fun contains(output: String, text: String) = check(text in output) { "Missing $text\n$output" }
 
     val cases: Map<String, (MPPPath) -> Unit> = linkedMapOf(
+        "directive_file_arrays_replicate_execution_in_both_engines" to { root ->
+            val trace = root.resolve("files.trace")
+            rule(root, "writeToFile(${quoted(trace.toString())}, reference.fileName + '|', true); return true;")
+            luaRule(root, "write_to_file(${quoted(trace.toString())}, " +
+                "ctx.reference.file_name .. '|', true); return true")
+            root.resolve("first.tex").writeText("")
+            root.resolve("second.tex").writeText("")
+            root.resolve("run.tex").writeText("% arara: probe: { files: [first.tex, second.tex] }\n")
+            for (engine in listOf("yaml", "lua")) {
+                trace.writeText("")
+                val output = execute(root, 0, listOf("--engine", engine))
+                check(trace.readText() == "first.tex|second.tex|") {
+                    "$engine did not preserve both file references: ${trace.readText()}\n$output"
+                }
+            }
+        },
+        "missing_rules_name_the_selected_engine_format" to { root ->
+            root.resolve("run.tex").writeText("% arara: notarulequack\n")
+            for (engine in listOf("yaml", "lua")) {
+                contains(execute(root, APPLICATION_ERROR, listOf("--engine", engine)), "notarulequack.$engine")
+            }
+        },
+        "lua_configuration_precedes_yaml_independently_of_rule_engine" to { root ->
+            root.resolve("arararc.yaml").writeText("!config\nloops: invalid\n")
+            root.resolve("arararc.lua").writeText("return { paths = { cwd } }\n")
+            rule(root, "return true;")
+            luaRule(root, "return true")
+            for (engine in listOf("yaml", "lua")) execute(root, 0, listOf("--engine", engine))
+        },
         "packaged_native_terminal_provider_and_access" to { _ ->
             JarFile(jar.toJVMFile()).use { archive ->
                 val provider = "com.github.ajalt.mordant.terminal.terminalinterface.jna.TerminalInterfaceProviderJna"
@@ -825,43 +817,6 @@ private fun compileFixture(root: MPPPath, javac: MPPPath) {
     """.trimIndent())
     val result = run(listOf(javac.toString(), "--release", "11", source.toString()), root)
     check(result.status == 0) { "Cannot compile smoke fixture:\n${result.output}" }
-}
-
-private fun XMLStreamWriter.writeCase(case: CaseResult) {
-    writeStartElement("testcase")
-    writeAttribute("classname", "arara.ProcessSmoke")
-    writeAttribute("name", case.name)
-    case.failure?.let { failure ->
-        writeStartElement("failure")
-        writeCharacters(failure.stackTraceToString().filter { it >= ' ' || it in "\n\r\t" })
-        writeEndElement()
-    }
-    writeEndElement()
-}
-
-private fun report(destination: MPPPath, cases: List<CaseResult>) {
-    destination.parent.createDirectories()
-    Files.newOutputStream(destination.toJVMPath()).use { stream ->
-        val xml = XMLOutputFactory.newFactory().createXMLStreamWriter(stream, "UTF-8")
-        try {
-            xml.writeStartDocument("UTF-8", "1.0")
-            xml.writeStartElement("testsuite")
-            xml.writeAttribute("name", "arara.process-smoke")
-            xml.writeAttribute("tests", cases.size.toString())
-            xml.writeAttribute("failures", cases.count { it.failure != null }.toString())
-            xml.writeAttribute("errors", "0")
-            cases.forEach { xml.writeCase(it) }
-            xml.writeEndElement()
-            xml.writeEndDocument()
-        } finally {
-            xml.close()
-        }
-    }
-}
-
-private fun temporary(body: (MPPPath) -> Unit) {
-    val root = Files.createTempDirectory("arara smoke ").toRealPath().toMPPPath()
-    try { body(root) } finally { root.removeDirectory() }
 }
 
 fun main(args: Array<String>) {
