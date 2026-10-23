@@ -306,6 +306,31 @@ tasks.register<Exec>("processSmoke") {
     }
 }
 
+tasks.register<Exec>("texIntegration") {
+    group = "verification"
+    description = "Test official rules with pdflatex and bibtex on PATH."
+    dependsOn(":cli:shadowJar", ":cli:stageNativeRuntime", ":smoke-tests:runnerJar")
+    val smokeJava = providers.gradleProperty("smokeJava").orElse(
+        providers.systemProperty("java.home").map {
+            Path.of(it, "bin", if (System.getProperty("os.name").startsWith("Windows")) "java.exe" else "java")
+                .toString()
+        }
+    )
+    val report = layout.buildDirectory.file("test-results/texIntegration/results.xml")
+    outputs.file(report)
+    outputs.upToDateWhen { false }
+    doFirst {
+        commandLine(smokeJava.get(), "-jar",
+            project(":smoke-tests").tasks.named<Jar>("runnerJar").get().archiveFile.get().asFile.absolutePath,
+            "--suite", "tex", "--jar", project(":cli").tasks.named<Jar>("shadowJar")
+                .get().archiveFile.get().asFile.absolutePath,
+            "--java", smokeJava.get(), "--jna",
+            project(":cli").layout.buildDirectory.file("native/jna.jar").get().asFile.absolutePath,
+            "--work-dir", layout.buildDirectory.dir("texIntegration").get().asFile.absolutePath,
+            "--report", report.get().asFile.absolutePath)
+    }
+}
+
 // Give runtime-only CI jobs the application, native library and smoke runner.
 tasks.register<Copy>("stageProcessSmokeJar") {
     group = "verification"

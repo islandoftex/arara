@@ -822,7 +822,13 @@ private fun compileFixture(root: MPPPath, javac: MPPPath) {
 fun main(args: Array<String>) {
     require(args.size % 2 == 0) { "Expected --jar APP_JAR --java JAVA [--javac JAVAC] [--report XML]" }
     val options = args.toList().chunked(2).associate { (key, value) -> key to value }
-    require(options.keys.all { it in setOf("--jar", "--java", "--javac", "--report", "--jna") }) { "Unknown option" }
+    val allowed = setOf("--jar", "--java", "--javac", "--report", "--jna", "--suite", "--work-dir")
+    require(options.keys.all { it in allowed }) { "Unknown option" }
+    when (options["--suite"] ?: "process") {
+        "tex" -> return runTexIntegration(options)
+        "process" -> require("--work-dir" !in options) { "--work-dir requires --suite tex" }
+        else -> error("Unknown suite: ${options["--suite"]}")
+    }
     val jar = MPPPath(options.getValue("--jar")).normalize()
     val java = MPPPath(options.getValue("--java")).normalize()
     val javac = options["--javac"]?.let { MPPPath(it).normalize() }
@@ -832,7 +838,8 @@ fun main(args: Array<String>) {
     runCatching {
         temporary { fixture ->
             compileFixture(fixture, javac)
-            Smoke(jar, java, fixture, MPPPath(options["--jna"] ?: jar.resolveSibling("jna.jar").toString())).cases.forEach { (name, test) ->
+            val jna = MPPPath(options["--jna"] ?: jar.resolveSibling("jna.jar").toString())
+            Smoke(jar, java, fixture, jna).cases.forEach { (name, test) ->
                 val failure = runCatching { temporary { root -> initialize(root); test(root) } }.exceptionOrNull()
                 cases.add(CaseResult(name, failure))
                 println("${if (failure == null) "PASS" else "FAIL"} $name")
