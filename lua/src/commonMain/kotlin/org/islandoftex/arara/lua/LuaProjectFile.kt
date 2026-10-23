@@ -2,11 +2,11 @@
 package org.islandoftex.arara.lua
 
 import org.islandoftex.arara.api.AraraException
-import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.core.files.ProjectFile
+import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.rules.Directives
 
 /**

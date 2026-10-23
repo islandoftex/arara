@@ -3,8 +3,6 @@ package org.islandoftex.arara.cli.console
 
 import com.github.ajalt.mordant.rendering.AnsiLevel
 import com.github.ajalt.mordant.terminal.Terminal
-import org.islandoftex.arara.api.AraraException
-import org.islandoftex.arara.cli.console.styled.StyledDialogRenderer
 import java.io.BufferedReader
 import java.io.PrintWriter
 import java.io.StringReader
@@ -14,6 +12,8 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.cli.console.styled.StyledDialogRenderer
 
 class StyledLifecycleTest {
     @Test

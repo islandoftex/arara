@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.smoke
 
+import java.nio.file.Files
+import java.util.jar.JarFile
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.boolean
 import kotlinx.serialization.json.int
@@ -11,8 +13,6 @@ import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.toJVMFile
 import org.islandoftex.arara.api.files.toJVMPath
 import org.islandoftex.arara.api.files.toMPPPath
-import java.nio.file.Files
-import java.util.jar.JarFile
 
 private const val FAILURE_STATUS = 7
 private const val APPLICATION_ERROR = 2

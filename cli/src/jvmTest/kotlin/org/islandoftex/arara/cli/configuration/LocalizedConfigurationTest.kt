@@ -3,9 +3,6 @@ package org.islandoftex.arara.cli.configuration
 
 import com.github.ajalt.clikt.core.ProgramResult
 import com.github.ajalt.clikt.core.parse
-import org.islandoftex.arara.api.files.toMPPPath
-import org.islandoftex.arara.cli.CLI
-import org.islandoftex.arara.core.localization.GermanMessages
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 import java.nio.file.Files
@@ -13,6 +10,9 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
+import org.islandoftex.arara.api.files.toMPPPath
+import org.islandoftex.arara.cli.CLI
+import org.islandoftex.arara.core.localization.GermanMessages
 
 class LocalizedConfigurationTest {
     @Test

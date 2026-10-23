@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.configuration
 
-import org.islandoftex.arara.api.AraraException
-import org.islandoftex.arara.api.files.MPPPath
-import org.islandoftex.arara.api.files.toMPPPath
-import org.islandoftex.arara.core.files.Project
 import java.nio.file.Files
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.files.MPPPath
+import org.islandoftex.arara.api.files.toMPPPath
+import org.islandoftex.arara.core.files.Project
 
 class DatabasePathTest {
     @Test

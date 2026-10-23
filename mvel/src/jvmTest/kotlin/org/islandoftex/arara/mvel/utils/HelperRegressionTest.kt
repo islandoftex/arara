@@ -1,21 +1,20 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.mvel.utils
 
-import org.islandoftex.arara.core.rules.RuleMethods
-import org.islandoftex.arara.core.rules.ConditionalMethods
-
-import org.islandoftex.arara.api.SafeRunViolationException
-import org.islandoftex.arara.api.configuration.ExecutionMode
-import org.islandoftex.arara.api.files.MPPPath
-import org.islandoftex.arara.api.files.toMPPPath
-import org.islandoftex.arara.core.configuration.ExecutionOptions
-import org.islandoftex.arara.core.session.LinearExecutor
 import java.nio.file.Files
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import org.islandoftex.arara.api.SafeRunViolationException
+import org.islandoftex.arara.api.configuration.ExecutionMode
+import org.islandoftex.arara.api.files.MPPPath
+import org.islandoftex.arara.api.files.toMPPPath
+import org.islandoftex.arara.core.configuration.ExecutionOptions
+import org.islandoftex.arara.core.rules.ConditionalMethods
+import org.islandoftex.arara.core.rules.RuleMethods
+import org.islandoftex.arara.core.session.LinearExecutor
 
 class HelperRegressionTest {
     @Test

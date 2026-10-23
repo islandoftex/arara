@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.console
 
+import kotlin.time.TimeMark
+import kotlin.time.TimeSource
 import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.core.dependencies.ProjectValidation
-import kotlin.time.TimeMark
-import kotlin.time.TimeSource
 
 /** Invocation-owned ledger; a renderer never owns execution state. */
 internal class RunPresentation(private val clock: TimeSource = TimeSource.Monotonic) {

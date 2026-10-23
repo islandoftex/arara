@@ -3,13 +3,13 @@ package org.islandoftex.arara.cli.utils
 
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.shouldBe
-import org.islandoftex.arara.cli.configuration.ConfigurationFiles
+import java.nio.file.FileSystems
+import java.nio.file.Files
 import java.util.Properties
 import org.islandoftex.arara.api.files.MPPPath
-import org.islandoftex.arara.api.files.toMPPPath
 import org.islandoftex.arara.api.files.toJVMPath
-import java.nio.file.Files
-import java.nio.file.FileSystems
+import org.islandoftex.arara.api.files.toMPPPath
+import org.islandoftex.arara.cli.configuration.ConfigurationFiles
 
 class PropertiesTest : ShouldSpec({
     context("UTF-8 support for properties files") {

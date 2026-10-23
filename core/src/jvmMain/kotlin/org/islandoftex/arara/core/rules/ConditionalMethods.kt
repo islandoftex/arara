@@ -2,6 +2,7 @@
 package org.islandoftex.arara.core.rules
 
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.AraraIOException
 import org.islandoftex.arara.api.SafeRunViolationException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.MPPPath
@@ -13,7 +14,6 @@ import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.ui.DialogRenderer
 import org.islandoftex.arara.core.ui.Dialogs
-import org.islandoftex.arara.api.AraraIOException
 
 @Suppress("unused", "TooManyFunctions")
 object ConditionalMethods {

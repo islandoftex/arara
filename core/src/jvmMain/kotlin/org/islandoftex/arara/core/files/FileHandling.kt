@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.files
 
+import java.util.zip.CRC32
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.AraraIOException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.core.localization.LanguageController
-import java.util.zip.CRC32
 
 object FileHandling {
     /**

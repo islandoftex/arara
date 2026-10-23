@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.console
 
-import org.islandoftex.arara.api.files.MPPPath
 import kotlin.time.Duration
+import org.islandoftex.arara.api.files.MPPPath
 
 /** Presentation data retained across project configuration and renderer changes. */
 data class FileSummary(

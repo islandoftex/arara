@@ -4,12 +4,12 @@ package org.islandoftex.arara.cli.interpreter
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.shouldBe
+import java.io.IOException
+import java.nio.file.Files
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.files.toMPPPath
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Command
-import java.io.IOException
-import org.islandoftex.arara.api.files.toMPPPath
-import java.nio.file.Files
 
 class ProcessFailureTest : ShouldSpec({
     should("classify a failed launch while retaining its original exception") {

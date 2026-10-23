@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.dependencies
 
-import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.Project
+import org.islandoftex.arara.core.localization.LanguageController
 
 /**
  * A graph of projects. Implemented for convenience.

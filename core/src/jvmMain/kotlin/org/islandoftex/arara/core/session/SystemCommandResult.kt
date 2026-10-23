@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.session
 
-import org.zeroturnaround.exec.InvalidExitValueException
 import java.io.IOException
 import java.util.concurrent.TimeoutException
+import org.zeroturnaround.exec.InvalidExitValueException
 
 /** A completed process or a failure to start or finish one. */
 sealed class SystemCommandResult {

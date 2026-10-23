@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.utils
 
+import java.nio.file.Files
+import kotlin.test.Test
+import kotlin.test.assertTrue
 import org.islandoftex.arara.api.configuration.LogFormat
 import org.islandoftex.arara.api.files.toMPPPath
 import org.islandoftex.arara.api.localization.MPPLocale
@@ -9,9 +12,6 @@ import org.islandoftex.arara.core.configuration.LoggingOptions
 import org.islandoftex.arara.core.configuration.UserInterfaceOptions
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Session
-import java.nio.file.Files
-import kotlin.test.Test
-import kotlin.test.assertTrue
 
 class RunLogLanguageTest {
     @Test

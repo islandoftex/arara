@@ -1,14 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.api.files
 
-import okio.BufferedSource
-import okio.FileMetadata
-import okio.FileSystem
-import okio.FileSystem.Companion.asOkioFileSystem
-import okio.Path.Companion.toPath
-import okio.buffer
-import org.islandoftex.arara.api.AraraIOException
-import org.islandoftex.arara.api.time.DateTime
 import java.io.File
 import java.io.IOException
 import java.nio.charset.CodingErrorAction
@@ -17,6 +9,14 @@ import java.nio.file.Path
 import java.nio.file.Paths
 import kotlin.io.path.name
 import kotlin.jvm.Throws
+import okio.BufferedSource
+import okio.FileMetadata
+import okio.FileSystem
+import okio.FileSystem.Companion.asOkioFileSystem
+import okio.Path.Companion.toPath
+import okio.buffer
+import org.islandoftex.arara.api.AraraIOException
+import org.islandoftex.arara.api.time.DateTime
 
 /**
  * Platform-independent object to deal with paths.

@@ -3,10 +3,6 @@ package org.islandoftex.arara.cli.console.styled
 
 import com.github.ajalt.mordant.rendering.AnsiLevel
 import com.github.ajalt.mordant.terminal.Terminal
-import org.islandoftex.arara.api.AraraException
-import org.islandoftex.arara.api.localization.MPPLocale
-import org.islandoftex.arara.cli.ui.TerminalDialogRenderer
-import org.islandoftex.arara.core.localization.LanguageController
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 import java.io.PrintWriter
@@ -17,6 +13,10 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.localization.MPPLocale
+import org.islandoftex.arara.cli.ui.TerminalDialogRenderer
+import org.islandoftex.arara.core.localization.LanguageController
 
 class StyledDialogPresentationTest {
     private fun plain(text: String): String = text.replace(Regex("\u001b\\[[0-9;]*m"), "")

@@ -2,12 +2,12 @@
 package org.islandoftex.arara.mvel.interpreter
 
 import com.charleskorn.kaml.Yaml
-import org.islandoftex.arara.api.AraraExceptionWithHeader
-import org.islandoftex.arara.mvel.rules.RuleArgument
-import org.islandoftex.arara.mvel.rules.SerialRuleCommand
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import org.islandoftex.arara.api.AraraExceptionWithHeader
+import org.islandoftex.arara.mvel.rules.RuleArgument
+import org.islandoftex.arara.mvel.rules.SerialRuleCommand
 
 class MvelCommandEvaluatorTest {
     @Test

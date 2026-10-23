@@ -2,7 +2,9 @@
 package org.islandoftex.arara.cli.configuration
 
 import io.github.oshai.kotlinlogging.KotlinLogging
-
+import java.io.InputStreamReader
+import java.nio.charset.Charset
+import java.util.Properties
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.Project
@@ -15,9 +17,6 @@ import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.lua.configuration.LuaLocalConfiguration
 import org.islandoftex.arara.mvel.configuration.YamlLocalConfiguration
-import java.io.InputStreamReader
-import java.nio.charset.Charset
-import java.util.Properties
 
 /**
  * Resolves configuration files and loads configuration and call properties.

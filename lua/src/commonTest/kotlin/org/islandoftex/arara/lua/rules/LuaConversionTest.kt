@@ -1,16 +1,16 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.lua.rules
 
-import org.islandoftex.arara.api.files.MPPPath
-import org.islandoftex.arara.core.session.Command
-import org.luaj.vm2.LuaTable
-import org.luaj.vm2.LuaValue
-import org.luaj.vm2.lib.common.CommonPlatform
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
+import org.islandoftex.arara.api.files.MPPPath
+import org.islandoftex.arara.core.session.Command
+import org.luaj.vm2.LuaTable
+import org.luaj.vm2.LuaValue
+import org.luaj.vm2.lib.common.CommonPlatform
 
 class LuaConversionTest {
     @Test

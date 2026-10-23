@@ -1,6 +1,13 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.interpreter
 
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertSame
+import kotlin.test.assertTrue
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.AraraExceptionWithHeader
 import org.islandoftex.arara.api.configuration.ExecutionMode
@@ -16,13 +23,6 @@ import org.islandoftex.arara.core.rules.CommandEvaluator
 import org.islandoftex.arara.core.rules.DirectiveConditional
 import org.islandoftex.arara.core.session.Command
 import org.islandoftex.arara.core.session.HaltRequest
-import kotlin.test.AfterTest
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
-import kotlin.test.assertSame
-import kotlin.test.assertTrue
 
 class CommandAdapterTest {
     private class Adapter(

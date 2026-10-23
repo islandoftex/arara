@@ -3,6 +3,13 @@ package org.islandoftex.arara.cli.utils
 
 import com.github.ajalt.clikt.core.ProgramResult
 import com.github.ajalt.clikt.core.parse
+import java.io.IOException
+import java.nio.file.Files
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.boolean
 import kotlinx.serialization.json.int
@@ -14,18 +21,11 @@ import org.apache.logging.log4j.ThreadContext
 import org.islandoftex.arara.api.configuration.LogFormat
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.toMPPPath
+import org.islandoftex.arara.api.session.Command as APICommand
 import org.islandoftex.arara.cli.CLI
 import org.islandoftex.arara.core.configuration.LoggingOptions
 import org.islandoftex.arara.core.session.Command
 import org.islandoftex.arara.core.session.Session
-import java.io.IOException
-import java.nio.file.Files
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
-import org.islandoftex.arara.api.session.Command as APICommand
 
 class StructuredLoggingTest {
     @Test

@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.utils
 
+import kotlin.math.ln
+import kotlin.math.pow
+import kotlin.time.Duration.Companion.seconds
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.ProjectFile
@@ -11,9 +14,6 @@ import org.islandoftex.arara.cli.console.plain.PlainConsoleRenderer
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
-import kotlin.math.ln
-import kotlin.math.pow
-import kotlin.time.Duration.Companion.seconds
 
 /** The generated version object belongs to the platform source set. */
 internal expect fun applicationVersion(): String

@@ -1,15 +1,15 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.console
 
-import org.islandoftex.arara.api.files.MPPPath
-import org.islandoftex.arara.core.files.FileType
-import org.islandoftex.arara.core.files.Project
-import org.islandoftex.arara.core.files.ProjectFile
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.TestTimeSource
+import org.islandoftex.arara.api.files.MPPPath
+import org.islandoftex.arara.core.files.FileType
+import org.islandoftex.arara.core.files.Project
+import org.islandoftex.arara.core.files.ProjectFile
 
 class RunPresentationTest {
     @Test

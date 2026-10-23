@@ -1,14 +1,15 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.build
 
+import javax.inject.Inject
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.PathSensitive
@@ -18,7 +19,6 @@ import org.gradle.process.ExecOperations
 import org.islandoftex.arara.build.website.WebsiteBooks
 import org.islandoftex.arara.build.website.WebsiteContent
 import org.islandoftex.arara.build.website.WebsiteSources
-import javax.inject.Inject
 
 abstract class PrepareWebsiteTask : DefaultTask() {
     @get:Internal

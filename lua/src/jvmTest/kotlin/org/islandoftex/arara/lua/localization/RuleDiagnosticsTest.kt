@@ -1,12 +1,17 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.lua.localization
 
+import java.nio.file.Files
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.toMPPPath
 import org.islandoftex.arara.core.localization.AraraMessages
-import org.islandoftex.arara.core.localization.EnglishMessages
 import org.islandoftex.arara.core.localization.BrazilianPortugueseMessages
 import org.islandoftex.arara.core.localization.DutchMessages
+import org.islandoftex.arara.core.localization.EnglishMessages
 import org.islandoftex.arara.core.localization.GermanMessages
 import org.islandoftex.arara.core.localization.ItalianMessages
 import org.islandoftex.arara.core.localization.LanguageController
@@ -16,11 +21,6 @@ import org.islandoftex.arara.lua.rules.LuaHelperException
 import org.islandoftex.arara.lua.rules.LuaInterpolation
 import org.islandoftex.arara.lua.rules.LuaRuleParser
 import org.luaj.vm2.LuaValue
-import java.nio.file.Files
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
-import kotlin.test.assertTrue
 
 class RuleDiagnosticsTest {
     private fun eachLocale(check: (AraraMessages) -> Unit) {

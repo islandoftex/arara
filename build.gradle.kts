@@ -1,20 +1,20 @@
 // SPDX-License-Identifier: BSD-3-Clause
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
-import org.gradle.jvm.tasks.Jar as JvmJar
+import java.nio.file.Path
 import org.gradle.api.publish.maven.tasks.PublishToMavenRepository
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
-import org.islandoftex.arara.build.AraraPackaging
-import org.islandoftex.arara.build.VerifyPublicationArtifacts
-import org.islandoftex.arara.build.AraraPublication
-import org.islandoftex.arara.build.VerifyPublicationConsumer
+import org.gradle.jvm.tasks.Jar as JvmJar
 import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.gradle.jvm.toolchain.JavaToolchainService
+import org.islandoftex.arara.build.AraraPackaging
+import org.islandoftex.arara.build.AraraPublication
+import org.islandoftex.arara.build.VerifyPublicationArtifacts
+import org.islandoftex.arara.build.VerifyPublicationConsumer
 import org.jetbrains.dokka.gradle.DokkaExtension
-import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import java.nio.file.Path
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
 plugins {
     id("jvm-toolchains")
@@ -44,6 +44,7 @@ spotless {
     kotlinGradle {
         target(
                 "build.gradle.kts",
+                "settings.gradle.kts",
                 "buildSrc/build.gradle.kts",
                 "api/build.gradle.kts",
                 "core/build.gradle.kts",
@@ -53,11 +54,14 @@ spotless {
                 "docs/build.gradle.kts",
                 "smoke-tests/build.gradle.kts"
         )
-        // ktlint updated its rule set so that a majority of our files newly
-        // triggers lints that are not as easy to fix, therefore we disabled
-        // it for now
-        // -----------------------------------------------------------------
-        // ktlint()
+        // Only import ordering is enabled; surrounding Kotlin formatting stays unchanged.
+        ktlint(libs.versions.ktlint.get()).editorConfigOverride(
+            mapOf(
+                "ktlint_standard" to "disabled",
+                "ktlint_standard_import-ordering" to "enabled",
+                "ij_kotlin_imports_layout" to "*"
+            )
+        )
         trimTrailingWhitespace()
         leadingTabsToSpaces()
         endWithNewline()
@@ -72,11 +76,14 @@ spotless {
                 "buildSrc/src/**/*.kt",
                 "smoke-tests/src/**/*.kt"
         )
-        // ktlint updated its rule set so that a majority of our files newly
-        // triggers lints that are not as easy to fix, therefore we disabled
-        // it for now
-        // -----------------------------------------------------------------
-        // ktlint()
+        // Only import ordering is enabled; surrounding Kotlin formatting stays unchanged.
+        ktlint(libs.versions.ktlint.get()).editorConfigOverride(
+            mapOf(
+                "ktlint_standard" to "disabled",
+                "ktlint_standard_import-ordering" to "enabled",
+                "ij_kotlin_imports_layout" to "*"
+            )
+        )
         licenseHeader("// SPDX-License-Identifier: BSD-3-Clause")
         trimTrailingWhitespace()
         leadingTabsToSpaces()

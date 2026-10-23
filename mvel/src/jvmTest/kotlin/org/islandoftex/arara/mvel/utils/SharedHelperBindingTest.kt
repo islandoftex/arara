@@ -1,15 +1,15 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.mvel.utils
 
-import org.islandoftex.arara.api.AraraExceptionWithHeader
-import org.islandoftex.arara.api.session.Command
-import org.islandoftex.arara.api.files.toMPPPath
 import java.nio.file.Files
-import org.islandoftex.arara.core.rules.RuleMethods
-import org.mvel2.templates.TemplateRuntime
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import org.islandoftex.arara.api.AraraExceptionWithHeader
+import org.islandoftex.arara.api.files.toMPPPath
+import org.islandoftex.arara.api.session.Command
+import org.islandoftex.arara.core.rules.RuleMethods
+import org.mvel2.templates.TemplateRuntime
 
 class SharedHelperBindingTest {
     @Test

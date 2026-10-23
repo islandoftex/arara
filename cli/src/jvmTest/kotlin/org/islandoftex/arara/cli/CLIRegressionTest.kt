@@ -3,18 +3,18 @@ package org.islandoftex.arara.cli
 
 import com.github.ajalt.clikt.core.ProgramResult
 import com.github.ajalt.clikt.core.parse
-import org.islandoftex.arara.api.files.toMPPPath
-import org.islandoftex.arara.core.configuration.ExecutionOptions
-import org.islandoftex.arara.core.configuration.PreambleState
-import org.islandoftex.arara.core.session.LinearExecutor
-import org.islandoftex.arara.core.session.Session
-import org.islandoftex.arara.core.session.HaltRequest
-import java.nio.file.Files
 import java.io.File
+import java.nio.file.Files
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
+import org.islandoftex.arara.api.files.toMPPPath
+import org.islandoftex.arara.core.configuration.ExecutionOptions
+import org.islandoftex.arara.core.configuration.PreambleState
+import org.islandoftex.arara.core.session.HaltRequest
+import org.islandoftex.arara.core.session.LinearExecutor
+import org.islandoftex.arara.core.session.Session
 
 class CLIRegressionTest {
     private fun fixture(test: (File) -> Unit) {

@@ -1,15 +1,15 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.build
 
-import org.gradle.testkit.runner.GradleRunner
-import org.gradle.testkit.runner.TaskOutcome
 import java.nio.file.FileSystems
-import java.nio.file.attribute.PosixFilePermissions
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.nio.file.attribute.FileTime
+import java.nio.file.attribute.PosixFilePermissions
 import java.util.zip.ZipFile
+import org.gradle.testkit.runner.GradleRunner
+import org.gradle.testkit.runner.TaskOutcome
 
 private val packagingTasks = listOf("generatePackagingFiles", "assembleCTANSourceZip",
     "assembleDocumentationSourceZip", "assembleTDSTree", "assembleTDSZip", "assembleCTANTree", "assembleCTAN")

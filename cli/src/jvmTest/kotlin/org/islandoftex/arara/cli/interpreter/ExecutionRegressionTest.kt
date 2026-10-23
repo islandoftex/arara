@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.interpreter
 
+import java.nio.file.Files
+import kotlin.test.Test
+import kotlin.test.assertEquals
 import org.islandoftex.arara.api.files.toMPPPath
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.cli.ruleset.DirectiveImpl
@@ -10,9 +13,6 @@ import org.islandoftex.arara.core.files.ProjectFile
 import org.islandoftex.arara.core.rules.DirectiveConditional
 import org.islandoftex.arara.core.session.HaltRequest
 import org.islandoftex.arara.core.session.Session
-import java.nio.file.Files
-import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class ExecutionRegressionTest {
     private fun execute(

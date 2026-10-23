@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.smoke
 
-import org.islandoftex.arara.api.files.MPPPath
-import org.xml.sax.InputSource
 import java.io.StringReader
 import java.nio.file.Path
 import javax.xml.parsers.DocumentBuilderFactory
@@ -11,6 +9,8 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import org.islandoftex.arara.api.files.MPPPath
+import org.xml.sax.InputSource
 
 class ProcessSupportTest {
     private fun command(mode: String): List<String> {

@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.lua
 
-import org.islandoftex.arara.api.files.MPPPath
-import org.islandoftex.arara.api.AraraException
-import org.islandoftex.arara.core.localization.LanguageController
-import org.islandoftex.arara.core.files.FileType
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
+import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.files.MPPPath
+import org.islandoftex.arara.core.files.FileType
+import org.islandoftex.arara.core.localization.LanguageController
 
 class LuaInterpreterTest {
     @Test

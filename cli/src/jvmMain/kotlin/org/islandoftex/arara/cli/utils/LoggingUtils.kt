@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.utils
 
+import java.util.UUID
 import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.ThreadContext
@@ -8,7 +9,6 @@ import org.apache.logging.log4j.core.LoggerContext
 import org.apache.logging.log4j.core.config.Configurator
 import org.islandoftex.arara.api.configuration.LogFormat
 import org.islandoftex.arara.api.configuration.LoggingOptions
-import java.util.UUID
 
 /** Configures a single file appender and releases it when logging is disabled. */
 object LoggingUtils {

@@ -1,15 +1,15 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.api.files
 
-import org.islandoftex.arara.api.AraraIOException
 import java.io.IOException
 import java.nio.file.Files
-import org.junit.jupiter.api.Assumptions.assumeTrue
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import org.islandoftex.arara.api.AraraIOException
+import org.junit.jupiter.api.Assumptions.assumeTrue
 
 class PathFailureTest {
     @Test

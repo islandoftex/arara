@@ -3,13 +3,13 @@ package org.islandoftex.arara.api.files
 
 import java.io.IOException
 import java.nio.file.Files
-import org.junit.jupiter.api.Assumptions.assumeTrue
 import java.nio.file.Path
 import java.nio.file.Paths
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import org.junit.jupiter.api.Assumptions.assumeTrue
 
 class PathContractTest {
     @Test

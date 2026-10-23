@@ -1,6 +1,12 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.session
 
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertNull
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.rules.Directive
@@ -9,12 +15,6 @@ import org.islandoftex.arara.core.files.FileType
 import org.islandoftex.arara.core.files.Project
 import org.islandoftex.arara.core.files.ProjectFile
 import org.islandoftex.arara.core.rules.DirectiveConditional
-import kotlin.test.AfterTest
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
-import kotlin.test.assertNull
 
 class LinearExecutorRegressionTest {
     private val previousHooks = LinearExecutor.hooks

@@ -1,12 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.utils
 
-import org.islandoftex.arara.api.AraraException
-import org.islandoftex.arara.api.configuration.LogFormat
-import org.islandoftex.arara.api.files.toMPPPath
-import org.islandoftex.arara.cli.configuration.ConfigurationSnapshot
-import org.islandoftex.arara.core.configuration.LoggingOptions
-import org.islandoftex.arara.core.session.Session
 import java.nio.file.Files
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -14,6 +8,12 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
+import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.configuration.LogFormat
+import org.islandoftex.arara.api.files.toMPPPath
+import org.islandoftex.arara.cli.configuration.ConfigurationSnapshot
+import org.islandoftex.arara.core.configuration.LoggingOptions
+import org.islandoftex.arara.core.session.Session
 
 class SessionLogTest {
     @Test

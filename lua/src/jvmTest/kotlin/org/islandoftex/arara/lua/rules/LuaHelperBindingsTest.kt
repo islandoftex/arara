@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.lua.rules
 
+import java.nio.file.Files
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 import org.islandoftex.arara.api.AraraExceptionWithHeader
 import org.islandoftex.arara.api.files.toMPPPath
-import java.nio.file.Files
 
 class LuaHelperBindingsTest {
     @Test

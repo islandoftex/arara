@@ -4,10 +4,10 @@ package org.islandoftex.arara.cli.console.styled
 import com.github.ajalt.mordant.rendering.AnsiLevel
 import com.github.ajalt.mordant.rendering.TextStyle
 import com.github.ajalt.mordant.terminal.Terminal
-import org.islandoftex.arara.cli.ui.TerminalDialogRenderer
-import org.islandoftex.arara.core.localization.LanguageController
 import java.io.BufferedReader
 import java.io.PrintWriter
+import org.islandoftex.arara.cli.ui.TerminalDialogRenderer
+import org.islandoftex.arara.core.localization.LanguageController
 
 /** Decorates dialogs while retaining shared input validation and host-owned streams. */
 class StyledDialogRenderer(

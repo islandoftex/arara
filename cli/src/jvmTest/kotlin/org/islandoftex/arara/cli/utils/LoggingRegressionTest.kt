@@ -1,12 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.utils
 
-import org.apache.logging.log4j.LogManager
-import org.apache.logging.log4j.ThreadContext
-import org.islandoftex.arara.api.configuration.LogFormat
-import org.islandoftex.arara.api.files.toJVMPath
-import org.islandoftex.arara.api.files.toMPPPath
-import org.islandoftex.arara.core.configuration.LoggingOptions
 import java.nio.file.Files
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
@@ -14,6 +8,12 @@ import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.ThreadContext
+import org.islandoftex.arara.api.configuration.LogFormat
+import org.islandoftex.arara.api.files.toJVMPath
+import org.islandoftex.arara.api.files.toMPPPath
+import org.islandoftex.arara.core.configuration.LoggingOptions
 
 class LoggingRegressionTest {
     @BeforeTest

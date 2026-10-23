@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.ui
 
-import org.islandoftex.arara.api.AraraException
 import java.io.PrintWriter
 import java.io.StringReader
 import java.io.StringWriter
@@ -9,6 +8,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
+import org.islandoftex.arara.api.AraraException
 
 class TerminalDialogRendererTest {
     private fun renderer(input: String, output: StringWriter = StringWriter()): TerminalDialogRenderer =

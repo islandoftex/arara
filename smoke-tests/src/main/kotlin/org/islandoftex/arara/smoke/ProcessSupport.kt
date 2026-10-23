@@ -1,16 +1,16 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.smoke
 
-import org.islandoftex.arara.api.files.MPPPath
-import org.islandoftex.arara.api.files.toJVMFile
-import org.islandoftex.arara.api.files.toJVMPath
-import org.islandoftex.arara.api.files.toMPPPath
 import java.io.ByteArrayOutputStream
 import java.nio.file.Files
 import java.util.concurrent.TimeUnit
 import javax.xml.stream.XMLOutputFactory
 import javax.xml.stream.XMLStreamWriter
 import kotlin.concurrent.thread
+import org.islandoftex.arara.api.files.MPPPath
+import org.islandoftex.arara.api.files.toJVMFile
+import org.islandoftex.arara.api.files.toJVMPath
+import org.islandoftex.arara.api.files.toMPPPath
 
 private const val PROCESS_TIMEOUT_SECONDS = 30L
 private const val READER_TIMEOUT_MILLIS = 5000L

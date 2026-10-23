@@ -22,9 +22,9 @@ import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.cli.utils.RunLog
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.rules.CommandEvaluator
+import org.islandoftex.arara.core.rules.InputHandling
 import org.islandoftex.arara.core.session.HaltRequest
 import org.islandoftex.arara.core.session.LinearExecutor
-import org.islandoftex.arara.core.rules.InputHandling
 import org.islandoftex.arara.lua.rules.LuaConditionalEvaluator
 import org.islandoftex.arara.mvel.interpreter.MvelCommandEvaluator
 import org.islandoftex.arara.mvel.rules.DirectiveConditionalEvaluator

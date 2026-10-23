@@ -128,10 +128,11 @@ supported test runtimes and retains HTML/XML reports for one week.
 - **Spotless** (`build.gradle.kts`, root): applies `licenseHeader
   ("// SPDX-License-Identifier: BSD-3-Clause")` to all `*.kt` in the listed
   source roots. Every new Kotlin file MUST start with that exact header, or
-  `spotlessCheck` fails. `ktlint` is intentionally disabled (see the comment in
-  `build.gradle.kts`); only `trimTrailingWhitespace`,
-  `leadingTabsToSpaces`, `endWithNewline`, and the license header are enforced.
-  Gradle Kotlin DSL files (`*.kts`) are formatted too (no license header there).
+  `spotlessCheck` fails. Ktlint enforces only import ordering, with a single
+  alphabetical group; its other rules remain disabled. Spotless also trims trailing
+  whitespace, converts leading tabs and enforces final newlines. Gradle Kotlin DSL
+  files use the same import/whitespace rules (no license header there). Shipped YAML
+  and Lua rules have standard headers and whitespace checks; existing years are preserved.
 - **detekt** config is `detekt-config.yml`; `maxIssues: 20` is allowed (not
   zero), so a green build does not mean zero findings. Notable active rules:
   `MaxLineLength` 120, `MagicNumber` (ignored in tests), `ForbiddenComment`

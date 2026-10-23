@@ -7,9 +7,9 @@ import com.github.ajalt.mordant.rendering.TextStyle
 import com.github.ajalt.mordant.rendering.Whitespace
 import com.github.ajalt.mordant.terminal.Terminal
 import com.github.ajalt.mordant.widgets.Text
-import org.islandoftex.arara.core.session.Session
 import java.util.Locale
 import kotlin.time.Duration
+import org.islandoftex.arara.core.session.Session
 
 /** Measure terminal cells rather than UTF-16 units, including wide and combining characters. */
 internal class StyledLayout(private val terminal: Terminal) {

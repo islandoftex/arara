@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.smoke
 
+import java.nio.file.Files
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.toJVMPath
 import org.islandoftex.arara.api.files.toMPPPath
-import java.nio.file.Files
 
 private const val TEX_TIMEOUT_SECONDS = 120L
 private const val PDF_HEADER = "%PDF-"

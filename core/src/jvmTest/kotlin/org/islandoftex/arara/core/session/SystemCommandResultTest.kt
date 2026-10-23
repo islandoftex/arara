@@ -4,13 +4,13 @@ package org.islandoftex.arara.core.session
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
-import org.islandoftex.arara.api.files.toMPPPath
 import java.io.IOException
 import java.nio.file.Files
-import org.islandoftex.arara.api.files.MPPPath
 import java.util.concurrent.TimeoutException
 import javax.tools.ToolProvider
 import kotlin.time.Duration.Companion.seconds
+import org.islandoftex.arara.api.files.MPPPath
+import org.islandoftex.arara.api.files.toMPPPath
 
 class SystemCommandResultTest : ShouldSpec({
     val directory = Files.createTempDirectory("arara process results ").toMPPPath()

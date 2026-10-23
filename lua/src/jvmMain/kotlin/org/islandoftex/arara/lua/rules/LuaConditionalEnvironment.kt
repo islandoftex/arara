@@ -1,21 +1,21 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.lua.rules
 
+import org.islandoftex.arara.api.files.MPPPath
+import org.islandoftex.arara.core.rules.ConditionalMethods
+import org.islandoftex.arara.core.rules.RuleMethods
+import org.islandoftex.arara.core.session.ClassLoading.ClassLoadingStatus
+import org.islandoftex.arara.lua.rules.LuaBindings.bindSpelled
+import org.islandoftex.arara.lua.rules.LuaBindings.sessionTable
+import org.islandoftex.arara.lua.rules.LuaConversion.badArgument
+import org.islandoftex.arara.lua.rules.LuaConversion.fromLua
+import org.islandoftex.arara.lua.rules.LuaConversion.numberArgument
+import org.islandoftex.arara.lua.rules.LuaConversion.stringArgument
 import org.luaj.vm2.Globals
 import org.luaj.vm2.LuaString
 import org.luaj.vm2.LuaValue
 import org.luaj.vm2.Varargs
 import org.luaj.vm2.lib.common.CommonPlatform
-import org.islandoftex.arara.api.files.MPPPath
-import org.islandoftex.arara.core.rules.ConditionalMethods
-import org.islandoftex.arara.core.rules.RuleMethods
-import org.islandoftex.arara.core.session.ClassLoading.ClassLoadingStatus
-import org.islandoftex.arara.lua.rules.LuaConversion.badArgument
-import org.islandoftex.arara.lua.rules.LuaBindings.bindSpelled
-import org.islandoftex.arara.lua.rules.LuaConversion.fromLua
-import org.islandoftex.arara.lua.rules.LuaConversion.numberArgument
-import org.islandoftex.arara.lua.rules.LuaBindings.sessionTable
-import org.islandoftex.arara.lua.rules.LuaConversion.stringArgument
 
 internal object LuaConditionalEnvironment {
     fun newGlobals(): Globals {

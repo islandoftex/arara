@@ -1,13 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.api.files
 
-import okio.FileMetadata
-import okio.ForwardingFileSystem
-import okio.ForwardingSource
-import okio.Path
-import okio.Source
-import okio.fakefilesystem.FakeFileSystem
-import org.islandoftex.arara.api.AraraIOException
 import java.io.IOException
 import java.nio.file.Paths
 import kotlin.test.Test
@@ -16,6 +9,13 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
+import okio.FileMetadata
+import okio.ForwardingFileSystem
+import okio.ForwardingSource
+import okio.Path
+import okio.Source
+import okio.fakefilesystem.FakeFileSystem
+import org.islandoftex.arara.api.AraraIOException
 
 class OkioPathTest {
     @Test

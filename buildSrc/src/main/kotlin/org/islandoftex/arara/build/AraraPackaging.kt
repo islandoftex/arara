@@ -1,15 +1,15 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.build
 
+import java.nio.file.Files
+import java.time.LocalDate
+import java.time.ZoneOffset
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.file.DuplicatesStrategy
 import org.gradle.api.tasks.Sync
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.api.tasks.bundling.Zip
-import java.nio.file.Files
-import java.time.LocalDate
-import java.time.ZoneOffset
 
 /** Stages one TDS tree and derives the CTAN layout with native Gradle tasks. */
 class AraraPackaging : Plugin<Project> {

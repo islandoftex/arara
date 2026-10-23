@@ -1,12 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.rules
 
-import org.islandoftex.arara.api.AraraException
-import org.islandoftex.arara.api.AraraIOException
-import org.islandoftex.arara.api.files.MPPPath
-import org.islandoftex.arara.api.files.toMPPPath
-import org.islandoftex.arara.core.localization.LanguageController
-import org.islandoftex.arara.core.localization.GermanMessages
 import java.nio.file.Files
 import java.util.MissingFormatArgumentException
 import kotlin.test.Test
@@ -15,6 +9,12 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertIs
 import kotlin.test.assertTrue
+import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.AraraIOException
+import org.islandoftex.arara.api.files.MPPPath
+import org.islandoftex.arara.api.files.toMPPPath
+import org.islandoftex.arara.core.localization.GermanMessages
+import org.islandoftex.arara.core.localization.LanguageController
 
 class RuleFileContractTest {
     private fun inDirectory(work: (MPPPath) -> Unit) {

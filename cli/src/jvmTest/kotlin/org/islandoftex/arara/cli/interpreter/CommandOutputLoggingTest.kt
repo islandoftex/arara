@@ -1,6 +1,14 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.interpreter
 
+import java.nio.file.Files
+import java.util.concurrent.TimeoutException
+import javax.tools.ToolProvider
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
+import kotlin.time.Duration.Companion.seconds
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.LogFormat
 import org.islandoftex.arara.api.files.MPPPath
@@ -11,14 +19,6 @@ import org.islandoftex.arara.core.configuration.LoggingOptions
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Command
 import org.islandoftex.arara.core.session.LinearExecutor
-import java.nio.file.Files
-import java.util.concurrent.TimeoutException
-import javax.tools.ToolProvider
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
-import kotlin.test.assertTrue
-import kotlin.time.Duration.Companion.seconds
 
 class CommandOutputLoggingTest {
     private fun withCommand(mode: String, check: (Command) -> Unit) {

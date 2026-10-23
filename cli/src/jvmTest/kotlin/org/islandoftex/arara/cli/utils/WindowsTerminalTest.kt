@@ -5,12 +5,12 @@ import com.sun.jna.Native
 import com.sun.jna.Pointer
 import com.sun.jna.WString
 import com.sun.jna.win32.StdCallLibrary
-import org.junit.jupiter.api.Assumptions.assumeTrue
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
+import org.junit.jupiter.api.Assumptions.assumeTrue
 
 class WindowsTerminalTest {
     private class Handles(private val type: Int, private val handle: Pointer? = Pointer(1)) : WindowsTerminal.Kernel32 {

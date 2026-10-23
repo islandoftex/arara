@@ -1,17 +1,17 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.session
 
-import org.islandoftex.arara.api.files.MPPPath
-import org.islandoftex.arara.api.files.toJVMPath
-import org.islandoftex.arara.api.files.toMPPPath
-import java.nio.file.Files
 import java.nio.file.FileSystems
+import java.nio.file.Files
 import java.util.jar.JarEntry
 import java.util.jar.JarOutputStream
 import javax.tools.ToolProvider
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
+import org.islandoftex.arara.api.files.MPPPath
+import org.islandoftex.arara.api.files.toJVMPath
+import org.islandoftex.arara.api.files.toMPPPath
 
 class ClassLoadingRegressionTest {
     private fun archive(root: MPPPath, version: String): MPPPath {

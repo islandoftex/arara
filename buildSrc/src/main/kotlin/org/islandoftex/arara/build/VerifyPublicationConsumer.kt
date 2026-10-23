@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.build
 
+import java.nio.file.Files
+import java.util.Comparator
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.Property
@@ -13,8 +15,6 @@ import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.work.DisableCachingByDefault
-import java.nio.file.Files
-import java.util.Comparator
 
 /** Builds a separate Gradle application against freshly staged Maven artifacts. */
 @DisableCachingByDefault(because = "Exercises dependency resolution against freshly staged publications")

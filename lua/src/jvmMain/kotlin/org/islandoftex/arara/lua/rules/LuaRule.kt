@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.lua.rules
 
-import org.luaj.vm2.LuaFunction
-import org.luaj.vm2.LuaValue
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.rules.Rule
@@ -10,6 +8,8 @@ import org.islandoftex.arara.api.rules.RuleArgument
 import org.islandoftex.arara.api.rules.RuleCommand
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.rules.CommandEvaluator
+import org.luaj.vm2.LuaFunction
+import org.luaj.vm2.LuaValue
 
 /** A rule parsed from a Lua table by [LuaRuleParser]. */
 class LuaRule(

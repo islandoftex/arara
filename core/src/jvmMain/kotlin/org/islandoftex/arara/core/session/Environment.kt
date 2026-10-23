@@ -2,6 +2,10 @@
 package org.islandoftex.arara.core.session
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.util.concurrent.TimeUnit
+import kotlin.time.Duration
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.AraraIOException
 import org.islandoftex.arara.api.files.MPPPath
@@ -11,10 +15,6 @@ import org.islandoftex.arara.api.utils.OS
 import org.zeroturnaround.exec.ProcessExecutor
 import org.zeroturnaround.exec.listener.ShutdownHookProcessDestroyer
 import org.zeroturnaround.exec.stream.TeeOutputStream
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.util.concurrent.TimeUnit
-import kotlin.time.Duration
 
 /**
  * An object to handle interaction with the operating system.

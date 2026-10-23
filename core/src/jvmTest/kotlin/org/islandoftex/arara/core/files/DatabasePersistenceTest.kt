@@ -1,12 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.files
 
-import org.islandoftex.arara.api.AraraException
-import org.islandoftex.arara.api.AraraIOException
-import org.islandoftex.arara.api.files.MPPPath
-import org.islandoftex.arara.api.files.toJVMPath
-import org.islandoftex.arara.api.files.toMPPPath
-import org.islandoftex.arara.core.localization.LanguageController
 import java.nio.file.Files
 import java.nio.file.attribute.FileTime
 import kotlin.test.Test
@@ -15,6 +9,12 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
+import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.AraraIOException
+import org.islandoftex.arara.api.files.MPPPath
+import org.islandoftex.arara.api.files.toJVMPath
+import org.islandoftex.arara.api.files.toMPPPath
+import org.islandoftex.arara.core.localization.LanguageController
 
 class DatabasePersistenceTest {
     private fun fixture(check: (MPPPath, MPPPath) -> Unit) {

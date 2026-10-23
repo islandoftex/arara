@@ -1,6 +1,11 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.build
 
+import java.io.DataInputStream
+import java.nio.file.Files
+import java.nio.file.Path
+import java.util.jar.JarFile
+import javax.xml.parsers.DocumentBuilderFactory
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.ListProperty
@@ -12,11 +17,6 @@ import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
 import org.gradle.work.DisableCachingByDefault
 import org.w3c.dom.Element
-import java.io.DataInputStream
-import java.nio.file.Files
-import java.nio.file.Path
-import java.util.jar.JarFile
-import javax.xml.parsers.DocumentBuilderFactory
 
 private const val JAVA_21_CLASS_VERSION = 65
 

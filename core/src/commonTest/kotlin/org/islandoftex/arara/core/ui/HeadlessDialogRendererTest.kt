@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.ui
 
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.localization.MPPLocale
-import kotlin.test.Test
-import kotlin.test.assertFailsWith
-import kotlin.test.assertEquals
 import org.islandoftex.arara.core.localization.LanguageController
 
 class HeadlessDialogRendererTest {
