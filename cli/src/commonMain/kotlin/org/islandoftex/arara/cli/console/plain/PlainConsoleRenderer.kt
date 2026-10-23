@@ -6,6 +6,7 @@ import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.cli.console.ConsoleRenderer
+import org.islandoftex.arara.cli.console.RunSummary
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.cli.utils.abbreviate
 import org.islandoftex.arara.cli.utils.center
@@ -13,7 +14,6 @@ import org.islandoftex.arara.cli.utils.wrap
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
-import kotlin.time.Duration.Companion.seconds
 
 /**
  * Preserves the classic terminal layout.
@@ -37,10 +37,11 @@ class PlainConsoleRenderer : ConsoleRenderer {
 
     private val shortenedLongestMatch = SHORT_LABEL_WIDTH
 
-    private var displayLine = true
+    private var displayLine = false
     private var displayResult = false
     private var displayRolling = false
     private var displayException = false
+    private var displaySummary = false
 
     /**
      * Checks if the execution is in dry-run mode.
@@ -245,14 +246,10 @@ class PlainConsoleRenderer : ConsoleRenderer {
      * @param seconds The elapsed seconds.
      */
     override fun printTime(seconds: Double) {
-        if (displayLine || displayException)
+        if (displayLine || displayException || displaySummary)
             println()
 
-        val secondDuration = seconds.seconds
-        val wholeSeconds = secondDuration.inWholeSeconds
-        val milliseconds = (secondDuration - wholeSeconds.seconds).inWholeMilliseconds
-        val separator = Session.userInterfaceOptions.locale.decimalSeparator
-        val text = LanguageController.messages.infoDisplayExecutionTime("$wholeSeconds$separator$milliseconds")
+        val text = LanguageController.messages.infoDisplayExecutionTime(DisplayUtils.elapsedSeconds(seconds))
         printWrapped(text)
     }
 
@@ -280,7 +277,35 @@ class PlainConsoleRenderer : ConsoleRenderer {
      * @return A string containing the line separator.
      */
     override fun displaySeparator(): String = "-".repeat(outputWidth)
-    override fun printBanner() = println("${DisplayUtils.logoString}\n")
+    override fun printBanner() {
+        displayLine = false
+        displayResult = false
+        displayRolling = false
+        displayException = false
+        displaySummary = false
+        println("${DisplayUtils.logoString}\n")
+        printWrapped(DisplayUtils.versionLine)
+        println()
+    }
+
+    override fun printRunSummary(summary: RunSummary) {
+        if (summary.files.isEmpty()) return
+        val messages = LanguageController.messages
+        val tasks = summary.files.sumOf { it.tasks }
+        val reached = summary.files.count { it.exitCode != null }
+        if (displayException) println()
+        printWrapped(when {
+            summary.dryRun -> messages.infoDisplayDryRun(tasks)
+            summary.success -> messages.infoDisplayTotalSuccess(reached, tasks)
+            else -> messages.infoDisplayTotalFailure(reached, tasks)
+        })
+        if (summary.dryRun && !summary.success) printWrapped(messages.infoLabelOnFailure)
+        val pending = summary.files.filter { it.exitCode == null }
+        if (pending.isNotEmpty()) {
+            printWrapped("${messages.infoConsoleUnprocessed}: ${pending.joinToString(", ") { it.path.toString() }}")
+        }
+        displaySummary = true
+    }
 
     override fun printFileInformation(file: ProjectFile) {
         printWrapped(LanguageController.messages.infoDisplayFileInformation(

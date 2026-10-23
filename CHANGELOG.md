@@ -16,6 +16,9 @@ on.
 
 ### Added
 
+* Plain console runs include a version greeting, file and task totals, and the
+  names of files not reached after a failure. Dry runs report simulated tasks.
+
 * `-e` is a short alias for `--engine`.
 
 * `ForeignPath` provides explicit POSIX/Windows path algebra without filesystem
@@ -131,6 +134,8 @@ on.
   stable path ordering and detect directory-link cycles.
 
 ### Fixed
+
+* Console elapsed times retain leading zeros in milliseconds.
 
 * Project directive failures identify their input file, rule identifier errors
   distinguish the requested and declared names, and property-load failures are logged.

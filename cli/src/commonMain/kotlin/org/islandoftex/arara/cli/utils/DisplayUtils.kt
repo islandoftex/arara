@@ -13,10 +13,16 @@ import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import kotlin.math.ln
 import kotlin.math.pow
+import kotlin.time.Duration.Companion.seconds
+
+/** The generated version object belongs to the platform source set. */
+internal expect fun applicationVersion(): String
 
 /** Stable display entry points with presentation-independent logging. */
 @Suppress("TooManyFunctions")
 object DisplayUtils {
+    private const val MILLISECOND_DIGITS = 3
+
     var renderer: ConsoleRenderer = PlainConsoleRenderer()
     internal var presentation = RunPresentation()
 
@@ -27,6 +33,15 @@ object DisplayUtils {
             | (_| | | | (_| | | | (_| |
              \__,_|_|  \__,_|_|  \__,_|
     """.trimIndent()
+
+    val versionLine: String = "arara ${applicationVersion()}, the cool TeX automation tool."
+
+    internal fun elapsedSeconds(value: Double): String {
+        val duration = value.seconds
+        val whole = duration.inWholeSeconds
+        val milliseconds = (duration - whole.seconds).inWholeMilliseconds.toString().padStart(MILLISECOND_DIGITS, '0')
+        return "$whole${Session.userInterfaceOptions.locale.decimalSeparator}$milliseconds"
+    }
 
     fun printFileResult(exitCode: Int) = presentation.finish(exitCode)
 

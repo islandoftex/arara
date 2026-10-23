@@ -672,6 +672,10 @@ boolean entries, but not skipped directives. Dry runs are labelled as simulation
 rather than successful executions. `--console plain` retains the classic layout
 and is the default. The option overrides the configuration's `console` value.
 
+Plain runs close with file and task totals; skipped directives are not counted as
+tasks. After a failure, files not reached are listed. Dry runs report simulated
+tasks instead of a success verdict.
+
 On interactive terminals with cursor support, long-running styled tasks show a
 spinner and elapsed time after one second. Set `animations: false` in YAML or
 `animations = false` in Lua configuration to disable it. Verbose runs, dry runs

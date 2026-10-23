@@ -28,6 +28,7 @@ import com.github.ajalt.clikt.parameters.types.restrictTo
 import com.github.ajalt.mordant.rendering.AnsiLevel
 import com.github.ajalt.mordant.rendering.Theme
 import com.github.ajalt.mordant.terminal.Terminal
+import io.github.oshai.kotlinlogging.KotlinLoggingConfiguration
 import org.islandoftex.arara.api.AraraAPI
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
@@ -450,6 +451,16 @@ class CLI : CliktCommand("arara") {
  * @param args A string array containing all command line arguments.
  */
 fun main(args: Array<String>) = StandardStreams.withTerminalEncoding {
+    val startupMessage = KotlinLoggingConfiguration.logStartupMessage
+    try {
+        KotlinLoggingConfiguration.logStartupMessage = false
+        runCommandLine(args)
+    } finally {
+        KotlinLoggingConfiguration.logStartupMessage = startupMessage
+    }
+}
+
+private fun runCommandLine(args: Array<String>) {
     CLI().context {
         suggestTypoCorrection = { enteredValue, possibleValues ->
             possibleValues.filter { it.startsWith(enteredValue) }
