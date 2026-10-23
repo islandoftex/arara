@@ -74,7 +74,9 @@ build:linux:jdk21:
   artifacts:
     when: always
     reports:
-      junit: "*/build/test-results/jvmTest/TEST-*.xml"
+      junit:
+        - "*/build/test-results/jvmTest/TEST-*.xml"
+        - "smoke-tests/build/test-results/test/TEST-*.xml"
       coverage_report:
         coverage_format: jacoco
         path: build/reports/kover/report.xml
@@ -99,6 +101,27 @@ test:process-smoke:
       junit: build/test-results/processSmoke/results.xml
     paths:
       - build/test-results/processSmoke/results.xml
+    expire_in: 1 week
+
+# The TeX Live image includes Java; the staged runner needs no compiler or Gradle.
+test:tex-integration:
+  stage: test
+  needs: ["build:linux:jdk21"]
+  image: registry.gitlab.com/islandoftex/images/texlive:latest
+  script:
+    - java -version
+    - >-
+      java -jar build/processSmoke/runner.jar --suite tex
+      --jar build/processSmoke/arara.jar --java "$(command -v java)"
+      --work-dir build/texIntegration
+      --report build/test-results/texIntegration/results.xml
+  artifacts:
+    when: always
+    reports:
+      junit: build/test-results/texIntegration/results.xml
+    paths:
+      - build/test-results/texIntegration/results.xml
+      - build/texIntegration/
     expire_in: 1 week
 
 test:publications:

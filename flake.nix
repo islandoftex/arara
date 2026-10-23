@@ -11,7 +11,8 @@
   };
 
   outputs =
-    { flake-utils
+    { self
+    , flake-utils
     , devlab-theme
     , nixpkgs
     , ...
@@ -80,6 +81,10 @@
               '';
             };
           };
+
+        devShells.texIntegration = self.devShells.${system}.default.overrideAttrs (old: {
+          nativeBuildInputs = old.nativeBuildInputs ++ [ pkgs.texliveSmall ];
+        });
 
         devShells.default = pkgs.mkShell {
           JAVA_HOME = pkgs.corretto21.home;

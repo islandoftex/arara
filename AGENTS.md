@@ -85,6 +85,10 @@ targets JRE 21.
 - `./gradlew processSmoke` — test the runnable jar with a JDK 21+, without TeX.
   Select another runtime with `-PsmokeJava=/path/to/java`. JUnit output goes to
   `build/test-results/processSmoke/results.xml`; see `smoke-tests/README.md`.
+- `nix develop .#texIntegration -c ./gradlew texIntegration` — test official rules
+  against real TeX Live tools in both engines. Reports are under
+  `build/test-results/texIntegration`; fixtures and tool output remain in
+  `build/texIntegration`. Missing tools fail the suite.
 - `./gradlew :cli:test` or `./gradlew :core:jvmTest` — tests for one subproject.
   Single test class: `./gradlew :core:jvmTest --tests "fully.qualified.ClassName"
   --tests "*PartialName*"`.

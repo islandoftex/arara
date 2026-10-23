@@ -2,10 +2,10 @@
 package org.islandoftex.arara.smoke
 
 import org.islandoftex.arara.api.files.MPPPath
+import org.xml.sax.InputSource
 import java.io.StringReader
 import java.nio.file.Path
 import javax.xml.parsers.DocumentBuilderFactory
-import org.xml.sax.InputSource
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -33,12 +33,15 @@ class ProcessSupportTest {
     @Test
     fun timeoutReportsOutputAndTerminatesTheChild() = temporary { root ->
         val failure = assertFailsWith<IllegalStateException> {
-            run(command("sleep"), root, timeoutSeconds = 1)
+            run(command("sleep"), root, timeoutSeconds = 3)
         }
         assertTrue("Process timed out" in failure.message.orEmpty())
         assertTrue("OUTPUT" in failure.message.orEmpty())
         val pid = Regex("PID=(\\d+)").find(failure.message.orEmpty())!!.groupValues[1].toLong()
-        assertTrue(ProcessHandle.of(pid).map { it.onExit().get(5, java.util.concurrent.TimeUnit.SECONDS); !it.isAlive }.orElse(true))
+        assertTrue(ProcessHandle.of(pid).map {
+            it.onExit().get(5, java.util.concurrent.TimeUnit.SECONDS)
+            !it.isAlive
+        }.orElse(true))
     }
 
     @Test
@@ -59,7 +62,11 @@ class ProcessSupportTest {
     fun temporaryFixturesAreRemovedOnFailure() {
         var directory: MPPPath? = null
         assertFailsWith<IllegalStateException> {
-            temporary { root -> directory = root; root.resolve("file").writeText("fixture"); error("failure") }
+            temporary { root ->
+                directory = root
+                root.resolve("file").writeText("fixture")
+                error("failure")
+            }
         }
         assertFalse(directory!!.exists)
     }

@@ -30,6 +30,16 @@ jobs:
         name: process-smoke-${{ matrix.os }}-java${{ matrix.java }}
         path: build/test-results/processSmoke/results.xml
         if-no-files-found: warn
+    - name: Upload unit test results
+      if: always()
+      uses: actions/upload-artifact@v7
+      with:
+        name: unit-tests-${{ matrix.os }}-java${{ matrix.java }}
+        path: |
+          */build/test-results/jvmTest/TEST-*.xml
+          smoke-tests/build/test-results/test/TEST-*.xml
+        if-no-files-found: warn
+        retention-days: 7
     - name: Upload build artifacts
       uses: actions/upload-artifact@v7
       with:

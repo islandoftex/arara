@@ -20,6 +20,10 @@ database-driven rebuilds and TeX failures. Each invocation has a 120-second dead
 Fixtures and tool output remain in `build/texIntegration`; the JUnit report is
 `build/test-results/texIntegration/results.xml`. Missing TeX tools fail the suite.
 The standalone runner selects it with `--suite tex` and accepts `--work-dir DIR`.
+GitLab runs it in the TeX Live image against the staged application and retains
+the report, tool versions, TeX files and output for one week.
+`nix develop .#texIntegration -c ./gradlew texIntegration` supplies the pinned
+TeX Live tools locally.
 
 `./gradlew :smoke-tests:allTests` tests the runner's timeout, exit status, cleanup
 and JUnit reporting. These tests also run under `./gradlew allTests`.
