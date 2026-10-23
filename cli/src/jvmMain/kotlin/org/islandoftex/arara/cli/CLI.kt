@@ -50,6 +50,7 @@ import org.islandoftex.arara.cli.utils.RunLog
 import org.islandoftex.arara.cli.utils.printFileInformation
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.configuration.LoggingOptions
+import org.islandoftex.arara.core.configuration.PreambleState
 import org.islandoftex.arara.core.configuration.UserInterfaceOptions
 import org.islandoftex.arara.core.files.FileSearching
 import org.islandoftex.arara.core.files.Project
@@ -60,7 +61,6 @@ import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.ui.Dialogs
 import org.islandoftex.arara.lua.LuaInterpreter
-import org.islandoftex.arara.mvel.utils.MvelState
 import java.time.LocalDate
 import java.util.Properties
 import kotlin.time.Duration.Companion.milliseconds
@@ -277,18 +277,18 @@ class CLI : CliktCommand("arara") {
         fileType: FileType,
         directives: List<Directive>
     ): List<Directive> {
-        val resolvedPreamble = preamble ?: MvelState.defaultPreamble
-        if (resolvedPreamble != null && resolvedPreamble !in MvelState.preambles) {
+        val resolvedPreamble = preamble ?: PreambleState.defaultPreamble
+        if (resolvedPreamble != null && resolvedPreamble !in PreambleState.preambles) {
             throw AraraException(
                 LanguageController.messages
                     .errorParserInvalidPreamble(resolvedPreamble)
             )
         }
         val allDirectives = resolvedPreamble
-            ?.takeIf { MvelState.preambles.containsKey(it) }
+            ?.takeIf { PreambleState.preambles.containsKey(it) }
             ?.let { preambleName ->
                 Directives.extractDirectives(
-                    MvelState.preambles.getValue(preambleName)
+                    PreambleState.preambles.getValue(preambleName)
                         .lines()
                         .filterNot { it.isEmpty() },
                     true,
@@ -415,7 +415,7 @@ class CLI : CliktCommand("arara") {
                         file,
                         list
                             .takeIf {
-                                list.isNotEmpty() && !MvelState.prependPreambleIfDirectivesGiven && preamble == null
+                                list.isNotEmpty() && !PreambleState.prependPreambleIfDirectivesGiven && preamble == null
                             }
                             ?: prependPreambleDirectives(file.fileType, list),
                         engine

@@ -8,13 +8,13 @@ import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.cli.utils.LoggingUtils
 import org.islandoftex.arara.core.configuration.LocalConfiguration
+import org.islandoftex.arara.core.configuration.PreambleState
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.lua.configuration.LuaLocalConfiguration
 import org.islandoftex.arara.mvel.configuration.YamlLocalConfiguration
-import org.islandoftex.arara.mvel.utils.MvelState
 import java.io.InputStreamReader
 import java.nio.charset.Charset
 import java.util.Properties
@@ -90,10 +90,10 @@ object ConfigurationFiles {
             Session.userInterfaceOptions
         )
 
-        MvelState.preambles.clear()
-        MvelState.preambles += resource.preambles
-        MvelState.defaultPreamble = resource.defaultPreamble
-        MvelState.prependPreambleIfDirectivesGiven = resource.prependPreambleIfDirectivesGiven
+        PreambleState.preambles.clear()
+        PreambleState.preambles += resource.preambles
+        PreambleState.defaultPreamble = resource.defaultPreamble
+        PreambleState.prependPreambleIfDirectivesGiven = resource.prependPreambleIfDirectivesGiven
 
         // just to be sure, update the current locale in order to
         // display localized messages and reset logging status

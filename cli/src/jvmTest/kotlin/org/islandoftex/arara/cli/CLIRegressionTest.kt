@@ -5,10 +5,10 @@ import com.github.ajalt.clikt.core.ProgramResult
 import com.github.ajalt.clikt.core.parse
 import org.islandoftex.arara.api.files.toMPPPath
 import org.islandoftex.arara.core.configuration.ExecutionOptions
+import org.islandoftex.arara.core.configuration.PreambleState
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.session.HaltRequest
-import org.islandoftex.arara.mvel.utils.MvelState
 import java.nio.file.Files
 import java.io.File
 import kotlin.test.Test
@@ -23,9 +23,9 @@ class CLIRegressionTest {
         val hooks = LinearExecutor.hooks
         val ui = Session.userInterfaceOptions
         val logging = Session.loggingOptions
-        val preambles = MvelState.preambles.toMap()
-        val defaultPreamble = MvelState.defaultPreamble
-        val prepend = MvelState.prependPreambleIfDirectivesGiven
+        val preambles = PreambleState.preambles.toMap()
+        val defaultPreamble = PreambleState.defaultPreamble
+        val prepend = PreambleState.prependPreambleIfDirectivesGiven
         try {
             Session.clear()
             LinearExecutor.executionOptions = ExecutionOptions()
@@ -35,10 +35,10 @@ class CLIRegressionTest {
             LinearExecutor.hooks = hooks
             Session.userInterfaceOptions = ui
             Session.loggingOptions = logging
-            MvelState.preambles.clear()
-            MvelState.preambles.putAll(preambles)
-            MvelState.defaultPreamble = defaultPreamble
-            MvelState.prependPreambleIfDirectivesGiven = prepend
+            PreambleState.preambles.clear()
+            PreambleState.preambles.putAll(preambles)
+            PreambleState.defaultPreamble = defaultPreamble
+            PreambleState.prependPreambleIfDirectivesGiven = prepend
             Session.clear()
             HaltRequest.clear()
             root.deleteRecursively()
@@ -118,14 +118,14 @@ class CLIRegressionTest {
     @Test
     fun cliRestoresHostConfigurationAndPreamblesAfterRunning() = fixture { root ->
         val original = LinearExecutor.executionOptions
-        MvelState.preambles["host"] = "% arara: host"
+        PreambleState.preambles["host"] = "% arara: host"
         File(root, "arararc.yaml").writeText("!config\npaths: ['.']\nloops: 3\npreambles: {local: '% arara: marker'}\n")
         markerRule(root)
         File(root, "run.tex").writeText("% arara: marker\n")
         val status = assertFailsWith<ProgramResult> { CLI().parse(listOf("-d", root.path, "run.tex")) }
         assertEquals(0, status.statusCode)
         assertEquals(original, LinearExecutor.executionOptions)
-        assertEquals(mapOf("host" to "% arara: host"), MvelState.preambles)
+        assertEquals(mapOf("host" to "% arara: host"), PreambleState.preambles)
     }
 
     private fun markerRule(root: File) {

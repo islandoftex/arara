@@ -6,6 +6,7 @@ import com.github.ajalt.clikt.core.parse
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.cli.configuration.ConfigurationSnapshot
 import org.islandoftex.arara.core.configuration.ExecutionOptions
+import org.islandoftex.arara.core.configuration.PreambleState
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import java.nio.file.Files
@@ -235,5 +236,36 @@ class ProjectsRegressionTest {
         """.trimIndent())
         assertEquals(2, run(root, "named.proj.lua", "b.tex"))
         assertEquals(false, "ran" in Session)
+    }
+
+    @Test
+    fun bothConfigurationFormatsKeepProjectPreamblesSeparateFromTheHost() = fixture { root ->
+        PreambleState.preambles.clear()
+        PreambleState.preambles["host"] = "% arara: host"
+        PreambleState.defaultPreamble = null
+        for (format in listOf("yaml", "lua")) {
+            for (name in listOf("first", "second")) {
+                val project = root.resolve("$format-$name").apply { createDirectories() }
+                marker(project, "$format-$name")
+                project.resolve("run.tex").writeText("no directives\n")
+                val configuration = if (format == "yaml") {
+                    "!config\npaths: ['.']\ndefaultPreamble: $name\n" +
+                        "preambles: {$name: '% arara: marker'}\n"
+                } else {
+                    "return { paths = {'.'}, preamble = { default = '$name', " +
+                        "definitions = { $name = {'% arara: marker'} } } }"
+                }
+                project.resolve("arararc.$format").writeText(configuration)
+                root.resolve("$name.proj.lua").writeText(
+                    "return { name = '$name', working_directory = '$format-$name', " +
+                        "files = { ['run.tex'] = {} } }"
+                )
+            }
+            assertEquals(0, run(root, "first.proj.lua", "second.proj.lua"))
+            assertEquals(true, Session["$format-first"])
+            assertEquals(true, Session["$format-second"])
+            assertEquals(mapOf("host" to "% arara: host"), PreambleState.preambles)
+            assertEquals(null, PreambleState.defaultPreamble)
+        }
     }
 }
