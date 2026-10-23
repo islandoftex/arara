@@ -44,6 +44,13 @@ show_toggle = true
 [extra.devlab.footer]
 show = true
 note = "arara by the Island of TeX"
+links_label = "Community"
+show_link_names = true
+links = [
+  { name = "Island of TeX", path = "https://islandoftex.gitlab.io/", icon = "link" },
+  { name = "GitLab", path = "https://gitlab.com/islandoftex/arara", icon = "gitlab" },
+  { name = "Matrix", path = "https://matrix.to/#/!HfEWIEvFtDplCLSQvz:matrix.org?via=matrix.org", icon = "matrix" },
+]
 
 [extra.devlab.navigation]
 links = [
@@ -68,8 +75,40 @@ type = "hero"
 title = "The cool TeX automation tool"
 description = "arara is a TeX automation tool based on directives and rules."
 image = "/images/demonstration.gif"
-image_alt = "arara demonstration"
+image_alt = "Editing TeX directives in Emacs and running arara in an embedded terminal"
+actions = [
+  { label = "Get started", path = "/quickstart/" },
+  { label = "Read the manual", path = "/manual/" },
+]
+
+[[extra.devlab.home.blocks]]
+type = "features"
+title = "Your TeX workflow, in the source"
+items = [
+  { title = "Directives in your document", description = "List the tasks in source comments. arara runs them in the order you specify.", path = "/manual/concepts/" },
+  { title = "YAML and Lua rules", description = "Use the supplied rules or write your own. Choose YAML/MVEL or Lua for your workflow.", path = "/manual/rules/" },
+  { title = "Plain or styled output", description = "Keep the classic console layout or select colored task results, dialogs and a run summary.", path = "/manual/cli/" },
+]
+
+[[extra.devlab.home.blocks]]
+type = "learn"
+title = "Learn arara"
+items = [
+  { title = "Quickstart", description = "Build your first document with directives.", path = "/quickstart/" },
+  { title = "User manual", description = "Explore configuration, projects and rule authoring.", path = "/manual/" },
+  { title = "Changelog", description = "Find changes and compatibility notes for each version.", path = "/changelog/" },
+  { title = "Get in touch", description = "Ask questions and discuss arara in our Matrix room.", path = "https://matrix.to/#/!HfEWIEvFtDplCLSQvz:matrix.org?via=matrix.org" },
+]
 
 [[extra.devlab.home.blocks]]
 type = "content"
 title = "Overview"
+
+[[extra.devlab.home.blocks]]
+type = "cta"
+title = "Get arara"
+description = "Find arara in TeX Live and MiKTeX, or download it for manual installation."
+actions = [
+  { label = "CTAN package", path = "https://ctan.org/pkg/arara" },
+  { label = "GitLab releases", path = "https://gitlab.com/islandoftex/arara/-/releases" },
+]

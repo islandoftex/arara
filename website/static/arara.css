@@ -246,9 +246,6 @@ h1, h2, h3, h4, h5, h6 { font-family: "Rosario", var(--font-sans); }
     margin-right: -0.15em;
 }
 
-.arara-badges { text-align: center; }
-.arara-badges img { display: inline-block; max-width: 100%; }
-
 /* The existing title and tall recording need more room than the theme demo. */
 .hero-with-media {
   grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
