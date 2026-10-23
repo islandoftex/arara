@@ -489,6 +489,18 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath, private
             contains(lua, "SUCCESS")
             contains(lua, "run.tex")
         },
+        "redirected_terminal_environment_preserves_stream_encoding" to { root ->
+            rule(root, "return true;")
+            val reference = "ação-λ.tex"
+            root.resolve(reference).writeText("% arara: probe\n")
+            for ((encoding, expected) in listOf("UTF-8" to reference, "US-ASCII" to "a??o-?.tex")) {
+                val result = run(launcher + listOf("-Dstdout.encoding=$encoding", "-Dstderr.encoding=$encoding",
+                    "-Duser.home=$root", "-jar", jar.toString(), "-L", "en", "-d", root.toString(),
+                    "--dry-run", reference), root, environment = mapOf("TERM" to "xterm", "MSYSTEM" to "MINGW64"))
+                check(result.status == 0) { result.output }
+                contains(result.output, expected)
+            }
+        },
         "redirected_long_running_tasks_never_animate_in_either_configuration_format" to { root ->
             rule(root, native("sleep"))
             for (format in listOf("yaml", "lua")) {

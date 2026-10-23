@@ -60,6 +60,7 @@ kotlin {
                 implementation(libs.clikt)
                 implementation(libs.mordant.core)
                 runtimeOnly(libs.mordant.jna)
+                implementation(libs.jna)
                 implementation(libs.clikt.markdown)
                 implementation(libs.kotaml)
                 implementation(libs.mvel)

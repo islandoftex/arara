@@ -47,6 +47,7 @@ import org.islandoftex.arara.cli.ui.TerminalDialogRenderer
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.cli.utils.LoggingUtils
 import org.islandoftex.arara.cli.utils.RunLog
+import org.islandoftex.arara.cli.utils.StandardStreams
 import org.islandoftex.arara.cli.utils.printFileInformation
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.configuration.LoggingOptions
@@ -448,7 +449,7 @@ class CLI : CliktCommand("arara") {
  * Main method. This is the application entry point.
  * @param args A string array containing all command line arguments.
  */
-fun main(args: Array<String>) {
+fun main(args: Array<String>) = StandardStreams.withTerminalEncoding {
     CLI().context {
         suggestTypoCorrection = { enteredValue, possibleValues ->
             possibleValues.filter { it.startsWith(enteredValue) }

@@ -108,6 +108,9 @@ on.
 * Remove the unfinished Kotlin scripting DSL module and `.kts` rule lookup.
   YAML/MVEL and Lua rules remain supported.
 
+* Windows MSYS/Cygwin terminal pipes receive UTF-8 output. Native consoles and
+  redirected streams retain their Java-selected encoding.
+
 * Application log labels are consistently English, independently of the console
   language and presentation. Script, tool and exception text remains unchanged.
 

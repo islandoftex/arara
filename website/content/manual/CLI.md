@@ -683,3 +683,6 @@ ones. It falls back to ASCII markers without ANSI escapes in pipes.
 command's last 12 output lines are shown beside its result. A shortened excerpt
 is marked with an ellipsis and points to the full log when logging is enabled.
 Log contents and exit statuses are independent of the presentation.
+
+On Windows, output to MSYS/Cygwin terminal pipes uses UTF-8. Native consoles
+and redirected output use the encoding selected by Java.
