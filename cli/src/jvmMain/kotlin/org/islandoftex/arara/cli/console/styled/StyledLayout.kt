@@ -3,6 +3,7 @@ package org.islandoftex.arara.cli.console.styled
 
 import com.github.ajalt.mordant.rendering.Line
 import com.github.ajalt.mordant.rendering.Span
+import com.github.ajalt.mordant.rendering.TextStyle
 import com.github.ajalt.mordant.rendering.Whitespace
 import com.github.ajalt.mordant.terminal.Terminal
 import com.github.ajalt.mordant.widgets.Text
@@ -48,7 +49,23 @@ internal class StyledLayout(private val terminal: Terminal) {
         // Mordant 3.1's BREAK_WORD repeats an overlong word after splitting it.
         // Wrap the parsed spans ourselves, retaining styles and complete graphemes.
         val lines = parse(text).flatMap { wrap(it, budget.coerceAtLeast(1)) }
-        return lines.joinToString("\n") { line -> line.spans.joinToString("") { it.style(it.text) } }
+        return lines.joinToString("\n", transform = ::renderLine)
+    }
+
+    private fun renderLine(line: Line): String {
+        val result = StringBuilder()
+        val text = StringBuilder()
+        var style: TextStyle? = null
+        line.spans.forEach { span ->
+            if (style != span.style) {
+                style?.let { result.append(it(text.toString())) }
+                text.clear()
+                style = span.style
+            }
+            text.append(span.text)
+        }
+        style?.let { result.append(it(text.toString())) }
+        return result.toString()
     }
 
     private fun parse(text: String): List<Line> =

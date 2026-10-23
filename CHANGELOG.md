@@ -48,6 +48,8 @@ on.
   `animations = false`) disables it. Captured failure output marks
   truncation and points to the full log when logging is enabled.
   Verbose styled output has localized command fields and frames around tool output.
+  Styled dialogs use severity-colored boxes with numbered choices, falling back
+  to plain dialogs when unsupported.
 
 * Project specifications receive `user.home`, `user.name` and `cwd`, matching
   Lua configuration scripts. Each script load uses independent globals.

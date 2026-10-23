@@ -70,6 +70,27 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
     private fun contains(output: String, text: String) = check(text in output) { "Missing $text\n$output" }
 
     val cases: Map<String, (MPPPath) -> Unit> = linkedMapOf(
+        "console_greeting_totals_and_styled_command_fields" to { root ->
+            rule(root, native("0"))
+            luaRule(root, luaNative("0"))
+            for (engine in listOf("yaml", "lua")) {
+                for (mode in listOf("plain", "styled")) {
+                    val flags = listOf("--engine", engine, "--console", mode)
+                    val output = execute(root, 0, flags + "--verbose")
+                    check("kotlin-logging:" !in output) { "Logging bootstrap leaked into console output" }
+                    contains(output, "the cool TeX automation tool.")
+                    contains(output, "TOTAL SUCCESS")
+                    contains(output, "1 file, 1 task")
+                    check(Regex("SMOKE_STDOUT").findAll(output).count() == 1)
+                    if (mode == "styled") contains(output, "System command:")
+                    val dry = execute(root, 0, flags + "--dry-run")
+                    contains(dry, "DRY RUN")
+                    check("SUCCESS" !in dry)
+                    check("SMOKE_STDOUT" !in dry)
+                    check("\u001b" !in output && "\u001b" !in dry)
+                }
+            }
+        },
         "directive_file_arrays_replicate_execution_in_both_engines" to { root ->
             val trace = root.resolve("files.trace")
             rule(root, "writeToFile(${quoted(trace.toString())}, reference.fileName + '|', true); return true;")

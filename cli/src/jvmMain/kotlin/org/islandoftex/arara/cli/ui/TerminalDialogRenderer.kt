@@ -34,17 +34,27 @@ open class TerminalDialogRenderer(
 
     private fun selection(type: Int, title: String, text: String, entries: Array<out Any>): Int {
         if (entries.isEmpty()) return 0
-        block(type, title, text)
-        entries.forEachIndexed { index, value -> line("${index + 1}. $value") }
+        selectionBlock(type, title, text, entries)
         while (true) {
             val range = "0-${entries.size}"
-            line("${LanguageController.messages.infoLabelDialogPrompt} ($range):")
-            output.print("> ")
-            output.flush()
+            prompt(range)
             val raw = answer().trim()
             val chosen = raw.toIntOrNull()
             if (chosen != null && chosen in 0..entries.size) return chosen
         }
+    }
+
+    /** Present choices before the shared selection loop reads an answer. */
+    protected open fun selectionBlock(type: Int, title: String, text: String, entries: Array<out Any>) {
+        block(type, title, text)
+        entries.forEachIndexed { index, value -> line("${index + 1}. $value") }
+    }
+
+    /** Render the inclusive selection range without changing accepted values. */
+    protected open fun prompt(range: String) {
+        line("${LanguageController.messages.infoLabelDialogPrompt} ($range):")
+        output.print("> ")
+        output.flush()
     }
 
     private fun answer(): String = input.readLine() ?: throw AraraException(
@@ -73,7 +83,7 @@ open class TerminalDialogRenderer(
 
     protected fun width(): Int = columns().coerceAtLeast(1)
 
-    protected fun line(text: String) {
+    protected open fun line(text: String) {
         for (original in text.lines()) {
             var remainder = original
             while (remainder.length > width()) {

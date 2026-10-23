@@ -692,5 +692,8 @@ Styled verbose output labels commands, conditions and authors, and frames the
 tool output. Long values wrap beneath their labels; narrow terminals place the
 label and value on separate lines.
 
+Styled dialogs show the message and numbered choices in a box colored by message
+type. Plain dialogs are used when boxes are unsupported or output is redirected.
+
 On Windows, output to MSYS/Cygwin terminal pipes uses UTF-8. Native consoles
 and redirected output use the encoding selected by Java.
