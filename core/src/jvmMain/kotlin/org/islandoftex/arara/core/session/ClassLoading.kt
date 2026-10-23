@@ -1,15 +1,15 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.session
 
+import org.islandoftex.arara.api.AraraIOException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.toJVMPath
+import org.islandoftex.arara.api.files.toMPPPath
 import java.io.IOException
 import java.lang.reflect.InvocationTargetException
 import java.net.MalformedURLException
 import java.net.URLClassLoader
 import java.nio.file.Files
-import java.nio.file.Path
-import java.nio.file.StandardCopyOption
 
 /**
  * Implements utilitary methods for classloading and object instantiation.
@@ -31,13 +31,13 @@ object ClassLoading {
         INSTANTIATION_EXCEPTION
     }
 
-    private data class LoadedArchive(val loader: URLClassLoader, val copy: Path?) {
+    private data class LoadedArchive(val loader: URLClassLoader, val copy: MPPPath?) {
         fun close() {
             try {
                 loader.close()
             } finally {
                 // Snapshot cleanup must not replace the class-loading result.
-                copy?.let { runCatching { Files.deleteIfExists(it) } }
+                copy?.let { runCatching { Files.deleteIfExists(it.toJVMPath()) } }
             }
         }
     }
@@ -60,17 +60,22 @@ object ClassLoading {
 
     private fun openArchive(path: MPPPath): LoadedArchive {
         // Directories keep their existing classpath semantics; jar files get a private snapshot.
-        val copy = if (path.isRegularFile) Files.createTempFile("arara-classpath-", ".jar") else null
+        val copy = if (path.isRegularFile) Files.createTempFile("arara-classpath-", ".jar").toMPPPath() else null
         var opened = false
         try {
-            if (copy != null) Files.copy(path.toJVMPath(), copy, StandardCopyOption.REPLACE_EXISTING)
+            if (copy != null) {
+                path.read { source ->
+                    // MPPPath has no binary sink API; only the local snapshot output uses NIO.
+                    Files.newOutputStream(copy.toJVMPath()).use { output -> source.inputStream().copyTo(output) }
+                }
+            }
             val resource = LoadedArchive(URLClassLoader(
-                arrayOf((copy ?: path.toJVMPath()).toUri().toURL()), ClassLoading::class.java.classLoader
+                arrayOf((copy ?: path).toJVMPath().toUri().toURL()), ClassLoading::class.java.classLoader
             ), copy)
             opened = true
             return resource
         } finally {
-            if (!opened) copy?.let { runCatching { Files.deleteIfExists(it) } }
+            if (!opened) copy?.let { runCatching { Files.deleteIfExists(it.toJVMPath()) } }
         }
     }
 
@@ -83,6 +88,8 @@ object ClassLoading {
         } catch (_: MalformedURLException) {
             return ClassLoadingStatus.MALFORMED_URL to Any::class.java
         } catch (_: IOException) {
+            return ClassLoadingStatus.CLASS_NOT_FOUND to Any::class.java
+        } catch (_: AraraIOException) {
             return ClassLoadingStatus.CLASS_NOT_FOUND to Any::class.java
         }
         var retained = false

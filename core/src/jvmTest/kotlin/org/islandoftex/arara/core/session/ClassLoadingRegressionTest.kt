@@ -5,6 +5,7 @@ import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.toJVMPath
 import org.islandoftex.arara.api.files.toMPPPath
 import java.nio.file.Files
+import java.nio.file.FileSystems
 import java.util.jar.JarEntry
 import java.util.jar.JarOutputStream
 import javax.tools.ToolProvider
@@ -63,6 +64,41 @@ class ClassLoadingRegressionTest {
             val jar = archive(root, "one")
             assertEquals(ClassLoading.ClassLoadingStatus.INSTANTIATION_EXCEPTION,
                          ClassLoading.loadObject(jar, "NoDefault").first)
+        } finally {
+            ClassLoading.closeLoaders()
+            root.removeDirectory()
+        }
+    }
+
+    @Test
+    fun archiveSnapshotsOutliveTheirSourceFilesystem() {
+        val root = Files.createTempDirectory("arara archive backend ").toMPPPath()
+        try {
+            val jar = archive(root, "nested")
+            val loaded = FileSystems.newFileSystem(root.resolve("source.zip").toJVMPath(),
+                mapOf("create" to "true")).use { filesystem ->
+                val nested = filesystem.getPath("/plugin.jar").toMPPPath()
+                Files.newOutputStream(nested.toJVMPath()).use { output ->
+                    jar.read { source -> source.inputStream().copyTo(output) }
+                }
+                ClassLoading.loadObject(nested, "Plugin")
+            }
+            assertEquals(ClassLoading.ClassLoadingStatus.SUCCESS, loaded.first)
+            assertEquals("nested", loaded.second.javaClass.getMethod("message").invoke(loaded.second))
+        } finally {
+            ClassLoading.closeLoaders()
+            root.removeDirectory()
+        }
+    }
+
+    @Test
+    fun directoryClasspathsKeepTheirLazyCompanionResolution() {
+        val root = Files.createTempDirectory("arara directory loader ").toMPPPath()
+        try {
+            archive(root, "directory")
+            val loaded = ClassLoading.loadObject(root.resolve("directory"), "Plugin")
+            assertEquals(ClassLoading.ClassLoadingStatus.SUCCESS, loaded.first)
+            assertEquals("directory", loaded.second.javaClass.getMethod("message").invoke(loaded.second))
         } finally {
             ClassLoading.closeLoaders()
             root.removeDirectory()

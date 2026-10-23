@@ -17,7 +17,6 @@ import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.ui.DialogRenderer
 import org.islandoftex.arara.core.ui.Dialogs
-import java.io.IOException
 import java.util.MissingFormatArgumentException
 
 @Suppress("unused", "TooManyFunctions")
@@ -416,8 +415,6 @@ object RuleMethods {
         file.writeText(text, append)
         true
     } catch (_: AraraIOException) {
-        false
-    } catch (_: IOException) {
         false
     }
 
