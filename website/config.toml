@@ -35,7 +35,11 @@ index_format = "elasticlunr_javascript"
 [extra.devlab.brand]
 logo_text = "arara"
 show_logo_mark = true
-logo_mark_path = "/images/arara-text.svg"
+logo_mark_path = "/brand/arara-logo.svg"
+
+[extra.devlab.appearance]
+default_mode = "system"
+show_toggle = true
 
 [extra.devlab.footer]
 show = true

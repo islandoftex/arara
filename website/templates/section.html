@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% block layout_context %}{% if section.relative_path == "manual/_index.md" %}{% set devlab_layout = "docs" %}{% else %}{% set devlab_layout = "blog" %}{% endif %}{% endblock layout_context %}
-{% block extra_styles %}<link rel="stylesheet" href="{{ get_url(path='arara.css') }}">{% endblock extra_styles %}
 {% block content %}
 {% if docs_section %}<div class="docs-shell">{% include "partials/docs-sidebar.html" %}<div class="docs-content">{% endif %}
 {% include "partials/page-heading.html" %}
