@@ -82,6 +82,39 @@ spotless {
         leadingTabsToSpaces()
         endWithNewline()
     }
+
+    format("yamlRules") {
+        target("rules/*.yaml")
+        licenseHeader(
+            """
+            !config
+            # Arara, the cool TeX automation tool
+            # Copyright (c) ${'$'}YEAR, Island of TeX
+            # All rights reserved.
+            #
+            # This rule is part of arara.
+            """.trimIndent(),
+            "identifier:"
+        )
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+    format("luaRules") {
+        target("rules/*.lua")
+        licenseHeader(
+            """
+            -- arara, the cool TeX automation tool
+            -- Copyright (c) ${'$'}YEAR, Island of TeX
+            -- All rights reserved.
+            --
+            -- This rule is part of arara.
+            """.trimIndent(),
+            "return \\{"
+        )
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+
 }
 
 detekt {
