@@ -54,7 +54,12 @@ class CLIRegressionTest {
             "commands:\n  - command: '@{ true }'\narguments: []\n")
         root.resolve("probe.lua").writeText("return {identifier='probe', name='Probe', " +
             "commands={{command=function() return false end}}}")
-        listOf(listOf("--engine", "lua") to 1, emptyList<String>() to 0).forEach { (flags, expected) ->
+        listOf(
+            listOf("--engine", "lua") to 1,
+            listOf("-e", "lua") to 1,
+            listOf("-e", "yaml") to 0,
+            emptyList<String>() to 0
+        ).forEach { (flags, expected) ->
             val status = assertFailsWith<ProgramResult> {
                 CLI().parse(listOf("-d", root.toString()) + flags + "run.tex")
             }

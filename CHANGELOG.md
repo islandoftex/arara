@@ -16,6 +16,8 @@ on.
 
 ### Added
 
+* `-e` is a short alias for `--engine`.
+
 * `ForeignPath` provides explicit POSIX/Windows path algebra without filesystem
   access. `MPPPath` adds strict metadata, scoped streaming reads and directory
   listing APIs backed by Okio.

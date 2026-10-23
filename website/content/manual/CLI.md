@@ -658,8 +658,8 @@ for retrieving such information.
 
 # Rule engine
 
-`--engine yaml` (the default) uses YAML rules with MVEL expressions.
-`--engine lua` uses [Lua rules and expressions](@/manual/Lua.md).
+`-e yaml` / `--engine yaml` (the default) uses YAML rules with MVEL expressions.
+`-e lua` / `--engine lua` uses [Lua rules and expressions](@/manual/Lua.md).
 The selection applies to every project and loose input in the invocation.
 
 # Console presentation
