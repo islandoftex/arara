@@ -9,6 +9,15 @@ object NorfolkMessages : AraraMessages {
 
     override val translators: List<String> = listOf("Nicola Talbot", "Keith Skipper")
 
+    override fun errorGlobPatternInvalid(pattern: String, details: String) =
+        "That duzzy ole glob pattern \"${pattern}\" wouldn't turn inter a proper regular expression: ${details}. Make sure the pattern's put tergether right and hev another go."
+
+    override val errorSafeModeClassLoading =
+        "In the safe mode, rules ent allowed ter go loadin' no classes of their own choosin' from folks' archives."
+
+    override val errorSafeModeSystemCommand =
+        "In the safe mode, rules ent allowed ter go runnin' no system commands of their own choosin' inside a step o' the run."
+
     override val errorDialogInputClosed: String =
         "It do luke like thet terminal input went hully away whilst a dialog was a-waitin\u2019 on yer answer, so I can\u2019t read wot yew picked. Dew yew run arara in a proper interactive terminal, so the dialog can get its answer, that it can."
 

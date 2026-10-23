@@ -164,8 +164,8 @@ class RuleExecutionRegressionTest {
             "return marker.size() == 2 && marker[0].equals('a') && marker[1].equals('b');",
             "return #ctx.marker == 2 and ctx.marker[1] == 'a' and ctx.marker[2] == 'b'", """
                 - identifier: marker
-                  flag: "@{ return [['a'], 'b']; }"
-            """ to "{identifier='marker', flag=function(ctx, value) return {{'a'}, 'b'} end}"
+                  flag: "@{ return [['a', null], [], 'b']; }"
+            """ to "{identifier='marker', flag=function(ctx, value) return {{'a'}, {}, 'b'} end}"
         )
         assertEquals(0, fixture.execute(mapOf("marker" to "ignored")), fixture.engine.name)
     }

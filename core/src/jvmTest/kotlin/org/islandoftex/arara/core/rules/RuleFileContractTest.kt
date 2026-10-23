@@ -5,6 +5,8 @@ import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.AraraIOException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.toMPPPath
+import org.islandoftex.arara.core.localization.LanguageController
+import org.islandoftex.arara.core.localization.GermanMessages
 import java.nio.file.Files
 import java.util.MissingFormatArgumentException
 import kotlin.test.Test
@@ -125,5 +127,21 @@ class RuleFileContractTest {
     fun invalidReplicationRetainsItsFormattingCause() {
         val error = assertFailsWith<AraraException> { RuleMethods.replicatePattern("%s %s", listOf("one")) }
         assertIs<MissingFormatArgumentException>(error.exception)
+    }
+
+    @Test
+    fun invalidGlobsAreLocalizedAndRetainTheParserCause() = inDirectory { root ->
+        val previous = LanguageController.messages
+        try {
+            val messages = GermanMessages
+            LanguageController.messages = messages
+            val failure = assertFailsWith<AraraException> {
+                RuleMethods.listFilesByPatterns(root, listOf("["), false)
+            }
+            val cause = assertIs<IllegalArgumentException>(failure.cause)
+            assertEquals(messages.errorGlobPatternInvalid("[", cause.message.orEmpty()), failure.message)
+        } finally {
+            LanguageController.messages = previous
+        }
     }
 }

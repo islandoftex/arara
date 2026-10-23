@@ -277,7 +277,7 @@ object ConditionalMethods {
 
     private fun ensureClassLoadingAllowed() {
         if (LinearExecutor.executionOptions.executionMode == ExecutionMode.SAFE_RUN) {
-            throw SafeRunViolationException("In safe mode, rules are not allowed to load arbitrary classes or objects.")
+            throw SafeRunViolationException(LanguageController.messages.errorSafeModeClassLoading)
         }
     }
 

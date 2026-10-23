@@ -31,7 +31,7 @@ object InputHandling {
 
     /**
      * Flattens a potential list of lists into a list of objects.
-     * The list and all nested lists must contain only non-null elements.
+     * Null entries in the list and nested lists are omitted.
      *
      * @param list The list to be flattened.
      * @return The flattened list.
@@ -41,6 +41,6 @@ object InputHandling {
             if (item is List<*>)
                 flatten(item)
             else
-                listOf(item as Any)
+                listOfNotNull(item)
         }
 }

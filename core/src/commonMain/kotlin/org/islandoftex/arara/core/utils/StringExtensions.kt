@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.utils
 
+import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.core.localization.LanguageController
+
 /**
  * Converts a standard POSIX Shell globbing pattern into a regular expression
  * pattern. The result can be used with the standard [Regex] API to recognize
@@ -78,4 +81,13 @@ internal fun String.globToRegex(): Regex =
             }
             i++
         }
-    }.toRegex()
+    }.let { pattern ->
+        try {
+            pattern.toRegex()
+        } catch (exception: IllegalArgumentException) {
+            throw AraraException(
+                LanguageController.messages.errorGlobPatternInvalid(this, exception.message.orEmpty()),
+                exception
+            )
+        }
+    }

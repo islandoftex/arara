@@ -9,6 +9,15 @@ object GermanMessages : AraraMessages {
 
     override val translators: List<String> = listOf("Marco Daniel", "Ben Frank", "Gert Fischer")
 
+    override fun errorGlobPatternInvalid(pattern: String, details: String) =
+        "Das Glob-Muster \"${pattern}\" ließ sich nicht in einen regulären Ausdruck umwandeln: ${details}. Bitte stelle sicher, dass das Muster wohlgeformt ist, und versuche es erneut."
+
+    override val errorSafeModeClassLoading =
+        "Im sicheren Modus dürfen Regeln keine beliebigen Klassen aus benutzerseitigen Archiven laden."
+
+    override val errorSafeModeSystemCommand =
+        "Im sicheren Modus dürfen Regeln keine beliebigen Systembefehle innerhalb eines Ausführungsschritts ausführen."
+
     override val errorDialogInputClosed: String =
         "Es scheint, als sei die Terminaleingabe beendet worden, w\u00e4hrend ein Dialog auf eine Antwort wartete, daher kann ich Ihre Auswahl nicht lesen. Bitte f\u00fchre arara in einem interaktiven Terminal aus, damit der Dialog beantwortet werden kann."
 

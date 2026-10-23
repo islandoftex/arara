@@ -15,6 +15,15 @@ interface AraraMessages {
     /** The translators credited for this catalog. */
     val translators: List<String>
 
+    /** Malformed glob pattern; arguments: pattern and parser details. */
+    fun errorGlobPatternInvalid(pattern: String, details: String): String
+
+    /** Class loading is unavailable in safe mode. */
+    val errorSafeModeClassLoading: String
+
+    /** Arbitrary system commands are unavailable in safe mode. */
+    val errorSafeModeSystemCommand: String
+
     /** A dialog could not read an answer because terminal input ended. */
     val errorDialogInputClosed: String
 

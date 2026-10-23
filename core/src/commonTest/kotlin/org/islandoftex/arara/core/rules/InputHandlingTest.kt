@@ -18,6 +18,7 @@ class InputHandlingTest {
             assertTrue(InputHandling.checkBoolean(it))
         }
     }
+
     @Test
     fun shouldReturnFalsyValuesForCommonFalsyInput() {
         listOf(
@@ -27,6 +28,7 @@ class InputHandlingTest {
             assertFalse(InputHandling.checkBoolean(it))
         }
     }
+
     @Test
     fun shouldThrowOnAmbiguousBooleanInput() {
         listOf("quack", "duck", "yess", "yyes", "noo", "nno").forEach {
@@ -45,5 +47,11 @@ class InputHandlingTest {
                 .toSet(),
             (setOf(1, 2, 3, 4, 5, 6) as Set<Any>)
         )
+    }
+
+    @Test
+    fun nestedNullsAreOmittedWithoutReorderingOrDiscardingFalseValues() {
+        assertEquals(listOf("first", false, 0, "last"),
+            InputHandling.flatten(listOf(null, listOf("first", null, listOf(false, 0)), "last", null)))
     }
 }

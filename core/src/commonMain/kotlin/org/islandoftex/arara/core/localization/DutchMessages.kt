@@ -9,6 +9,15 @@ object DutchMessages : AraraMessages {
 
     override val translators: List<String> = listOf("Marijn Schraagen", "Taco de Marie")
 
+    override fun errorGlobPatternInvalid(pattern: String, details: String) =
+        "Het globpatroon \"${pattern}\" kon niet worden omgezet in een reguliere expressie: ${details}. Zorg dat het patroon goed gevormd is en probeer het opnieuw."
+
+    override val errorSafeModeClassLoading =
+        "In de veilige modus mogen regels geen willekeurige klassen uit door de gebruiker geleverde archieven laden."
+
+    override val errorSafeModeSystemCommand =
+        "In de veilige modus mogen regels geen willekeurige systeemcommando's uitvoeren binnen een uitvoeringsstap."
+
     override val errorDialogInputClosed: String =
         "Het lijkt erop dat de terminalinvoer is be\u00ebindigd terwijl een dialoog op een antwoord wachtte, dus ik kan je keuze niet lezen. Voer arara uit in een interactieve terminal, zodat de dialoog beantwoord kan worden."
 

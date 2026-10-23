@@ -45,8 +45,8 @@ internal class DirectiveAssembler {
     }
 
     /**
-     * Gets the list of line numbers.
+     * Gets a snapshot of the line numbers.
      * @return The list of line numbers.
      */
-    fun getLineNumbers(): List<Int> = lineNumbers
+    fun getLineNumbers(): List<Int> = lineNumbers.toList()
 }

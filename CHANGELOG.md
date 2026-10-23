@@ -127,6 +127,9 @@ on.
 
 ### Fixed
 
+* Invalid glob patterns and safe-run helper errors use localized diagnostics.
+  Nested helper lists omit null entries without losing the remaining values.
+
 * Filesystem helper errors retain file context and chained causes; failed system
   commands preserve captured output through the compatibility API.
 
