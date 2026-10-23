@@ -13,7 +13,7 @@ import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.ui.DialogRenderer
 import org.islandoftex.arara.core.ui.Dialogs
-import java.io.IOException
+import org.islandoftex.arara.api.AraraIOException
 
 @Suppress("unused", "TooManyFunctions")
 object ConditionalMethods {
@@ -151,7 +151,7 @@ object ConditionalMethods {
     fun found(file: MPPPath, regex: String): Boolean = try {
         val text = file.readText()
         regex.toRegex().containsMatchIn(text)
-    } catch (exception: IOException) {
+    } catch (exception: AraraIOException) {
         throw AraraException(
             LanguageController.messages.errorCheckRegexIoException(file.fileName),
             exception

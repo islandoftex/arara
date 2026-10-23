@@ -24,7 +24,7 @@ public open class AraraException : Exception {
      * @param message The exception message.
      * @param exception The underlying exception object.
      */
-    public constructor(message: String, exception: Exception) : super(message) {
+    public constructor(message: String, exception: Exception) : super(message, exception) {
         this.exception = exception
     }
 
@@ -33,9 +33,7 @@ public open class AraraException : Exception {
      * @param message The exception message.
      * @param throwable The underlying exception as generic throwable.
      */
-    public constructor(message: String, throwable: Throwable) : super(message) {
-        this.exception = RuntimeException(throwable)
-    }
+    public constructor(message: String, throwable: Throwable) : this(message, RuntimeException(throwable))
 
     /**
      * Checks if there is an underlying exception defined in the current object.

@@ -106,8 +106,13 @@ class RuleFileContractTest {
         val input = root.resolve("input.log").apply { writeText("error in line 3\n") }
         assertTrue(ConditionalMethods.found(input, "error.*3"))
         assertFalse(ConditionalMethods.found(input, "warning"))
-        assertFailsWith<AraraIOException> { ConditionalMethods.found(root.resolve("missing.log"), "error") }
-        assertFailsWith<AraraIOException> { ConditionalMethods.found(root.resolve("missing.log"), "[") }
+        for (pattern in listOf("error", "[")) {
+            val failure = assertFailsWith<AraraException> {
+                ConditionalMethods.found(root.resolve("missing.log"), pattern)
+            }
+            assertTrue(failure.message.orEmpty().contains("missing.log"))
+            assertIs<AraraIOException>(failure.cause)
+        }
         assertFailsWith<IllegalArgumentException> { ConditionalMethods.found(input, "[") }
         assertEquals("input.log", ConditionalMethods.toFile(input.toString()).fileName)
         assertTrue(ConditionalMethods.exists(input))

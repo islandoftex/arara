@@ -196,7 +196,7 @@ object Environment {
      *   the executor.
      * @return A pair containing the exit status and the system command output
      *   as a string. In case of an error, return a pair of [ERROR_EXIT_STATUS]
-     *   and the string representation of the throwable.
+     *   and any captured output, falling back to the throwable when no output was captured.
      */
     @JvmStatic
     fun executeSystemCommand(
@@ -206,7 +206,7 @@ object Environment {
     ): Pair<Int, String> = when (val result = executeSystemCommandResult(command, silenceSystemOut, timeout)) {
         is SystemCommandResult.Completed -> result.exitCode to result.output
         is SystemCommandResult.Failed -> ERROR_EXIT_STATUS to
-            "${result.exception::class.java.name}: ${result.exception.message}"
+            result.output.ifEmpty { result.exception.toString() }
     }
 
     /**

@@ -127,6 +127,9 @@ on.
 
 ### Fixed
 
+* Filesystem helper errors retain file context and chained causes; failed system
+  commands preserve captured output through the compatibility API.
+
 * Multiplatform Maven source jars include the common Kotlin sources in this
   JVM-only build.
 

@@ -51,6 +51,13 @@ class SystemCommandResultTest : ShouldSpec({
         result.output shouldContain "stderr marker"
     }
 
+    should("preserve partial output through the pair-returning compatibility API") {
+        val (status, output) = Environment.executeSystemCommand(command("sleep"), timeout = 3.seconds)
+        status shouldBe Environment.ERROR_EXIT_STATUS
+        output shouldContain "stdout marker"
+        output shouldContain "stderr marker"
+    }
+
     should("retain the original exception on a failed launch") {
         val result = Environment.executeSystemCommandResult(
             Command(listOf(directory.resolve("missing-executable").toString()))
