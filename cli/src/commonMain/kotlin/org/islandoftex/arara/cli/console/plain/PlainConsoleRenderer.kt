@@ -314,6 +314,14 @@ class PlainConsoleRenderer : ConsoleRenderer {
         println()
     }
 
+    override fun printProjectInformation(name: String, directory: String, multipleProjects: Boolean) {
+        if (multipleProjects) {
+            val project = if (name.isBlank()) directory else "$name ($directory)"
+            printWrapped("${LanguageController.messages.infoLabelProject} $project")
+            println()
+        }
+    }
+
     private companion object {
         const val SHORT_LABEL_WIDTH = 10
     }

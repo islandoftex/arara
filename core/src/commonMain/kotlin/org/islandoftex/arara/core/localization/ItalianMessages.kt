@@ -360,6 +360,8 @@ object ItalianMessages : AraraMessages {
     override val infoLabelAuthors: String =
         "Autori:"
 
+    override val infoLabelSystemCommand = "Comando di sistema:"
+
     override val infoLabelConditional: String =
         "Condizionale:"
 

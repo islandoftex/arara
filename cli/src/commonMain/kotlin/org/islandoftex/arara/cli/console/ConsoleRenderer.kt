@@ -3,6 +3,7 @@ package org.islandoftex.arara.cli.console
 
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.rules.DirectiveConditional
+import org.islandoftex.arara.core.localization.LanguageController
 
 /** Terminal presentation only; logging belongs to the display facade. */
 @Suppress("TooManyFunctions")
@@ -27,10 +28,16 @@ interface ConsoleRenderer {
 
     fun printProjectInformation(name: String, directory: String) { }
 
+    fun printProjectInformation(name: String, directory: String, multipleProjects: Boolean) =
+        printProjectInformation(name, directory)
+
     fun printRunSummary(summary: RunSummary) =
         printRunSummary(summary.success, summary.files.map { it.path.toString() to it.exitCode })
 
     fun printTaskDetails(command: String, conditional: DirectiveConditional, authors: List<String>) { }
+
+    fun printDryRunCommand(command: String) =
+        printWrapped(LanguageController.messages.infoInterpreterDryRunModeSystemCommand(command))
 
     fun printSkippedDirective(identifier: String) { }
 

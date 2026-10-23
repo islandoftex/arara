@@ -110,10 +110,7 @@ class Interpreter(
             failureOutput = if (success) "" else result.output
         } else {
             DisplayUtils.printAuthors(authors)
-            DisplayUtils.printWrapped(
-                LanguageController.messages
-                    .infoInterpreterDryRunModeSystemCommand(command.toString())
-            )
+            DisplayUtils.renderer.printDryRunCommand(command.toString())
             DisplayUtils.printConditional(conditional)
         }
 

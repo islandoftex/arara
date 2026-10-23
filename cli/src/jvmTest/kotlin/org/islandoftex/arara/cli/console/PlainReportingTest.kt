@@ -63,6 +63,7 @@ class PlainReportingTest {
     fun greetingAndTotalsCountEvaluatedTasksWithoutSkippedDirectives() = fixture { root ->
         val output = run(root, 0, "run.tex")
         assertTrue(DisplayUtils.versionLine in output)
+        assertFalse("Project:" in output)
         assertTrue("TOTAL SUCCESS · 1 file, 1 task" in output)
         root.resolve("empty.tex").writeText("% arara: probe if false\n")
         val next = run(root, 0, "empty.tex")
@@ -94,6 +95,7 @@ class PlainReportingTest {
         )
         val output = run(root, 0, "project.proj.lua", "run.tex")
         assertTrue("TOTAL SUCCESS · 2 files, 2 tasks" in output)
+        assertEquals(2, Regex("Project:").findAll(output).count())
     }
 
     @Test

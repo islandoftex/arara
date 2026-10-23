@@ -400,7 +400,8 @@ class CLI : CliktCommand("arara") {
                 executeBeforeProject = { project ->
                     configureProject(project, configuration)
                     RunLog.project(project.name, project.workingDirectory.toString())
-                    DisplayUtils.renderer.printProjectInformation(project.name, project.workingDirectory.toString())
+                    DisplayUtils.renderer.printProjectInformation(project.name, project.workingDirectory.toString(),
+                        DisplayUtils.presentation.multipleProjects)
                 },
                 executeBeforeFile = {
                     // TODO: do we have to reset some more file-specific config?

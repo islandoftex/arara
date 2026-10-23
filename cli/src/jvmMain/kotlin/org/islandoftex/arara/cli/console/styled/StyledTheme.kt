@@ -26,5 +26,14 @@ object StyledTheme {
 
     const val leaderFallback = "."
 
+    const val frameGlyph = "┈"
+
+    const val frameFallback = "."
+
+    const val fieldGutterWidth = 16
+
+    // Keep room for a wide grapheme beside a label.
+    const val minimumValueWidth = 2
+
     const val proseMaximumWidth = 79
 }

@@ -517,6 +517,9 @@ interface AraraMessages {
      */
     val infoLabelAuthors: String
 
+    /** The label shown beside a system command in styled task details. */
+    val infoLabelSystemCommand: String
+
     /**
      * The label shown for the conditional of an entry in dry-run mode.
      */

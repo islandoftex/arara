@@ -4,7 +4,6 @@ package org.islandoftex.arara.cli.console.styled
 import com.github.ajalt.mordant.rendering.AnsiLevel
 import com.github.ajalt.mordant.rendering.TextStyle
 import com.github.ajalt.mordant.terminal.Terminal
-import org.islandoftex.arara.api.AraraAPI
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.configuration.LogFormat
 import org.islandoftex.arara.api.files.MPPPath
@@ -19,7 +18,6 @@ import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
-import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeSource
 
 @Suppress("TooManyFunctions")
@@ -44,6 +42,7 @@ class StyledConsoleRenderer internal constructor(
     private var displayResult = false
     private var displayRolling = false
     private var displayException = false
+    private var outputFrameOpen = false
 
     private val isDryRunMode: Boolean
         get() = LinearExecutor.executionOptions.executionMode ==
@@ -75,7 +74,7 @@ class StyledConsoleRenderer internal constructor(
     override fun printBanner() {
         suspendProgress()
         layout.print(StyledTheme.logo(DisplayUtils.logoString))
-        layout.print(muted("arara ${AraraAPI.version}"))
+        layout.print(muted(DisplayUtils.versionLine))
         terminal.println("")
     }
 
@@ -107,6 +106,7 @@ class StyledConsoleRenderer internal constructor(
 
     override fun printEntry(name: String, task: String) {
         suspendProgress()
+        closeOutputFrame()
         compactEntry = false
         displayLine = true
         displayResult = false
@@ -162,6 +162,7 @@ class StyledConsoleRenderer internal constructor(
 
     override fun printEntryResult(value: Boolean) {
         stopProgress()
+        closeOutputFrame()
         displayLine = false
         displayResult = true
 
@@ -181,13 +182,14 @@ class StyledConsoleRenderer internal constructor(
                 val result = layout.fit(getResult(value), layout.width)
                 val aligned = rule.repeat((layout.width - layout.cells(result)).coerceAtLeast(0)) + result
                 terminal.println("")
-                terminal.println(muted(aligned))
+                terminal.println(if (value) terminal.theme.success(aligned) else terminal.theme.danger(aligned))
             }
         }
     }
 
     override fun printException(text: String, details: String?) {
         stopProgress()
+        closeOutputFrame()
         displayException = true
 
         if (displayResult)
@@ -229,16 +231,13 @@ class StyledConsoleRenderer internal constructor(
             LanguageController.messages.infoLabelNoAuthors
         else
             authors.joinToString(", ") { it.trim() }
-        printWrapped("$line $text")
+        printField(line, text)
     }
 
     override fun printConditional(conditional: DirectiveConditional) {
         if (conditional.type !== DirectiveConditionalType.NONE) {
-            printWrapped(
-                LanguageController.messages.infoLabelConditional +
-                    " (" + conditional.type + ") " +
-                    conditional.condition
-            )
+            printField(LanguageController.messages.infoLabelConditional,
+                "(" + conditional.type + ") " + conditional.condition)
         }
     }
 
@@ -247,7 +246,7 @@ class StyledConsoleRenderer internal constructor(
         if (displayLine || displayException)
             terminal.println("")
 
-        val time = layout.seconds(seconds.seconds).removeSuffix(" s")
+        val time = DisplayUtils.elapsedSeconds(seconds)
         printWrapped(LanguageController.messages.infoDisplayExecutionTime(time))
     }
 
@@ -278,11 +277,45 @@ class StyledConsoleRenderer internal constructor(
 
     override fun printTaskDetails(command: String, conditional: DirectiveConditional, authors: List<String>) {
         if (isVerboseMode && !isDryRunMode) {
+            closeOutputFrame()
             terminal.println("")
-            printWrapped(command)
+            printField(LanguageController.messages.infoLabelSystemCommand, command)
             printConditional(conditional)
             printAuthors(authors)
-            terminal.println(muted(displaySeparator()))
+            terminal.println(muted(frameRule()))
+            outputFrameOpen = true
+        }
+    }
+
+    override fun printDryRunCommand(command: String) =
+        printField(LanguageController.messages.infoLabelSystemCommand, command)
+
+    private fun printField(label: String, value: String) {
+        suspendProgress()
+        val labelWidth = layout.cells(label)
+        val footprint = maxOf(labelWidth + 1, StyledTheme.fieldGutterWidth)
+        if (layout.width - footprint < StyledTheme.minimumValueWidth) {
+            layout.print(muted(label))
+            layout.print(value)
+        } else {
+            layout.render(value, layout.width - footprint).lineSequence().forEachIndexed { index, line ->
+                val prefix = if (index == 0) muted(label + " ".repeat(footprint - labelWidth))
+                    else " ".repeat(footprint)
+                terminal.println(prefix + line)
+            }
+        }
+    }
+
+    private fun frameRule(): String {
+        val glyph = if (isDecorated) StyledTheme.frameGlyph else StyledTheme.frameFallback
+        return "$glyph  ".repeat(layout.width / FRAME_SPACING + 1).take(layout.width).trimEnd()
+    }
+
+    private fun closeOutputFrame() {
+        if (outputFrameOpen) {
+            terminal.println("")
+            terminal.println(muted(frameRule()))
+            outputFrameOpen = false
         }
     }
 
@@ -309,6 +342,7 @@ class StyledConsoleRenderer internal constructor(
 
     override fun printRunSummary(summary: RunSummary) {
         suspendProgress()
+        closeOutputFrame()
         StyledSummaryRenderer(terminal, layout).print(summary)
     }
 
@@ -336,6 +370,7 @@ class StyledConsoleRenderer internal constructor(
 
     override fun close() {
         suspendProgress()
+        closeOutputFrame()
         progress.close()
     }
 
@@ -344,5 +379,6 @@ class StyledConsoleRenderer internal constructor(
         const val HEADER_SPACING = 2
         const val ENTRY_SPACING = 3
         const val MINIMUM_HEAD_WIDTH = 8
+        const val FRAME_SPACING = 3
     }
 }

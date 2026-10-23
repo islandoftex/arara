@@ -360,6 +360,8 @@ object NorfolkMessages : AraraMessages {
     override val infoLabelAuthors: String =
         "Here's the ones wot wrote this masterous jarb:"
 
+    override val infoLabelSystemCommand = "Yer command:"
+
     override val infoLabelConditional: String =
         "Conditional (thass a yis or no thing):"
 

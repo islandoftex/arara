@@ -674,7 +674,7 @@ and is the default. The option overrides the configuration's `console` value.
 
 Plain runs close with file and task totals; skipped directives are not counted as
 tasks. After a failure, files not reached are listed. Dry runs report simulated
-tasks instead of a success verdict.
+tasks instead of a success verdict. Runs with several projects label each project.
 
 On interactive terminals with cursor support, long-running styled tasks show a
 spinner and elapsed time after one second. Set `animations: false` in YAML or
@@ -687,6 +687,10 @@ ones. It falls back to ASCII markers without ANSI escapes in pipes.
 command's last 12 output lines are shown beside its result. A shortened excerpt
 is marked with an ellipsis and points to the full log when logging is enabled.
 Log contents and exit statuses are independent of the presentation.
+
+Styled verbose output labels commands, conditions and authors, and frames the
+tool output. Long values wrap beneath their labels; narrow terminals place the
+label and value on separate lines.
 
 On Windows, output to MSYS/Cygwin terminal pipes uses UTF-8. Native consoles
 and redirected output use the encoding selected by Java.

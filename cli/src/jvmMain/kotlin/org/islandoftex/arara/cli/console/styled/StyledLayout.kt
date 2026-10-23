@@ -41,17 +41,20 @@ internal class StyledLayout(private val terminal: Terminal) {
     }
 
     fun print(text: String) {
+        terminal.println(render(text), whitespace = Whitespace.PRE)
+    }
+
+    fun render(text: String, budget: Int = width): String {
         // Mordant 3.1's BREAK_WORD repeats an overlong word after splitting it.
         // Wrap the parsed spans ourselves, retaining styles and complete graphemes.
-        val lines = parse(text).flatMap(::wrap)
-        val rendered = lines.joinToString("\n") { line -> line.spans.joinToString("") { it.style(it.text) } }
-        terminal.println(rendered, whitespace = Whitespace.PRE)
+        val lines = parse(text).flatMap { wrap(it, budget.coerceAtLeast(1)) }
+        return lines.joinToString("\n") { line -> line.spans.joinToString("") { it.style(it.text) } }
     }
 
     private fun parse(text: String): List<Line> =
         Text(text, whitespace = Whitespace.PRE).render(terminal, Int.MAX_VALUE).lines
 
-    private fun wrap(line: Line): List<Line> {
+    private fun wrap(line: Line, budget: Int): List<Line> {
         val result = mutableListOf<Line>()
         var spans = mutableListOf<Span>()
         var used = 0
@@ -69,7 +72,7 @@ internal class StyledLayout(private val terminal: Terminal) {
             GRAPHEME.findAll(value).forEach { grapheme ->
                 val part = grapheme.value
                 val partWidth = cells(part)
-                if (used > 0 && used + partWidth > width) nextLine()
+                if (used > 0 && used + partWidth > budget) nextLine()
                 spans.add(Span.word(part, style))
                 used += partWidth
             }
