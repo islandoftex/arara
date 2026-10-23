@@ -64,7 +64,7 @@ build:linux:jdk21:
 .testtemplate: &testdefinition
   stage: test
   script:
-    - ./gradlew allTests -PtestJavaVersion="$JAVA_VERSION"
+    - ./gradlew checkRuntimeDependencies allTests -PtestJavaVersion="$JAVA_VERSION"
     - ./gradlew -p buildSrc check
     - ./gradlew detekt
     - ./gradlew koverXmlReport koverHtmlReport koverVerify -PtestJavaVersion="$JAVA_VERSION"

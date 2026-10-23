@@ -34,3 +34,12 @@ val packagingTest = tasks.register<JavaExec>("packagingTest") {
     args(gradle.gradleHomeDir!!.absolutePath, sourceSets.main.get().output.classesDirs.asPath)
 }
 tasks.check { dependsOn(packagingTest) }
+
+val runtimeDependencyTest = tasks.register<JavaExec>("runtimeDependencyTest") {
+    group = "verification"
+    dependsOn(tasks.testClasses)
+    classpath = sourceSets.test.get().runtimeClasspath
+    mainClass.set("org.islandoftex.arara.build.RuntimeDependencyChecksKt")
+    args(gradle.gradleHomeDir!!.absolutePath, sourceSets.main.get().output.classesDirs.asPath)
+}
+tasks.check { dependsOn(runtimeDependencyTest) }

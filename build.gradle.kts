@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import java.nio.file.Path
+import org.gradle.api.artifacts.component.ModuleComponentIdentifier
 import org.gradle.api.publish.maven.tasks.PublishToMavenRepository
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
@@ -11,6 +12,7 @@ import org.islandoftex.arara.build.AraraPackaging
 import org.islandoftex.arara.build.AraraPublication
 import org.islandoftex.arara.build.VerifyPublicationArtifacts
 import org.islandoftex.arara.build.VerifyPublicationConsumer
+import org.islandoftex.arara.build.VerifyRuntimeDependencies
 import org.jetbrains.dokka.gradle.DokkaExtension
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
@@ -224,6 +226,13 @@ tasks.register<VerifyPublicationArtifacts>("checkPublications") {
     publicationVersion.set(project.version.toString())
 }
 
+val checkRuntimeDependencies = tasks.register<VerifyRuntimeDependencies>("checkRuntimeDependencies") {
+    group = "verification"
+    description = "Check shipped dependency bytecode against the minimum supported JVM."
+    javaVersion.set(araraJVMInt)
+    reportFile.set(layout.buildDirectory.file("reports/runtime-dependencies/result.txt"))
+}
+
 val multiplatformPluginId = libs.plugins.kotlin.multiplatform.get().pluginId
 
 subprojects {
@@ -252,6 +261,16 @@ subprojects {
                     jvmTarget.set(araraJVMTarget)
                 }
             }
+        }
+
+        if (project.name == "cli") {
+            val externalRuntime = configurations.named("jvmRuntimeClasspath").map {
+                it.incoming.artifactView {
+                    componentFilter { component -> component is ModuleComponentIdentifier }
+                }.files
+            }
+            checkRuntimeDependencies.configure { dependencies.from(externalRuntime) }
+            tasks.named("check") { dependsOn(checkRuntimeDependencies) }
         }
 
         // With one platform, KMP does not populate the root sources jar itself.

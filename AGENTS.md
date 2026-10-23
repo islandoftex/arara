@@ -114,6 +114,12 @@ when changing runtime behavior or packaging. It builds its own runnable jar.
 Run them in that order; `detekt` and `spotlessCheck` are cheap and fail fast on
 style issues that are noisy to fix after writing a lot of code.
 
+`./gradlew checkRuntimeDependencies` checks the CLI's external runtime dependency
+bytecode against `arara.jvm.target`, including JNA and the active multi-release JAR
+entries. It runs in CI and `:cli:check`. This detects newer class-file requirements
+and preview classes, not references to newer JDK APIs; runtime tests remain necessary.
+The report is under `build/reports/runtime-dependencies`.
+
 `./gradlew koverHtmlReport koverXmlReport` produces aggregate coverage reports
 under `build/reports/kover`. Module tasks such as `:core:koverHtmlReport` measure
 that module's own tests; the root report merges execution across module boundaries.
