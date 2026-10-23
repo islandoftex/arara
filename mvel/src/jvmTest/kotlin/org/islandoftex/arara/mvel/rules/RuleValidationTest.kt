@@ -5,6 +5,7 @@ import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.toMPPPath
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.core.configuration.ExecutionOptions
+import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.rules.DirectiveConditional
 import java.nio.file.Files
 import kotlin.test.Test
@@ -70,6 +71,21 @@ class RuleValidationTest {
                     DirectiveConditional(DirectiveConditionalType.IF, condition)
                 )
             }
+        }
+    }
+
+    @Test
+    fun identifierMismatchDistinguishesTheRequestedNameFromTheDeclaredName() {
+        val root = Files.createTempDirectory("arara rule identity ").toMPPPath()
+        try {
+            val file = root.resolve("requested.yaml")
+            file.writeText("!config\nidentifier: declared\nname: Rule\ncommands: []\narguments: []\n")
+            val failure = assertFailsWith<AraraException> { Rule.parse(file, "requested") }
+            assertTrue(failure.message.orEmpty().contains(
+                LanguageController.messages.errorValidateHeaderWrongIdentifier("requested", "declared")
+            ))
+        } finally {
+            root.removeDirectory()
         }
     }
 }

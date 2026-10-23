@@ -127,6 +127,9 @@ on.
 
 ### Fixed
 
+* Project directive failures identify their input file, rule identifier errors
+  distinguish the requested and declared names, and property-load failures are logged.
+
 * Invalid glob patterns and safe-run helper errors use localized diagnostics.
   Nested helper lists omit null entries without losing the remaining values.
 

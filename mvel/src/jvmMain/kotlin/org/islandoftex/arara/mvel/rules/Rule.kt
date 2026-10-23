@@ -75,7 +75,7 @@ data class Rule(
             if (rule.identifier != identifier) {
                 throw AraraException(
                     ruleErrorHeader +
-                        LanguageController.messages.errorValidateHeaderWrongIdentifier(rule.identifier, identifier)
+                        LanguageController.messages.errorValidateHeaderWrongIdentifier(identifier, rule.identifier)
                 )
             }
             if (rule.displayName == null) {

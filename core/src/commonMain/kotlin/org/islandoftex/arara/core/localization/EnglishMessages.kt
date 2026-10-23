@@ -9,6 +9,12 @@ object EnglishMessages : AraraMessages {
 
     override val translators: List<String> = listOf("Paulo Roberto Massa Cereda")
 
+    override fun errorProjectFileDirectivesExtraction(
+        file: String,
+        details: String
+    ) =
+        "I found an error while extracting the directives of '${file}': ${details}."
+
     override fun errorGlobPatternInvalid(pattern: String, details: String) =
         "The glob pattern \"${pattern}\" could not be converted into a regular expression: ${details}. Please make sure the pattern is well formed and try again."
 

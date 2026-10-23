@@ -2,9 +2,13 @@
 package org.islandoftex.arara.lua
 
 import org.islandoftex.arara.api.files.MPPPath
+import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.core.localization.LanguageController
+import org.islandoftex.arara.core.files.FileType
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertNotNull
 
 class LuaInterpreterTest {
     @Test
@@ -219,4 +223,14 @@ class LuaInterpreterTest {
         }
     }
 
+
+    @Test
+    fun explicitDirectiveErrorsIdentifyTheProjectInputAndKeepTheirCause() {
+        val file = LuaProjectFile(MPPPath("broken.tex"), FileType("tex", """^\s*%\s*"""))
+        file.directives = listOf("% arara: --> orphan")
+        val failure = assertFailsWith<AraraException> { file.fetchDirectives(true) }
+        val cause = assertNotNull(failure.cause)
+        assertEquals(LanguageController.messages.errorProjectFileDirectivesExtraction(
+            file.path.toString(), cause.message.orEmpty()), failure.message)
+    }
 }

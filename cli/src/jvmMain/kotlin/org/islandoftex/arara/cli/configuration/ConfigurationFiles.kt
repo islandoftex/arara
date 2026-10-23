@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.configuration
 
+import io.github.oshai.kotlinlogging.KotlinLogging
+
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.Project
@@ -13,10 +15,9 @@ import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.lua.configuration.LuaLocalConfiguration
 import org.islandoftex.arara.mvel.configuration.YamlLocalConfiguration
 import org.islandoftex.arara.mvel.utils.MvelState
+import java.io.InputStreamReader
 import java.nio.charset.Charset
-import java.nio.file.Path
 import java.util.Properties
-import kotlin.io.path.bufferedReader
 
 /**
  * Resolves configuration files and loads configuration and call properties.
@@ -26,6 +27,8 @@ import kotlin.io.path.bufferedReader
  * @since 4.0
  */
 object ConfigurationFiles {
+    private val logger = KotlinLogging.logger { }
+
     /**
      * The configuration file in use.
      *
@@ -98,9 +101,15 @@ object ConfigurationFiles {
         if (configureLogging) LoggingUtils.setupLogging(Session.loggingOptions)
     }
 
-    /** Loads UTF-8 call properties, retaining the existing best-effort behavior on failure. */
-    fun loadProperties(properties: Properties, path: Path, charset: Charset = Charsets.UTF_8) {
-        runCatching { path.bufferedReader(charset).use { properties.load(it) } }
+    /** Loads UTF-8 call properties, logging failures while retaining best-effort loading. */
+    fun loadProperties(properties: Properties, path: MPPPath, charset: Charset = Charsets.UTF_8) {
+        runCatching {
+            path.read { source ->
+                InputStreamReader(source.inputStream(), charset.newDecoder()).buffered().use { properties.load(it) }
+            }
+        }.onFailure { exception ->
+            logger.warn { "Could not load the properties file $path: ${exception.message}" }
+        }
     }
 
     /** Converts property keys and values to strings for session arguments. */

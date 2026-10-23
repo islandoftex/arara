@@ -14,6 +14,7 @@ import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
 
 class CLIRegressionTest {
     private fun fixture(test: (File) -> Unit) {
@@ -136,5 +137,25 @@ class CLIRegressionTest {
               - command: "@{ getSession().put('marker', true); return true; }"
             arguments: []
         """.trimIndent())
+    }
+
+    @Test
+    fun malformedPropertiesRemainBestEffortAndAreLoggedAfterLoggingStarts() = fixture { directory ->
+        val root = directory.toPath().toMPPPath()
+        root.resolve("arararc.yaml").writeText("!config\npaths: ['.']\n")
+        root.resolve("run.tex").writeText("% arara: marker\n")
+        markerRule(directory)
+        val properties = root.resolve("broken.properties")
+        properties.writeText("loaded=from-file\nbroken=\\uZZZZ\n")
+        val log = root.resolve("diagnostic.log")
+        Session.loggingOptions = org.islandoftex.arara.core.configuration.LoggingOptions(logFile = log)
+        val result = assertFailsWith<ProgramResult> {
+            CLI().parse(listOf("-d", root.toString(), "-l", "--properties-file", properties.toString(),
+                "--call-property", "fallback=from-cli", "run.tex"))
+        }
+        assertEquals(0, result.statusCode)
+        assertEquals("from-file", Session["arg:loaded"])
+        assertEquals("from-cli", Session["arg:fallback"])
+        assertTrue(log.readText().contains("Could not load the properties file $properties"))
     }
 }

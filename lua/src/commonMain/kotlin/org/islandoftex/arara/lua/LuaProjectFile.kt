@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.lua
 
+import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.rules.Directive
@@ -28,10 +30,16 @@ internal class LuaProjectFile(
      *
      * @return The list of directives in the file, in order.
      */
-    override fun fetchDirectives(parseOnlyHeader: Boolean): List<Directive> {
-        // TODO: exception handling
-        return directives?.let {
+    override fun fetchDirectives(parseOnlyHeader: Boolean): List<Directive> = try {
+        directives?.let {
             Directives.extractDirectives(it, true, fileType)
         } ?: super.fetchDirectives(parseOnlyHeader)
+    } catch (exception: AraraException) {
+        throw AraraException(
+            LanguageController.messages.errorProjectFileDirectivesExtraction(
+                path.toString(), exception.message.orEmpty()
+            ),
+            exception
+        )
     }
 }

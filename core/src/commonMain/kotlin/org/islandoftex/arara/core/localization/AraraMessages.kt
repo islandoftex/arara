@@ -15,6 +15,9 @@ interface AraraMessages {
     /** The translators credited for this catalog. */
     val translators: List<String>
 
+    /** Project directive extraction failed; arguments: input path and parser details. */
+    fun errorProjectFileDirectivesExtraction(file: String, details: String): String
+
     /** Malformed glob pattern; arguments: pattern and parser details. */
     fun errorGlobPatternInvalid(pattern: String, details: String): String
 

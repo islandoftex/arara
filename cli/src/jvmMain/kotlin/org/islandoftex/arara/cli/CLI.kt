@@ -145,16 +145,17 @@ class CLI : CliktCommand("arara") {
     private val maxLoops by option("-m", "--max-loops")
         .help("Set the maximum number of loops (> 0)")
         .int().restrictTo(min = 1)
-    private val workingDirectory by option("-d", "--working-directory")
+    private val workingDirectory: MPPPath? by option("-d", "--working-directory")
         .help("Set the working directory for all tools")
         .path(mustExist = true, canBeFile = false, mustBeReadable = true)
+        .convert { it.toMPPPath() }
     private val parameters: Map<String, String> by option("-P", "--call-property")
         .help("Pass parameters to the application to be used within the session.")
         .associate()
-    private val properties: Properties? by option("-F", "--properties-file")
+    private val properties: MPPPath? by option("-F", "--properties-file")
         .help("Pass a properties file to the application to be used within the session.")
         .path(mustExist = true, canBeDir = false, mustBeReadable = true)
-        .convert { Properties().apply { ConfigurationFiles.loadProperties(this, it) } }
+        .convert { it.toMPPPath() }
 
     private val logFormat by option("--log-format")
         .help("Set the diagnostic log format: none (default), text or json")
@@ -187,7 +188,7 @@ class CLI : CliktCommand("arara") {
 
     /** Specifications share a graph; loose inputs form a final anonymous project. */
     private fun resolveProjects(configuration: ConfigurationSnapshot): List<org.islandoftex.arara.api.files.Project> {
-        val workingDir = (workingDirectory?.toMPPPath() ?: MPPPath(".")).normalize()
+        val workingDir = (workingDirectory ?: MPPPath(".")).normalize()
         val (specifications, inputs) = reference.partition { it.endsWith(".proj.lua") }
         val projects = specifications.flatMap { specification ->
             val path = workingDir.resolve(specification)
@@ -377,7 +378,9 @@ class CLI : CliktCommand("arara") {
 
         // add all key/value pairs found in the properties file, if
         // provided in the command line
-        properties?.let(ConfigurationFiles::toMap)?.forEach { (key, value) -> Session.put("arg:$key", value) }
+        properties?.let { path ->
+            Properties().apply { ConfigurationFiles.loadProperties(this, path) }
+        }?.let(ConfigurationFiles::toMap)?.forEach { (key, value) -> Session.put("arg:$key", value) }
 
         // add all command line call parameters to the session
         // (command line parameters take precedence over properties)

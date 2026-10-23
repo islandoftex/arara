@@ -5,11 +5,15 @@ import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.shouldBe
 import org.islandoftex.arara.cli.configuration.ConfigurationFiles
 import java.util.Properties
-import kotlin.io.path.Path
+import org.islandoftex.arara.api.files.MPPPath
+import org.islandoftex.arara.api.files.toMPPPath
+import org.islandoftex.arara.api.files.toJVMPath
+import java.nio.file.Files
+import java.nio.file.FileSystems
 
 class PropertiesTest : ShouldSpec({
     context("UTF-8 support for properties files") {
-        val path = Path("src/jvmTest/resources/executiontests/properties/duck.properties")
+        val path = MPPPath("src/jvmTest/resources/executiontests/properties/duck.properties")
         val charset = Charsets.UTF_8
         val translations: Properties = Properties().apply { ConfigurationFiles.loadProperties(this, path, charset) }
 
@@ -40,6 +44,36 @@ class PropertiesTest : ShouldSpec({
             should("get the correct string for $language") {
                 translations[language] shouldBe translation
             }
+        }
+    }
+
+    should("read properties through their filesystem and requested charset") {
+        val root = Files.createTempDirectory("arara properties backend ").toMPPPath()
+        try {
+            FileSystems.newFileSystem(root.resolve("properties.zip").toJVMPath(), mapOf("create" to "true"))
+                .use { filesystem ->
+                    val path = filesystem.getPath("/translations.properties").toMPPPath()
+                    // MPPPath writes UTF-8 text; this fixture needs a different encoding.
+                    Files.write(path.toJVMPath(), "word=canard é\n".toByteArray(Charsets.UTF_16LE))
+                    val properties = Properties()
+                    ConfigurationFiles.loadProperties(properties, path, Charsets.UTF_16LE)
+                    properties.getProperty("word") shouldBe "canard é"
+                }
+        } finally {
+            root.removeDirectory()
+        }
+    }
+
+    should("reject malformed encoded properties without replacing their bytes") {
+        val root = Files.createTempDirectory("arara properties encoding ").toMPPPath()
+        try {
+            val path = root.resolve("invalid.properties")
+            Files.write(path.toJVMPath(), byteArrayOf(0xc3.toByte(), 0x28))
+            val properties = Properties()
+            ConfigurationFiles.loadProperties(properties, path)
+            properties.isEmpty() shouldBe true
+        } finally {
+            root.removeDirectory()
         }
     }
 })

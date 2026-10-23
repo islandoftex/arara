@@ -9,6 +9,12 @@ object BrazilianPortugueseMessages : AraraMessages {
 
     override val translators: List<String> = listOf("Paulo Roberto Massa Cereda")
 
+    override fun errorProjectFileDirectivesExtraction(
+        file: String,
+        details: String
+    ) =
+        "Encontrei um erro ao extrair as diretivas de '${file}': ${details}."
+
     override fun errorGlobPatternInvalid(pattern: String, details: String) =
         "O padrão glob \"${pattern}\" não pôde ser convertido em uma expressão regular: ${details}. Certifique-se de que o padrão esteja bem formado e tente novamente."
 
