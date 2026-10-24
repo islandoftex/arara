@@ -20,12 +20,17 @@ import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 
+/**
+ * Terminal-cell-aware task presentation with optional color and live feedback.
+ * Host streams remain open when the renderer closes.
+ */
 @Suppress("TooManyFunctions")
 class StyledConsoleRenderer internal constructor(
     private val terminal: Terminal,
     clock: TimeSource,
     schedulerFactory: () -> ProgressScheduler
 ) : ConsoleRenderer {
+    /** Create a renderer using a monotonic clock and the default progress scheduler. */
     constructor(terminal: Terminal) : this(terminal, TimeSource.Monotonic, { ExecutorProgressScheduler() })
 
     private val longestMatch: Int

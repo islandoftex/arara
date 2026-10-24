@@ -2,7 +2,8 @@
 package org.islandoftex.arara.cli.ruleset
 
 /**
- * Describe the rule formats supported by this CLI implementation.
+ * Rule file suffixes.
+ * @property extension Filename extension without its leading dot.
  */
 enum class RuleFormat(val extension: String) {
     /**

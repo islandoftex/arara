@@ -97,7 +97,9 @@ class CLI : CliktCommand("arara") {
         installMordantMarkdown()
     }
 
+    /** Show usage when no input files or project specifications were supplied. */
     override val printHelpOnEmptyArgs = true
+    /** Describe the tool and its supported conditional operators. */
     override fun help(context: Context) = """
         @```
         ${DisplayUtils.logoString.lineSequence().joinToString("\n") { "@$it" }}

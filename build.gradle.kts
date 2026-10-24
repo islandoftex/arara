@@ -192,6 +192,7 @@ allprojects {
 
 configure<DokkaExtension> {
     moduleName.set("arara")
+    dokkaPublications.named("html") { failOnWarning.set(true) }
 }
 
 dependencies {
@@ -296,7 +297,7 @@ subprojects {
             dokkaPublications.named("html") {
                 suppressInheritedMembers.set(true)
                 suppressObviousFunctions.set(true)
-                failOnWarning.set(project.name in setOf("api", "core", "lua", "mvel"))
+                failOnWarning.set(true)
             }
             dokkaSourceSets.configureEach {
                 jdkVersion.set(araraJVMInt)

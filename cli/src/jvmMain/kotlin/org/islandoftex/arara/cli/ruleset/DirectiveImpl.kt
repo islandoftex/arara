@@ -14,17 +14,24 @@ import org.islandoftex.arara.core.session.LinearExecutor
  * @since 4.0
  */
 data class DirectiveImpl(
+    /** Rule identifier requested by the directive. */
     override val identifier: String,
+    /** Raw directive parameters supplied to the selected rule engine. */
     override val parameters: Map<String, Any>,
+    /** Condition controlling directive scheduling. */
     override val conditional: DirectiveConditional,
+    /** One-based source lines occupied by this directive. */
     override val lineNumbers: List<Int>,
+    /** Rule engine selected for this directive. */
     val engine: RuleEngine = RuleEngine.YAML
 ) : Directive {
+    /** Execute using the current linear-executor file, project and options, returning the final status. */
     override fun execute(): Int = Interpreter(
         LinearExecutor.executionOptions, LinearExecutor.currentFile!!,
         LinearExecutor.currentProject!!.workingDirectory, engine
     ).execute(this).exitCode
 
+    /** Describe the directive and its source metadata for diagnostics. */
     override fun toString(): String {
         return "Directive(identifier='$identifier', parameters=$parameters," +
             "conditional=$conditional, lineNumbers=$lineNumbers)"

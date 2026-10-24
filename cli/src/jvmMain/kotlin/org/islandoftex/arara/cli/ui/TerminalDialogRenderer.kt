@@ -15,10 +15,12 @@ open class TerminalDialogRenderer(
     private val columns: () -> Int = { Session.userInterfaceOptions.terminalOutputWidth },
     protected val beforeDialog: () -> Unit = {}
 ) : DialogRenderer {
+    /** Print the message without reading a response. */
     override fun showMessage(type: Int, title: String, text: String) {
         block(type, title, text)
     }
 
+    /** Print a prompt and return one input line; end-of-input raises a localized error. */
     override fun showInput(type: Int, title: String, text: String): String {
         block(type, title, text)
         output.print("> ")
@@ -26,9 +28,11 @@ open class TerminalDialogRenderer(
         return answer().trim()
     }
 
+    /** Return a one-based button choice, or zero for cancellation or an empty choice list. */
     override fun showOptions(type: Int, title: String, text: String, buttons: Array<out Any>): Int =
         selection(type, title, text, buttons)
 
+    /** Return a one-based list choice, or zero for cancellation or an empty list. */
     override fun showList(type: Int, title: String, text: String, elements: Array<out Any>): Int =
         selection(type, title, text, elements)
 

@@ -171,8 +171,8 @@ checks. `nix build .#website` compiles the same helpers and runs the same checks
 without downloading Gradle dependencies.
 
 `./gradlew dokkaGeneratePublicationHtml` builds the combined API reference in
-`build/dokka/html`. `:api:dokkaGeneratePublicationHtml` rejects documentation
-warnings for the public API module. Maven publications carry Kotlin sources and
+`build/dokka/html`. Every application module and the combined publication reject
+Dokka warnings, including undocumented public declarations and unresolved KDoc links. Maven publications carry Kotlin sources and
 HTML API reference jars (the `javadoc` classifier).
 `./gradlew checkPublications` checks staged Maven artifacts and uses Gradle TestKit
 to build and run an independent Kotlin consumer of core and its transitive API
