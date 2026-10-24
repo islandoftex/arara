@@ -5,8 +5,11 @@ import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.core.localization.LanguageController
 
+/** A validated directive comment pattern with identity determined by its filename extension. */
 data class FileType(
+    /** Filename extension without its leading dot. */
     override val extension: String = FileType.INVALID_EXTENSION,
+    /** Regular expression identifying comment lines that may contain directives. */
     override val pattern: String = FileType.INVALID_PATTERN
 ) : FileType {
     init {

@@ -21,7 +21,8 @@ public interface Project {
     public val workingDirectory: MPPPath
 
     /**
-     * The project's files. A file can only be added once to a project.
+     * The project's files. A source path may occur only once across all projects
+     * in one invocation. Use multiple directives to process a file repeatedly.
      */
     public val files: Set<ProjectFile>
 

@@ -17,7 +17,7 @@ import org.islandoftex.arara.core.localization.LanguageController
  * per [his comment](https://stackoverflow.com/questions/1247772/is-there-an-
  * equivalent-of-java-util-regex-for-glob-type-patterns#comment108405664_17369948).
  *
- * @param pattern A glob pattern.
+ * @receiver The glob pattern to convert.
  * @return A regex to recognize the given glob pattern.
  */
 @Suppress("ComplexMethod")

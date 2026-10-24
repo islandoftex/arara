@@ -7,8 +7,19 @@ import org.zeroturnaround.exec.InvalidExitValueException
 
 /** A completed process or a failure to start or finish one. */
 sealed class SystemCommandResult {
+    /**
+     * A process that exited, including unsuccessful exit codes.
+     * @property exitCode The process exit status.
+     * @property output Captured standard output and standard error.
+     */
     data class Completed(val exitCode: Int, val output: String) : SystemCommandResult()
+    /**
+     * A process that could not start or finish normally.
+     * @property exception Original backend failure.
+     * @property output Output captured before the failure.
+     */
     data class Failed(val exception: Exception, val output: String) : SystemCommandResult() {
+        /** Backend-neutral classification of [exception]. */
         val kind: FailureKind
             get() = when (exception) {
                 is IOException -> FailureKind.IO

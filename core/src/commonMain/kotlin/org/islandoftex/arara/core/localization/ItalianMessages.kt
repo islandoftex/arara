@@ -3,6 +3,7 @@ package org.islandoftex.arara.core.localization
 
 import org.islandoftex.arara.api.localization.MPPLocale
 
+/** Italian message catalog. */
 @Suppress("MaxLineLength", "TooManyFunctions")
 object ItalianMessages : AraraMessages {
     override val providedLocale: MPPLocale = MPPLocale("it")

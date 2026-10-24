@@ -19,6 +19,7 @@ import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.ui.DialogRenderer
 import org.islandoftex.arara.core.ui.Dialogs
 
+/** Shared command, file, value and dialog helpers exposed to rule engines. */
 @Suppress("unused", "TooManyFunctions")
 object RuleMethods {
     private val dialogs: DialogRenderer get() = Dialogs.renderer

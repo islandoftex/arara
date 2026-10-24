@@ -19,5 +19,6 @@ interface DialogRenderer {
 
 /** Dialog capability installed by the host, independent of rule-helper initialization. */
 object Dialogs {
+    /** Dialog renderer supplied by the host; the default rejects dialogs in headless use. */
     var renderer: DialogRenderer = HeadlessDialogRenderer
 }

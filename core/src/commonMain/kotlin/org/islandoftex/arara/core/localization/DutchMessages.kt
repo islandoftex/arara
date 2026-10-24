@@ -3,6 +3,7 @@ package org.islandoftex.arara.core.localization
 
 import org.islandoftex.arara.api.localization.MPPLocale
 
+/** Dutch message catalog. */
 @Suppress("MaxLineLength", "TooManyFunctions")
 object DutchMessages : AraraMessages {
     override val providedLocale: MPPLocale = MPPLocale("nl")

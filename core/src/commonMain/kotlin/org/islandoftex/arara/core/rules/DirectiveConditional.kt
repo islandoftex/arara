@@ -13,7 +13,9 @@ import org.islandoftex.arara.api.rules.DirectiveConditionalType
  * @since 4.0
  */
 data class DirectiveConditional(
+    /** Conditional operator applied to the directive. */
     override val type: DirectiveConditionalType = DirectiveConditionalType.NONE,
+    /** Expression evaluated by the selected rule engine. */
     override val condition: String = ""
 ) : DirectiveConditional {
     /**

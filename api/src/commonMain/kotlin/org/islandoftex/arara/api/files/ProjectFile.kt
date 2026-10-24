@@ -10,8 +10,8 @@ import org.islandoftex.arara.api.rules.Directive
  */
 public interface ProjectFile {
     /**
-     * The path to this file. If relative, it will be resolved against the
-     * project's [Project.workingDirectory].
+     * The source path. Project loaders resolve relative file names against
+     * [Project.workingDirectory] before constructing this model.
      */
     public val path: MPPPath
 
@@ -31,6 +31,7 @@ public interface ProjectFile {
      * Get the file's directives. This does not put them into any context,
      * just resolves the literal directives.
      *
+     * @param parseOnlyHeader Stop when a line no longer matches the file's comment pattern.
      * @return The list of directives in the file, in order.
      */
     public fun fetchDirectives(parseOnlyHeader: Boolean): List<Directive>

@@ -7,6 +7,7 @@ import org.islandoftex.arara.api.AraraIOException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.core.localization.LanguageController
 
+/** Filesystem helpers for rule evaluation and file-change detection. */
 object FileHandling {
     /**
      * Resolve the sibling of a file with just its extension changed.

@@ -11,11 +11,18 @@ import org.islandoftex.arara.api.session.ExecutionReport
  * This is a collection of all hooks that are applicable.
  */
 data class ExecutorHooks(
+    /** Called after invocation validation, before any project runs. */
     val executeBeforeExecution: () -> Unit = { },
+    /** Called with the aggregate report when execution returns normally, including nonzero statuses. */
     val executeAfterExecution: (ExecutionReport) -> Unit = { _ -> },
+    /** Called after the current project is set, before its files run. */
     val executeBeforeProject: (Project) -> Unit = { _ -> },
+    /** Called after the project file loop, including a stop on a nonzero status; skipped on exceptions. */
     val executeAfterProject: (Project) -> Unit = { _ -> },
+    /** Called before the file becomes current and its directives are fetched. */
     val executeBeforeFile: (ProjectFile) -> Unit = { _ -> },
+    /** Called with the file report after current-file state is cleared; skipped if file execution throws. */
     val executeAfterFile: (ExecutionReport) -> Unit = { _ -> },
+    /** Transforms extracted directives before their execution; also receives the current project file. */
     val processDirectives: (ProjectFile, List<Directive>) -> List<Directive> = { _, l -> l }
 )

@@ -3,6 +3,7 @@ package org.islandoftex.arara.core.localization
 
 import org.islandoftex.arara.api.localization.MPPLocale
 
+/** German message catalog. */
 @Suppress("MaxLineLength", "TooManyFunctions")
 object GermanMessages : AraraMessages {
     override val providedLocale: MPPLocale = MPPLocale("de")

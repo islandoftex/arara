@@ -13,6 +13,7 @@ import org.islandoftex.arara.core.localization.LanguageController
  * Implements directive auxiliary methods.
  */
 object Directives {
+    /** Hooks used to transform potential directives and construct engine-specific directive objects. */
     @JvmStatic
     var hooks = DirectiveFetchingHooks()
 

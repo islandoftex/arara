@@ -8,6 +8,10 @@ import org.islandoftex.arara.core.localization.LanguageController
 
 /** Invocation-wide validation, completed before any execution hooks run. */
 object ProjectValidation {
+    /**
+     * Validate project dependencies and unique file ownership, then return a stable execution order.
+     * Throws [AraraException] for invalid names, missing dependencies, cycles or repeated file paths.
+     */
     fun executionOrder(projects: List<Project>): List<Project> {
         val order = ProjectGraph().apply { addAll(projects) }.kahn()
         val owners = mutableMapOf<MPPPath, String>()

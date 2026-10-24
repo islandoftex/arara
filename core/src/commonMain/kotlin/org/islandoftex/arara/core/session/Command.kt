@@ -12,7 +12,9 @@ import org.islandoftex.arara.api.session.Command
  * @since 4.0
  */
 data class Command(
+    /** Executable followed by its arguments, without shell tokenization. */
     override val elements: List<String>,
+    /** Subprocess working directory, or null to inherit the process default. */
     override val workingDirectory: MPPPath? = null
 ) : Command {
     /**

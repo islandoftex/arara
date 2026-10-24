@@ -32,8 +32,7 @@ public enum class ExecutionMode {
 }
 
 /**
- * Configure arara's runtime behavior. These options will be frozen for an
- * execution once it has been started.
+ * Runtime settings supplied to an executor.
  */
 @ExperimentalTime
 public interface ExecutionOptions {
@@ -44,7 +43,7 @@ public interface ExecutionOptions {
     public val maxLoops: Int
 
     /**
-     * After how long a run should time out. Choose 0 milliseconds to
+     * Wall-clock limit for each system command. Choose 0 milliseconds to
      * indicate you do not want a timeout.
      */
     public val timeoutValue: Duration

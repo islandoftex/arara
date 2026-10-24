@@ -10,6 +10,10 @@ import org.islandoftex.arara.api.session.ExecutionReport
 import org.islandoftex.arara.api.session.Executor
 import org.islandoftex.arara.core.dependencies.ProjectValidation
 
+/**
+ * Executes projects and their files sequentially through [ExecutorHooks].
+ * Validation precedes execution; higher file priorities run first, with normalized paths breaking ties.
+ */
 object LinearExecutor : Executor {
     /**
      * Specify custom user hooks to run.
@@ -33,8 +37,8 @@ object LinearExecutor : Executor {
         private set
 
     /**
-     * The setup for all executions run by this executor. The execution options
-     * should not change while executing one project.
+     * The setup for all executions run by this executor. The setter rejects changes
+     * while a file is executing and rejects parallel execution.
      */
     override var executionOptions: ExecutionOptions =
         org.islandoftex.arara.core.configuration.ExecutionOptions()
@@ -53,14 +57,9 @@ object LinearExecutor : Executor {
             }
 
     /**
-     * Execute rules based on the projects. Should roughly implement the
-     * following steps:
-     *
-     * 1. Resolve project dependencies and create an appropriate execution
-     *    order. Pay attention to blocking when doing parallel execution.
-     * 2. Run arara's main routines on each project. Within a project,
-     *    follow the file priorities.
-     * 3. Wait for all tasks to finish.
+     * Validate the invocation, then execute projects in dependency order and files by priority.
+     * A later success does not erase an earlier failure. With halt-on-errors enabled,
+     * the first unsuccessful file stops the invocation.
      *
      * @param projects The projects to act on.
      */

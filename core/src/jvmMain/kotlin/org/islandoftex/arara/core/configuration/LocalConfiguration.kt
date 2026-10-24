@@ -34,8 +34,11 @@ data class LocalConfiguration(
     private val dbname: String? = null,
     private val logname: String? = null,
     private val logformat: String? = null,
+    /** Named directive snippets available to project files. */
     val preambles: Map<String, String> = mapOf(),
+    /** Name of the preamble selected when no explicit preamble was requested. */
     val defaultPreamble: String? = null,
+    /** Whether the default preamble also applies to files that already contain directives. */
     val prependPreambleIfDirectivesGiven: Boolean = true,
     @Transient private val expandPathTokens: Boolean = true,
     private val animations: Boolean? = null

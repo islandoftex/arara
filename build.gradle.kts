@@ -296,6 +296,7 @@ subprojects {
             dokkaPublications.named("html") {
                 suppressInheritedMembers.set(true)
                 suppressObviousFunctions.set(true)
+                failOnWarning.set(project.name in setOf("api", "core"))
             }
             dokkaSourceSets.configureEach {
                 jdkVersion.set(araraJVMInt)

@@ -3,6 +3,7 @@ package org.islandoftex.arara.core.localization
 
 import org.islandoftex.arara.api.localization.MPPLocale
 
+/** Brazilian Portuguese message catalog. */
 @Suppress("MaxLineLength", "TooManyFunctions")
 object BrazilianPortugueseMessages : AraraMessages {
     override val providedLocale: MPPLocale = MPPLocale("pt-BR")

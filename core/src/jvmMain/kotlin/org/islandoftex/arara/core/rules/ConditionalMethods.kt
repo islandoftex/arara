@@ -15,6 +15,7 @@ import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.ui.DialogRenderer
 import org.islandoftex.arara.core.ui.Dialogs
 
+/** Interpreter-neutral conditional helpers exposed to rule engines. */
 @Suppress("unused", "TooManyFunctions")
 object ConditionalMethods {
     private val dialogs: DialogRenderer get() = Dialogs.renderer

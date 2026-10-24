@@ -3,6 +3,7 @@ package org.islandoftex.arara.core.localization
 
 import org.islandoftex.arara.api.localization.MPPLocale
 
+/** Norfolk message catalog. */
 @Suppress("MaxLineLength", "TooManyFunctions")
 object NorfolkMessages : AraraMessages {
     override val providedLocale: MPPLocale = MPPLocale("en-QN")
