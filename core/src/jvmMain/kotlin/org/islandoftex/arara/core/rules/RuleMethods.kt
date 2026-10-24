@@ -668,7 +668,7 @@ object RuleMethods {
      * @return A boolean value.
      */
     @JvmStatic
-    fun isString(obj: Any?): Boolean = checkClass(java.lang.String::class.java, obj)
+    fun isString(obj: Any?): Boolean = checkClass(String::class.java, obj)
 
     /**
      * Checks if the object is a list.
@@ -677,7 +677,7 @@ object RuleMethods {
      * @return A boolean value.
      */
     @JvmStatic
-    fun isList(obj: Any?): Boolean = checkClass(java.util.List::class.java, obj)
+    fun isList(obj: Any?): Boolean = checkClass(List::class.java, obj)
 
     /**
      * Checks if the object is a map.
@@ -686,7 +686,7 @@ object RuleMethods {
      * @return A boolean value.
      */
     @JvmStatic
-    fun isMap(obj: Any?): Boolean = checkClass(java.util.Map::class.java, obj)
+    fun isMap(obj: Any?): Boolean = checkClass(Map::class.java, obj)
 
     /**
      * Checks if the object is a boolean.
@@ -695,7 +695,7 @@ object RuleMethods {
      * @return A boolean value.
      */
     @JvmStatic
-    fun isBoolean(obj: Any?): Boolean = checkClass(java.lang.Boolean::class.java, obj)
+    fun isBoolean(obj: Any?): Boolean = checkClass(Boolean::class.javaObjectType, obj)
 
     /**
      * Checks if the provided command name is reachable from the system path.

@@ -20,7 +20,7 @@ jobs:
       with:
         gradle-version: current
     - name: Build
-      run: ./gradlew build -PtestJavaVersion=${{ matrix.java }}
+      run: ./gradlew build -PwarningsAsErrors=true -PtestJavaVersion=${{ matrix.java }}
     - name: Check runnable jar
       run: ./gradlew processSmoke
     - name: Upload smoke results

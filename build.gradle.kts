@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
+import io.gitlab.arturbosch.detekt.Detekt
 import java.nio.file.Path
 import org.gradle.api.artifacts.component.ModuleComponentIdentifier
 import org.gradle.api.publish.maven.tasks.PublishToMavenRepository
@@ -17,6 +18,7 @@ import org.jetbrains.dokka.gradle.DokkaExtension
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
 plugins {
     id("jvm-toolchains")
@@ -172,11 +174,20 @@ val araraJVMTarget = JvmTarget.fromTarget(araraJVMString)
 val araraJVMInt = araraJVMString.toInt()
 val araraKotlinAPI = KotlinVersion.fromVersion(providers.gradleProperty("arara.kotlin.api").get())
 val araraKotlinLanguage = KotlinVersion.fromVersion(providers.gradleProperty("arara.kotlin.language").get())
+val warningsAsErrors = providers.gradleProperty("warningsAsErrors").map(String::toBooleanStrict).orElse(false)
+
+tasks.withType<Detekt>().configureEach {
+    jvmTarget = araraJVMString
+}
 
 allprojects {
     group = "org.islandoftex.arara"
     description = "TeX automation tool based on rules and directives"
     version = rootProject.version
+
+    tasks.withType<KotlinCompilationTask<*>>().configureEach {
+        compilerOptions.allWarningsAsErrors.set(warningsAsErrors)
+    }
 }
 
 configure<DokkaExtension> {

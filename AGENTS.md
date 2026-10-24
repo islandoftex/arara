@@ -77,6 +77,10 @@ Run from the repo root with `./gradlew`. Current Gradle plugins require
 JDK 17+ to build; the Nix development shell supplies JDK 21. The application
 targets JRE 21.
 
+Add `-PwarningsAsErrors=true` to reject Kotlin compiler warnings in application
+and test compilations, including the smoke-test runner. CI enables this check.
+Detekt parses sources against the configured `arara.jvm.target`.
+
 - `./gradlew build` — compile + `jvmTest` for all subprojects.
 - `./gradlew allTests` — run all KMP tests (this is what CI runs).
   Use `-PtestJavaVersion=25` to run test workers on Java 25. The Foojay
