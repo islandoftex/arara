@@ -13,10 +13,15 @@ import org.luaj.vm2.LuaValue
 
 /** A rule parsed from a Lua table by [LuaRuleParser]. */
 class LuaRule(
+    /** Identifier used to locate this rule. */
     override val identifier: String,
+    /** Optional human-readable rule name. */
     override val displayName: String?,
+    /** Authors credited by the rule. */
     override val authors: List<String>,
+    /** Commands evaluated in declaration order. */
     override val commands: List<LuaRuleCommand>,
+    /** Accepted directive parameters and their processors. */
     override val arguments: List<LuaRuleArgument>
 ) : Rule
 
@@ -29,10 +34,12 @@ class LuaRule(
  * exit code and must return a boolean; without one, only zero indicates success.
  */
 class LuaRuleCommand(
+    /** Optional human-readable task name. */
     override val name: String?,
     private val commandFunction: LuaFunction,
     private val exitFunction: LuaFunction?
 ) : RuleCommand, CommandEvaluator {
+    /** Apply the optional Lua exit predicate; without one, only exit code zero succeeds. */
     override fun isSuccessful(exitCode: Int): Boolean {
         val code = exitCode
         return exitFunction?.let { fn ->
@@ -48,6 +55,7 @@ class LuaRuleCommand(
         } ?: (code == 0)
     }
 
+    /** Evaluate the Lua command closure with processed parameters and reference metadata. */
     @Throws(AraraException::class)
     override fun evaluate(parameters: Map<String, Any>): List<Any> =
         LuaConversion.withLuaErrorHandling(
@@ -76,11 +84,15 @@ class LuaRuleCommand(
  * a single string. Required arguments must be supplied explicitly.
  */
 class LuaRuleArgument(
+    /** Directive parameter name. */
     override val identifier: String,
+    /** Whether the directive must supply this argument explicitly. */
     override val isRequired: Boolean,
+    /** Literal default used when an optional argument is omitted. */
     override val defaultValue: Any?,
     private val flagFunction: LuaFunction?
 ) : RuleArgument<Any?> {
+    /** Convert a value to flag strings using the optional Lua flag closure and raw parameter context. */
     override val processor: (Any?, Map<String, Any>) -> List<String> =
         { input, context ->
             LuaConversion.withLuaErrorHandling(
@@ -111,6 +123,7 @@ class LuaRuleArgument(
             }
         }
 
+    /** Describe argument metadata for diagnostics, without executing the flag closure. */
     override fun toString(): String =
         "LuaRuleArgument(identifier='$identifier', isRequired=$isRequired, " +
             "defaultValue=$defaultValue)"

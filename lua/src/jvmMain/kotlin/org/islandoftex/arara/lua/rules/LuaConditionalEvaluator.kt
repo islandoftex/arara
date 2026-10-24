@@ -15,6 +15,7 @@ import org.luaj.vm2.LuaBoolean
  * expressions use Lua's `and`, `or` and `not` operators.
  */
 class LuaConditionalEvaluator(executionOptions: ExecutionOptions) : DirectiveConditionalEvaluator(executionOptions) {
+    /** Evaluate the expression as a strict Lua boolean, inverting unless and until results. */
     override fun evaluateCondition(conditional: DirectiveConditional): Boolean {
         val result = LuaConversion.withLuaErrorHandling(LanguageController.messages.errorEvaluateCompilationFailed) {
             LuaConditionalEnvironment.newGlobals()

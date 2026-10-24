@@ -123,6 +123,7 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
         return projects
     }
 
+    /** Project preparation after configuration has supplied the available file types. */
     companion object {
         /** Resolve implicit types against the configuration belonging to this project. */
         fun resolvePendingFileTypes(

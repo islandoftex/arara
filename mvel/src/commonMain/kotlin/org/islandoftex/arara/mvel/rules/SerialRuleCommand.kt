@@ -14,17 +14,19 @@ import org.islandoftex.arara.api.rules.RuleCommand
  */
 @Serializable
 class SerialRuleCommand : RuleCommand {
+    /** Optional human-readable task name. */
     override var name: String? = null
-    // TODO: why is trimming needed?
+    /** MVEL command template, with outer whitespace trimmed on access. */
     @SerialName("command")
     var commandString: String? = null
         get() = field?.trim()
 
     /**
-     * The exit status expression
+     * Boolean MVEL expression with the exit code available as `value`; null selects `value == 0`.
      */
     var exit: String? = null
 
+    /** Describe the task name and command template for diagnostics. */
     override fun toString(): String {
         return "RuleCommand(name=$name, commandString=$commandString)"
     }

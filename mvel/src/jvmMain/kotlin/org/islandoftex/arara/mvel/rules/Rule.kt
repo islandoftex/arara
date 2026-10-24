@@ -18,13 +18,19 @@ import org.islandoftex.arara.core.localization.LanguageController
  */
 @Serializable
 data class Rule(
+    /** Identifier used to locate this rule. */
     override val identifier: String,
+    /** Optional human-readable rule name. */
     @SerialName("name")
     override val displayName: String? = null,
+    /** Authors credited by the rule. */
     override val authors: List<String> = emptyList(),
+    /** Commands evaluated in declaration order. */
     override val commands: List<SerialRuleCommand> = emptyList(),
+    /** Accepted directive parameters and their processors. */
     override val arguments: List<RuleArgument> = emptyList()
 ) : Rule {
+    /** YAML rule loading and validation. */
     companion object {
         /**
          * Parses the provided file, checks the identifier and returns a rule

@@ -10,6 +10,7 @@ import org.islandoftex.arara.core.localization.LanguageController
  * result becomes empty text; MVEL's `@{ ... }` tags are rejected.
  */
 object LuaInterpolation {
+    /** Evaluate each Lua interpolation tag in fresh conditional globals; preserve the surrounding text. */
     fun interpolate(template: String): String =
         LuaConversion.withLuaErrorHandling(LanguageController.messages.errorLuaInterpolationFailure) {
             if ("@{" in template) fail(LanguageController.messages.errorYamlTagsInLua)

@@ -25,19 +25,23 @@ class RuleArgument : RuleArgument<Any?> {
     @Transient
     private val logger = LoggerFactory.getLogger(RuleArgument::class.java)
 
+    /** Directive parameter name. */
     override var identifier: String = ""
 
+    /** Whether the directive must supply this argument explicitly. */
     @SerialName("required")
     override var isRequired: Boolean = false
 
     private var flag: String? = null
         get() = field?.trim()
 
+    /** Default YAML text with outer whitespace removed, or null. */
     override val defaultValue: Any?
         get() = default?.trim()
 
     private val default: String? = null
 
+    /** Evaluate the MVEL flag template with the supplied value and raw parameter context. */
     @Transient
     override val processor: (Any?, Map<String, Any>) -> List<String> = { input, context ->
         try {
@@ -91,6 +95,7 @@ class RuleArgument : RuleArgument<Any?> {
         )
     }
 
+    /** Describe argument metadata for diagnostics, without evaluating its templates. */
     override fun toString(): String {
         return "RuleArgument(identifier='$identifier', isRequired=$isRequired, " +
             "flag=$flag, defaultValue=$defaultValue)"
