@@ -470,6 +470,38 @@ an abnormal execution is detected, the tool will instantly halt and the rule
 will fail. Even arara itself will return an exit code different than zero when
 this situation happens (detailed in [Command line](@/manual/CLI.md)).
 
+# The life of a directive
+
+Rules and directives work in pairs. A directive takes the following steps
+before a tool is run:
+
+1. arara locates the rule by its identifier, using the selected engine and
+   configured rule paths.
+2. The rule is loaded and validated. Supplied parameters and defaults are
+   processed into the argument values available to its commands.
+3. An `if`, `unless` or `while` conditional is checked before execution. If it
+   does not permit execution, the directive is skipped. `until` runs the
+   directive once before checking its condition.
+4. The rule's commands are evaluated in declaration order. Their results may
+   contain system commands, boolean results or lists of these values.
+5. Each system command is run and its exit status checked against the rule's
+   success condition. Looping directives repeat subject to the loop limit;
+   otherwise execution proceeds to the next directive.
+
+A false conditional skips command evaluation, not rule loading or argument
+processing. Unknown rules, invalid parameters and errors in argument processors
+can therefore be reported even for a directive whose conditional is false.
+The conditional operators are detailed below; arara's final status is explained
+in [Command line](@/manual/CLI.md#file-name-lookup).
+
+{% messagebox(title="What a dry run evaluates") %}
+A dry run skips conditional evaluation and system command execution. Rule
+scripts, argument processors and command expressions still evaluate. Helpers
+called by that code can write files, update the database or request a dialog;
+a dry run does not suppress those operations. Boolean results and evaluation
+errors can still make it fail.
+{% end %}
+
 # Directives
 
 A *directive* is a special comment inserted in the source file in which you
@@ -581,7 +613,7 @@ For instance, the Lua equivalent of `missing('pdf') || changed('tex')` is
 `missing('pdf') or changed('tex')`. Lua conditionals must return a boolean;
 strings and numbers are not accepted as truth values.
 
-- **[a priori]** `if`: The associated MVEL expression is evaluated beforehand,
+- **[a priori]** `if`: The associated expression is evaluated beforehand,
   and the directive is interpreted if, and only if, the result of such
   evaluation is true. This directive, when the conditional holds true, is
   executed at most once.
@@ -591,7 +623,7 @@ strings and numbers are not accepted as truth values.
   ```
 
 - **[a posteriori]** `until`: The directive is interpreted the first time, then
-  the associated MVEL expression evaluation is done. While the result holds
+  the associated expression evaluation is done. While the result holds
   false, the directive is interpreted again and again. There are no guarantees
   of proper halting.
 
@@ -600,7 +632,7 @@ strings and numbers are not accepted as truth values.
   ```
 
 - **[a priori]** `unless`: Technically an inverted `if` conditional, the
-  associated MVEL expression is evaluated beforehand, and the directive is
+  associated expression is evaluated beforehand, and the directive is
   interpreted if, and only if, the result is false. This directive, when the
   conditional holds false, is executed at most once.
 
@@ -608,7 +640,7 @@ strings and numbers are not accepted as truth values.
   % arara: pdflatex unless unchanged('tex') && exists('pdf')
   ```
 
-- **[a priori]** `while`: The associated MVEL expression is evaluated
+- **[a priori]** `while`: The associated expression is evaluated
   beforehand, the directive is interpreted if, and only if, the result is
   true, and the process is repeated while the result still holds true. There
   are no guarantees of proper halting.

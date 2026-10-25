@@ -658,9 +658,19 @@ for retrieving such information.
 
 # Rule engine
 
-`-e yaml` / `--engine yaml` (the default) uses YAML rules with MVEL expressions.
-`-e lua` / `--engine lua` uses [Lua rules and expressions](@/manual/Lua.md).
+The engine selects the rule format and the language used in directive
+conditionals and interpolated options:
+
+| Selection | Rule format | Expression language | Option tags |
+| --- | --- | --- | --- |
+| `-e yaml` / `--engine yaml` (default) | YAML | MVEL | `@{ ... }` |
+| `-e lua` / `--engine lua` | Lua table | Lua | `{{ ... }}` |
+
 The selection applies to every project and loose input in the invocation.
+Directive parameter mappings retain their YAML syntax with either engine.
+Configuration files may independently use YAML or Lua; `--engine` does not
+select the configuration format. See [Lua rules](@/manual/Lua.md) and
+[Configuration file](@/manual/Configuration.md) for examples.
 
 # Console presentation
 
