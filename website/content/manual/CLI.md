@@ -164,7 +164,8 @@ Usage: arara [<options>] <file>...
   feature conditional execution and parameter expansion.
 
 Options:
-  -e, --engine=(lua|yaml)        Rule engine: lua (default) or deprecated yaml
+  -e, --preferred-engine=(lua|yaml)
+                                Preferred rule engine; lua by default, with fallback
   -l, --log                      Write a text diagnostic log (shorthand for
                                  --log-format=text)
   -v, --verbose                  Print the command output
@@ -677,17 +678,24 @@ summary also reports a compatibility warning. To suppress both, set
 in YAML configuration. This does not deprecate YAML configuration files,
 directive parameter mappings or the file database.
 
-The engine selects the rule format and the language used in directive
-conditionals and interpolated options:
+The `--preferred-engine` option (`-e`) sets the
+preferred format. Rule directories retain their configured order. Within each
+directory, arara tries the preferred format first, then the other format. In
+each format, an unprefixed filename takes priority over `arara-rule-<name>`.
+A malformed rule is an error, not a reason to try another format.
 
-| Selection | Rule format | Expression language | Option tags |
-| --- | --- | --- | --- |
-| `-e lua` / `--engine lua` (default) | Lua table | Lua | `{{ ... }}` |
-| `-e yaml` / `--engine yaml` (deprecated) | YAML | MVEL | `@{ ... }` |
+The resolved rule determines the language of its directive conditionals and
+interpolated options:
 
-The selection applies to every project and loose input in the invocation.
+| Rule format | Expression language | Option tags |
+| --- | --- | --- |
+| Lua table | Lua | `{{ ... }}` |
+| YAML (deprecated) | MVEL | `@{ ... }` |
+
+The preference applies to every project and loose input in the invocation.
+A run can mix Lua and YAML rules; each directive uses its resolved rule's language.
 Directive parameter mappings retain their YAML syntax with either engine.
-Configuration files may independently use Lua or YAML; `--engine` does not
+Configuration files may independently use Lua or YAML; `--preferred-engine` does not
 select the configuration format. See [Lua rules](@/manual/Lua.md) and
 [Configuration file](@/manual/Configuration.md) for examples.
 

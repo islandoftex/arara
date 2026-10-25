@@ -31,7 +31,7 @@ class ProjectsRegressionTest {
 
     private fun run(root: MPPPath, vararg references: String): Int =
         assertFailsWith<ProgramResult> {
-            CLI().parse(listOf("--engine", "yaml", "-d", root.toString()) + references)
+            CLI().parse(listOf("--preferred-engine", "yaml", "-d", root.toString()) + references)
         }.statusCode
 
     private fun marker(root: MPPPath, value: String = "ran") {

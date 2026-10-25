@@ -66,11 +66,11 @@ Save it as `hello.lua` in a configured rule path and use `% arara: hello`.
 
 ## Legacy YAML/MVEL rule structure
 
-With the legacy `yaml` engine (`--engine yaml`), a rule is a plain text file written in the YAML
+With the legacy `yaml` engine (`--preferred-engine yaml`), a rule is a plain text file written in the YAML
 format, described in [YAML](@/manual/YAML.md). The rule structure and examples
 below describe this format. Lua rules return a table instead; their structure
 and examples are covered in [Lua rules](@/manual/Lua.md). Select them with
-`arara --engine lua document.tex`.
+`arara --preferred-engine lua document.tex`.
 
 I opted for YAML because back then it was cleaner
 and more intuitive to use than other markup languages such as XML, besides of
@@ -619,7 +619,7 @@ in order to determine whether and how a directive
 should be processed. This feature is named *directive conditional*, or simply
 *conditional* as an abbreviation. The following list describes all conditional
 operators available in the directive context. Expressions use Lua by default and MVEL with the
-legacy `yaml` engine (`--engine yaml`). The examples below use Lua.
+legacy `yaml` engine (`--preferred-engine yaml`). The examples below use Lua.
 
 | Operation | Lua | MVEL |
 | --- | --- | --- |
@@ -848,7 +848,7 @@ strings. Null parameter values are rejected.
 {% end %}
 
 {% messagebox(title="Custom rule formats") %}
-Lua is the default engine. YAML/MVEL rules require `--engine yaml` and are
+Lua is preferred by default. YAML/MVEL rules are detected automatically and are
 deprecated; they will be discontinued in v9.
 The unfinished Kotlin scripting DSL and `.kts` rule lookup have been removed.
 See the [migration post](@/news/2026-10-22-Migration-v8.md) for examples of

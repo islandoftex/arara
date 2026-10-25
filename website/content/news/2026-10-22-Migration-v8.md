@@ -19,7 +19,7 @@ arara 8 requires Java 21 or later. Check the Java installation used by the
 launcher, as it may differ from the one selected in an editor.
 
 Lua is now the default rule engine. The official rules have Lua counterparts.
-Existing custom YAML/MVEL rules require `--engine yaml`; they are deprecated
+Existing custom YAML/MVEL rules are detected automatically; they are deprecated
 and will be discontinued in v9. Each YAML rule used produces a log warning,
 and the summary includes a compatibility warning. Set
 `warn_deprecated_yaml = false` in Lua configuration or `warnDeprecatedYaml: false`

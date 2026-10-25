@@ -18,7 +18,7 @@ private class TexIntegration(private val options: Map<String, String>, private v
 
     private fun execute(root: MPPPath, label: String = "run", expected: Int = 0): String {
         val result = run(launcher + listOf("-Duser.home=$root", "-jar", jar.toString(), "-L", "en",
-            "--engine", engine, "--verbose", "-d", root.toString(), "run.tex"), root,
+            "--preferred-engine", engine, "--verbose", "-d", root.toString(), "run.tex"), root,
             timeoutSeconds = TEX_TIMEOUT_SECONDS)
         root.resolve("$label.output.txt").writeText(result.output)
         check(result.status == expected) { "Expected exit $expected, got ${result.status}\n${result.output}" }

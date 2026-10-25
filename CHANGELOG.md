@@ -30,7 +30,9 @@ on.
 * Plain console runs include a version greeting, file and task totals, and the
   names of files not reached after a failure. Dry runs report simulated tasks.
 
-* `-e` is a short alias for `--engine`.
+* `--preferred-engine` (`-e`) selects the preferred rule format. Lookup keeps
+  rule-directory priority and falls back to the other format within each directory.
+  The resolved rule determines interpolation and conditional syntax.
 
 * `ForeignPath` provides explicit POSIX/Windows path algebra without filesystem
   access. `MPPPath` adds strict metadata, scoped streaming reads and directory
@@ -70,8 +72,8 @@ on.
   Lua takes priority over YAML within a directory.
 
 * Lua counterparts for all 74 official rules, retaining the YAML rules.
-* `--engine lua` for Lua rules, conditionals and `{{ ... }}` option
-  interpolation using Luak. YAML/MVEL remains the default.
+* `--preferred-engine lua` for Lua rules, conditionals and `{{ ... }}` option
+  interpolation using Luak.
 * Project specifications can be combined with loose input files. Loose inputs
   run last as one anonymous project with the invocation directory's configuration.
 * Multiple project specifications share a dependency graph.
@@ -79,8 +81,8 @@ on.
 
 ### Changed
 
-* **Breaking change:** Lua is now the default rule engine. Select `--engine yaml`
-  for legacy YAML/MVEL rules, which will be discontinued in v9. Each resolved
+* **Breaking change:** Lua is now the preferred rule engine. Legacy YAML/MVEL rules
+  are detected automatically and will be discontinued in v9. Each resolved
   YAML rule emits a log warning and the run summary reports a compatibility
   warning. Set Lua `warn_deprecated_yaml = false` or YAML
   `warnDeprecatedYaml: false` to suppress these warnings.

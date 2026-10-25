@@ -85,7 +85,8 @@ Usage: arara [<options>] <file>...
   feature conditional execution and parameter expansion.
 
 Options:
-  -e, --engine=(lua|yaml)        Rule engine: lua (default) or deprecated yaml
+  -e, --preferred-engine=(lua|yaml)
+                                Preferred rule engine; lua by default, with fallback
   -l, --log                      Write a text diagnostic log (shorthand for
                                  --log-format=text)
   -v, --verbose                  Print the command output
@@ -257,7 +258,8 @@ Usage: arara [<options>] <file>...
   feature conditional execution and parameter expansion.
 
 Options:
-  -e, --engine=(lua|yaml)        Rule engine: lua (default) or deprecated yaml
+  -e, --preferred-engine=(lua|yaml)
+                                Preferred rule engine; lua by default, with fallback
   -l, --log                      Write a text diagnostic log (shorthand for
                                  --log-format=text)
   -v, --verbose                  Print the command output

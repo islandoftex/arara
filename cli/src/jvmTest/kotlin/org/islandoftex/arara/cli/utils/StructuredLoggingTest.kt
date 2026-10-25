@@ -98,7 +98,7 @@ class StructuredLoggingTest {
                 "commands={{ command=function(ctx) return true end }} }")
             val ids = (1..2).map {
                 assertEquals(0, assertFailsWith<ProgramResult> {
-                    CLI().parse(listOf("--engine", "lua", "-d", root.toString(), "run.tex"))
+                    CLI().parse(listOf("--preferred-engine", "lua", "-d", root.toString(), "run.tex"))
                 }.statusCode)
                 assertEquals("host-run", ThreadContext.get("araraRunId"))
                 val events = root.resolve("events.jsonl").readLines().map { Json.parseToJsonElement(it).jsonObject }

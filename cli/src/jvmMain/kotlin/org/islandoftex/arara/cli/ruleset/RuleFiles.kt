@@ -8,7 +8,7 @@ import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.mvel.rules.Rule
 
 /**
- * Locates and parses rule files for the selected engine.
+ * Locates and parses rule files in directory order, preferring the requested engine within each directory.
  *
  * @author Island of TeX
  * @version 5.0
@@ -55,16 +55,18 @@ object RuleFiles {
     ): MPPPath =
         executionOptions.rulePaths.let { paths ->
             paths.flatMap { path ->
-                val formats = if (engine == RuleEngine.LUA) listOf(RuleFormat.LUA)
-                    else listOf(RuleFormat.MVEL)
-                formats.map { format ->
-                    construct(path, directive.identifier, format, workingDirectory)
-                } + construct(path, "arara-rule-" + directive.identifier,
-                    formats.first(), workingDirectory)
+                val formats = if (engine == RuleEngine.LUA) listOf(RuleFormat.LUA, RuleFormat.MVEL)
+                    else listOf(RuleFormat.MVEL, RuleFormat.LUA)
+                formats.flatMap { format ->
+                    listOf(
+                        construct(path, directive.identifier, format, workingDirectory),
+                        construct(path, "arara-rule-" + directive.identifier, format, workingDirectory)
+                    )
+                }
             }.firstOrNull { it.exists } ?: throw AraraException(
                 LanguageController.messages.errorInterpreterRuleNotFound(
                     directive.identifier,
-                    directive.identifier + if (engine == RuleEngine.LUA) ".lua" else ".yaml",
+                    directive.identifier + ".lua / " + directive.identifier + ".yaml",
                     paths.joinToString("; ", "(", ")") {
                         it.normalize().toString()
                     }

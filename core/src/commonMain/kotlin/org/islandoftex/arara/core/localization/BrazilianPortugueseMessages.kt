@@ -107,7 +107,7 @@ object BrazilianPortugueseMessages : AraraMessages {
         "Tags MVEL requerem o motor YAML; Lua usa {{ expression }}."
 
     override val errorLuaTagsInYaml: String =
-        "Tags Lua requerem --engine lua."
+        "Tags Lua requerem uma regra Lua."
 
     override val errorLuaUnterminatedTag: String =
         "Tag de interpolação não terminada."

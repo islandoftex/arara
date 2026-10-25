@@ -83,8 +83,8 @@ object TaskHelper {
                 arara takes a list of documents as input. They will be processed according
                 to their directives. Options apply to the execution of all documents.
                 .SH OPTIONS
-                .IP \fB-e\fP / \fB--engine\fP lua|yaml
-                Select the rule and expression engine (default: lua).
+                .IP \fB-e\fP / \fB--preferred-engine\fP lua|yaml
+                Prefer Lua or YAML rules (default: lua); fall back to the other format.
                 YAML/MVEL rules are deprecated and will be discontinued in v9.
                 .IP \fB--log\fP
                 Write a text log (shorthand for --log-format=text).

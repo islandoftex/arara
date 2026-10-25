@@ -107,7 +107,7 @@ object NorfolkMessages : AraraMessages {
         "Them MVEL tags need the YAML engine; Lua uses {{ expression }}, bor."
 
     override val errorLuaTagsInYaml: String =
-        "Them Lua tags need --engine lua, bor."
+        "Them Lua tags need a Lua rule, bor."
 
     override val errorLuaUnterminatedTag: String =
         "That interpolation tag ent closed, bor."

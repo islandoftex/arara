@@ -7,7 +7,7 @@ import org.islandoftex.arara.core.session.Environment
 
 /** Records effective settings after project configuration and command-line overrides. */
 internal object RuntimeDiagnostics {
-    fun record(project: Project, engine: String, console: String, configurationFile: String?) {
+    fun record(project: Project, preferredEngine: String, console: String, configurationFile: String?) {
         if (!EventLog.isInfoEnabled) return
         RunLog.project(project.name, project.workingDirectory.toString())
         val fields = buildMap<String, Any> {
@@ -15,7 +15,7 @@ internal object RuntimeDiagnostics {
             put("workingDirectory", project.workingDirectory.toString())
             put("invocationDirectory", MPPPath(".").toString())
             put("applicationPath", RunLog.applicationPath)
-            put("engine", engine)
+            put("preferredEngine", preferredEngine)
             put("console", console)
             configurationFile?.let { put("configurationFile", it) }
             for ((field, property) in listOf(

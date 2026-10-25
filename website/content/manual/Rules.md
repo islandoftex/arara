@@ -15,7 +15,7 @@ occurrence of an **[R]** mark indicates that the corresponding option is
 required.
 
 Every rule in this chapter is distributed in both Lua and YAML, with the same
-arguments. The default engine uses the Lua rules; `--engine yaml` selects their
+arguments. Lua rules are preferred by default; `--preferred-engine yaml` prefers their
 deprecated YAML/MVEL counterparts, which will be discontinued in v9. Directive parameter mappings keep the same YAML syntax in
 both cases. See [Lua rules](@/manual/Lua.md) for writing custom Lua rules.
 

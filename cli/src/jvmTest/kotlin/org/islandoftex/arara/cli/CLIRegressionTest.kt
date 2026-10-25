@@ -55,7 +55,7 @@ class CLIRegressionTest {
         root.resolve("probe.lua").writeText("return {identifier='probe', name='Probe', " +
             "commands={{command=function() return false end}}}")
         listOf(
-            listOf("--engine", "lua") to 1,
+            listOf("--preferred-engine", "lua") to 1,
             listOf("-e", "lua") to 1,
             listOf("-e", "yaml") to 0,
             emptyList<String>() to 1
@@ -65,6 +65,51 @@ class CLIRegressionTest {
             }
             assertEquals(expected, status.statusCode)
         }
+    }
+
+    @Test
+    fun fallbackUsesTheResolvedRulesInterpolationAndConditionalLanguage() = fixture { directory ->
+        val root = directory.toPath().toMPPPath()
+        root.resolve("arararc.lua").writeText("return { paths={cwd} }")
+        root.resolve("legacy.yaml").writeText("""
+            !config
+            identifier: legacy
+            name: Legacy
+            commands:
+              - command: '@{ return options[0] == "3"; }'
+            arguments:
+              - identifier: options
+                flag: '@{ return parameters.options; }'
+        """.trimIndent())
+        root.resolve("modern.lua").writeText("""
+            return { identifier='modern', name='Modern',
+              commands={{command=function(ctx) return ctx.options[1] == '3' end}},
+              arguments={{identifier='options', flag=function(ctx, value) return value end}} }
+        """.trimIndent())
+        root.resolve("run.tex").writeText("""
+            % arara: legacy: { options: '@{1+2}' } if true && true
+            % arara: modern: { options: '{{1+2}}' } if true and true
+        """.trimIndent())
+        for (preferred in listOf("lua", "yaml")) {
+            val status = assertFailsWith<ProgramResult> {
+                CLI().parse(listOf("--preferred-engine", preferred, "-d", root.toString(), "run.tex"))
+            }
+            assertEquals(0, status.statusCode)
+        }
+        root.resolve("modern.yaml").writeText("""
+            !config
+            identifier: modern
+            name: Modern fallback
+            commands:
+              - command: '@{ true }'
+            arguments: []
+        """.trimIndent())
+        root.resolve("modern.lua").writeText("return { invalid Lua")
+        root.resolve("run.tex").writeText("% arara: modern\n")
+        val malformed = assertFailsWith<ProgramResult> {
+            CLI().parse(listOf("-e", "lua", "-d", root.toString(), "run.tex"))
+        }
+        assertEquals(2, malformed.statusCode)
     }
 
     @Test
@@ -79,7 +124,7 @@ class CLIRegressionTest {
             arguments: []
         """.trimIndent())
         File(root, "run.tex").writeText("% arara: stop\n% arara: missingrule\n")
-        val status = assertFailsWith<ProgramResult> { CLI().parse(listOf("--engine", "yaml", "-d", root.path, "run.tex")) }
+        val status = assertFailsWith<ProgramResult> { CLI().parse(listOf("--preferred-engine", "yaml", "-d", root.path, "run.tex")) }
         assertEquals(7, status.statusCode)
     }
 
@@ -96,7 +141,7 @@ class CLIRegressionTest {
               files = { ["run.tex"] = { file_type = { extension = "tex" } } }
             }
         """.trimIndent())
-        val status = assertFailsWith<ProgramResult> { CLI().parse(listOf("--engine", "yaml", "-d", root.path, "project.proj.lua")) }
+        val status = assertFailsWith<ProgramResult> { CLI().parse(listOf("--preferred-engine", "yaml", "-d", root.path, "project.proj.lua")) }
         assertEquals(0, status.statusCode)
         assertEquals(true, Session["marker"])
     }
@@ -114,7 +159,7 @@ class CLIRegressionTest {
         File(root, "noop.yaml").writeText("!config\nidentifier: noop\nname: Noop\ncommands:\n  - command: '@{ true }'\narguments: []\n")
         File(root, "run.tex").writeText("% arara: noop\n")
         val status = assertFailsWith<ProgramResult> {
-            CLI().parse(listOf("--engine", "yaml", "-d", root.path, "-p", "selected", "run.tex"))
+            CLI().parse(listOf("--preferred-engine", "yaml", "-d", root.path, "-p", "selected", "run.tex"))
         }
         assertEquals(0, status.statusCode)
         assertEquals(true, Session["marker"])
@@ -127,7 +172,7 @@ class CLIRegressionTest {
         File(root, "arararc.yaml").writeText("!config\npaths: ['.']\nloops: 3\npreambles: {local: '% arara: marker'}\n")
         markerRule(root)
         File(root, "run.tex").writeText("% arara: marker\n")
-        val status = assertFailsWith<ProgramResult> { CLI().parse(listOf("--engine", "yaml", "-d", root.path, "run.tex")) }
+        val status = assertFailsWith<ProgramResult> { CLI().parse(listOf("--preferred-engine", "yaml", "-d", root.path, "run.tex")) }
         assertEquals(0, status.statusCode)
         assertEquals(original, LinearExecutor.executionOptions)
         assertEquals(mapOf("host" to "% arara: host"), PreambleState.preambles)
@@ -155,7 +200,7 @@ class CLIRegressionTest {
         val log = root.resolve("diagnostic.log")
         Session.loggingOptions = org.islandoftex.arara.core.configuration.LoggingOptions(logFile = log)
         val result = assertFailsWith<ProgramResult> {
-            CLI().parse(listOf("--engine", "yaml", "-d", root.toString(), "-l", "--properties-file", properties.toString(),
+            CLI().parse(listOf("--preferred-engine", "yaml", "-d", root.toString(), "-l", "--properties-file", properties.toString(),
                 "--call-property", "fallback=from-cli", "run.tex"))
         }
         assertEquals(0, result.statusCode)

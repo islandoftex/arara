@@ -4,14 +4,12 @@ package org.islandoftex.arara.cli.ruleset
 import com.charleskorn.kaml.Yaml
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.islandoftex.arara.api.AraraException
-import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.cli.utils.RunLog
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.rules.DirectiveFetchingHooks
 import org.islandoftex.arara.core.rules.Directives
-import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.lua.rules.LuaInterpolation
 import org.islandoftex.arara.mvel.utils.MvelState
 import org.mvel2.templates.TemplateRuntime
@@ -40,7 +38,7 @@ object DirectiveUtils {
                 }
             },
             buildDirectiveRaw = { id, parameters, conditional, lines ->
-                val parameterMap = getParameters(parameters, lines, engine)
+                val parameterMap = getParameters(parameters, lines)
                 DirectiveImpl(
                     identifier = id,
                     parameters = parameterMap,
@@ -73,8 +71,7 @@ object DirectiveUtils {
     @Throws(AraraException::class)
     private fun getParameters(
         text: String?,
-        numbers: List<Int>,
-        engine: RuleEngine
+        numbers: List<Int>
     ): Map<String, Any> {
         if (text == null)
             return mapOf()
@@ -90,11 +87,7 @@ object DirectiveUtils {
             )
         }
 
-        return if ("options" in map.keys && LinearExecutor.executionOptions
-            .executionMode != ExecutionMode.SAFE_RUN
-        ) {
-            map.plus("options" to interpolateOptions(map.getValue("options"), engine))
-        } else map
+        return map
     }
 
     internal fun interpolateOptions(value: Any, engine: RuleEngine): Any {

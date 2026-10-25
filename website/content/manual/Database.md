@@ -25,7 +25,7 @@ the Lua engine, or `toFile('other.tex')` with the YAML/MVEL engine:
 % arara: pdflatex if changed(to_file('other.tex'))
 ```
 
-Run the latter example with `--engine lua`. The checks have the same meaning in
+Run the latter example with `--preferred-engine lua`. The checks have the same meaning in
 both engines. `unchanged` is the logical opposite of `changed`, and performs the
 same verification rather than merely looking up an earlier result.
 

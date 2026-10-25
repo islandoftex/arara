@@ -9,8 +9,8 @@ MVFLEX Expression Language (hereafter referred as MVEL) is a hybrid, dynamic,
 statically typed, embeddable expression language and runtime for the Java
 platform. Originally started as a utility language for an application framework,
 the project is now developed completely independently. arara relies on this
-scripting language in two circumstances when using the legacy `yaml` engine (`--engine yaml`).
-With `--engine lua`, rule functions, directive conditionals and option
+scripting language in two circumstances when using the legacy `yaml` engine (`--preferred-engine yaml`).
+With `--preferred-engine lua`, rule functions, directive conditionals and option
 interpolation use Lua instead; see [Lua rules](@/manual/Lua.md).
 
 1. *Rules*, as nominal attributes gathered from directives are used to build

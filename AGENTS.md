@@ -36,11 +36,12 @@
   the engine-neutral `core.rules.CommandEvaluator` interface.
 - `lua` — Luak interpreter for project specifications and Lua rules. JVM helper
   environments, parser, conditionals and interpolation live in `lua.rules`; the
-  CLI selects them with `--engine lua` (default: YAML/MVEL). Common-code rule value
+  CLI prefers Lua by default; `--preferred-engine` (`-e`) changes the format preference.
+  Lookup falls back within each rule directory; the resolved rule determines expression syntax. Common-code rule value
   and session adapters live in `lua.rules`. Paths and commands cross as userdata.
   Lua configuration uses `lua.configuration.LuaLocalConfiguration`. Configuration
   and project scripts share fresh `user`/`cwd` globals; config lookup is local
-  before global, Lua before YAML within a directory, independently of `--engine`.
+  before global, Lua before YAML within a directory, independently of `--preferred-engine`.
   Integer helper arguments require 32-bit values; Longs must be exactly
   representable in Luak.
 - `cli` — the actual application; entrypoint is

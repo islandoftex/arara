@@ -43,7 +43,7 @@ class DatabasePathRegressionTest {
                 root.resolve("run.tex").writeText("% arara: probe\n")
                 for (expected in listOf(true, false)) {
                     val status = assertFailsWith<ProgramResult> {
-                        CLI().parse(listOf("-d", root.toString(), "--engine", format, "run.tex"))
+                        CLI().parse(listOf("-d", root.toString(), "--preferred-engine", format, "run.tex"))
                     }.statusCode
                     assertEquals(0, status)
                     assertEquals(expected, Session["database-changed"], "$format / expected $expected")

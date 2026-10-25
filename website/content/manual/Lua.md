@@ -53,7 +53,7 @@ must match the name used in the directive:
 % arara: example: { options: ['--draft'] }
 ```
 
-Run the document with `arara --engine lua document.tex`. The program named
+Run the document with `arara --preferred-engine lua document.tex`. The program named
 `program` in this example must be installed separately, just like the tools used
 by the official rules.
 
@@ -141,7 +141,7 @@ directive once before testing. For example:
 % arara: pdflatex until not found('log', 'undefined references')
 ```
 
-Use `--engine lua` with these expressions. Parameter mappings between the rule
+These expressions apply to directives resolved to Lua rules. Parameter mappings between the rule
 name and the conditional are still YAML, even though the conditional is Lua.
 
 # The official rules

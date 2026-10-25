@@ -27,7 +27,7 @@ internal fun checkFrenchLocalization(root: MPPPath, launcher: List<String>, jar:
         config.writeText(if (format == "lua") "return { paths = { cwd }, language = 'fr' }"
             else "!config\npaths: ['.']\nlanguage: fr\n")
         for ((engine, console) in presentations) {
-            val result = run(command + listOf("--engine", engine, "--console", console,
+            val result = run(command + listOf("--preferred-engine", engine, "--console", console,
                 "--log-format", "text", "run.tex"), root)
             check(result.status == 0) { result.output }
             check("SUCCÈS" in result.output) { result.output }

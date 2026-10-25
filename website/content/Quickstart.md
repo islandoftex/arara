@@ -10,7 +10,8 @@ using our tool. We will help our good friend Peter,[^1] the anteater, in his
 learning adventure. He is very excited about it! Hello, Peter!
 
 These examples use the default Lua engine and the supplied rule pack. For older
-custom YAML/MVEL rules, select `--engine yaml`; that legacy engine is deprecated
+custom YAML/MVEL rules, arara detects their format automatically; that legacy
+engine is deprecated
 and will be discontinued in v9. See [Lua rules](@/manual/Lua.md) for writing new
 rules.
 

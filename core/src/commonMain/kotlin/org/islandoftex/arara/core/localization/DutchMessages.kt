@@ -107,7 +107,7 @@ object DutchMessages : AraraMessages {
         "MVEL-tags vereisen de YAML-engine; Lua gebruikt {{ expression }}."
 
     override val errorLuaTagsInYaml: String =
-        "Lua-tags vereisen --engine lua."
+        "Lua-tags vereisen een Lua-regel."
 
     override val errorLuaUnterminatedTag: String =
         "Niet-afgesloten interpolatietag."

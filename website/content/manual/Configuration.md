@@ -28,7 +28,7 @@ directory. Within each directory it checks Lua before YAML, in this order:
 `.araraconfig`, `araraconfig`, `.arararc`, `arararc`, each with the selected
 format's `.lua` or `.yaml` suffix. Only regular files qualify. The first match
 is loaded; an invalid configuration is an error, without falling back to another
-file. Configuration format is independent of the `--engine` rule selector.
+file. Configuration format is independent of the `--preferred-engine` rule selector.
 
 {% messagebox(title="Configuration lookup in version 8") %}
 Local configuration takes priority over global configuration, and Lua takes

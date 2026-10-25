@@ -93,13 +93,13 @@ class ConsolePresentationTest {
                     else "return { paths = { cwd }, console = 'styled' }")
                 val styled = capture {
                     assertEquals(0, assertFailsWith<ProgramResult> {
-                        CLI().parse(listOf("--engine", "yaml", "-d", root.toString(), "run.tex"))
+                        CLI().parse(listOf("--preferred-engine", "yaml", "-d", root.toString(), "run.tex"))
                     }.statusCode)
                 }
                 assertTrue("> Probe" in styled)
                 val plain = capture {
                     assertEquals(0, assertFailsWith<ProgramResult> {
-                        CLI().parse(listOf("--engine", "yaml", "-d", root.toString(), "--console", "plain", "run.tex"))
+                        CLI().parse(listOf("--preferred-engine", "yaml", "-d", root.toString(), "--console", "plain", "run.tex"))
                     }.statusCode)
                 }
                 assertTrue("(Probe)" in plain)

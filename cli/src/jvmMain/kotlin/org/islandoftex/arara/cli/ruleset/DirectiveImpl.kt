@@ -16,13 +16,13 @@ import org.islandoftex.arara.core.session.LinearExecutor
 data class DirectiveImpl(
     /** Rule identifier requested by the directive. */
     override val identifier: String,
-    /** Raw directive parameters supplied to the selected rule engine. */
+    /** Raw directive parameters supplied to the resolved rule engine. */
     override val parameters: Map<String, Any>,
     /** Condition controlling directive scheduling. */
     override val conditional: DirectiveConditional,
     /** One-based source lines occupied by this directive. */
     override val lineNumbers: List<Int>,
-    /** Rule engine selected for this directive. */
+    /** Preferred rule engine; lookup can resolve the other format. */
     val engine: RuleEngine = RuleEngine.YAML
 ) : Directive {
     /** Execute using the current linear-executor file, project and options, returning the final status. */

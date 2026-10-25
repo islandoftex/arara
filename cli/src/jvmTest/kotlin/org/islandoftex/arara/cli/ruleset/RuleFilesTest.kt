@@ -14,7 +14,7 @@ import org.islandoftex.arara.core.rules.DirectiveConditional
 
 class RuleFilesTest {
     @Test
-    fun ruleLookupPreservesDirectoryAndFilenamePriorityAndEngineIsolation() {
+    fun ruleLookupPreservesDirectoryAndFilenamePriorityWithFormatFallback() {
         val root = Files.createTempDirectory("arara rule lookup ").toMPPPath()
         try {
             val first = root.resolve("first").apply { createDirectories() }
@@ -24,12 +24,19 @@ class RuleFilesTest {
             val directive = DirectiveImpl("probe", emptyMap(), DirectiveConditional(), listOf(1))
             val options = ExecutionOptions(rulePaths = linkedSetOf(MPPPath("first"), second))
             assertEquals(yaml, RuleFiles.find(directive, options, root, RuleEngine.YAML))
+            assertEquals(yaml, RuleFiles.find(directive, options, root, RuleEngine.LUA))
             val prefixed = first.resolve("arara-rule-probe.yaml").apply { writeText("") }
             assertEquals(prefixed, RuleFiles.find(directive, options, root, RuleEngine.YAML))
             val direct = first.resolve("probe.yaml").apply { writeText("") }
             assertEquals(direct, RuleFiles.find(directive, options, root, RuleEngine.YAML))
-            val lua = second.resolve("probe.lua").apply { writeText("") }
-            assertEquals(lua, RuleFiles.find(directive, options, root, RuleEngine.LUA))
+            second.resolve("probe.lua").apply { writeText("") }
+            assertEquals(direct, RuleFiles.find(directive, options, root, RuleEngine.LUA))
+            val localLua = first.resolve("arara-rule-probe.lua").apply { writeText("") }
+            assertEquals(localLua, RuleFiles.find(directive, options, root, RuleEngine.LUA))
+            assertEquals(direct, RuleFiles.find(directive, options, root, RuleEngine.YAML))
+            val luaOnly = DirectiveImpl("only", emptyMap(), DirectiveConditional(), listOf(1))
+            val fallback = second.resolve("only.lua").apply { writeText("") }
+            assertEquals(fallback, RuleFiles.find(luaOnly, options, root, RuleEngine.YAML))
             assertEquals(first.resolve("probe.lua"),
                 RuleFiles.construct(MPPPath("first"), "probe", RuleFormat.LUA, root))
             assertEquals(second.resolve("probe.yaml"),

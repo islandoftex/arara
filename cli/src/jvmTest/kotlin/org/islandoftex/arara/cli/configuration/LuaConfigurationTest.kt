@@ -154,7 +154,7 @@ class LuaConfigurationTest {
                     root.resolve("input.src").writeText("plain input\n")
                     val before = ConfigurationSnapshot.capture()
                     val status = assertFailsWith<ProgramResult> {
-                        CLI().parse(listOf("-d", root.toString(), "--engine", engine, "input.src"))
+                        CLI().parse(listOf("-d", root.toString(), "--preferred-engine", engine, "input.src"))
                     }.statusCode
                     assertEquals(0, status, "$format config / $engine rules")
                     assertEquals(true, Session["configured"])

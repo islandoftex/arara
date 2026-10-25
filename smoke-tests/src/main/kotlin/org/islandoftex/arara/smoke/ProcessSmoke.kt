@@ -63,7 +63,8 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
                         environment: Map<String, String?> = emptyMap()): String {
         val result = run((launcher + listOf("-Duser.home=$root", "-jar", jar.toString(),
             "-L", "en", "-d", root.toString())) +
-            (if ("--engine" in flags || "-e" in flags) emptyList() else listOf("--engine", "yaml")) +
+            (if ("--preferred-engine" in flags || "-e" in flags) emptyList()
+                else listOf("--preferred-engine", "yaml")) +
             flags + reference, root, input, environment)
         check(result.status == expected) { "Expected exit $expected, got ${result.status}\n${result.output}" }
         return result.output
@@ -83,7 +84,7 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
             luaRule(root, luaNative("0"))
             for (engine in listOf("lua", "yaml")) {
                 for (mode in listOf("plain", "styled")) {
-                    val flags = listOf("--engine", engine, "--console", mode)
+                    val flags = listOf("--preferred-engine", engine, "--console", mode)
                     val output = execute(root, 0, flags + "--verbose")
                     check("kotlin-logging:" !in output) { "Logging bootstrap leaked into console output" }
                     contains(output, "the cool TeX automation tool.")
@@ -109,7 +110,7 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
             root.resolve("run.tex").writeText("% arara: probe: { files: [first.tex, second.tex] }\n")
             for (engine in listOf("lua", "yaml")) {
                 trace.writeText("")
-                val output = execute(root, 0, listOf("--engine", engine))
+                val output = execute(root, 0, listOf("--preferred-engine", engine))
                 check(trace.readText() == "first.tex|second.tex|") {
                     "$engine did not preserve both file references: ${trace.readText()}\n$output"
                 }
@@ -118,7 +119,8 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
         "missing_rules_name_the_selected_engine_format" to { root ->
             root.resolve("run.tex").writeText("% arara: notarulequack\n")
             for (engine in listOf("lua", "yaml")) {
-                contains(execute(root, APPLICATION_ERROR, listOf("--engine", engine)), "notarulequack.$engine")
+                contains(execute(root, APPLICATION_ERROR, listOf("--preferred-engine", engine)),
+                    "notarulequack.$engine")
             }
         },
         "lua_configuration_precedes_yaml_independently_of_rule_engine" to { root ->
@@ -126,7 +128,7 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
             root.resolve("arararc.lua").writeText("return { paths = { cwd } }\n")
             rule(root, "return true;")
             luaRule(root, "return true")
-            for (engine in listOf("lua", "yaml")) execute(root, 0, listOf("--engine", engine))
+            for (engine in listOf("lua", "yaml")) execute(root, 0, listOf("--preferred-engine", engine))
         },
         "packaged_native_terminal_provider_and_access" to { _ ->
             JarFile(jar.toJVMFile()).use { archive ->
@@ -168,7 +170,8 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
             contains(version.output, "Island of TeX")
             val completion = run(command + listOf("--generate-completion", "bash"), root)
             check(completion.status == 0) { completion.output }
-            contains(completion.output, "--engine")
+            contains(completion.output, "--preferred-engine")
+            check("--engine" !in completion.output)
             contains(completion.output, "--log-format")
         },
         "help_and_empty_invocation_ignore_invalid_configuration" to { root ->
@@ -176,7 +179,7 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
             for (flags in listOf(emptyList(), listOf("--help"))) {
                 val result = run((launcher + listOf("-Duser.home=$root", "-jar", jar.toString())) + flags, root)
                 check(result.status == 0) { result.output }
-                contains(result.output, "--engine")
+                contains(result.output, "--preferred-engine")
                 contains(result.output, "--whole-file")
                 check(!root.resolve("arara.log").exists)
             }
@@ -186,7 +189,7 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
             val invalid = listOf(
                 listOf("--max-loops", "0"),
                 listOf("--timeout", "0"),
-                listOf("--engine", "unknown"),
+                listOf("--preferred-engine", "unknown"),
                 listOf("--console", "unknown"),
                 listOf("--log-format", "unknown")
             )
@@ -203,9 +206,9 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
             luaRule(root, "write_to_file(${quoted(trace.toString())}, 'body', false); return true")
             root.resolve("run.tex").writeText("\\documentclass{article}\n% arara: probe\n")
             for (engine in listOf("lua", "yaml")) {
-                execute(root, APPLICATION_ERROR, listOf("--engine", engine))
+                execute(root, APPLICATION_ERROR, listOf("--preferred-engine", engine))
                 check(!trace.exists) { "Header-only parsing executed a body directive" }
-                execute(root, 0, listOf("--engine", engine, "--whole-file"))
+                execute(root, 0, listOf("--preferred-engine", engine, "--whole-file"))
                 check(trace.readText() == "body")
                 Files.delete(trace.toJVMPath())
             }
@@ -217,7 +220,7 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
             root.resolve("run.tex").writeText("% arara: probe while true\n")
             for (engine in listOf("lua", "yaml")) {
                 trace.writeText("")
-                execute(root, 0, listOf("--engine", engine, "--max-loops", "2"))
+                execute(root, 0, listOf("--preferred-engine", engine, "--max-loops", "2"))
                 check(trace.readText() == "xx") { "$engine ignored the command line loop limit" }
             }
         },
@@ -242,7 +245,7 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
                     "!config\npaths: ['.']\npreambles: { build: '% arara: probe' }\n"
                 } else "return { paths = { cwd }, preamble = { definitions = { build = {'% arara: probe'} } } }")
                 for (engine in listOf("lua", "yaml")) {
-                    val output = execute(root, 0, listOf("--engine", engine, "--preamble", "build"))
+                    val output = execute(root, 0, listOf("--preferred-engine", engine, "--preamble", "build"))
                     contains(output, "SUCCESS")
                 }
                 Files.delete(root.resolve("arararc.$format").toJVMPath())
@@ -254,7 +257,7 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
             rule(root, "return [$yaml, [$yaml]];")
             luaRule(root, "return {$lua, {$lua}}")
             for (engine in listOf("lua", "yaml")) {
-                val output = execute(root, 0, listOf("--engine", engine, "--verbose"))
+                val output = execute(root, 0, listOf("--preferred-engine", engine, "--verbose"))
                 for (marker in listOf("SMOKE_STDOUT", "SMOKE_STDERR")) {
                     check(Regex(marker).findAll(output).count() == 2) { "$engine did not launch both tasks\n$output" }
                 }
@@ -268,7 +271,7 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
                 } else {
                     rule(root, "return getSession().get('arg:marker').equals('from-flag');")
                 }
-                execute(root, 0, listOf("--engine", engine, "--call-property", "marker=from-flag",
+                execute(root, 0, listOf("--preferred-engine", engine, "--call-property", "marker=from-flag",
                     "--properties-file", "arguments.properties"))
             }
         },
@@ -287,7 +290,7 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
                     "% arara: bibtex\n% arara: dvips\n"
             )
             listOf("lua", "yaml").forEach { engine ->
-                val output = execute(root, 0, listOf("--engine", engine, "--dry-run"))
+                val output = execute(root, 0, listOf("--preferred-engine", engine, "--dry-run"))
                 contains(output, "--interaction=nonstopmode")
                 contains(output, "--synctex=1")
                 contains(output, "bibtex")
@@ -301,7 +304,7 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
                     "% arara: rmdir: { target: 'created directory' }\n" +
                     "% arara: halt\n% arara: missingrule\n"
             )
-            execute(root, 0, listOf("--engine", "lua"))
+            execute(root, 0, listOf("--preferred-engine", "lua"))
             check(!root.resolve("created directory").exists)
         },
         "dialog_choices_in_both_engines_and_presentations" to { root ->
@@ -311,35 +314,35 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
                 "show_list(4, 'List', 'Optional', 'Only') == 0")
             listOf("lua", "yaml").forEach { engine ->
                 listOf("plain", "styled").forEach { console ->
-                    execute(root, 0, listOf("--engine", engine, "--console", console), input = "0\n0\n")
+                    execute(root, 0, listOf("--preferred-engine", engine, "--console", console), input = "0\n0\n")
                 }
             }
         },
         "lua_terminal_input_and_safe_class_loading" to { root ->
             luaRule(root, "return show_input(0, 'Lua input', 'Type the answer') == 'answer'")
-            contains(execute(root, 0, listOf("--engine", "lua"), input = "answer\n"), "Lua input")
+            contains(execute(root, 0, listOf("--preferred-engine", "lua"), input = "answer\n"), "Lua input")
             luaRule(root, "load_class('missing.jar', 'Missing'); return true")
-            execute(root, APPLICATION_ERROR, listOf("--engine", "lua", "--safe-run"))
+            execute(root, APPLICATION_ERROR, listOf("--preferred-engine", "lua", "--safe-run"))
         },
         "lua_native_exit_and_output" to { root ->
             luaRule(root, luaNative(FAILURE_STATUS.toString()))
-            val output = execute(root, FAILURE_STATUS, listOf("--engine", "lua", "--verbose"))
+            val output = execute(root, FAILURE_STATUS, listOf("--preferred-engine", "lua", "--verbose"))
             contains(output, "SMOKE_STDOUT")
             contains(output, "SMOKE_STDERR")
             contains(output, "SMOKE_CWD=$root")
         },
         "lua_custom_exit_accepts_nonzero" to { root ->
             luaRule(root, luaNative(FAILURE_STATUS.toString()), "code == $FAILURE_STATUS")
-            execute(root, 0, listOf("--engine", "lua"))
+            execute(root, 0, listOf("--preferred-engine", "lua"))
         },
         "lua_custom_exit_rejects_zero" to { root ->
             luaRule(root, luaNative("0"), "false")
-            execute(root, 1, listOf("--engine", "lua"))
+            execute(root, 1, listOf("--preferred-engine", "lua"))
         },
         "lua_halt_stops_the_file" to { root ->
             luaRule(root, "halt($FAILURE_STATUS)")
             root.resolve("run.tex").writeText("% arara: probe\n% arara: missingrule\n")
-            execute(root, FAILURE_STATUS, listOf("--engine", "lua"))
+            execute(root, FAILURE_STATUS, listOf("--preferred-engine", "lua"))
         },
         "lua_conditional_and_scalar_interpolation" to { root ->
             root.resolve("probe.lua").writeText("""
@@ -350,11 +353,11 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
             root.resolve("run.tex").writeText(
                 "% arara: probe: { options: 'value-{{1+2}}' } if true and not false\n"
             )
-            execute(root, 0, listOf("--engine", "lua"))
+            execute(root, 0, listOf("--preferred-engine", "lua"))
             root.resolve("run.tex").writeText(
                 "% arara: probe: { options: ['value-{{1+2}}'] } unless false\n"
             )
-            execute(root, 0, listOf("--engine", "lua"))
+            execute(root, 0, listOf("--preferred-engine", "lua"))
         },
         "lua_safe_mode_leaves_options_literal" to { root ->
             root.resolve("probe.lua").writeText("""
@@ -365,15 +368,16 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
             root.resolve("run.tex").writeText(
                 "% arara: probe: { options: ['{{error(\"must not execute\")}}'] }\n"
             )
-            execute(root, 0, listOf("--engine", "lua", "--safe-run"))
+            execute(root, 0, listOf("--preferred-engine", "lua", "--safe-run"))
         },
         "lua_dry_run_does_not_launch" to { root ->
             luaRule(root, "return get_command('arara-nonexistent-command')")
-            execute(root, 0, listOf("--engine", "lua", "--dry-run"))
+            execute(root, 0, listOf("--preferred-engine", "lua", "--dry-run"))
         },
-        "lua_does_not_fall_back_to_yaml" to { root ->
+        "lua_preference_falls_back_to_yaml_with_a_warning" to { root ->
             rule(root, "return true;")
-            execute(root, APPLICATION_ERROR, listOf("--engine", "lua"))
+            val output = execute(root, 0, listOf("--preferred-engine", "lua"))
+            contains(output, "Compatibility warning")
         },
         "invalid_directive_parameters_fail_in_both_engines" to { root ->
             rule(root, "return true;")
@@ -381,15 +385,15 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
             listOf("lua", "yaml").forEach { engine ->
                 listOf("{ value: null }", "[one, two]", "{ value: [unterminated }").forEach { value ->
                     root.resolve("run.tex").writeText("% arara: probe: $value\n")
-                    execute(root, APPLICATION_ERROR, listOf("--engine", engine))
+                    execute(root, APPLICATION_ERROR, listOf("--preferred-engine", engine))
                 }
             }
         },
         "legacy_engine_remains_available_explicitly" to { root ->
             rule(root, "return true;")
             luaRule(root, "return false")
-            execute(root, 0, listOf("--engine", "yaml"))
-            execute(root, 1, listOf("--engine", "lua"))
+            execute(root, 0, listOf("--preferred-engine", "yaml"))
+            execute(root, 1, listOf("--preferred-engine", "lua"))
         },
         "native_exit_and_both_output_streams" to { root ->
             rule(root, native(FAILURE_STATUS.toString()))
@@ -469,7 +473,7 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
             rule(root, "return true;")
             luaRule(root, "return true")
             contains(execute(root, 0), "Smoke probe")
-            contains(execute(root, 0, listOf("--engine", "lua")), "Lua probe")
+            contains(execute(root, 0, listOf("--preferred-engine", "lua")), "Lua probe")
         },
         "invalid_lua_configuration_is_an_application_error" to { root ->
             root.resolve("arararc.lua").writeText("return { loops = 0 }\n")
@@ -489,7 +493,7 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
             root.resolve("probe.lua").writeText(
                 "return { identifier = 'probe', name = 'Probe', commands = { { command = true } } }\n"
             )
-            val flags = listOf("--engine", "lua", "--language", "de")
+            val flags = listOf("--preferred-engine", "lua", "--language", "de")
             contains(execute(root, APPLICATION_ERROR, flags), "commands[1].command muss eine Funktion sein.")
             luaRule(root, "return true")
             root.resolve("run.tex").writeText("% arara: probe: { options: '{{ 1' }\n")
@@ -507,7 +511,8 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
             contains(output, "SMOKE_STDERR")
             check("\u001b" !in output) { "Piped styled output contains ANSI escapes" }
             luaRule(root, "return true")
-            val lua = execute(root, 0, listOf("--engine", "lua", "--console", "styled"), environment = environment)
+            val lua = execute(root, 0, listOf("--preferred-engine", "lua", "--console", "styled"),
+                environment = environment)
             check("\u001b" !in lua) { "Piped Lua styled output contains ANSI escapes" }
             contains(lua, "SUCCESS")
             contains(lua, "run.tex")
@@ -519,7 +524,7 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
             for ((encoding, expected) in listOf("UTF-8" to reference, "US-ASCII" to "a??o-?.tex")) {
                 val result = run(launcher + listOf("-Dstdout.encoding=$encoding", "-Dstderr.encoding=$encoding",
                     "-Duser.home=$root", "-jar", jar.toString(), "-L", "en",
-                    "-d", root.toString(), "--engine", "yaml", "--dry-run", reference), root,
+                    "-d", root.toString(), "--preferred-engine", "yaml", "--dry-run", reference), root,
                     environment = mapOf("TERM" to "xterm", "MSYSTEM" to "MINGW64"))
                 check(result.status == 0) { result.output }
                 contains(result.output, expected)
@@ -626,7 +631,7 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
             luaRule(root, "local s=get_session(); s.put('trace', 'HIDDEN_SESSION_VALUE'); " +
                 "s.put('trace', 'SECOND_HIDDEN_VALUE'); s.remove('trace'); return true")
             for (engine in listOf("lua", "yaml")) {
-                execute(root, 0, listOf("--log", "--engine", engine))
+                execute(root, 0, listOf("--log", "--preferred-engine", engine))
                 val log = root.resolve("arara.log").readText()
                 contains(log, "Session variable 'trace' set.")
                 contains(log, "Session variable 'trace' overwritten.")
@@ -666,7 +671,7 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
             val runIds = mutableSetOf<String>()
             for (engine in listOf("lua", "yaml")) {
                 val expected = if (engine == "yaml") FAILURE_STATUS else 0
-                execute(root, expected, listOf("--engine", engine, "--log-format", "json",
+                execute(root, expected, listOf("--preferred-engine", engine, "--log-format", "json",
                     "--console", "styled", "--language", "de"))
                 val events = root.resolve("arara.log").readLines().map { Json.parseToJsonElement(it).jsonObject }
                 fun event(name: String) = events.single { it["event"]?.jsonPrimitive?.content == name }
@@ -701,7 +706,7 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
             val existing = "!database\nmap: {}\n"
             root.resolve("arara.yaml").writeText(existing)
             luaRule(root, "if not changed(current_file()) then halt($FAILURE_STATUS) end; return true")
-            val flags = listOf("--engine", "lua")
+            val flags = listOf("--preferred-engine", "lua")
             execute(root, 0, flags)
             check(root.resolve("arara.yaml").isRegularFile) { "Missing default arara.yaml cache" }
             execute(root, FAILURE_STATUS, flags)
@@ -714,7 +719,7 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
                 "return { paths = { cwd }, database = 'cache/custom.yaml' }\n"
             )
             luaRule(root, "changed(current_file()); return true")
-            val flags = listOf("--engine", "lua")
+            val flags = listOf("--preferred-engine", "lua")
             execute(root, 0, flags)
             val cache = root.resolve("cache/custom.yaml")
             check(cache.isRegularFile) { "Configured database path was not used" }
@@ -765,7 +770,7 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
                     listOf("--verbose") to 2,
                     listOf("--silent", "--verbose") to 0
                 ).forEach { (flags, expected) ->
-                    val output = execute(root, 0, listOf("--engine", engine) + flags + "mixed.proj.lua")
+                    val output = execute(root, 0, listOf("--preferred-engine", engine) + flags + "mixed.proj.lua")
                     val directories = output.lineSequence().filter { it.startsWith("SMOKE_CWD=") }.toSet()
                     val expectedDirectories = when (expected) {
                         0 -> emptySet()

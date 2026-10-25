@@ -101,7 +101,7 @@ class AnimationConfigurationTest {
                 }
             """.trimIndent())
             assertEquals(0, assertFailsWith<ProgramResult> {
-                CLI().parse(listOf("--engine", "yaml", "-d", root.toString(), "projects.proj.lua"))
+                CLI().parse(listOf("--preferred-engine", "yaml", "-d", root.toString(), "projects.proj.lua"))
             }.statusCode)
             assertEquals(listOf(false, true, true), recorded)
             assertTrue(Session.userInterfaceOptions.enableAnimations)
@@ -109,7 +109,7 @@ class AnimationConfigurationTest {
             assertFalse(hostClosed)
             root.resolve("enabled/main.tex").writeText("% arara: missingrule\n")
             assertEquals(2, assertFailsWith<ProgramResult> {
-                CLI().parse(listOf("--engine", "yaml", "-d", root.resolve("enabled").toString(), "main.tex"))
+                CLI().parse(listOf("--preferred-engine", "yaml", "-d", root.resolve("enabled").toString(), "main.tex"))
             }.statusCode)
             assertSame(host, DisplayUtils.renderer)
             assertFalse(hostClosed)

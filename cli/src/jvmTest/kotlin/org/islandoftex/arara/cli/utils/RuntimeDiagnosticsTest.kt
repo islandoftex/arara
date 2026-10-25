@@ -63,7 +63,7 @@ class RuntimeDiagnosticsTest {
             assertFalse("configurationFile" in contexts.getValue("second"))
             for ((name, data) in contexts) {
                 assertEquals(root.resolve(name).toString(), data.getValue("workingDirectory").jsonPrimitive.content)
-                assertEquals("lua", data.getValue("engine").jsonPrimitive.content)
+                assertEquals("lua", data.getValue("preferredEngine").jsonPrimitive.content)
                 assertEquals("plain", data.getValue("console").jsonPrimitive.content)
                 assertEquals(System.getProperty("java.version"), data.getValue("javaVersion").jsonPrimitive.content)
             }
@@ -71,7 +71,7 @@ class RuntimeDiagnosticsTest {
             LoggingUtils.setupLogging(LoggingOptions(LogFormat.TEXT, false, text))
             RuntimeDiagnostics.record(Project("text", root, emptySet()), "yaml", "styled", null)
             LoggingUtils.init()
-            assertTrue("engine=yaml" in text.readText())
+            assertTrue("preferredEngine=yaml" in text.readText())
             assertTrue("console=styled" in text.readText())
         } finally {
             if (home == null) System.clearProperty("user.home") else System.setProperty("user.home", home)

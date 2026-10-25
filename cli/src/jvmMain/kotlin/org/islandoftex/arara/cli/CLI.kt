@@ -113,7 +113,8 @@ class CLI : CliktCommand("arara") {
         feature conditional execution and parameter expansion.
     """.trimMargin("@")
 
-    private val engine by option("-e", "--engine").help("Rule engine: lua (default) or deprecated yaml")
+    private val engine by option("-e", "--preferred-engine")
+        .help("Preferred rule engine: lua (default) or deprecated yaml; falls back to the other format")
         .choice("lua" to RuleEngine.LUA, "yaml" to RuleEngine.YAML).default(RuleEngine.LUA)
 
     private val log by option("-l", "--log")

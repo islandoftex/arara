@@ -45,7 +45,7 @@ class ControlFlowLoggingTest {
 
     private fun run(root: MPPPath, engine: String, flags: List<String> = emptyList()): Int =
         assertFailsWith<ProgramResult> {
-            CLI().parse(listOf("--engine", engine, "--language", "fr", "-d", root.toString()) + flags + "run.tex")
+            CLI().parse(listOf("--preferred-engine", engine, "--language", "fr", "-d", root.toString()) + flags + "run.tex")
         }.statusCode
 
     @Test

@@ -16,6 +16,8 @@ import org.islandoftex.arara.api.rules.RuleArgument
 import org.islandoftex.arara.api.rules.RuleCommand
 import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.api.session.ExecutionStatus
+import org.islandoftex.arara.cli.ruleset.DirectiveImpl
+import org.islandoftex.arara.cli.ruleset.DirectiveUtils
 import org.islandoftex.arara.cli.ruleset.RuleEngine
 import org.islandoftex.arara.cli.ruleset.RuleFiles
 import org.islandoftex.arara.cli.utils.DisplayUtils
@@ -39,7 +41,7 @@ import org.islandoftex.arara.mvel.rules.SerialRuleCommand
  */
 class Interpreter(
     private val executionOptions: ExecutionOptions,
-    @Suppress("UNUSED_PARAMETER") currentFile: ProjectFile,
+    private val currentFile: ProjectFile,
     private val workingDirectory: MPPPath,
     private val engine: RuleEngine = RuleEngine.YAML
 ) {
@@ -218,8 +220,9 @@ class Interpreter(
         }
 
         val file = RuleFiles.find(directive, executionOptions, workingDirectory, engine)
-        RunLog.rule(directive.identifier, file.toString(), engine.name.lowercase())
-        if (engine == RuleEngine.YAML && executionOptions.warnDeprecatedYaml) {
+        val resolvedEngine = if (file.fileName.endsWith(".lua")) RuleEngine.LUA else RuleEngine.YAML
+        RunLog.rule(directive.identifier, file.toString(), resolvedEngine.name.lowercase())
+        if (resolvedEngine == RuleEngine.YAML && executionOptions.warnDeprecatedYaml) {
             RunLog.deprecatedYaml(directive.identifier, file.toString())
             DisplayUtils.deprecatedYamlUsed()
         }
@@ -227,9 +230,22 @@ class Interpreter(
         // parse the rule identified by the directive (may throw an exception)
         return try {
             val rule = RuleFiles.parseRule(file, directive.identifier)
-            executeRule(rule, directive, file)
+            val parameters = directive.parameters.let { values ->
+                if ("options" in values && executionOptions.executionMode != ExecutionMode.SAFE_RUN)
+                    values.plus("options" to DirectiveUtils.interpolateOptions(
+                        values.getValue("options"), resolvedEngine
+                    ))
+                else values
+            }
+            val resolvedDirective = DirectiveImpl(
+                directive.identifier, parameters, directive.conditional, directive.lineNumbers, resolvedEngine
+            )
+            Interpreter(executionOptions, currentFile, workingDirectory, resolvedEngine)
+                .executeRule(rule, resolvedDirective, file)
         } finally {
-            HaltRequest.exitCode?.let { RunLog.haltRequested(directive.identifier, it, engine.name.lowercase()) }
+            HaltRequest.exitCode?.let {
+                RunLog.haltRequested(directive.identifier, it, resolvedEngine.name.lowercase())
+            }
         }
     }
 
