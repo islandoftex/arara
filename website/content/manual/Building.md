@@ -235,36 +235,53 @@ Usage: arara [<options>] <file>...
   feature conditional execution and parameter expansion.
 
 Options:
-  -l, --log                     Generate a log output
-  -v, --verbose / -s, --silent  Print the command output
-  -n, --dry-run                 Go through all the motions of running a
-                                command, but with no actual calls
-  -S, --safe-run                Run in safe mode and disable potentially
-                                harmful features. Make sure your projects uses
-                                only allowed features.
-  -w, --whole-file              Extract directives in the file, not only in the
-                                header
-  -p, --preamble=<text>         Set the file preamble based on the
-                                configuration file
-  -t, --timeout=<int>           Set the execution timeout (in milliseconds)
-  -L, --language=<text>         Set the application language
-  -m, --max-loops=<int>         Set the maximum number of loops (> 0)
+  -e, --engine=(lua|yaml)        Rule engine: lua (default) or deprecated yaml
+  -l, --log                      Write a text diagnostic log (shorthand for
+                                 --log-format=text)
+  -v, --verbose                  Print the command output
+  -s, --silent                   Suppress command output, overriding
+                                 configuration and --verbose
+  -n, --dry-run                  Go through all the motions of running a
+                                 command, but with no actual calls
+  -S, --safe-run                 Run in safe mode and disable potentially
+                                 harmful features. Make sure your projects uses
+                                 only allowed features.
+  -w, --whole-file               Extract directives in the file, not only in
+                                 the header
+  -p, --preamble=<text>          Set the file preamble based on the
+                                 configuration file
+  -t, --timeout=<int>            Set the execution timeout (in milliseconds)
+  -L, --language=<text>          Set the application language
+  -m, --max-loops=<int>          Set the maximum number of loops (> 0)
   -d, --working-directory=<path>
-                                Set the working directory for all tools
-  -P, --call-property=<value>   Pass parameters to the application to be used
-                                within the session.
-  -F, --properties-file=<path>  Pass a properties file to the application to be
-                                used within the session.
+                                 Set the working directory for all tools
+  -P, --call-property=<value>    Pass parameters to the application to be used
+                                 within the session.
+  -F, --properties-file=<path>   Pass a properties file to the application to
+                                 be used within the session.
+  --log-format=(none|text|json)  Set the diagnostic log format: none (default),
+                                 text or json
+  -c, --console=(plain|styled)   Set the console presentation: plain or styled
   --generate-completion=(bash|zsh|fish)
-                                Generate a completion script for arara. Add
-                                'source <(arara --generate-completion <shell>)'
-                                to your shell's init file.
-  -V, --version                 Show the version and exit
-  -h, --help                    Show this message and exit
+                                 Generate a completion script for arara. Add
+                                 'source <(arara --generate-completion
+                                 <shell>)' to your shell's init file.
+  -V, --version                  Show the version and exit
+  -h, --help                     Show this message and exit
 
 Arguments:
   <file>  The file(s) to evaluate and process
 ```
+
+Before submitting changes, run the formatting, static analysis and test checks:
+
+```sh
+$ ./gradlew spotlessCheck detekt allTests -PwarningsAsErrors=true
+```
+
+For runtime or packaging changes, also run `./gradlew processSmoke`. The combined
+API reference is built with `./gradlew dokkaGeneratePublicationHtml`; undocumented
+public declarations and unresolved documentation links fail the build.
 
 The following optional Gradle phase is used to handle the project cleaning,
 including the complete removal of the `build/` directory. As a result, the

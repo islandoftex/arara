@@ -464,7 +464,7 @@ global and local approaches, it is highly advisable to run our tool with the
 considered for that specific execution. The logging feature is discussed later
 on, in [Logging](@/manual/Logging.md).
 
-### Console presentation
+### Console settings
 
 `console` selects `plain` (default) or `styled` in Lua and YAML configurations.
 `--console plain` or `--console styled` overrides configuration. Styled output uses
