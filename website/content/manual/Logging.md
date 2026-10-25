@@ -290,6 +290,11 @@ emits a warning when logging is enabled, and the run summary reports a
 compatibility warning. Lua configuration `warn_deprecated_yaml = false` or YAML
 `warnDeprecatedYaml: false` suppresses both.
 
+Runtime context is recorded for each executed project after configuration and
+command-line overrides. It identifies the selected configuration file (when any),
+engine and console, the invocation and project directories, and the Java and
+operating-system versions.
+
 ## Structured events
 
 Records use schema version `1`. CLI invocations add a `runId` shared across their
@@ -298,6 +303,7 @@ log destinations. Application records add an `event` name and typed `data` field
 | Event | Data fields |
 | --- | --- |
 | `run.started`, `application.version` | `version` |
+| `run.context` | `project`, `workingDirectory`, `invocationDirectory`, `applicationPath`, `engine`, `console`; available `configurationFile`, `javaVersion`, `javaVendor`, `javaHome`, `osName`, `osArch`, `osVersion` |
 | `project.started` | `name`, `workingDirectory` |
 | `file.started` | `path`, `sizeBytes` |
 | `task.started` | `rule`, `task` |

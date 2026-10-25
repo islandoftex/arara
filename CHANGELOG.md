@@ -16,6 +16,9 @@ on.
 
 ### Added
 
+* Diagnostic logs record the Java/OS runtime, directories, configuration file,
+  and effective engine and console for each executed project.
+
 * The `upmendex` rule generates multilingual Unicode indexes in both Lua and
   YAML/MVEL engines, with style, dictionary, ordering and whitespace options.
 

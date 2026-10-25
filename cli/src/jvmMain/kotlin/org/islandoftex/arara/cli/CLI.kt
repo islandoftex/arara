@@ -53,6 +53,7 @@ import org.islandoftex.arara.cli.ui.TerminalDialogRenderer
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.cli.utils.LoggingUtils
 import org.islandoftex.arara.cli.utils.RunLog
+import org.islandoftex.arara.cli.utils.RuntimeDiagnostics
 import org.islandoftex.arara.cli.utils.StandardStreams
 import org.islandoftex.arara.cli.utils.printFileInformation
 import org.islandoftex.arara.core.configuration.ExecutionOptions
@@ -342,6 +343,7 @@ class CLI : CliktCommand("arara") {
     ) {
         configuration.restore(configureLogging = false)
         LanguageController.loadMessagesFor(language?.let { MPPLocale(it) } ?: Session.userInterfaceOptions.locale)
+        DisplayUtils.configurationFileName = "[none]"
         ConfigurationFiles.configFileForProject(project)?.let {
             DisplayUtils.configurationFileName = it.toString()
             ConfigurationFiles.load(it, project, configureLogging = false)
@@ -401,7 +403,9 @@ class CLI : CliktCommand("arara") {
                 },
                 executeBeforeProject = { project ->
                     configureProject(project, configuration)
-                    RunLog.project(project.name, project.workingDirectory.toString())
+                    RuntimeDiagnostics.record(
+                        project, engine.name.lowercase(), checkNotNull(appliedConsole).name.lowercase(),
+                        DisplayUtils.configurationFileName.takeUnless { it == "[none]" })
                     DisplayUtils.renderer.printProjectInformation(project.name, project.workingDirectory.toString(),
                         DisplayUtils.presentation.multipleProjects)
                 },
