@@ -9,6 +9,9 @@ import org.islandoftex.arara.api.localization.MPPLocale
  */
 @Suppress("TooManyFunctions")
 interface AraraMessages {
+    /** Summary warning for legacy YAML rules scheduled for removal in version 9. */
+    val warningDeprecatedYaml: String
+
     /** The locale of this catalog. */
     val providedLocale: MPPLocale
 

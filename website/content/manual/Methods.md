@@ -4,6 +4,10 @@ description = "Methods"
 weight = 8
 +++
 
+For new Lua rules, start with [Lua rules](@/manual/Lua.md), including its helper
+reference. The MVEL examples in this chapter require the deprecated
+`--engine yaml` engine, which will be discontinued in v9.
+
 arara features several helper methods available in directive conditional and
 rule contexts which provide interesting features for enhancing the user
 experience, as well as improving the automation itself. This chapter provides a

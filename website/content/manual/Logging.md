@@ -285,6 +285,11 @@ of the rule engine, console presentation and console language.
 Changing the format reopens the destination using its append setting. Use separate
 files for different formats; appended files must use the selected format throughout.
 
+YAML/MVEL rules are deprecated and will be discontinued in v9. Each rule used
+emits a warning when logging is enabled, and the run summary reports a
+compatibility warning. Lua configuration `warn_deprecated_yaml = false` or YAML
+`warnDeprecatedYaml: false` suppresses both.
+
 ## Structured events
 
 Records use schema version `1`. CLI invocations add a `runId` shared across their
@@ -297,6 +302,7 @@ log destinations. Application records add an `event` name and typed `data` field
 | `file.started` | `path`, `sizeBytes` |
 | `task.started` | `rule`, `task` |
 | `rule.resolved` | `rule`, `path`, `engine` |
+| `rule.deprecated` (warning) | `rule`, `path`, `engine`, `removalVersion` |
 | `command.output` | `output`, `empty` |
 | `command.completed` | `argv`, `durationMs`, `exitCode`; available `workingDirectory`, `inputFile` |
 | `command.failed` | `argv`, `durationMs`, `failureKind`; available `workingDirectory`, `inputFile` |

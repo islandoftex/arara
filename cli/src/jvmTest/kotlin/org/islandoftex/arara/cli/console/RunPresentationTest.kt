@@ -53,11 +53,14 @@ class RunPresentationTest {
         ledger.start(file, true)
         ledger.task()
         val before = ledger.summary(true, true)
+        ledger.deprecatedYaml()
         ledger.finish(2)
+        assertEquals(true, ledger.deprecatedYamlUsed)
         assertNull(before.files.single().exitCode)
         assertEquals(true, before.files.single().dryRun)
         assertEquals(2, ledger.summary(false, true).files.single().exitCode)
         ledger.prepare(emptyList())
+        assertEquals(false, ledger.deprecatedYamlUsed)
         assertEquals(emptyList(), ledger.summary(true, false).files)
     }
 }

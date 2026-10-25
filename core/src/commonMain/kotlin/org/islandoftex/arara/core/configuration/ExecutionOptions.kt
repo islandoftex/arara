@@ -30,7 +30,9 @@ data class ExecutionOptions(
     /** Recognized extensions and their directive comment patterns. */
     override val fileTypes: List<FileType> = ConfigurationUtils.defaultFileTypes,
     /** Whether directive extraction stops at the first line outside the comment pattern. */
-    override val parseOnlyHeader: Boolean = true
+    override val parseOnlyHeader: Boolean = true,
+    /** Whether deprecated YAML/MVEL rule usage is reported in logs and the summary. */
+    override val warnDeprecatedYaml: Boolean = true
 ) : ExecutionOptions {
     /** Conversions from the public execution-options interface. */
     companion object {
@@ -50,7 +52,8 @@ data class ExecutionOptions(
                 executionMode = options.executionMode,
                 rulePaths = options.rulePaths,
                 fileTypes = options.fileTypes,
-                parseOnlyHeader = options.parseOnlyHeader
+                parseOnlyHeader = options.parseOnlyHeader,
+                warnDeprecatedYaml = options.warnDeprecatedYaml
             )
         }
     }

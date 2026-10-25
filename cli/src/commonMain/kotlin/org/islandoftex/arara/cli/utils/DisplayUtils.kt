@@ -51,9 +51,15 @@ object DisplayUtils {
     fun printFileResult(exitCode: Int) = presentation.finish(exitCode)
 
     /** Present the retained invocation ledger with the aggregate success flag. */
-    fun printRunSummary(success: Boolean) = renderer.printRunSummary(presentation.summary(
-        success, LinearExecutor.executionOptions.executionMode == ExecutionMode.DRY_RUN
-    ))
+    fun printRunSummary(success: Boolean) {
+        renderer.printRunSummary(presentation.summary(
+            success, LinearExecutor.executionOptions.executionMode == ExecutionMode.DRY_RUN
+        ))
+        if (presentation.deprecatedYamlUsed) renderer.printWrapped(LanguageController.messages.warningDeprecatedYaml)
+    }
+
+    /** Retain compatibility warnings across files and project configuration changes. */
+    fun deprecatedYamlUsed() = presentation.deprecatedYaml()
 
     /** Count a conditional skip and present it through the active renderer. */
     fun printSkippedDirective(identifier: String) {

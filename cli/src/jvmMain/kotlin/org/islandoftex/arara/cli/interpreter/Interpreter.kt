@@ -219,6 +219,10 @@ class Interpreter(
 
         val file = RuleFiles.find(directive, executionOptions, workingDirectory, engine)
         RunLog.rule(directive.identifier, file.toString(), engine.name.lowercase())
+        if (engine == RuleEngine.YAML && executionOptions.warnDeprecatedYaml) {
+            RunLog.deprecatedYaml(directive.identifier, file.toString())
+            DisplayUtils.deprecatedYamlUsed()
+        }
 
         // parse the rule identified by the directive (may throw an exception)
         val rule = RuleFiles.parseRule(file, directive.identifier)

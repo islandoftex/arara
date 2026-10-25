@@ -18,8 +18,8 @@ processing `main.tex`, this directive checks `main.aux`:
 % arara: pdflatex if changed('aux')
 ```
 
-The explicit file form accepts a file reference. Use `toFile('other.tex')` with
-the YAML/MVEL engine, or `to_file('other.tex')` with the Lua engine:
+The explicit file form accepts a file reference. Use `to_file('other.tex')` with
+the Lua engine, or `toFile('other.tex')` with the YAML/MVEL engine:
 
 ```tex
 % arara: pdflatex if changed(to_file('other.tex'))
@@ -55,7 +55,7 @@ calling a file-change helper from that code can still update its record.
 # Database location
 
 The default name is `arara.yaml`, relative to the project's working directory.
-Change it with YAML `dbname` or Lua `database`, as described in
+Change it with Lua `database` or YAML `dbname`, as described in
 [Configuration file](@/manual/Configuration.md):
 
 ```yaml

@@ -55,7 +55,7 @@ class PlainReportingTest {
 
     private fun run(root: MPPPath, expected: Int, vararg args: String): String = capture {
         assertEquals(expected, assertFailsWith<ProgramResult> {
-            CLI().parse(listOf("-d", root.toString(), "-L", "en", "--console", "plain") + args)
+            CLI().parse(listOf("--engine", "yaml", "-d", root.toString(), "-L", "en", "--console", "plain") + args)
         }.statusCode)
     }
 

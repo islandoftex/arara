@@ -12,11 +12,18 @@ internal class RunPresentation(private val clock: TimeSource = TimeSource.Monoto
     private val files = linkedMapOf<String, FileSummary>()
     private var current: String? = null
     private var started: TimeMark? = null
+    var deprecatedYamlUsed: Boolean = false
+        private set
+
+    fun deprecatedYaml() {
+        deprecatedYamlUsed = true
+    }
 
     val multipleProjects: Boolean get() = files.values.map { it.project to it.directory }.distinct().size > 1
 
     fun prepare(projects: List<Project>) {
         files.clear()
+        deprecatedYamlUsed = false
         current = null
         started = null
         ProjectValidation.executionOrder(projects).forEach { project ->

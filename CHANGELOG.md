@@ -29,8 +29,8 @@ on.
   artifacts. A combined API reference is available through
   `dokkaGeneratePublicationHtml`.
 
-* JSON Lines diagnostic logs via `--log-format json`, YAML `logformat: json`,
-  or Lua `log.format = "json"`. Logging is disabled by default. JSON records
+* JSON Lines diagnostic logs via `--log-format json`, Lua `log.format = "json"`,
+  or YAML `logformat: json`. Logging is disabled by default. JSON records
   include versioned event names, typed fields and a per-invocation run identifier.
 
 * Debug logs trace session variable additions, overwrites, removals, clears and
@@ -40,12 +40,11 @@ on.
   command duration and outcome, silent tool output, and the final application exit code.
 
 * Optional styled terminal output via `--console styled` or configuration
-  `console: styled` (Lua: `console = "styled"`). Plain output remains the default.
+  Lua `console = "styled"` or YAML `console: styled`. Plain output remains the default.
   Styled runs include dialog frames, project headings and per-project file
   summaries with task counts, timings and outcomes. Narrow terminals use wrapped
   details; dry runs are labelled as simulations. Long-running interactive tasks
-  show a delayed spinner and elapsed time; `animations: false` (Lua:
-  `animations = false`) disables it. Captured failure output marks
+  show a delayed spinner and elapsed time; Lua `animations = false` or YAML `animations: false` disables it. Captured failure output marks
   truncation and points to the full log when logging is enabled.
   Verbose styled output has localized command fields and frames around tool output.
   Styled dialogs use severity-colored boxes with numbered choices, falling back
@@ -69,6 +68,12 @@ on.
 
 ### Changed
 
+* **Breaking change:** Lua is now the default rule engine. Select `--engine yaml`
+  for legacy YAML/MVEL rules, which will be discontinued in v9. Each resolved
+  YAML rule emits a log warning and the run summary reports a compatibility
+  warning. Set Lua `warn_deprecated_yaml = false` or YAML
+  `warnDeprecatedYaml: false` to suppress these warnings.
+
 * **Breaking change:** The application jar ships with a separate `jna.jar`.
   Manual Java launches must place it on the module path and enable native access
   for `com.sun.jna`; the supplied launchers handle this automatically.
@@ -89,8 +94,8 @@ on.
   outside the `Long` range remain strings instead of being silently truncated.
 
 * **Breaking change:** Logging uses a single `none`, `text` or `json` format.
-  Replace YAML `logging: true` with `logformat: text`, Lua `log.enabled` with
-  `log.format`, and API `LoggingOptions.enableLogging` with `format`.
+  Replace Lua `log.enabled` with `log.format`, YAML `logging: true` with
+  `logformat: text`, and API `LoggingOptions.enableLogging` with `format`.
   `-l` / `--log` remains shorthand for `--log-format text`.
 
 * **Breaking change:** `dbname`/`database` honors the complete configured path
@@ -112,7 +117,7 @@ on.
   across the invocation. Repeated or shared file paths are rejected instead of
   being executed twice. Overlapping file ownership is rejected before execution.
 * Remove the unfinished Kotlin scripting DSL module and `.kts` rule lookup.
-  YAML/MVEL and Lua rules remain supported.
+  Lua and YAML/MVEL rules remain supported.
 
 * Windows MSYS/Cygwin terminal pipes receive UTF-8 output. Native consoles and
   redirected streams retain their Java-selected encoding.

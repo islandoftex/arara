@@ -14,6 +14,10 @@ internal actual object EventLog {
         if (logger.isInfoEnabled) logger.info(EventMessage(event, message, fields))
     }
 
+    actual fun warn(event: String, message: String, fields: Map<String, Any>) {
+        if (logger.isWarnEnabled) logger.warn(EventMessage(event, message, fields))
+    }
+
     actual fun error(event: String, message: String, fields: Map<String, Any>, cause: Throwable?) {
         if (logger.isErrorEnabled) {
             logger.error(EventMessage(event, message, fields), if (LoggingUtils.isJson) cause else null)

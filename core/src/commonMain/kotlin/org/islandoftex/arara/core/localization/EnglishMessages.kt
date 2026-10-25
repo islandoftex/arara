@@ -6,6 +6,9 @@ import org.islandoftex.arara.api.localization.MPPLocale
 /** English message catalog. */
 @Suppress("MaxLineLength", "TooManyFunctions")
 object EnglishMessages : AraraMessages {
+    override val warningDeprecatedYaml: String =
+        "Compatibility warning: you have used deprecated YAML rules which will be discontinued in v9."
+
     override val providedLocale: MPPLocale = MPPLocale("en")
 
     override val translators: List<String> = listOf("Paulo Roberto Massa Cereda")
@@ -212,7 +215,7 @@ object EnglishMessages : AraraMessages {
         "Unknown console mode '${mode}'. Use plain or styled."
 
     override fun errorParseRuleUnsupportedFormat(identifier: String, format: String): String =
-        "Unsupported rule format for '${identifier}': '${format}'. Use a YAML or Lua rule file."
+        "Unsupported rule format for '${identifier}': '${format}'. Use a Lua or YAML rule file."
 
     override fun errorInterpreterRuleNotFound(identifier: String, expected: String, paths: String): String =
         "I could not find a rule named \"${identifier}\" in the provided rule paths. Perhaps a misspelled word? I was looking for a file named \"${expected}\" in the following paths in order of priority: ${paths}"

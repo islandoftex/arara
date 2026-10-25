@@ -47,7 +47,26 @@ to have a unique prefix in the texmf tree. File names should not be relied
 upon.
 {% end %}
 
-With the default `yaml` engine, a rule is a plain text file written in the YAML
+Lua rules are the recommended format for new rules; see
+[Lua rules](@/manual/Lua.md) for their structure and examples.
+
+For example, a Lua rule for a greeting returns this table:
+
+```lua
+return {
+    identifier = "hello",
+    name = "Greeting",
+    commands = {
+        { command = function() return get_command("echo", "Hello world!") end }
+    }
+}
+```
+
+Save it as `hello.lua` in a configured rule path and use `% arara: hello`.
+
+## Legacy YAML/MVEL rule structure
+
+With the legacy `yaml` engine (`--engine yaml`), a rule is a plain text file written in the YAML
 format, described in [YAML](@/manual/YAML.md). The rule structure and examples
 below describe this format. Lua rules return a table instead; their structure
 and examples are covered in [Lua rules](@/manual/Lua.md). Select them with
@@ -599,15 +618,15 @@ arara provides logical expressions and special operators processed at runtime
 in order to determine whether and how a directive
 should be processed. This feature is named *directive conditional*, or simply
 *conditional* as an abbreviation. The following list describes all conditional
-operators available in the directive context. Expressions use MVEL with the
-default `yaml` engine and Lua with `--engine lua`. The examples below use MVEL.
+operators available in the directive context. Expressions use Lua by default and MVEL with the
+legacy `yaml` engine (`--engine yaml`). The examples below use Lua.
 
-| Operation | MVEL | Lua |
+| Operation | Lua | MVEL |
 | --- | --- | --- |
-| And | `&&` | `and` |
-| Or | `||` | `or` |
-| Not | `!` | `not` |
-| Not equal | `!=` | `~=` |
+| And | `and` | `&&` |
+| Or | `or` | `||` |
+| Not | `not` | `!` |
+| Not equal | `~=` | `!=` |
 
 For instance, the Lua equivalent of `missing('pdf') || changed('tex')` is
 `missing('pdf') or changed('tex')`. Lua conditionals must return a boolean;
@@ -619,7 +638,7 @@ strings and numbers are not accepted as truth values.
   executed at most once.
 
   ```tex
-  % arara: pdflatex if missing('pdf') || changed('tex')
+  % arara: pdflatex if missing('pdf') or changed('tex')
   ```
 
 - **[a posteriori]** `until`: The directive is interpreted the first time, then
@@ -628,7 +647,7 @@ strings and numbers are not accepted as truth values.
   of proper halting.
 
   ```tex
-  % arara: pdflatex until !found('log', 'undefined references')
+  % arara: pdflatex until not found('log', 'undefined references')
   ```
 
 - **[a priori]** `unless`: Technically an inverted `if` conditional, the
@@ -637,7 +656,7 @@ strings and numbers are not accepted as truth values.
   conditional holds false, is executed at most once.
 
   ```tex
-  % arara: pdflatex unless unchanged('tex') && exists('pdf')
+  % arara: pdflatex unless unchanged('tex') and exists('pdf')
   ```
 
 - **[a priori]** `while`: The associated expression is evaluated
@@ -646,7 +665,7 @@ strings and numbers are not accepted as truth values.
   are no guarantees of proper halting.
 
   ```tex
-  % arara: pdflatex while missing('pdf') ||
+  % arara: pdflatex while missing('pdf') or
   % arara: --> found('log', 'undefined references')
   ```
 
@@ -691,8 +710,18 @@ to use helper methods in the rule context to get access to the original file and
 reference. Such methods are detailed later on.
 
 {% messagebox(title="Orb tag expansion in parameter values") %}
-From version 6.0 on, arara is able to expand orb tags within a special `options`
-parameter in the directive context. With the YAML engine, for instance:
+arara can expand tags within the special `options` parameter in the directive
+context. With the default Lua engine, use double-curly-brace tags and Lua
+expressions:
+
+```tex
+% arara: lualatex: { options: ['--jobname={{ "draft" .. "-copy" }}'] }
+```
+
+The example produces the option `--jobname=draft-copy`. See
+[Lua rules](@/manual/Lua.md#conditionals-and-options) for the corresponding rules.
+
+With the legacy YAML/MVEL engine, use orb tags instead:
 
 ```tex
 % arara: lualatex: {
@@ -702,19 +731,9 @@ parameter in the directive context. With the YAML engine, for instance:
 % arara: --> }
 ```
 
-This feature supports the following methods with their documented meanings, as
-seen in [Methods](@/manual/Methods.md): `❖ getBasename`, `❖
-getSession` and `❖ getOriginalReference`.
-
-With `--engine lua`, use double-curly-brace tags and Lua expressions instead:
-
-```tex
-% arara: lualatex: { options: ['--jobname={{ "draft" .. "-copy" }}'] }
-```
-
-The example produces the option `--jobname=draft-copy`. The tags belong to the
-selected engine; Lua does not accept MVEL's `@{ ... }` tags. See
-[Lua rules](@/manual/Lua.md#conditionals-and-options) for the corresponding rules.
+This form supports the methods described in [Methods](@/manual/Methods.md):
+`❖ getBasename`, `❖ getSession` and `❖ getOriginalReference`. The tags belong to
+the selected engine; Lua does not accept MVEL's `@{ ... }` tags.
 
 Keep in mind that this feature is disabled when arara is running in safe mode,
 as seen in [Command line](@/manual/CLI.md).
@@ -734,7 +753,7 @@ type. For example:
 
 Here the header ends at `\documentclass{article}`. Directives below that line
 are not found unless whole-file extraction is enabled with `-w` / `--whole-file`
-or YAML `header: false` (Lua `header = false`).
+or Lua `header = false` (YAML `header: false`).
 
 A file type pairs an extension with a regular expression identifying comment
 lines. The extension controls file lookup; the pattern controls directive
@@ -759,16 +778,16 @@ Two prefixes are populated by the command-line application:
   `-P` / `--call-property`. Command-line values take priority over file values.
 
 For example, `arara -P builddir=output main.tex` makes `arg:builddir` available
-to a YAML/MVEL rule through:
-
-```java
-getSession().get('arg:builddir')
-```
-
-The equivalent Lua call is:
+to a Lua rule through:
 
 ```lua
 get_session().get("arg:builddir")
+```
+
+The equivalent YAML/MVEL call is:
+
+```java
+getSession().get('arg:builddir')
 ```
 
 Rules can also store their own keys with `put`. The operations and their Lua
@@ -794,19 +813,18 @@ in [The file database](@/manual/Database.md#database-location) and
 # Exit statuses
 
 A system command normally succeeds when it returns zero. A rule's `exit` check
-can accept another status instead. In a YAML rule, the process status is named
-`value`:
-
-```yaml
-exit: value > 0
-```
-
-A Lua rule supplies a function instead:
+can accept another status instead. A Lua rule supplies a function:
 
 ```lua
 exit = function(code)
   return code > 0
 end
+```
+
+In a YAML rule, the process status is named `value`:
+
+```yaml
+exit: value > 0
 ```
 
 Both examples accept a positive process status and reject zero. The check must
@@ -830,7 +848,8 @@ strings. Null parameter values are rejected.
 {% end %}
 
 {% messagebox(title="Custom rule formats") %}
-YAML/MVEL remains the default engine; Lua rules are selected with `--engine lua`.
+Lua is the default engine. YAML/MVEL rules require `--engine yaml` and are
+deprecated; they will be discontinued in v9.
 The unfinished Kotlin scripting DSL and `.kts` rule lookup have been removed.
 See the [migration post](@/news/2026-10-22-Migration-v8.md) for examples of
 converting custom rules to Lua.

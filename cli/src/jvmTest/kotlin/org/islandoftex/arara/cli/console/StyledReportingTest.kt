@@ -64,7 +64,7 @@ class StyledReportingTest {
 
     private fun run(root: MPPPath, expected: Int, vararg arguments: String): String = capture {
         assertEquals(expected, assertFailsWith<ProgramResult> {
-            CLI().parse(listOf("-d", root.toString()) + arguments)
+            CLI().parse(listOf("--engine", "yaml", "-d", root.toString()) + arguments)
         }.statusCode)
     }
 

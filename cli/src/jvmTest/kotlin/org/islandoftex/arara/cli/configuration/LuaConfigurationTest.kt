@@ -126,8 +126,8 @@ class LuaConfigurationTest {
 
     @Test
     fun configurationFormatAndRuleEngineAreIndependentAndHostSettingsAreRestored() {
-        for (format in listOf("yaml", "lua")) {
-            for (engine in listOf("yaml", "lua")) {
+        for (format in listOf("lua", "yaml")) {
+            for (engine in listOf("lua", "yaml")) {
                 fixture { root, _ ->
                     root.resolve("arararc.$format").writeText(if (format == "yaml") """
                         !config

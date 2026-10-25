@@ -6,6 +6,9 @@ import org.islandoftex.arara.api.localization.MPPLocale
 /** Norfolk message catalog. */
 @Suppress("MaxLineLength", "TooManyFunctions")
 object NorfolkMessages : AraraMessages {
+    override val warningDeprecatedYaml: String =
+        "Compatibility warning: you have used deprecated YAML rules which will be discontinued in v9."
+
     override val providedLocale: MPPLocale = MPPLocale("en-QN")
 
     override val translators: List<String> = listOf("Nicola Talbot", "Keith Skipper")
@@ -212,7 +215,7 @@ object NorfolkMessages : AraraMessages {
         "I don't know that console mode '${mode}', bor. Use plain or styled."
 
     override fun errorParseRuleUnsupportedFormat(identifier: String, format: String): String =
-        "I can't read that rule format for '${identifier}': '${format}', bor. Use a YAML or Lua rule file."
+        "I can't read that rule format for '${identifier}': '${format}', bor. Use a Lua or YAML rule file."
 
     override fun errorInterpreterRuleNotFound(identifier: String, expected: String, paths: String): String =
         "Thass a rum ole dew but there ent no '${identifier}' in any onnem rule paths. Praps you ent spelled that right. I coont find '${expected}' in any onner paths: ${paths}"

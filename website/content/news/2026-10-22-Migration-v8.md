@@ -18,8 +18,12 @@ updating existing rules, configuration and projects.
 arara 8 requires Java 21 or later. Check the Java installation used by the
 launcher, as it may differ from the one selected in an editor.
 
-YAML/MVEL remains the default rule engine. The official rules also have Lua
-counterparts, selected with `--engine lua`. Choosing Lua does not require
+Lua is now the default rule engine. The official rules have Lua counterparts.
+Existing custom YAML/MVEL rules require `--engine yaml`; they are deprecated
+and will be discontinued in v9. Each YAML rule used produces a log warning,
+and the summary includes a compatibility warning. Set
+`warn_deprecated_yaml = false` in Lua configuration or `warnDeprecatedYaml: false`
+in YAML configuration to suppress both. Choosing Lua does not require
 converting a YAML configuration file, and choosing a Lua configuration does not
 change the rule engine.
 
@@ -68,14 +72,14 @@ fields. The complete structure is described in [Lua rules](@/manual/Lua.md).
 The paired sources in the [official rule pack](@/manual/Rules.md) provide worked
 examples for individual tools.
 
-| YAML/MVEL | Lua |
+| Lua | YAML/MVEL |
 | --- | --- |
-| Command expression | `command = function(ctx) ... end` |
-| Flag expression using `parameters.options` | `flag = function(ctx, value) ... end` |
-| Processed `options` in a command | `ctx.options` |
-| `reference.fileName` | `ctx.reference.file_name` |
-| `exit: value == 0` | `exit = function(code) return code == 0 end` |
-| `getCommand`, `throwError` | `get_command`, `throw_error` (camelCase also works) |
+| `command = function(ctx) ... end` | Command expression |
+| `flag = function(ctx, value) ... end` | Flag expression using `parameters.options` |
+| `ctx.options` | Processed `options` in a command |
+| `ctx.reference.file_name` | `reference.fileName` |
+| `exit = function(code) return code == 0 end` | `exit: value == 0` |
+| `get_command`, `throw_error` (camelCase also works) | `getCommand`, `throwError` |
 
 Convert directive conditionals too when switching engines: MVEL's `&&`, `||`,
 `!` and `!=` become Lua's `and`, `or`, `not` and `~=`. Option interpolation uses

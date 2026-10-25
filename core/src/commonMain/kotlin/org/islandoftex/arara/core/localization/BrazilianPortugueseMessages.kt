@@ -6,6 +6,9 @@ import org.islandoftex.arara.api.localization.MPPLocale
 /** Brazilian Portuguese message catalog. */
 @Suppress("MaxLineLength", "TooManyFunctions")
 object BrazilianPortugueseMessages : AraraMessages {
+    override val warningDeprecatedYaml: String =
+        "Aviso de compatibilidade: você utilizou regras YAML obsoletas que serão removidas na v9."
+
     override val providedLocale: MPPLocale = MPPLocale("pt-BR")
 
     override val translators: List<String> = listOf("Paulo Roberto Massa Cereda")
@@ -212,7 +215,7 @@ object BrazilianPortugueseMessages : AraraMessages {
         "Modo de console desconhecido '${mode}'. Use plain ou styled."
 
     override fun errorParseRuleUnsupportedFormat(identifier: String, format: String): String =
-        "Formato de regra não suportado para '${identifier}': '${format}'. Use um arquivo de regra YAML ou Lua."
+        "Formato de regra não suportado para '${identifier}': '${format}'. Use um arquivo de regra Lua ou YAML."
 
     override fun errorInterpreterRuleNotFound(identifier: String, expected: String, paths: String): String =
         "Não consegui encontrar uma regra chamada '${identifier}' nos caminhos de regras especificados. Talvez uma palavra digitada incorretamente? Eu estava procurando por um arquivo chamado '${expected}' nos seguintes caminhos, em ordem de prioridade: ${paths}"

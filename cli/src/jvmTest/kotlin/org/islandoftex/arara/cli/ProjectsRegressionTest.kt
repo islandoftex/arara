@@ -31,7 +31,7 @@ class ProjectsRegressionTest {
 
     private fun run(root: MPPPath, vararg references: String): Int =
         assertFailsWith<ProgramResult> {
-            CLI().parse(listOf("-d", root.toString()) + references)
+            CLI().parse(listOf("--engine", "yaml", "-d", root.toString()) + references)
         }.statusCode
 
     private fun marker(root: MPPPath, value: String = "ran") {
@@ -243,7 +243,7 @@ class ProjectsRegressionTest {
         PreambleState.preambles.clear()
         PreambleState.preambles["host"] = "% arara: host"
         PreambleState.defaultPreamble = null
-        for (format in listOf("yaml", "lua")) {
+        for (format in listOf("lua", "yaml")) {
             for (name in listOf("first", "second")) {
                 val project = root.resolve("$format-$name").apply { createDirectories() }
                 marker(project, "$format-$name")

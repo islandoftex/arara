@@ -1,11 +1,11 @@
 +++
 title = "Lua rules"
 description = "Lua rule format and expressions"
-weight = 14
+weight = 12
 +++
 
-`arara --engine lua document.tex` selects Lua rule files and expressions.
-The default engine remains `yaml`. Lua lookup searches each configured rule path
+`arara document.tex` uses Lua rule files and expressions by default.
+Lua lookup searches each configured rule path
 for `name.lua`, then `arara-rule-name.lua`; it does not fall back to YAML.
 Configuration files may use Lua or YAML, independently of the selected engine;
 see [Configuration file](@/manual/Configuration.md). Directive parameter maps

@@ -59,7 +59,7 @@ perspective, and are described as follows.
   from the previously processed project.
 
 {% messagebox(title="Beware of empty configuration files") %}
-A configuration file must contain valid YAML or a Lua script returning a table.
+A configuration file must contain a Lua script returning a table or valid YAML.
 An empty Lua configuration is written as `return {}`.
 {% end %}
 
@@ -272,6 +272,11 @@ resolution for a path in plain string should be kept as simple as possible, so
     logname: mylog
     ```
 
+- **[O]** *(boolean)* `warnDeprecatedYaml` (default: `true`): Emit log and
+  summary compatibility warnings when deprecated YAML/MVEL rules are used.
+  In Lua configuration, use `warn_deprecated_yaml = false` to suppress them.
+  YAML/MVEL rules will be discontinued in v9; YAML configuration remains supported.
+
 - **[O]** *(string)* `dbname` (default: `arara.yaml`): The database file path,
   including its extension. Lua configurations use `database`. Relative paths
   resolve against the project's working directory; absolute paths are used as
@@ -461,7 +466,7 @@ on, in [Logging](@/manual/Logging.md).
 
 ### Console presentation
 
-`console` selects `plain` (default) or `styled` in YAML and Lua configurations.
+`console` selects `plain` (default) or `styled` in Lua and YAML configurations.
 `--console plain` or `--console styled` overrides configuration. Styled output uses
 terminal colors when available and ASCII markers without ANSI escapes in pipes.
 Rule-engine selection is independent of the console presentation.

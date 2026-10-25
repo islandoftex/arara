@@ -87,19 +87,19 @@ class ConsolePresentationTest {
                   - command: "@{ return true; }"
                 arguments: []
             """.trimIndent())
-            for (configuration in listOf("yaml", "lua")) {
+            for (configuration in listOf("lua", "yaml")) {
                 val config = root.resolve("arararc.$configuration")
                 config.writeText(if (configuration == "yaml") "!config\npaths: ['.']\nconsole: styled\n"
                     else "return { paths = { cwd }, console = 'styled' }")
                 val styled = capture {
                     assertEquals(0, assertFailsWith<ProgramResult> {
-                        CLI().parse(listOf("-d", root.toString(), "run.tex"))
+                        CLI().parse(listOf("--engine", "yaml", "-d", root.toString(), "run.tex"))
                     }.statusCode)
                 }
                 assertTrue("> Probe" in styled)
                 val plain = capture {
                     assertEquals(0, assertFailsWith<ProgramResult> {
-                        CLI().parse(listOf("-d", root.toString(), "--console", "plain", "run.tex"))
+                        CLI().parse(listOf("--engine", "yaml", "-d", root.toString(), "--console", "plain", "run.tex"))
                     }.statusCode)
                 }
                 assertTrue("(Probe)" in plain)

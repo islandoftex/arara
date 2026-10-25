@@ -16,7 +16,7 @@ import org.islandoftex.arara.core.session.Session
 class DatabasePathRegressionTest {
     @Test
     fun changeTrackingUsesTheConfiguredSubdirectoryAcrossInvocationsAndEngines() {
-        for (format in listOf("yaml", "lua")) {
+        for (format in listOf("lua", "yaml")) {
             val root = Files.createTempDirectory("arara database config ").toMPPPath()
             val snapshot = ConfigurationSnapshot.capture()
             try {

@@ -6,6 +6,9 @@ import org.islandoftex.arara.api.localization.MPPLocale
 /** German message catalog. */
 @Suppress("MaxLineLength", "TooManyFunctions")
 object GermanMessages : AraraMessages {
+    override val warningDeprecatedYaml: String =
+        "Kompatibilitätswarnung: Sie haben veraltete YAML-Regeln verwendet, die in v9 entfernt werden."
+
     override val providedLocale: MPPLocale = MPPLocale("de")
 
     override val translators: List<String> = listOf("Marco Daniel", "Ben Frank", "Gert Fischer")
@@ -212,7 +215,7 @@ object GermanMessages : AraraMessages {
         "Unbekannter Konsolenmodus '${mode}'. Verwenden Sie plain oder styled."
 
     override fun errorParseRuleUnsupportedFormat(identifier: String, format: String): String =
-        "Nicht unterstütztes Regelformat für '${identifier}': '${format}'. Verwenden Sie eine YAML- oder Lua-Regeldatei."
+        "Nicht unterstütztes Regelformat für '${identifier}': '${format}'. Verwenden Sie eine Lua- oder YAML-Regeldatei."
 
     override fun errorInterpreterRuleNotFound(identifier: String, expected: String, paths: String): String =
         "Ich konnte keine Regel mit dem Namen \"${identifier}\" in den hinterlegten Regelverzeichnissen finden. Vielleicht ein falsch geschriebenes Wort? Ich habe nach dem Dateinamen \"${expected}\" in den nachstehenden Verzeichnissen mit entsprechender Priorität gesucht: ${paths}"

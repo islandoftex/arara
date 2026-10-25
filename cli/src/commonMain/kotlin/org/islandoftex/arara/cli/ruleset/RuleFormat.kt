@@ -6,11 +6,11 @@ package org.islandoftex.arara.cli.ruleset
  * @property extension Filename extension without its leading dot.
  */
 enum class RuleFormat(val extension: String) {
+    /** Lua rule tables evaluated with Luak. */
+    LUA("lua"),
+
     /**
      * The traditional MVEL rules from version 1 on.
      */
-    MVEL("yaml"),
-
-    /** Lua rule tables evaluated with Luak. */
-    LUA("lua")
+    MVEL("yaml")
 }

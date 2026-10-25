@@ -87,6 +87,12 @@ object RunLog {
         mapOf("rule" to identifier, "path" to path, "engine" to engine)
     )
 
+    /** Record each resolved legacy rule, including skipped directives and dry runs. */
+    fun deprecatedYaml(identifier: String, path: String) = EventLog.warn(
+        "rule.deprecated", "Deprecated YAML rule: $identifier ($path); YAML rules will be discontinued in v9.",
+        mapOf("rule" to identifier, "path" to path, "engine" to "yaml", "removalVersion" to "9")
+    )
+
     /** Record captured tool output, including an explicit empty-output marker. */
     fun commandOutput(output: String) {
         if (!EventLog.isInfoEnabled) return

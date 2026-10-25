@@ -20,7 +20,7 @@ class RuleDiscoveryTest {
         val root = Files.createTempDirectory("arara discovery ").toMPPPath()
         try {
             val input = ProjectFile(root.resolve("run.tex"), FileType("tex", "^%"))
-            listOf(RuleEngine.YAML to "yaml", RuleEngine.LUA to "lua").forEach { (engine, extension) ->
+            listOf(RuleEngine.LUA to "lua", RuleEngine.YAML to "yaml").forEach { (engine, extension) ->
                 val error = assertFailsWith<AraraException> {
                     Interpreter(ExecutionOptions(rulePaths = setOf(root)), input, root, engine).execute(
                         DirectiveImpl("probe", emptyMap(), DirectiveConditional(), listOf(1), engine))

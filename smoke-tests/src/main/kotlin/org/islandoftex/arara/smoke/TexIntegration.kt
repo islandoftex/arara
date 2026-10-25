@@ -118,7 +118,7 @@ internal fun runTexIntegration(options: Map<String, String>) {
         }
     }.exceptionOrNull()
     if (preflight != null) cases.add(CaseResult("tex_toolchain", preflight)) else {
-        for (engine in listOf("yaml", "lua")) {
+        for (engine in listOf("lua", "yaml")) {
             TexIntegration(options, engine).cases.forEach { (name, test) ->
                 val root = Files.createTempDirectory(workspace.toJVMPath(), "$engine-$name ").toMPPPath()
                 val failure = runCatching { test(root) }.exceptionOrNull()

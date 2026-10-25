@@ -94,4 +94,7 @@ public interface ExecutionOptions {
      * of a file.
      */
     public val parseOnlyHeader: Boolean
+
+    /** Whether use of deprecated YAML/MVEL rules emits compatibility warnings. */
+    public val warnDeprecatedYaml: Boolean get() = true
 }

@@ -7,5 +7,6 @@ internal expect object EventLog {
     val isErrorEnabled: Boolean
 
     fun info(event: String, message: String, fields: Map<String, Any>)
+    fun warn(event: String, message: String, fields: Map<String, Any>)
     fun error(event: String, message: String, fields: Map<String, Any>, cause: Throwable? = null)
 }

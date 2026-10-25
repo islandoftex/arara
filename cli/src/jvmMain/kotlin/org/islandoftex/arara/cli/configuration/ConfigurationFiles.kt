@@ -68,7 +68,7 @@ object ConfigurationFiles {
     /**
      * Loads the application configuration.
      *
-     * @param file The YAML or Lua configuration file.
+     * @param file The Lua or YAML configuration file.
      * @param configureLogging Apply the destination immediately; CLI callers defer this until overrides are applied.
      *
      * @throws AraraException Something wrong happened, to be caught in the

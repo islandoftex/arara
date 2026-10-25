@@ -35,7 +35,7 @@ class LuaLocalConfigurationTest {
             return {
                 paths = { cwd .. '/rules', user.home .. '/custom', user.name },
                 file_types = { { extension = 'tex' }, { extension = 'src', pattern = '^@' } },
-                language = 'de', loops = 4, verbose = true, header = false,
+                language = 'de', loops = 4, verbose = true, header = false, warn_deprecated_yaml = false,
                 database = 'cache.yaml', log = { format = 'text', file = cwd .. '/build.log' },
                 preamble = { default = 'build', prepend = 'without-directives',
                     definitions = { build = { '% arara: first', '% arara: second' } } }
@@ -49,6 +49,7 @@ class LuaLocalConfigurationTest {
             assertEquals(4, options.maxLoops)
             assertTrue(options.verbose)
             assertFalse(options.parseOnlyHeader)
+            assertFalse(options.warnDeprecatedYaml)
             assertEquals(root.resolve("cache.yaml"), options.databaseName)
             assertEquals(LogFormat.TEXT, model.toLoggingOptions().format)
             assertEquals(root.resolve("build.log"), model.toLoggingOptions().logFile)
@@ -82,7 +83,7 @@ class LuaLocalConfigurationTest {
     @Test
     fun malformedShapesTypesAndUnknownKeysReportTheConfigurationFile() {
         val invalid = listOf(
-            "return true", "return { verbose = 'true' }", "return { language = 4 }",
+            "return { warn_deprecated_yaml = 'false' }", "return true", "return { verbose = 'true' }", "return { language = 4 }",
             "return { loops = 0 }", "return { loops = 1.5 }", "return { loops = 2147483648 }",
             "return { paths = { [2] = 'gap' } }", "return { paths = { true } }",
             "return { log = false }", "return { log = { format = 1 } }", "return { log = { enabled = true } }",

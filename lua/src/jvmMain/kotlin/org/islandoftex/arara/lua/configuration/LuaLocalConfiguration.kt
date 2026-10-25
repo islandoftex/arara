@@ -38,7 +38,7 @@ object LuaLocalConfiguration {
     private fun extract(table: LuaTable): LocalConfiguration {
         Fields.keys(table, setOf(
             "paths", "file_types", "language", "console", "animations", "loops", "verbose", "header",
-            "database", "log", "preamble"
+            "database", "log", "preamble", "warn_deprecated_yaml"
         ), "configuration")
         val log = Fields.group(table, "log", setOf("file", "format"))
         val preamble = Fields.group(table, "preamble", setOf("default", "prepend", "definitions"))
@@ -58,6 +58,7 @@ object LuaLocalConfiguration {
             loops = loops,
             verbose = Fields.boolean(table["verbose"], "verbose"),
             header = Fields.boolean(table["header"], "header"),
+            warnDeprecatedYaml = Fields.boolean(table["warn_deprecated_yaml"], "warn_deprecated_yaml"),
             dbname = Fields.string(table["database"], "database"),
             logname = Fields.string(log["file"], "log.file"),
             logformat = Fields.string(log["format"], "log.format"),

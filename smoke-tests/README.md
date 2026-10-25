@@ -14,7 +14,7 @@ Subprocess checks for the packaged arara jar; no TeX dependency.
 | CI runtimes | GitLab: Java 21/25; GitHub: Java 21/25 on Linux/macOS/Windows |
 | CI artifacts | `stageProcessSmokeJar`: `build/processSmoke/{arara,jna,runner}.jar` |
 
-`./gradlew texIntegration` tests the official YAML and Lua rules with `pdflatex`
+`./gradlew texIntegration` tests the official Lua and YAML rules with `pdflatex`
 and `bibtex` on `PATH`: PDFs, repeated passes with SyncTeX, bibliography resolution,
 database-driven rebuilds and TeX failures. Each invocation has a 120-second deadline.
 Fixtures and tool output remain in `build/texIntegration`; the JUnit report is

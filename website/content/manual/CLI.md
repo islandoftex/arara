@@ -659,17 +659,24 @@ for retrieving such information.
 
 # Rule engine
 
+Lua is the default. The legacy YAML/MVEL engine is deprecated and will be
+discontinued in v9. Every YAML rule used produces a log warning; the run
+summary also reports a compatibility warning. To suppress both, set
+`warn_deprecated_yaml = false` in Lua configuration or `warnDeprecatedYaml: false`
+in YAML configuration. This does not deprecate YAML configuration files,
+directive parameter mappings or the file database.
+
 The engine selects the rule format and the language used in directive
 conditionals and interpolated options:
 
 | Selection | Rule format | Expression language | Option tags |
 | --- | --- | --- | --- |
-| `-e yaml` / `--engine yaml` (default) | YAML | MVEL | `@{ ... }` |
-| `-e lua` / `--engine lua` | Lua table | Lua | `{{ ... }}` |
+| `-e lua` / `--engine lua` (default) | Lua table | Lua | `{{ ... }}` |
+| `-e yaml` / `--engine yaml` (deprecated) | YAML | MVEL | `@{ ... }` |
 
 The selection applies to every project and loose input in the invocation.
 Directive parameter mappings retain their YAML syntax with either engine.
-Configuration files may independently use YAML or Lua; `--engine` does not
+Configuration files may independently use Lua or YAML; `--engine` does not
 select the configuration format. See [Lua rules](@/manual/Lua.md) and
 [Configuration file](@/manual/Configuration.md) for examples.
 

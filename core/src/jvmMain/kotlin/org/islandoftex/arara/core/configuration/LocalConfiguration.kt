@@ -31,6 +31,7 @@ data class LocalConfiguration(
     private val loops: Int? = null,
     private val verbose: Boolean? = null,
     private val header: Boolean? = null,
+    private val warnDeprecatedYaml: Boolean? = null,
     private val dbname: String? = null,
     private val logname: String? = null,
     private val logformat: String? = null,
@@ -109,7 +110,8 @@ data class LocalConfiguration(
                     .plus(baseOptions.fileTypes),
                 rulePaths = preprocessedPaths
                     .plus(baseOptions.rulePaths),
-                parseOnlyHeader = header ?: baseOptions.parseOnlyHeader
+                parseOnlyHeader = header ?: baseOptions.parseOnlyHeader,
+                warnDeprecatedYaml = warnDeprecatedYaml ?: baseOptions.warnDeprecatedYaml
             )
     }
 

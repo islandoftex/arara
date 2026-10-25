@@ -18,8 +18,8 @@ All application modules require Java 21 or later.
 | --- | --- |
 | `api` | Path, file, project, rule, command and execution contracts |
 | `core` | Implementations, executor, configuration models, sessions and file database |
-| `mvel` | YAML rule/configuration loading and MVEL expression evaluation |
 | `lua` | Lua rules, configuration and project specifications |
+| `mvel` | YAML rule/configuration loading and MVEL expression evaluation |
 | `cli` | Command-line configuration, rule routing and terminal presentation |
 
 The Maven group is `org.islandoftex.arara`. JVM coordinates use artifact names

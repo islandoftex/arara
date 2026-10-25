@@ -6,6 +6,9 @@ import org.islandoftex.arara.api.localization.MPPLocale
 /** Dutch message catalog. */
 @Suppress("MaxLineLength", "TooManyFunctions")
 object DutchMessages : AraraMessages {
+    override val warningDeprecatedYaml: String =
+        "Compatibiliteitswaarschuwing: u hebt verouderde YAML-regels gebruikt die in v9 worden verwijderd."
+
     override val providedLocale: MPPLocale = MPPLocale("nl")
 
     override val translators: List<String> = listOf("Marijn Schraagen", "Taco de Marie")
@@ -212,7 +215,7 @@ object DutchMessages : AraraMessages {
         "Onbekende consolemodus '${mode}'. Gebruik plain of styled."
 
     override fun errorParseRuleUnsupportedFormat(identifier: String, format: String): String =
-        "Niet-ondersteund regelformaat voor '${identifier}': '${format}'. Gebruik een YAML- of Lua-regelbestand."
+        "Niet-ondersteund regelformaat voor '${identifier}': '${format}'. Gebruik een Lua- of YAML-regelbestand."
 
     override fun errorInterpreterRuleNotFound(identifier: String, expected: String, paths: String): String =
         "Ik kon de regel met de naam '${identifier}' niet vinden in de opgegeven regelpaden. Misschien een spelfout? Ik heb geprobeerd het bestand '${expected}' te vinden in de volgende paden in volgorde van prioriteit: ${paths}"

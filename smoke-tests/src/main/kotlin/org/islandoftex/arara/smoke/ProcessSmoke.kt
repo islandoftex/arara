@@ -34,7 +34,7 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
 
     private fun officialRules(root: MPPPath) {
         listOf("pdflatex", "bibtex", "dvips", "mkdir", "rmdir", "halt").forEach { name ->
-            listOf("yaml", "lua").forEach { extension ->
+            listOf("lua", "yaml").forEach { extension ->
                 val fileName = "arara-rule-$name.$extension"
                 val text = checkNotNull(javaClass.getResourceAsStream("/rules/$fileName")) {
                     "Missing smoke resource $fileName"
@@ -62,7 +62,9 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
                         reference: String = "run.tex", input: String = "",
                         environment: Map<String, String?> = emptyMap()): String {
         val result = run((launcher + listOf("-Duser.home=$root", "-jar", jar.toString(),
-            "-L", "en", "-d", root.toString())) + flags + reference, root, input, environment)
+            "-L", "en", "-d", root.toString())) +
+            (if ("--engine" in flags || "-e" in flags) emptyList() else listOf("--engine", "yaml")) +
+            flags + reference, root, input, environment)
         check(result.status == expected) { "Expected exit $expected, got ${result.status}\n${result.output}" }
         return result.output
     }
@@ -70,10 +72,13 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
     private fun contains(output: String, text: String) = check(text in output) { "Missing $text\n$output" }
 
     val cases: Map<String, (MPPPath) -> Unit> = linkedMapOf(
+        "lua_default_and_legacy_compatibility_warnings" to { root ->
+            checkLegacyRuleWarnings(root, launcher, jar)
+        },
         "console_greeting_totals_and_styled_command_fields" to { root ->
             rule(root, native("0"))
             luaRule(root, luaNative("0"))
-            for (engine in listOf("yaml", "lua")) {
+            for (engine in listOf("lua", "yaml")) {
                 for (mode in listOf("plain", "styled")) {
                     val flags = listOf("--engine", engine, "--console", mode)
                     val output = execute(root, 0, flags + "--verbose")
@@ -99,7 +104,7 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
             root.resolve("first.tex").writeText("")
             root.resolve("second.tex").writeText("")
             root.resolve("run.tex").writeText("% arara: probe: { files: [first.tex, second.tex] }\n")
-            for (engine in listOf("yaml", "lua")) {
+            for (engine in listOf("lua", "yaml")) {
                 trace.writeText("")
                 val output = execute(root, 0, listOf("--engine", engine))
                 check(trace.readText() == "first.tex|second.tex|") {
@@ -109,7 +114,7 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
         },
         "missing_rules_name_the_selected_engine_format" to { root ->
             root.resolve("run.tex").writeText("% arara: notarulequack\n")
-            for (engine in listOf("yaml", "lua")) {
+            for (engine in listOf("lua", "yaml")) {
                 contains(execute(root, APPLICATION_ERROR, listOf("--engine", engine)), "notarulequack.$engine")
             }
         },
@@ -118,7 +123,7 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
             root.resolve("arararc.lua").writeText("return { paths = { cwd } }\n")
             rule(root, "return true;")
             luaRule(root, "return true")
-            for (engine in listOf("yaml", "lua")) execute(root, 0, listOf("--engine", engine))
+            for (engine in listOf("lua", "yaml")) execute(root, 0, listOf("--engine", engine))
         },
         "packaged_native_terminal_provider_and_access" to { _ ->
             JarFile(jar.toJVMFile()).use { archive ->
@@ -194,7 +199,7 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
             rule(root, "writeToFile(${quoted(trace.toString())}, 'body', false); return true;")
             luaRule(root, "write_to_file(${quoted(trace.toString())}, 'body', false); return true")
             root.resolve("run.tex").writeText("\\documentclass{article}\n% arara: probe\n")
-            for (engine in listOf("yaml", "lua")) {
+            for (engine in listOf("lua", "yaml")) {
                 execute(root, APPLICATION_ERROR, listOf("--engine", engine))
                 check(!trace.exists) { "Header-only parsing executed a body directive" }
                 execute(root, 0, listOf("--engine", engine, "--whole-file"))
@@ -207,7 +212,7 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
             rule(root, "writeToFile(${quoted(trace.toString())}, 'x', true); return true;")
             luaRule(root, "write_to_file(${quoted(trace.toString())}, 'x', true); return true")
             root.resolve("run.tex").writeText("% arara: probe while true\n")
-            for (engine in listOf("yaml", "lua")) {
+            for (engine in listOf("lua", "yaml")) {
                 trace.writeText("")
                 execute(root, 0, listOf("--engine", engine, "--max-loops", "2"))
                 check(trace.readText() == "xx") { "$engine ignored the command line loop limit" }
@@ -215,7 +220,7 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
         },
         "configured_logname_receives_messages_in_both_formats" to { root ->
             rule(root, "return true;")
-            for (format in listOf("yaml", "lua")) {
+            for (format in listOf("lua", "yaml")) {
                 val name = "$format-diagnostics.log"
                 root.resolve("arararc.$format").writeText(if (format == "yaml") {
                     "!config\npaths: ['.']\nlogname: '$name'\n"
@@ -228,11 +233,11 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
             rule(root, "return true;")
             luaRule(root, "return true")
             root.resolve("run.tex").writeText("\\documentclass{article}\n")
-            for (format in listOf("yaml", "lua")) {
+            for (format in listOf("lua", "yaml")) {
                 root.resolve("arararc.$format").writeText(if (format == "yaml") {
                     "!config\npaths: ['.']\npreambles: { build: '% arara: probe' }\n"
                 } else "return { paths = { cwd }, preamble = { definitions = { build = {'% arara: probe'} } } }")
-                for (engine in listOf("yaml", "lua")) {
+                for (engine in listOf("lua", "yaml")) {
                     val output = execute(root, 0, listOf("--engine", engine, "--preamble", "build"))
                     contains(output, "SUCCESS")
                 }
@@ -243,7 +248,7 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
             val lua = luaNative("0").removePrefix("return ")
             rule(root, "return [$yaml, [$yaml]];")
             luaRule(root, "return {$lua, {$lua}}")
-            for (engine in listOf("yaml", "lua")) {
+            for (engine in listOf("lua", "yaml")) {
                 val output = execute(root, 0, listOf("--engine", engine, "--verbose"))
                 for (marker in listOf("SMOKE_STDOUT", "SMOKE_STDERR")) {
                     check(Regex(marker).findAll(output).count() == 2) { "$engine did not launch both tasks\n$output" }
@@ -252,7 +257,7 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
         },
         "call_properties_override_property_files_in_both_engines" to { root ->
             root.resolve("arguments.properties").writeText("marker=from-file\n")
-            listOf("yaml", "lua").forEach { engine ->
+            listOf("lua", "yaml").forEach { engine ->
                 if (engine == "lua") {
                     luaRule(root, "return get_session().get('arg:marker') == 'from-flag'")
                 } else {
@@ -276,7 +281,7 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
                 "% arara: pdflatex: { interaction: nonstopmode, synctex: yes }\n" +
                     "% arara: bibtex\n% arara: dvips\n"
             )
-            listOf("yaml", "lua").forEach { engine ->
+            listOf("lua", "yaml").forEach { engine ->
                 val output = execute(root, 0, listOf("--engine", engine, "--dry-run"))
                 contains(output, "--interaction=nonstopmode")
                 contains(output, "--synctex=1")
@@ -299,7 +304,7 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
                 "showList(4, 'List', 'Optional', 'Only') == 0;")
             luaRule(root, "return show_options(4, 'Options', 'Pick one', 'Only') == 0 and " +
                 "show_list(4, 'List', 'Optional', 'Only') == 0")
-            listOf("yaml", "lua").forEach { engine ->
+            listOf("lua", "yaml").forEach { engine ->
                 listOf("plain", "styled").forEach { console ->
                     execute(root, 0, listOf("--engine", engine, "--console", console), input = "0\n0\n")
                 }
@@ -368,17 +373,17 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
         "invalid_directive_parameters_fail_in_both_engines" to { root ->
             rule(root, "return true;")
             luaRule(root, "return true")
-            listOf("yaml", "lua").forEach { engine ->
+            listOf("lua", "yaml").forEach { engine ->
                 listOf("{ value: null }", "[one, two]", "{ value: [unterminated }").forEach { value ->
                     root.resolve("run.tex").writeText("% arara: probe: $value\n")
                     execute(root, APPLICATION_ERROR, listOf("--engine", engine))
                 }
             }
         },
-        "yaml_remains_the_default" to { root ->
+        "legacy_engine_remains_available_explicitly" to { root ->
             rule(root, "return true;")
             luaRule(root, "return false")
-            execute(root, 0)
+            execute(root, 0, listOf("--engine", "yaml"))
             execute(root, 1, listOf("--engine", "lua"))
         },
         "native_exit_and_both_output_streams" to { root ->
@@ -390,7 +395,7 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
         },
         "verbosity_flags_override_yaml_and_lua_configuration" to { root ->
             rule(root, native("0"))
-            listOf("yaml", "lua").forEach { format ->
+            listOf("lua", "yaml").forEach { format ->
                 val config = root.resolve("arararc.$format")
                 listOf(false, true).forEach { configured ->
                     config.writeText(if (format == "yaml") "!config\npaths: ['.']\nverbose: $configured\n"
@@ -508,15 +513,16 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
             root.resolve(reference).writeText("% arara: probe\n")
             for ((encoding, expected) in listOf("UTF-8" to reference, "US-ASCII" to "a??o-?.tex")) {
                 val result = run(launcher + listOf("-Dstdout.encoding=$encoding", "-Dstderr.encoding=$encoding",
-                    "-Duser.home=$root", "-jar", jar.toString(), "-L", "en", "-d", root.toString(),
-                    "--dry-run", reference), root, environment = mapOf("TERM" to "xterm", "MSYSTEM" to "MINGW64"))
+                    "-Duser.home=$root", "-jar", jar.toString(), "-L", "en",
+                    "-d", root.toString(), "--engine", "yaml", "--dry-run", reference), root,
+                    environment = mapOf("TERM" to "xterm", "MSYSTEM" to "MINGW64"))
                 check(result.status == 0) { result.output }
                 contains(result.output, expected)
             }
         },
         "redirected_long_running_tasks_never_animate_in_either_configuration_format" to { root ->
             rule(root, native("sleep"))
-            for (format in listOf("yaml", "lua")) {
+            for (format in listOf("lua", "yaml")) {
                 val config = root.resolve("arararc.$format")
                 for (enabled in listOf(false, true)) {
                     config.writeText(if (format == "yaml")
@@ -612,7 +618,7 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
                 "s.put('trace', 'SECOND_HIDDEN_VALUE'); s.remove('trace'); return true;")
             luaRule(root, "local s=get_session(); s.put('trace', 'HIDDEN_SESSION_VALUE'); " +
                 "s.put('trace', 'SECOND_HIDDEN_VALUE'); s.remove('trace'); return true")
-            for (engine in listOf("yaml", "lua")) {
+            for (engine in listOf("lua", "yaml")) {
                 execute(root, 0, listOf("--log", "--engine", engine))
                 val log = root.resolve("arara.log").readText()
                 contains(log, "Session variable 'trace' set.")
@@ -651,7 +657,7 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
             rule(root, native(FAILURE_STATUS.toString()))
             luaRule(root, luaNative(FAILURE_STATUS.toString()), "code == $FAILURE_STATUS")
             val runIds = mutableSetOf<String>()
-            for (engine in listOf("yaml", "lua")) {
+            for (engine in listOf("lua", "yaml")) {
                 val expected = if (engine == "yaml") FAILURE_STATUS else 0
                 execute(root, expected, listOf("--engine", engine, "--log-format", "json",
                     "--console", "styled", "--language", "de"))
@@ -745,7 +751,7 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
             rule(project, native("0"))
             luaRule(root, luaNative("0"))
             luaRule(project, luaNative("0"))
-            listOf("yaml", "lua").forEach { engine ->
+            listOf("lua", "yaml").forEach { engine ->
                 listOf(
                     emptyList<String>() to 1,
                     listOf("--silent") to 0,
