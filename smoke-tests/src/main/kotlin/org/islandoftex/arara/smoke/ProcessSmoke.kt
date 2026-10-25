@@ -548,7 +548,7 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
             val verbose = execute(root, FAILURE_STATUS, listOf("--console", "styled", "--verbose"))
             check(Regex("SMOKE_STDERR").findAll(verbose).count() == 1) { "Verbose output was repeated" }
             val dry = execute(root, 0, listOf("--console", "styled", "--dry-run"))
-            contains(dry, "SmokeProcess")
+            contains(dry.filterNot(Char::isWhitespace), "SmokeProcess")
             contains(dry, "DRY RUN")
             check("SUCCESS" !in dry) { "Styled dry run claimed execution success" }
             check("SMOKE_STDOUT" !in dry) { "Styled dry run launched a command" }
