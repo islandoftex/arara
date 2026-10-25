@@ -7,10 +7,12 @@ import kotlin.test.assertTrue
 import org.islandoftex.arara.api.configuration.LogFormat
 import org.islandoftex.arara.api.files.toMPPPath
 import org.islandoftex.arara.api.localization.MPPLocale
+import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.cli.configuration.ConfigurationSnapshot
 import org.islandoftex.arara.core.configuration.LoggingOptions
 import org.islandoftex.arara.core.configuration.UserInterfaceOptions
 import org.islandoftex.arara.core.localization.LanguageController
+import org.islandoftex.arara.core.rules.DirectiveConditional
 import org.islandoftex.arara.core.session.Session
 
 class RunLogLanguageTest {
@@ -28,12 +30,16 @@ class RunLogLanguageTest {
                 LoggingUtils.setupLogging(LoggingOptions(LogFormat.TEXT, false, log))
                 RunLog.entry("literal %s", "script message")
                 RunLog.taskResult(false)
+                RunLog.skipped("literal %s", DirectiveConditional(DirectiveConditionalType.IF, "false"), "lua")
+                RunLog.haltRequested("literal %s", 0, "lua")
                 RunLog.executionTime(1.25)
                 RunLog.exception("literal exception %s", "literal cause")
                 LoggingUtils.init()
                 val text = log.readText()
                 assertTrue("Interpreting task \"script message\" from rule \"literal %s\"" in text)
                 assertTrue("Task result: FAILURE" in text)
+                assertTrue("Directive literal %s skipped as its condition did not hold" in text)
+                assertTrue("Rule literal %s requested a file halt with exit code 0" in text)
                 assertTrue("Elapsed time: 1.250 seconds" in text)
                 assertTrue("literal exception %s" in text)
                 assertTrue("literal cause" in text)

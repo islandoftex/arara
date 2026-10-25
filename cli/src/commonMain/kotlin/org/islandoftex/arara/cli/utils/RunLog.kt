@@ -4,6 +4,7 @@ package org.islandoftex.arara.cli.utils
 import kotlin.time.Duration.Companion.seconds
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.ProjectFile
+import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.core.configuration.ConfigurationUtils
 import org.islandoftex.arara.core.session.LinearExecutor
@@ -92,6 +93,28 @@ object RunLog {
         "rule.deprecated", "Deprecated YAML rule: $identifier ($path); YAML rules will be discontinued in v9.",
         mapOf("rule" to identifier, "path" to path, "engine" to "yaml", "removalVersion" to "9")
     )
+
+    /** Record a directive whose initial condition prevented command evaluation. */
+    fun skipped(identifier: String, conditional: DirectiveConditional, engine: String) {
+        if (!EventLog.isInfoEnabled) return
+        EventLog.info("directive.skipped", "Directive $identifier skipped as its condition did not hold",
+            ruleFields(identifier, engine) + mapOf(
+                "conditionalType" to conditional.type.name.lowercase(), "condition" to conditional.condition
+            ))
+    }
+
+    /** Record the effective halt request made while evaluating a directive, including status zero. */
+    fun haltRequested(identifier: String, code: Int, engine: String) {
+        if (!EventLog.isInfoEnabled) return
+        EventLog.info("halt.requested", "Rule $identifier requested a file halt with exit code $code",
+            ruleFields(identifier, engine) + mapOf("exitCode" to code))
+    }
+
+    private fun ruleFields(identifier: String, engine: String): Map<String, Any> = buildMap {
+        put("rule", identifier)
+        put("engine", engine)
+        LinearExecutor.currentFile?.let { put("inputFile", it.path.toString()) }
+    }
 
     /** Record captured tool output, including an explicit empty-output marker. */
     fun commandOutput(output: String) {

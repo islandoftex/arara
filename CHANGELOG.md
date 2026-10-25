@@ -16,6 +16,9 @@ on.
 
 ### Added
 
+* Diagnostic logs identify conditionally skipped directives and effective
+  rule-requested halt statuses, including successful halts.
+
 * Diagnostic logs record the Java/OS runtime, directories, configuration file,
   and effective engine and console for each executed project.
 

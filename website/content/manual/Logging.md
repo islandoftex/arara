@@ -307,6 +307,8 @@ log destinations. Application records add an `event` name and typed `data` field
 | `project.started` | `name`, `workingDirectory` |
 | `file.started` | `path`, `sizeBytes` |
 | `task.started` | `rule`, `task` |
+| `directive.skipped` | `rule`, `engine`, `conditionalType`, `condition`; available `inputFile` |
+| `halt.requested` | `rule`, `engine`, `exitCode`; available `inputFile` |
 | `rule.resolved` | `rule`, `path`, `engine` |
 | `rule.deprecated` (warning) | `rule`, `path`, `engine`, `removalVersion` |
 | `command.output` | `output`, `empty` |
@@ -316,6 +318,11 @@ log destinations. Application records add an `event` name and typed `data` field
 | `run.completed`, `run.failed` | `exitCode`, `success` |
 | `run.elapsed` | `durationMs` |
 | `run.exception`, `run.exception.details` | No additional data; see `message` and `exception` |
+
+A skipped directive records its initial condition. Dry runs do not evaluate
+conditions, so they do not produce skip events. A halt event records the effective
+request of a directive, including status zero and requests made during argument
+evaluation. The final run outcome remains a separate event.
 
 Numbers and booleans are JSON values, not strings. A command's exit code is
 separate from the task's success predicate and the final application exit code.

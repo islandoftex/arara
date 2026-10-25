@@ -225,8 +225,12 @@ class Interpreter(
         }
 
         // parse the rule identified by the directive (may throw an exception)
-        val rule = RuleFiles.parseRule(file, directive.identifier)
-        return executeRule(rule, directive, file)
+        return try {
+            val rule = RuleFiles.parseRule(file, directive.identifier)
+            executeRule(rule, directive, file)
+        } finally {
+            HaltRequest.exitCode?.let { RunLog.haltRequested(directive.identifier, it, engine.name.lowercase()) }
+        }
     }
 
     @Suppress("NestedBlockDepth")
@@ -241,6 +245,7 @@ class Interpreter(
 
         return when {
             !available -> {
+                RunLog.skipped(directive.identifier, directive.conditional, engine.name.lowercase())
                 DisplayUtils.printSkippedDirective(directive.identifier)
                 ExecutionStatus.Processing()
             }
