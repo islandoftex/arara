@@ -80,13 +80,28 @@ object FileSearching {
         executionOptions: ExecutionOptions
     ): ProjectFile =
         lookupFile(reference, workingDirectory, executionOptions)
-            ?: throw AraraException(
-                LanguageController.messages.errorDiscoverFileFileNotFound(
-                    reference,
-                    executionOptions.fileTypes
-                        .joinToString(" | ", "[ ", " ]")
-                )
-            )
+            ?: throw fileResolutionError(reference, workingDirectory, executionOptions)
+
+    private fun fileResolutionError(
+        reference: String,
+        workingDirectory: MPPPath,
+        executionOptions: ExecutionOptions
+    ): AraraException {
+        val messages = LanguageController.messages
+        val extensions = executionOptions.fileTypes.map { it.extension }.distinct().joinToString(", ")
+        val path = workingDirectory / reference
+        val message = when {
+            path.isRegularFile -> if (reference.endsWith(".lua")) {
+                messages.errorDiscoverFileUnknownLuaExtension(reference, extensions)
+            } else {
+                messages.errorDiscoverFileUnknownExtension(reference, extensions)
+            }
+            executionOptions.executionMode == ExecutionMode.SAFE_RUN ->
+                messages.errorDiscoverFileSafeModeNoCompletion(reference)
+            else -> messages.errorDiscoverFileFileNotFound(reference, extensions)
+        }
+        return AraraException(message)
+    }
 
     /**
      * Performs a file lookup based on a string reference.

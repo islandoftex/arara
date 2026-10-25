@@ -166,6 +166,21 @@ object GermanMessages : AraraMessages {
     override fun errorDiscoverFileFileNotFound(file: String, extensions: String): String =
         "Ich konnte die vorausgesetzte Datei \"${file}\" ${extensions} nicht finden. Bitte stelle sicher, dass die Datei existiert und eine gültige Dateiendung hat."
 
+    override fun errorDiscoverFileSafeModeNoCompletion(file: String) =
+        "Ich konnte die vorausgesetzte Datei \"${file}\" nicht finden. Der sichere Modus vervollständigt Dateiverweise nicht aus ihren Dateiendungen, daher gib bitte den vollständigen Dateinamen mit Dateiendung an."
+
+    override fun errorDiscoverFileUnknownExtension(
+        file: String,
+        extensions: String
+    ) =
+        "Ich konnte den Dateityp von '${file}' nicht bestimmen: Kein Dateityp dieses Durchlaufs trägt seine Erweiterung. Die Erweiterungen dieses Durchlaufs sind ${extensions}. Ergänze die fehlende Erweiterung in den 'file_types' (Lua) / 'filetypes' (YAML) der Konfiguration."
+
+    override fun errorDiscoverFileUnknownLuaExtension(
+        file: String,
+        extensions: String
+    ) =
+        "Ich konnte den Dateityp von '${file}' nicht bestimmen: Kein Dateityp dieses Durchlaufs trägt seine Erweiterung. Die Erweiterungen dieses Durchlaufs sind ${extensions}. Ergänze die Erweiterung in den 'file_types' (Lua) / 'filetypes' (YAML) der Konfiguration - oder, falls die Datei eine Projektspezifikation ist, trägt sie das Suffix '.proj.lua'."
+
     override val errorEvaluateCompilationFailed: String =
         "Aus was für einen Grund auch immer kann ich den Ausdruck in der bereitgestellten Bedingung nicht kompilieren. Dieser Teil ist ziemlich knifflig, denn er bezieht die zugrundeliegende Sprache mit ein. Ich werde mein Bestes tun, um dir in jeglicher Art und Weise zu helfen."
 

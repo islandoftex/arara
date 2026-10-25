@@ -166,6 +166,21 @@ object NorfolkMessages : AraraMessages {
     override fun errorDiscoverFileFileNotFound(file: String, extensions: String): String =
         "Dunt yew git yarself inta a rite ole puckaterry, but I can't find yar file '${file}' ${extensions}. Yew're gotta find the file and do yew see that has a proper extension on the end onnit, tergether."
 
+    override fun errorDiscoverFileSafeModeNoCompletion(file: String) =
+        "Dunt yew git yarself inta a rite ole puckaterry, but I can't find yar file '${file}' nohow. Safe mode won't go a-guessin' at extensions, so yew're gotta give me the whole name, extension and all."
+
+    override fun errorDiscoverFileUnknownExtension(
+        file: String,
+        extensions: String
+    ) =
+        "I coont make aht the file type of '${file}': none o' the file types in this here run carries its extension. The extensions o' this here run is ${extensions}. Yew put the missing extension in the 'file_types' (Lua) / 'filetypes' (YAML) o' the configyrashun."
+
+    override fun errorDiscoverFileUnknownLuaExtension(
+        file: String,
+        extensions: String
+    ) =
+        "I coont make aht the file type of '${file}': none o' the file types in this here run carries its extension. The extensions o' this here run is ${extensions}. Put the extension in the 'file_types' (Lua) / 'filetypes' (YAML) o' the configyrashun - or, if'n thet file's a project specifikashun, it wears the '.proj.lua' on the end."
+
     override val errorEvaluateCompilationFailed: String =
         "Wuh, I ent got no idear wass gorn on but I coont git the hang o'that conditional. Yew're gotta he'sum idear wot this is orl abowt else yew mite be in a rite ole puckaterry but I'll help yew git it done if I can, ole partner."
 

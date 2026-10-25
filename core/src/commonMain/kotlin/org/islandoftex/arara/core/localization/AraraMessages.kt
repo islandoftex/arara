@@ -192,6 +192,15 @@ interface AraraMessages {
      */
     fun errorDiscoverFileFileNotFound(file: String, extensions: String): String
 
+    /** A missing reference cannot be completed in safe mode; argument: file. */
+    fun errorDiscoverFileSafeModeNoCompletion(file: String): String
+
+    /** An existing file has no configured type; arguments: file and known extensions. */
+    fun errorDiscoverFileUnknownExtension(file: String, extensions: String): String
+
+    /** An ordinary Lua file has no configured type; also explains the project suffix. */
+    fun errorDiscoverFileUnknownLuaExtension(file: String, extensions: String): String
+
     /**
      * The error shown when a conditional expression cannot be compiled.
      */

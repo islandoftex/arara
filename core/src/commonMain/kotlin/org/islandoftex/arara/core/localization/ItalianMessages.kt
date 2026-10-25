@@ -166,6 +166,21 @@ object ItalianMessages : AraraMessages {
     override fun errorDiscoverFileFileNotFound(file: String, extensions: String): String =
         "Non sono riuscito a trovare il file '${file}' ${extensions}. Assicurati che il file esista e abbia un'estensione valida."
 
+    override fun errorDiscoverFileSafeModeNoCompletion(file: String) =
+        "Non sono riuscito a trovare il file '${file}'. La modalità sicura non completa i riferimenti ai file dalle loro estensioni, quindi fornisci il nome completo del file, estensione inclusa."
+
+    override fun errorDiscoverFileUnknownExtension(
+        file: String,
+        extensions: String
+    ) =
+        "Non sono riuscito a determinare il tipo di file di '${file}': nessun tipo di file di questa esecuzione porta la sua estensione. Le estensioni di questa esecuzione sono ${extensions}. Aggiungi l'estensione mancante ai 'file_types' (Lua) / 'filetypes' (YAML) della configurazione."
+
+    override fun errorDiscoverFileUnknownLuaExtension(
+        file: String,
+        extensions: String
+    ) =
+        "Non sono riuscito a determinare il tipo di file di '${file}': nessun tipo di file di questa esecuzione porta la sua estensione. Le estensioni di questa esecuzione sono ${extensions}. Aggiungi l'estensione ai 'file_types' (Lua) / 'filetypes' (YAML) della configurazione - oppure, se il file è una specifica di progetto, il suo suffisso è '.proj.lua'."
+
     override val errorEvaluateCompilationFailed: String =
         "Per qualche ragione, non sono riuscito a compilare l'espressione del condizionale fornito. Questa parte è un po' complicata, perché riguarda aspetti del linguaggio interno per le espressioni. Farò del mio meglio per darti una mano, per quanto posso."
 

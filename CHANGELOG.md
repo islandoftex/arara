@@ -154,6 +154,9 @@ on.
 
 ### Fixed
 
+* File lookup errors distinguish missing files, unsupported extensions and
+  safe-mode completion restrictions, with a project-suffix hint for Lua files.
+
 * Console elapsed times retain leading zeros in milliseconds.
 
 * Project directive failures identify their input file, rule identifier errors

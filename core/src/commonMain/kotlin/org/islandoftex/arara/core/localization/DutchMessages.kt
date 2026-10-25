@@ -166,6 +166,21 @@ object DutchMessages : AraraMessages {
     override fun errorDiscoverFileFileNotFound(file: String, extensions: String): String =
         "Ik kon het opgegeven bestand '${file}' ${extensions} niet vinden. Zorg ervoor dat het bestand bestaat en dat het een geldige extensie heeft."
 
+    override fun errorDiscoverFileSafeModeNoCompletion(file: String) =
+        "Ik kon het opgegeven bestand '${file}' niet vinden. De veilige modus vult bestandsverwijzingen niet aan vanuit hun extensies, dus geef de volledige bestandsnaam op, extensie inbegrepen."
+
+    override fun errorDiscoverFileUnknownExtension(
+        file: String,
+        extensions: String
+    ) =
+        "Ik kon het bestandstype van '${file}' niet bepalen: geen enkel bestandstype van deze run draagt zijn extensie. De extensies van deze run zijn ${extensions}. Voeg de ontbrekende extensie toe aan de 'file_types' (Lua) / 'filetypes' (YAML) van de configuratie."
+
+    override fun errorDiscoverFileUnknownLuaExtension(
+        file: String,
+        extensions: String
+    ) =
+        "Ik kon het bestandstype van '${file}' niet bepalen: geen enkel bestandstype van deze run draagt zijn extensie. De extensies van deze run zijn ${extensions}. Voeg de extensie toe aan de 'file_types' (Lua) / 'filetypes' (YAML) van de configuratie - of, als het bestand een projectspecificatie is, draagt het het achtervoegsel '.proj.lua'."
+
     override val errorEvaluateCompilationFailed: String =
         "Om een of andere reden kon ik de expressie in de opgegeven voorwaarde niet compileren. Dit is een ingewikkeld probleem, omdat het te maken heeft met aspecten van de onderliggende expressietaal. Ik zal mijn best doen om je zoveel mogelijk hiermee te helpen."
 

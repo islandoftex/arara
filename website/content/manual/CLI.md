@@ -573,6 +573,11 @@ order to enhance and optimize your automation workflow.
 
 # File name lookup
 
+Lookup errors distinguish a missing file from an existing file with an
+unconfigured extension. In safe mode, the error explains that extension
+completion is disabled. An unsupported `.lua` input also mentions the
+`.proj.lua` suffix used for project specifications.
+
 arara, as a command line application, provides support for a restricted range of
 file types. In particular, the tool recognizes five file types based on their
 extensions. These types are presented as follows, as well as the lookup order:

@@ -166,6 +166,15 @@ object FrenchMessages : AraraMessages {
     override fun errorDiscoverFileFileNotFound(file: String, extensions: String): String =
         "Impossible de trouver le fichier « ${file} » ${extensions}. Vérifiez qu’il existe et possède une extension valide."
 
+    override fun errorDiscoverFileSafeModeNoCompletion(file: String) =
+        "Impossible de trouver le fichier « ${file} ». Le mode sécurisé ne complète pas les extensions : fournissez le nom complet du fichier, extension comprise."
+
+    override fun errorDiscoverFileUnknownExtension(file: String, extensions: String) =
+        "Impossible de déterminer le type du fichier « ${file} » : son extension n’est pas configurée. Extensions disponibles : ${extensions}. Ajoutez l’extension manquante à la configuration (file_types en Lua, filetypes en YAML)."
+
+    override fun errorDiscoverFileUnknownLuaExtension(file: String, extensions: String) =
+        "Impossible de déterminer le type du fichier « ${file} » : son extension n’est pas configurée. Extensions disponibles : ${extensions}. Ajoutez l’extension à la configuration (file_types en Lua, filetypes en YAML), ou utilisez le suffixe .proj.lua s’il s’agit d’une spécification de projet."
+
     override val errorEvaluateCompilationFailed: String =
         "Impossible de compiler l’expression de la condition. Vérifiez sa syntaxe dans le langage d’expression utilisé."
 

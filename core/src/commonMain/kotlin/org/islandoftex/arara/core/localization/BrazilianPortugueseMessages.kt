@@ -166,6 +166,21 @@ object BrazilianPortugueseMessages : AraraMessages {
     override fun errorDiscoverFileFileNotFound(file: String, extensions: String): String =
         "Não consegui encontrar o arquivo especificado '${file}' ${extensions}. Por favor, certifique-se de que o arquivo existe e que possui uma extensão válida."
 
+    override fun errorDiscoverFileSafeModeNoCompletion(file: String) =
+        "Não consegui encontrar o arquivo especificado '${file}'. O modo seguro não completa referências de arquivos a partir de suas extensões, por favor, forneça o nome completo do arquivo, com a extensão."
+
+    override fun errorDiscoverFileUnknownExtension(
+        file: String,
+        extensions: String
+    ) =
+        "Não consegui determinar o tipo de arquivo '${file}': nenhum tipo de arquivo desta execução corresponde à extensão dele. As extensões desta execução são ${extensions}. Adicione a extensão que falta aos 'file_types' (Lua) / 'filetypes' (YAML) da configuração."
+
+    override fun errorDiscoverFileUnknownLuaExtension(
+        file: String,
+        extensions: String
+    ) =
+        "Não consegui determinar o tipo de arquivo '${file}': nenhum tipo de arquivo desta execução corresponde à extensão dele. As extensões desta execução são ${extensions}. Adicione a extensão aos 'file_types' (Lua) / 'filetypes' (YAML) da configuração - ou, se o arquivo for uma especificação de projeto, o sufixo dele é '.proj.lua'."
+
     override val errorEvaluateCompilationFailed: String =
         "Por alguma razão, eu não consegui compilar a expressão condicional especificada. Esta parte é complicada, pois envolve aspectos da linguagem de expressão subjacente. Eu farei o possível para te ajudar da melhor forma que puder."
 
