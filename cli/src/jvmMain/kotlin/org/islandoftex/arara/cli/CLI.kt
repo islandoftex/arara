@@ -171,6 +171,10 @@ class CLI : CliktCommand("arara") {
         .help("Set the console presentation: plain or styled")
         .choice("plain" to ConsoleMode.PLAIN, "styled" to ConsoleMode.STYLED)
 
+    private val terminalWidth by option("--terminal-width")
+        .help("Set the maximum console width in columns (at least 20)")
+        .int().restrictTo(min = UserInterfaceOptions.MINIMUM_TERMINAL_WIDTH)
+
     private var appliedConsole: ConsoleMode? = null
 
     private fun applyConsole() {
@@ -236,7 +240,8 @@ class CLI : CliktCommand("arara") {
         Session.userInterfaceOptions = UserInterfaceOptions(
             locale = language?.let { MPPLocale(it) }
                 ?: Session.userInterfaceOptions.locale,
-            terminalOutputWidth = Session.userInterfaceOptions.terminalOutputWidth,
+            terminalOutputWidth = terminalWidth ?: Session.userInterfaceOptions.terminalOutputWidth,
+            terminalOutputWidthLimit = terminalWidth ?: Session.userInterfaceOptions.terminalOutputWidthLimit,
             consoleMode = Session.userInterfaceOptions.consoleMode,
             enableAnimations = Session.userInterfaceOptions.enableAnimations
         )

@@ -263,6 +263,7 @@ Options:
   --log-format=(none|text|json)  Set the diagnostic log format: none (default),
                                  text or json
   -c, --console=(plain|styled)   Set the console presentation: plain or styled
+  --terminal-width=<int>        Set the maximum console width (at least 20)
   --generate-completion=(bash|zsh|fish)
                                  Generate a completion script for arara. Add
                                  'source <(arara --generate-completion

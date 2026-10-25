@@ -16,6 +16,8 @@ import org.islandoftex.arara.api.files.toMPPPath
 
 private const val FAILURE_STATUS = 7
 private const val APPLICATION_ERROR = 2
+private const val CONFIGURED_CONSOLE_WIDTH = 40
+private const val CLI_CONSOLE_WIDTH = 50
 
 private fun quoted(value: String): String = "\"" + value.replace("\\", "\\\\")
     .replace("\"", "\\\"").replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t") + "\""
@@ -78,6 +80,24 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
         },
         "lua_default_and_legacy_compatibility_warnings" to { root ->
             checkLegacyRuleWarnings(root, launcher, jar)
+        },
+        "configured_console_width_and_cli_override" to { root ->
+            rule(root, "return true;")
+            for (mode in listOf("plain", "styled")) {
+                for (format in listOf("lua", "yaml")) {
+                    val config = root.resolve("arararc.$format")
+                    config.writeText(if (format == "lua") "return { paths={cwd}, terminal_width=40 }"
+                        else "!config\npaths: ['.']\nterminalWidth: 40")
+                    for ((flags, width) in listOf(emptyList<String>() to CONFIGURED_CONSOLE_WIDTH,
+                        listOf("--terminal-width", CLI_CONSOLE_WIDTH.toString()) to CLI_CONSOLE_WIDTH)) {
+                        val output = execute(root, 0, listOf("--console", mode, "--dry-run") + flags)
+                        check(output.lineSequence().any { line -> line.length == width && line.all { it == '-' } }) {
+                            "Missing $width-column separator in $mode output: $output"
+                        }
+                    }
+                    Files.delete(config.toJVMPath())
+                }
+            }
         },
         "console_greeting_totals_and_styled_command_fields" to { root ->
             rule(root, native("0"))
@@ -188,6 +208,7 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
             rule(root, "writeToFile('must-not-run.txt', 'ran'); return true;")
             val invalid = listOf(
                 listOf("--max-loops", "0"),
+                listOf("--terminal-width", "19"),
                 listOf("--timeout", "0"),
                 listOf("--preferred-engine", "unknown"),
                 listOf("--console", "unknown"),

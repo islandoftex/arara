@@ -226,6 +226,9 @@ object BrazilianPortugueseMessages : AraraMessages {
     override fun errorLogFormatUnknown(value: String): String =
         "Formato de log desconhecido '${value}'. Use none, text ou json."
 
+    override fun errorTerminalWidthInvalid(minimum: Int): String =
+        "A largura do terminal deve ser de pelo menos ${minimum} colunas."
+
     override fun errorConsoleModeUnknown(mode: String): String =
         "Modo de console desconhecido '${mode}'. Use plain ou styled."
 

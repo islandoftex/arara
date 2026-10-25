@@ -226,6 +226,9 @@ object EnglishMessages : AraraMessages {
     override fun errorLogFormatUnknown(value: String): String =
         "Unknown log format '${value}'. Use none, text or json."
 
+    override fun errorTerminalWidthInvalid(minimum: Int): String =
+        "Terminal width must be at least ${minimum} columns."
+
     override fun errorConsoleModeUnknown(mode: String): String =
         "Unknown console mode '${mode}'. Use plain or styled."
 

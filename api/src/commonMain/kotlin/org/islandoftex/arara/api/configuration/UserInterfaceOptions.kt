@@ -21,6 +21,9 @@ public interface UserInterfaceOptions {
      */
     public val terminalOutputWidth: Int
 
+    /** Optional maximum width for adaptive console layouts; null retains the detected terminal width. */
+    public val terminalOutputWidthLimit: Int? get() = null
+
     /** Whether styled tasks may animate on an interactive terminal with cursor support. */
     public val enableAnimations: Boolean get() = true
 

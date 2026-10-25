@@ -285,6 +285,9 @@ interface AraraMessages {
     /** Unknown console presentation; argument: supplied mode. */
     fun errorConsoleModeUnknown(mode: String): String
 
+    /** Configured console width leaves insufficient space for task labels and results. */
+    fun errorTerminalWidthInvalid(minimum: Int): String
+
     /** Unsupported rule format; arguments: file path and supplied format. */
     fun errorParseRuleUnsupportedFormat(identifier: String, format: String): String
 

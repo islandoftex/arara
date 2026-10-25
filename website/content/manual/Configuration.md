@@ -100,6 +100,7 @@ or `without-directives`. Definitions are lists of directive lines.
 | Lua key | YAML equivalent |
 | --- | --- |
 | `paths`, `language`, `loops`, `verbose`, `header`, `animations` | Same name |
+| `terminal_width` | `terminalWidth` |
 | `file_types` | `filetypes` |
 | `database` | `dbname` |
 | `log.format`, `log.file` | `logformat`, `logname` |
@@ -114,6 +115,12 @@ and lists must have contiguous numeric indices starting at one. Unknown keys
 are errors, including unknown keys in groups and file type declarations.
 File types require a nonblank `extension`; `pattern` may be omitted for built-in
 extensions. Database and log paths follow the YAML options described below.
+
+Set Lua `terminal_width = 80` or YAML `terminalWidth: 80` to choose the maximum
+console width (at least 20 columns). `--terminal-width 80` overrides configuration
+for every project. This wraps arara's messages, not external tool output. Styled
+output also respects the terminal's actual width. Without an explicit value,
+plain output retains its 65-column width and styled output follows the terminal.
 
 # YAML configuration
 

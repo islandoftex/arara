@@ -192,6 +192,7 @@ Options:
   --log-format=(none|text|json)  Set the diagnostic log format: none (default),
                                  text or json
   -c, --console=(plain|styled)   Set the console presentation: plain or styled
+  --terminal-width=<int>        Set the maximum console width (at least 20)
   --generate-completion=(bash|zsh|fish)
                                  Generate a completion script for arara. Add
                                  'source <(arara --generate-completion
@@ -700,6 +701,10 @@ select the configuration format. See [Lua rules](@/manual/Lua.md) and
 [Configuration file](@/manual/Configuration.md) for examples.
 
 # Console presentation
+
+`--terminal-width` sets the maximum output width in columns (at least 20),
+overriding the configuration. Styled output also respects a narrower terminal;
+external tool output is not rewrapped.
 
 `-c styled` / `--console styled` enables colored task results, dialog frames and
 a closing summary grouped by project, with file paths, task counts, elapsed times

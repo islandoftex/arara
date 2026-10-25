@@ -226,6 +226,9 @@ object NorfolkMessages : AraraMessages {
     override fun errorLogFormatUnknown(value: String): String =
         "I don't know that log format '${value}', bor. Use none, text or json."
 
+    override fun errorTerminalWidthInvalid(minimum: Int): String =
+        "Terminal width hev ter be at least ${minimum} columns, bor."
+
     override fun errorConsoleModeUnknown(mode: String): String =
         "I don't know that console mode '${mode}', bor. Use plain or styled."
 

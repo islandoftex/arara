@@ -15,7 +15,7 @@ class StyledDialogRenderer(
     input: BufferedReader = System.`in`.bufferedReader(),
     output: PrintWriter = PrintWriter(System.out, true),
     beforeDialog: () -> Unit = {}
-) : TerminalDialogRenderer(input, output, { terminal.size.width.coerceAtLeast(1) }, beforeDialog) {
+) : TerminalDialogRenderer(input, output, { StyledLayout(terminal).width }, beforeDialog) {
     private val layout = StyledLayout(terminal)
     private val decorated = terminal.terminalInfo.ansiLevel != AnsiLevel.NONE &&
         System.out.charset().newEncoder().canEncode("╭─│╰")

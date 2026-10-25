@@ -13,7 +13,8 @@ import org.islandoftex.arara.core.session.Session
 
 /** Measure terminal cells rather than UTF-16 units, including wide and combining characters. */
 internal class StyledLayout(private val terminal: Terminal) {
-    val width: Int get() = terminal.size.width.coerceAtLeast(1)
+    val width: Int get() = minOf(terminal.size.width.coerceAtLeast(1),
+        Session.userInterfaceOptions.terminalOutputWidthLimit?.coerceAtLeast(1) ?: Int.MAX_VALUE)
 
     fun cells(text: String): Int = Text(text).measure(terminal, Int.MAX_VALUE).max
 

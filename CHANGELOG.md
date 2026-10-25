@@ -25,6 +25,8 @@ on.
   dependency graph. Loose input files run last as an anonymous project.
 * Optional styled console output with terminal dialogs, task frames, progress
   indicators and per-project summaries. Animations can be disabled.
+* Configurable console width through `--terminal-width`, Lua `terminal_width`,
+  or YAML `terminalWidth`, with command-line priority and terminal-aware styled output.
 * JSON Lines diagnostic logging with versioned events, typed fields and a run
   identifier. Logs include runtime context, resolved rules, conditional skips,
   commands, timings, halt requests and outcomes. Session changes are logged

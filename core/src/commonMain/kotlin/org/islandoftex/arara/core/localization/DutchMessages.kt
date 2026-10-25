@@ -226,6 +226,9 @@ object DutchMessages : AraraMessages {
     override fun errorLogFormatUnknown(value: String): String =
         "Onbekend logformaat '${value}'. Gebruik none, text of json."
 
+    override fun errorTerminalWidthInvalid(minimum: Int): String =
+        "De terminalbreedte moet minstens ${minimum} kolommen zijn."
+
     override fun errorConsoleModeUnknown(mode: String): String =
         "Onbekende consolemodus '${mode}'. Gebruik plain of styled."
 

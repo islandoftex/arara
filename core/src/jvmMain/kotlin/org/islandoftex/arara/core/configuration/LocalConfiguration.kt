@@ -42,7 +42,8 @@ data class LocalConfiguration(
     /** Whether the default preamble also applies to files that already contain directives. */
     val prependPreambleIfDirectivesGiven: Boolean = true,
     @Transient private val expandPathTokens: Boolean = true,
-    private val animations: Boolean? = null
+    private val animations: Boolean? = null,
+    private val terminalWidth: Int? = null
 ) {
     /**
      * Convert the relevant properties of the configuration to execution
@@ -151,10 +152,17 @@ data class LocalConfiguration(
     fun toUserInterfaceOptions(
         baseOptions: UserInterfaceOptions = org.islandoftex.arara.core.configuration.UserInterfaceOptions()
     ): UserInterfaceOptions {
+        val width = terminalWidth?.also {
+            if (it < org.islandoftex.arara.core.configuration.UserInterfaceOptions.MINIMUM_TERMINAL_WIDTH)
+                throw AraraException(LanguageController.messages.errorTerminalWidthInvalid(
+                    org.islandoftex.arara.core.configuration.UserInterfaceOptions.MINIMUM_TERMINAL_WIDTH
+                ))
+        }
         return org.islandoftex.arara.core.configuration.UserInterfaceOptions(
             locale = language?.let { MPPLocale(it) }
                 ?: baseOptions.locale,
-            terminalOutputWidth = baseOptions.terminalOutputWidth,
+            terminalOutputWidth = width ?: baseOptions.terminalOutputWidth,
+            terminalOutputWidthLimit = width ?: baseOptions.terminalOutputWidthLimit,
             consoleMode = console ?: baseOptions.consoleMode,
             enableAnimations = animations ?: baseOptions.enableAnimations
         )

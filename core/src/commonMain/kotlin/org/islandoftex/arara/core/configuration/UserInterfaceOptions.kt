@@ -13,5 +13,13 @@ data class UserInterfaceOptions(
     /** Configured console mode, or null to use the presentation default. */
     override val consoleMode: String? = null,
     /** Whether the styled renderer may animate live task feedback. */
-    override val enableAnimations: Boolean = true
-) : UserInterfaceOptions
+    override val enableAnimations: Boolean = true,
+    /** Explicit cap for adaptive output, or null to retain the terminal's width. */
+    override val terminalOutputWidthLimit: Int? = null
+) : UserInterfaceOptions {
+    /** Limits shared by command-line and configuration validation. */
+    companion object {
+        /** Smallest configurable output width that leaves room for task labels and results. */
+        const val MINIMUM_TERMINAL_WIDTH: Int = 20
+    }
+}

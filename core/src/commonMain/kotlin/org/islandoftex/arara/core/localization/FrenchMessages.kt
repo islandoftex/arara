@@ -220,6 +220,9 @@ object FrenchMessages : AraraMessages {
     override fun errorLogFormatUnknown(value: String): String =
         "Format de journal inconnu : '${value}'. Utilisez none, text ou json."
 
+    override fun errorTerminalWidthInvalid(minimum: Int): String =
+        "La largeur du terminal doit être d’au moins ${minimum} colonnes."
+
     override fun errorConsoleModeUnknown(mode: String): String =
         "Mode de console inconnu : '${mode}'. Utilisez plain ou styled."
 

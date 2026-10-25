@@ -226,6 +226,9 @@ object GermanMessages : AraraMessages {
     override fun errorLogFormatUnknown(value: String): String =
         "Unbekanntes Protokollformat '${value}'. Verwenden Sie none, text oder json."
 
+    override fun errorTerminalWidthInvalid(minimum: Int): String =
+        "Die Terminalbreite muss mindestens ${minimum} Spalten betragen."
+
     override fun errorConsoleModeUnknown(mode: String): String =
         "Unbekannter Konsolenmodus '${mode}'. Verwenden Sie plain oder styled."
 

@@ -86,6 +86,9 @@ object TaskHelper {
                 .IP \fB-e\fP / \fB--preferred-engine\fP lua|yaml
                 Prefer Lua or YAML rules (default: lua); fall back to the other format.
                 YAML/MVEL rules are deprecated and will be discontinued in v9.
+                .IP \fB--terminal-width\fP columns
+                Set the maximum console width (at least 20), overriding configuration.
+                External tool output is not rewrapped.
                 .IP \fB--log\fP
                 Write a text log (shorthand for --log-format=text).
                 .IP \fB--log-format\fP none|text|json
