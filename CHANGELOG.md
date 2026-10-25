@@ -16,252 +16,121 @@ on.
 
 ### Added
 
-* Diagnostic logs identify conditionally skipped directives and effective
-  rule-requested halt statuses, including successful halts.
-
-* Diagnostic logs record the Java/OS runtime, directories, configuration file,
-  and effective engine and console for each executed project.
-
-* The `upmendex` rule generates multilingual Unicode indexes in both Lua and
-  YAML/MVEL engines, with style, dictionary, ordering and whitespace options.
-
-* French messages, selected with `--language fr` or configuration `language: fr`.
-
-* Plain console runs include a version greeting, file and task totals, and the
-  names of files not reached after a failure. Dry runs report simulated tasks.
-
-* `--preferred-engine` (`-e`) selects the preferred rule format. Lookup keeps
-  rule-directory priority and falls back to the other format within each directory.
-  The resolved rule determines interpolation and conditional syntax.
-
-* `ForeignPath` provides explicit POSIX/Windows path algebra without filesystem
-  access. `MPPPath` adds strict metadata, scoped streaming reads and directory
-  listing APIs backed by Okio.
-
-* Maven publications include HTML API reference jars alongside Kotlin source
-  artifacts. A combined API reference is available through
-  `dokkaGeneratePublicationHtml`.
-
-* JSON Lines diagnostic logs via `--log-format json`, Lua `log.format = "json"`,
-  or YAML `logformat: json`. Logging is disabled by default. JSON records
-  include versioned event names, typed fields and a per-invocation run identifier.
-
-* Debug logs trace session variable additions, overwrites, removals, clears and
-  environment refreshes by key or count, without recording variable values.
-
-* Diagnostic logs identify the selected rule file and engine, project directory,
-  command duration and outcome, silent tool output, and the final application exit code.
-
-* Optional styled terminal output via `--console styled` or configuration
-  Lua `console = "styled"` or YAML `console: styled`. Plain output remains the default.
-  Styled runs include dialog frames, project headings and per-project file
-  summaries with task counts, timings and outcomes. Narrow terminals use wrapped
-  details; dry runs are labelled as simulations. Long-running interactive tasks
-  show a delayed spinner and elapsed time; Lua `animations = false` or YAML `animations: false` disables it. Captured failure output marks
-  truncation and points to the full log when logging is enabled.
-  Verbose styled output has localized command fields and frames around tool output.
-  Styled dialogs use severity-colored boxes with numbered choices, falling back
-  to plain dialogs when unsupported.
-
-* Project specifications receive `user.home`, `user.name` and `cwd`, matching
-  Lua configuration scripts. Each script load uses independent globals.
-
-* Lua configuration files (`arararc.lua` and the existing configuration basenames
-  with a `.lua` suffix), with computed paths and typed logging and preamble tables.
-  Local configuration takes priority over global configuration across both formats;
-  Lua takes priority over YAML within a directory.
-
-* Lua counterparts for all 74 official rules, retaining the YAML rules.
-* `--preferred-engine lua` for Lua rules, conditionals and `{{ ... }}` option
-  interpolation using Luak.
-* Project specifications can be combined with loose input files. Loose inputs
-  run last as one anonymous project with the invocation directory's configuration.
-* Multiple project specifications share a dependency graph.
-* `ClassLoading.closeLoaders()` lets hosts release loaded rule archives.
+* Lua rules, directive conditionals and option interpolation, with Lua counterparts
+  for the official rule pack. `--preferred-engine` (`-e`) selects the preferred
+  format; rule lookup falls back to the other format within each search directory.
+* Lua configuration files, including computed paths, logging and preambles.
+  Configuration and project scripts receive independent `user` and `cwd` globals.
+* Support for multiple project specifications in one invocation, sharing a
+  dependency graph. Loose input files run last as an anonymous project.
+* Optional styled console output with terminal dialogs, task frames, progress
+  indicators and per-project summaries. Animations can be disabled.
+* JSON Lines diagnostic logging with versioned events, typed fields and a run
+  identifier. Logs include runtime context, resolved rules, conditional skips,
+  commands, timings, halt requests and outcomes. Session changes are logged
+  without recording their values.
+* French interface messages. (see #126)
+* The `upmendex` rule for multilingual Unicode indexes, in Lua and YAML/MVEL.
+  (see #130)
+* Strict metadata, scoped streaming reads and directory listing APIs for
+  `MPPPath`, and `ForeignPath` for explicit POSIX/Windows path algebra.
+* Combined API reference and HTML API reference jars in Maven publications.
+* `ClassLoading.closeLoaders()` for hosts to release loaded rule archives.
 
 ### Changed
 
-* **Breaking change:** Lua is now the preferred rule engine. Legacy YAML/MVEL rules
-  are detected automatically and will be discontinued in v9. Each resolved
-  YAML rule emits a log warning and the run summary reports a compatibility
-  warning. Set Lua `warn_deprecated_yaml = false` or YAML
-  `warnDeprecatedYaml: false` to suppress these warnings.
-
+* **Breaking change:** Lua is the preferred rule engine by default. YAML/MVEL
+  rules remain available but are deprecated and will be discontinued in v9.
+  Each YAML rule used produces a log warning and a compatibility warning in the
+  summary. Lua `warn_deprecated_yaml = false` or YAML `warnDeprecatedYaml: false`
+  suppresses these warnings. YAML configuration and directive mappings remain
+  supported.
+* **Breaking change:** Java 21 or later is required.
 * **Breaking change:** The application jar ships with a separate `jna.jar`.
   Manual Java launches must place it on the module path and enable native access
   for `com.sun.jna`; the supplied launchers handle this automatically.
-
-* Java 21 is now the minimum runtime version (breaking change).
-
-* **Breaking change:** `MPPPath.toJVMPath()` and `toJVMFile()` now export absolute,
-  normalized paths, matching `toString()` and the new `toOkioPath()`. The original
-  spelling remains internal; native parsing, identity and resolution semantics remain.
-
-* **Breaking change:** The dialog helper `showDropdown` is now `showList`
-  (`show_dropdown` becomes `show_list` in Lua). The old names are no longer
-  available in rules or the host dialog interface.
-
-* **Breaking change:** Directive parameters use consistent YAML scalar conversion:
-  plain `True` and `False` are booleans, exponent notation produces floating-point
-  values, and null values are rejected. Quote scalars to retain strings. Integers
-  outside the `Long` range remain strings instead of being silently truncated.
-
+* **Breaking change:** Project specifications require `.proj.lua` and use
+  `working_directory` and `file_type` instead of the camelCase fields. Ordinary
+  `.lua` inputs are no longer interpreted as projects. Project names and normalized
+  input paths must be unique across an invocation; use a file's `directives` list
+  for repeated runs. Unnamed single projects use their specification's basename.
+* **Breaking change:** Swing dialogs are replaced by terminal dialogs. Remove
+  `laf` and pixel-width arguments. `showDropdown` becomes `showList`
+  (`show_dropdown` becomes `show_list` in Lua). Choices start at one, zero cancels,
+  and closed input reports an error.
 * **Breaking change:** Logging uses a single `none`, `text` or `json` format.
   Replace Lua `log.enabled` with `log.format`, YAML `logging: true` with
   `logformat: text`, and API `LoggingOptions.enableLogging` with `format`.
   `-l` / `--log` remains shorthand for `--log-format text`.
-
-* **Breaking change:** `dbname`/`database` honors the complete configured path
-  instead of discarding parent directories. Relative paths resolve against the
-  project's working directory; absolute paths are honored. Blank paths are rejected.
-* **Breaking change:** The Kotlin rule API moves the executable `command` lambda
-  from `RuleCommand` to `ExecutableRuleCommand`. Interpreted commands use an
-  evaluator instead.
-* **Breaking change:** Project specifications require `.proj.lua`; ordinary `.lua`
-  files are no longer interpreted as specifications. Invalid specifications no
-  longer fall back to directive scanning. Rename `workingDirectory` to
-  `working_directory` and `fileType` to `file_type`; the old keys are rejected.
-  Unnamed single projects take their specification's basename.
-* **Breaking change:** Swing dialogs are replaced by terminal dialogs. Remove
-  the `laf` configuration key and explicit pixel-width arguments from dialog
-  helpers. Selection indices start at one; zero cancels a selection. Closed input reports an error
-  instead of silently accepting a default.
-* **Breaking change:** Project names and normalized file paths must be unique
-  across the invocation. Repeated or shared file paths are rejected instead of
-  being executed twice. Overlapping file ownership is rejected before execution.
-* Remove the unfinished Kotlin scripting DSL module and `.kts` rule lookup.
-  Lua and YAML/MVEL rules remain supported.
-
-* Windows MSYS/Cygwin terminal pipes receive UTF-8 output. Native consoles and
-  redirected streams retain their Java-selected encoding.
-
-* Application log labels are consistently English, independently of the console
-  language and presentation. Script, tool and exception text remains unchanged.
-
-* Build the website and PDF documentation through Gradle using Kotlin helpers.
-* animate+convert rules: change default program from `convert` to `magick`
-  (`convert` was deprecated in ImageMagick v7)
-
-* Update Kotlin to 2.4, Gradle and dependencies while retaining Java 11 runtime
-  compatibility.
-
-* YAML rules, configuration, file databases and directive parameters use
-  Kotaml, the supported Kaml fork. Existing YAML databases remain readable.
-
-* Terminal dialog labels, selection prompts and unavailable/closed-input errors
-  use the selected language in both plain and styled presentations.
-
-* `MPPPath` uses an instance-bound Okio filesystem for I/O. File listings have
-  stable path ordering and detect directory-link cycles.
+* **Breaking change:** Directive parameters use consistent YAML scalar types.
+  Plain `True` and `False` are booleans, exponent notation produces floating-point
+  values, and nulls are rejected. Quote strings; integers outside the `Long` range
+  remain strings instead of being truncated.
+* **Breaking change:** `dbname`/`database` honors the complete configured path.
+  Relative paths resolve against the project's working directory; blank paths
+  are rejected. Existing YAML databases remain readable.
+* **Breaking change:** `MPPPath.toJVMPath()` and `toJVMFile()` return absolute,
+  normalized paths, matching `toString()` and the new `toOkioPath()`.
+* **Breaking change:** Executable Kotlin command lambdas move from `RuleCommand`
+  to `ExecutableRuleCommand`; interpreted commands use an evaluator.
+* Local configuration takes priority over global configuration, and Lua over
+  YAML within a directory. Each project uses its own configuration and preambles.
+* Plain console output includes a version greeting and file/task totals, identifies
+  unprocessed files after failures, and labels dry runs as simulations.
+* Application log labels are English independently of the console language.
+  Dialog prompts and application-owned Lua diagnostics use the selected language.
+* Windows MSYS/Cygwin terminal pipes use UTF-8; native consoles and redirected
+  streams retain their Java-selected encoding.
+* `MPPPath` uses instance-bound Okio I/O, with stable directory ordering and
+  detection of directory-link cycles. CRC32 hashing streams file contents.
+* YAML parsing uses Kotaml, the supported Kaml fork.
+* The `animate` and `convert` rules use ImageMagick's `magick` by default.
+* Updated Kotlin to 2.4, Gradle and dependencies.
+* Website and PDF builds use Gradle with Kotlin helpers.
 
 ### Fixed
 
-* File lookup errors distinguish missing files, unsupported extensions and
-  safe-mode completion restrictions, with a project-suffix hint for Lua files.
-
-* Console elapsed times retain leading zeros in milliseconds.
-
-* Project directive failures identify their input file, rule identifier errors
-  distinguish the requested and declared names, and property-load failures are logged.
-
-* Invalid glob patterns and safe-run helper errors use localized diagnostics.
-  Nested helper lists omit null entries without losing the remaining values.
-
-* Filesystem helper errors retain file context and chained causes; failed system
-  commands preserve captured output through the compatibility API.
-
-* Multiplatform Maven source jars include the common Kotlin sources in this
-  JVM-only build.
-
-* The published core library declares its SLF4J API runtime dependency, so
-  embedding applications need not supply it separately. The logging backend
-  remains the host application's choice.
-
-* CTAN source archives retain module directories and include MVEL, build logic,
-  the Gradle wrapper and documentation sources. Distribution archives exclude
-  build caches and use reproducible ZIP metadata.
-
-* Published JVM jars have distinct automatic module names, allowing multiple
-  arara modules on the Java module path.
-
-* `--silent` overrides configured verbosity and takes priority over `--verbose`
-  regardless of flag order.
-
-* Styled output remains free of ANSI escapes when redirected, including in CI environments.
-
-* File-change databases are written in deterministic path order. Load and save
-  errors identify the database path and retain the underlying failure.
-
-* Path reads, writes, metadata and directory operations report `AraraIOException`
-  with the original I/O failure. Directive extraction handles read failures through
-  its localized error path. CRC32 hashing streams files instead of loading them whole.
-
-* Lua rule schema, helper conversion and interpolation errors use the selected
-  language. Lua interpolation no longer reports failures as MVEL errors.
-
-* Lua configuration and project validation errors use the selected language,
-  preserving field names, file paths and dependency details.
-
-* Message substitution preserves literal values containing placeholder text,
-  dollar signs and backslashes. Invalid file-type patterns report their pattern
-  in the selected language, and the Brazilian Portuguese failure label is corrected.
-
-* Log captured command output on execution failures, including timeouts.
-* Project validation errors identify duplicate names and the projects involved
-  in dependency cycles, excluding projects that only depend on a cycle.
-
-* Scalar options retain their value during interpolation instead of becoming
-  an empty list.
-
-* Reject cyclic project dependencies before execution instead of skipping projects.
+* Project validation rejects malformed fields, duplicate names, overlapping file
+  ownership and dependency cycles before execution, with contextual diagnostics.
   Independent projects and equal-priority files have deterministic ordering.
-
-* Project working directories resolve relative to the invocation directory;
-  implicit file types use each project's configuration, including compound extensions.
-
-* Project specifications reject malformed fields instead of silently ignoring
-  entries or coercing values. Errors identify the offending field.
-
-* Successful loop iterations and `halt(0)` no longer hide an earlier command
-  failure within the same rule when execution continues after errors.
-
-* Rule validation rejects reserved and duplicate argument identifiers before
-  execution. Parse error context stays local to each rule load.
-
-* File lookup keeps the configured type that matched a filename, including
-  compound extensions, rather than falling back to an unknown type.
-
-* Process failures retain their original exception and captured output; CLI
-  error classification no longer parses exception names from strings. Existing
-  pair-returning rule helpers remain compatible.
-
-* `buildString` joins the supplied values rather than an array identity, and
-  `writeToFile` reports path/I/O failures as false as documented.
-* Safe mode rejects class-loading helpers. Loaded archives use private copies
-  so replacing a user archive cannot break lazy companion loading. Missing
-  default constructors now return an instantiation-failure status.
-* Log append settings are honored, repeated setup no longer truncates records,
-  and disabling logging releases its file handle and thread-local destination.
-
-* Load configuration from each Lua project's working directory, isolate its
-  settings and preambles, and restore host configuration after CLI runs.
-* Honor explicitly requested preambles even when automatic prepending is
-  disabled; honor the header-extraction argument independently of global state.
-* Environment removal filters now receive variable names without the internal
-  `environment:` prefix, matching the addition filter and documented contract.
-
-* Halt requests stop the current file even when successful or returned without
-  a task, and their exact status reaches the process. Requests are cleared at
-  file boundaries, so files with the same name cannot share them.
-* Successful tasks, files, and projects no longer erase a previous failure.
-  Executor state is released after exceptions so another run can start.
+* Project working directories resolve against the invocation directory. File
+  types and configuration are isolated per project and host settings are restored
+  after runs. Explicit preambles and header-extraction settings are honored.
+* Successful tasks, loop iterations and `halt(0)` no longer hide earlier failures.
+  Halt requests stop the current file with their exact status, including requests
+  made without a task. Halt and executor state are cleared at execution boundaries.
+* File lookup retains the matching configured type, including compound extensions.
+  Errors distinguish missing files, unsupported extensions and safe-mode restrictions.
+* Filesystem failures retain paths and causes. Directive read errors use localized
+  diagnostics; file-change databases have deterministic output and contextual errors.
+* Process failures retain their original exceptions and captured output, including
+  timeouts, while preserving compatibility helper results.
+* Lua rule, configuration, project, helper and interpolation errors use the selected
+  language and retain field names and dependency details. Scalar options retain
+  their interpolated values. Rule validation rejects reserved/duplicate arguments.
+* Message substitution preserves literal placeholders, dollar signs and backslashes.
+  Invalid globs and file-type patterns have localized diagnostics. Nested helper
+  lists retain non-null values, and the Brazilian Portuguese failure label is corrected.
+* `buildString` joins values correctly, `writeToFile` reports failures as documented,
+  and environment removal filters receive names without the internal prefix.
+* Safe mode rejects class loading. Loaded archives use private copies, and missing
+  default constructors report an instantiation failure.
+* Logging honors append settings, avoids truncation during repeated setup, releases
+  disabled destinations, and records property-load failures.
+* `--silent` takes priority over `--verbose` regardless of order. Redirected styled
+  output contains no ANSI escapes; elapsed times retain millisecond leading zeros.
+* Maven publications include common sources, declare core's SLF4J dependency and
+  have distinct automatic module names. The logging backend remains the host's choice.
+* CTAN sources retain module directories and required build/documentation sources.
+  Distribution archives exclude caches and use reproducible ZIP metadata.
 
 ### Removed
 
-* **Breaking change:** The arara 7 `arara:FILENAME:halt` session entry is no
-  longer honored. Rules must call `halt(status)` instead of setting that entry.
-* The Nix application build is no longer provided. The Nix development shell
-  and website build remain available; build arara with Gradle instead.
+* **Breaking change:** The `arara:FILENAME:halt` session entry is no longer
+  honored. Rules must call `halt(status)`.
+* The unfinished Kotlin scripting DSL and `.kts` rule lookup.
+* The Nix application build. Development shells and the website build remain;
+  build the application with Gradle.
 
 ## [7.2.0] - 2025-06-29
 
