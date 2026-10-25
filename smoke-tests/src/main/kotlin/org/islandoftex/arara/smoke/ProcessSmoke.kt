@@ -72,6 +72,9 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
     private fun contains(output: String, text: String) = check(text in output) { "Missing $text\n$output" }
 
     val cases: Map<String, (MPPPath) -> Unit> = linkedMapOf(
+        "french_configuration_cli_and_console_presentations" to { root ->
+            checkFrenchLocalization(root, launcher, jar)
+        },
         "lua_default_and_legacy_compatibility_warnings" to { root ->
             checkLegacyRuleWarnings(root, launcher, jar)
         },
@@ -227,6 +230,7 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
                 } else "return { paths = { cwd }, log = { file = '$name' } }")
                 execute(root, 0, listOf("--log-format", "text"))
                 contains(root.resolve(name).readText(), "Run completed with exit code 0")
+                Files.delete(root.resolve("arararc.$format").toJVMPath())
             }
         },
         "command_line_preamble_supplies_directives_in_both_engines" to { root ->
@@ -241,6 +245,7 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
                     val output = execute(root, 0, listOf("--engine", engine, "--preamble", "build"))
                     contains(output, "SUCCESS")
                 }
+                Files.delete(root.resolve("arararc.$format").toJVMPath())
             }
         },
         "nested_command_lists_launch_every_task_in_both_engines" to { root ->

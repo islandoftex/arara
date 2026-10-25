@@ -11,6 +11,7 @@ import org.islandoftex.arara.core.localization.AraraMessages
 import org.islandoftex.arara.core.localization.BrazilianPortugueseMessages
 import org.islandoftex.arara.core.localization.DutchMessages
 import org.islandoftex.arara.core.localization.EnglishMessages
+import org.islandoftex.arara.core.localization.FrenchMessages
 import org.islandoftex.arara.core.localization.GermanMessages
 import org.islandoftex.arara.core.localization.ItalianMessages
 import org.islandoftex.arara.core.localization.LanguageController
@@ -26,7 +27,7 @@ class ProjectDiagnosticsTest {
         val downstream = Project("Downstream", MPPPath("."), emptySet(), setOf("B"))
         try {
             for (messages in listOf(EnglishMessages, GermanMessages, ItalianMessages, DutchMessages,
-                BrazilianPortugueseMessages, NorfolkMessages)) {
+                BrazilianPortugueseMessages, FrenchMessages, NorfolkMessages)) {
                 LanguageController.messages = messages
                 val cycle = assertFailsWith<AraraException> {
                     ProjectValidation.executionOrder(listOf(downstream, first, second))

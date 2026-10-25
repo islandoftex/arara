@@ -13,7 +13,7 @@ class MessageFormattingTest {
     fun translatedTemplatesPreserveEveryArgumentLiterally() {
         val english = EnglishMessages
         val catalogs = listOf(english, GermanMessages, ItalianMessages, DutchMessages,
-            BrazilianPortugueseMessages, NorfolkMessages)
+            BrazilianPortugueseMessages, FrenchMessages, NorfolkMessages)
         for (method in AraraMessages::class.java.methods.filter { it.returnType == String::class.java }) {
             val arguments = method.parameterTypes.mapIndexed { index, type ->
                 when (type) {
@@ -36,7 +36,7 @@ class MessageFormattingTest {
         val previous = LanguageController.messages
         try {
             for (catalog in listOf(EnglishMessages, GermanMessages, ItalianMessages, DutchMessages,
-                BrazilianPortugueseMessages, NorfolkMessages)) {
+                BrazilianPortugueseMessages, FrenchMessages, NorfolkMessages)) {
                 LanguageController.messages = catalog
                 val failure = assertFailsWith<AraraException> { FileType("src", "[") }
                 assertEquals(catalog.errorFiletypeInvalidPattern("["), failure.message)

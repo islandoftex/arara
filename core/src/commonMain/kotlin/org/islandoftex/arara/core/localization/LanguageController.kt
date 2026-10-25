@@ -24,6 +24,7 @@ object LanguageController {
     @JvmStatic
     fun loadMessagesFor(locale: MPPLocale) {
         messages = when (locale) {
+            MPPLocale("fr") -> FrenchMessages
             MPPLocale("de") -> GermanMessages
             MPPLocale("it") -> ItalianMessages
             MPPLocale("nl") -> DutchMessages

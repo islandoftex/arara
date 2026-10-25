@@ -266,13 +266,13 @@ current option, it will be denoted by `parameter` in the description.
     ```
 
   {% messagebox(title="Navis volitans mihi anguillis plena est") %}
-  At time of writing, arara is able to speak English, German, Dutch, Italian
-  and Brazilian Portuguese out of the box. There is also a special dialect
+  At time of writing, arara is able to speak English, French, German, Dutch,
+  Italian and Brazilian Portuguese out of the box. There is also a special dialect
   named Broad Norfolk, spoken by those living in the county of Norfolk in
   England.
 
   *Available languages:* `en` for English, `de` for German, `en-QN` for Broad
-   Norfolk, `it` for Italian, `nl` for Dutch, and `pt-BR` for Portuguese
+   Norfolk, `fr` for French, `it` for Italian, `nl` for Dutch, and `pt-BR` for Portuguese
    (BR).
 
   Would you like to make arara speak your own language? Splendid! We would

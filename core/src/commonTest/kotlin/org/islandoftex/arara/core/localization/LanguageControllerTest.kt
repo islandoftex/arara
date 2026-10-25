@@ -11,6 +11,7 @@ class LanguageControllerTest {
         assertEquals(LanguageController.messages.providedLocale, MPPLocale("en"))
 
         listOf(
+            MPPLocale("fr"),
             MPPLocale("de"),
             MPPLocale("it"),
             MPPLocale("nl"),

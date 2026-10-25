@@ -238,7 +238,7 @@ class StyledReportingTest {
 
     @Test
     fun summaryLabelsFollowTheSelectedCatalogAndDurationUsesItsDecimalSeparator() = fixture { root ->
-        for (language in listOf("en", "de", "it", "nl", "pt-BR", "en-QN")) {
+        for (language in listOf("en", "de", "it", "nl", "pt-BR", "en-QN", "fr")) {
             val locale = MPPLocale(language)
             Session.userInterfaceOptions = UserInterfaceOptions(locale = locale)
             LanguageController.loadMessagesFor(locale)

@@ -73,7 +73,7 @@ class StyledTaskDetailsTest {
     @Test
     fun narrowLocalizedFieldsPreserveUnicodeAndLongArguments() = fixture {
         val command = "tool 界界e\u0301 ${"x".repeat(60)}"
-        for (locale in listOf("en", "de", "nl", "it", "pt-BR", "en-QN")) {
+        for (locale in listOf("en", "de", "nl", "it", "pt-BR", "en-QN", "fr")) {
             LanguageController.loadMessagesFor(MPPLocale(locale))
             for (width in listOf(1, 8, 17, 20, 80)) {
                 val output = ProgressTestTerminal(AnsiLevel.NONE, interactive = true, width = width)

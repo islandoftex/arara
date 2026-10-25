@@ -23,7 +23,7 @@ class OptionInterpolationTest {
     fun wrongEngineTagsUseTheSelectedLanguage() {
         val previous = LanguageController.messages
         try {
-            for (locale in listOf("en", "de", "it", "nl", "pt-BR", "en-QN")) {
+            for (locale in listOf("en", "de", "it", "nl", "pt-BR", "en-QN", "fr")) {
                 LanguageController.loadMessagesFor(MPPLocale(locale))
                 val error = assertFailsWith<AraraException> {
                     DirectiveUtils.interpolateOptions("{{ 1 }}", RuleEngine.YAML)

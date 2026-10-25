@@ -9,7 +9,7 @@ class MessageRenderingContractTest {
     @Test
     fun `every translation retains its rendered text and literal arguments`() {
         val catalogs = listOf(EnglishMessages, GermanMessages, ItalianMessages, DutchMessages,
-            BrazilianPortugueseMessages, NorfolkMessages)
+            BrazilianPortugueseMessages, FrenchMessages, NorfolkMessages)
         val expected = Properties()
         requireNotNull(javaClass.getResourceAsStream("/localization/rendered-messages.properties"))
             .bufferedReader(Charsets.UTF_8).use { expected.load(it) }

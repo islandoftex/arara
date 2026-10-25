@@ -16,6 +16,8 @@ on.
 
 ### Added
 
+* French messages, selected with `--language fr` or configuration `language: fr`.
+
 * Plain console runs include a version greeting, file and task totals, and the
   names of files not reached after a failure. Dry runs report simulated tasks.
 

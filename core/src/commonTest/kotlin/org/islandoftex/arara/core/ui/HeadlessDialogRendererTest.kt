@@ -19,7 +19,7 @@ class HeadlessDialogRendererTest {
         )
         val previous = LanguageController.messages
         try {
-            for (locale in listOf("en", "de", "it", "nl", "pt-BR", "en-QN")) {
+            for (locale in listOf("en", "de", "it", "nl", "pt-BR", "en-QN", "fr")) {
                 LanguageController.loadMessagesFor(MPPLocale(locale))
                 calls.forEach { call ->
                     val error = assertFailsWith<AraraException> { call() }

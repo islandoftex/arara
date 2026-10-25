@@ -19,7 +19,7 @@ class RunLogLanguageTest {
         val snapshot = ConfigurationSnapshot.capture()
         val root = Files.createTempDirectory("arara log languages ").toMPPPath()
         try {
-            for (language in listOf("en", "de", "it", "nl", "pt-BR", "en-QN")) {
+            for (language in listOf("en", "de", "it", "nl", "pt-BR", "en-QN", "fr")) {
                 val locale = MPPLocale(language)
                 Session.userInterfaceOptions = UserInterfaceOptions(locale)
                 LanguageController.loadMessagesFor(locale)

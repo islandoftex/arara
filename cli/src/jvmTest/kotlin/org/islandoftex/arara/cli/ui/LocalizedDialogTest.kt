@@ -20,7 +20,7 @@ class LocalizedDialogTest {
     fun bothPresentationsUseTheCurrentCatalogAndKeepRuleTextLiteral() {
         val previous = LanguageController.messages
         try {
-            for (locale in listOf("en", "de", "it", "nl", "pt-BR", "en-QN")) {
+            for (locale in listOf("en", "de", "it", "nl", "pt-BR", "en-QN", "fr")) {
                 LanguageController.loadMessagesFor(MPPLocale(locale))
                 val messages = LanguageController.messages
                 for (styled in listOf(false, true)) {
