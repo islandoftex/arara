@@ -83,7 +83,9 @@
           };
 
         devShells.texIntegration = self.devShells.${system}.default.overrideAttrs (old: {
-          nativeBuildInputs = old.nativeBuildInputs ++ [ pkgs.texliveSmall ];
+          nativeBuildInputs = old.nativeBuildInputs ++ [
+            (pkgs.texliveSmall.withPackages (tex: [ tex.upmendex ]))
+          ];
         });
 
         devShells.default = pkgs.mkShell {

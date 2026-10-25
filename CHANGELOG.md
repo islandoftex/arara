@@ -16,6 +16,9 @@ on.
 
 ### Added
 
+* The `upmendex` rule generates multilingual Unicode indexes in both Lua and
+  YAML/MVEL engines, with style, dictionary, ordering and whitespace options.
+
 * French messages, selected with `--language fr` or configuration `language: fr`.
 
 * Plain console runs include a version greeting, file and task totals, and the

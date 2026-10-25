@@ -4,7 +4,9 @@ package org.islandoftex.arara.cli.ruleset
 import java.nio.file.Files
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
+import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.toJVMPath
 import org.islandoftex.arara.api.files.toMPPPath
@@ -81,7 +83,11 @@ class OfficialLuaRulesTest {
         else -> listOf(value)
     }
 
-    private fun parity(identifier: String, values: Map<String, Any> = emptyMap()) = inProject { reference ->
+    private fun parity(
+        identifier: String,
+        values: Map<String, Any> = emptyMap(),
+        expectedElements: ((MPPPath) -> List<String>)? = null
+    ) = inProject { reference ->
         val yaml = org.islandoftex.arara.mvel.rules.Rule.parse(
             rules.resolve("arara-rule-$identifier.yaml"), identifier)
         val lua = LuaRuleParser.parse(rules.resolve("arara-rule-$identifier.lua"), identifier)
@@ -95,6 +101,7 @@ class OfficialLuaRulesTest {
         }
         val actual = lua.commands.flatMap { commandValues(it.evaluate(parameters(lua, reference, values))) }
         assertEquals(expected, actual, "$identifier $values")
+        expectedElements?.let { assertEquals(it(reference), (actual.single() as Pair<*, *>).first) }
     }
 
     @Test
@@ -112,11 +119,42 @@ class OfficialLuaRulesTest {
     @Test
     fun bibliographyAndIndexCommandsMatchYaml() {
         listOf("authorindex", "bib2gls", "biber", "bibtex", "bibtex8", "bibtexu", "makeglossaries",
-            "makeglossarieslite", "makeindex", "nomencl", "pbibtex", "texindy", "upbibtex", "xindex", "xindy")
+            "makeglossarieslite", "makeindex", "nomencl", "pbibtex", "texindy", "upbibtex", "upmendex", "xindex", "xindy")
             .forEach { parity(it) }
         parity("songidx", mapOf("input" to "../README.md"))
         parity("bibtex", mapOf("options" to listOf("-min-crossrefs=2")))
         parity("makeindex", mapOf("style" to "custom style.ist", "options" to listOf("-q")))
+    }
+
+    @Test
+    fun upmendexPreservesArgumentsAndUsesItsOwnCompressionFlag() {
+        parity("upmendex") { reference ->
+            val base = reference.fileName.removeSuffix(".tex")
+            listOf("upmendex", "-t", "$base.ilg", "$base.idx", "-o", "$base.ind")
+        }
+        parity("upmendex", mapOf("compress" to false, "order" to "word")) { reference ->
+            val base = reference.fileName.removeSuffix(".tex")
+            listOf("upmendex", "-t", "$base.ilg", "$base.idx", "-o", "$base.ind")
+        }
+        parity("upmendex", mapOf("compress" to true, "order" to "letter", "style" to "style file.ist",
+            "dictionary" to "readings file.dic", "input" to "custom idx", "output" to "custom ind",
+            "log" to "custom ilg", "options" to listOf("-q", "-r"))) { reference ->
+            val base = reference.fileName.removeSuffix(".tex")
+            listOf("upmendex", "-c", "-s", "style file.ist", "-d", "readings file.dic", "-l", "-q", "-r",
+                "-t", "$base.custom ilg", "$base.custom idx", "-o", "$base.custom ind")
+        }
+    }
+
+    @Test
+    fun upmendexRejectsInvalidOrderingAndNonListOptions() = inProject { reference ->
+        val rules = listOf(
+            LuaRuleParser.parse(rules.resolve("arara-rule-upmendex.lua"), "upmendex"),
+            org.islandoftex.arara.mvel.rules.Rule.parse(rules.resolve("arara-rule-upmendex.yaml"), "upmendex")
+        )
+        for (rule in rules) {
+            assertFailsWith<AraraException> { parameters(rule, reference, mapOf("order" to "invalid")) }
+            assertFailsWith<AraraException> { parameters(rule, reference, mapOf("options" to "-q")) }
+        }
     }
 
     @Test

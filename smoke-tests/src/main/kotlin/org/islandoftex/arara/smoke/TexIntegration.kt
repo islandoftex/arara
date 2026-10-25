@@ -44,7 +44,7 @@ private class TexIntegration(private val options: Map<String, String>, private v
 
     private fun prepare(root: MPPPath) {
         root.resolve("arararc.yaml").writeText("!config\npaths: ['.']\n")
-        for (name in listOf("pdflatex", "bibtex")) {
+        for (name in listOf("pdflatex", "bibtex", "upmendex")) {
             val file = "arara-rule-$name.$engine"
             val text = checkNotNull(javaClass.getResourceAsStream("/rules/$file")) { "Missing $file" }
                 .bufferedReader(Charsets.UTF_8).use { it.readText() }
@@ -94,6 +94,25 @@ private class TexIntegration(private val options: Map<String, String>, private v
             check("\\bibitem{duck}" in root.resolve("run.bbl").readText())
             check("undefined" !in root.resolve("run.log").readText()) { "Final pass has unresolved references" }
         },
+        "official_upmendex_generates_unicode_indexes" to { root ->
+            root.resolve("readings file.dic").writeText("漢字 かんじ\n")
+            root.resolve("style file.ist").writeText("headings_flag 1\n")
+            val entries = "\\indexentry{éclair}{1}\n\\indexentry{zèbre}{2}\n\\indexentry{漢字}{3}\n"
+            for (custom in listOf(false, true)) {
+                val input = if (custom) "custom idx" else "idx"
+                val output = if (custom) "custom ind" else "ind"
+                val log = if (custom) "custom ilg" else "ilg"
+                root.resolve("run.$input").writeText(entries)
+                document(root, "% arara: upmendex: { compress: true, order: letter, " +
+                    "style: 'style file.ist', dictionary: 'readings file.dic', options: ['-q'], " +
+                    "input: '$input', output: '$output', log: '$log' }")
+                execute(root, "index-$custom")
+                val index = root.resolve("run.$output").readText()
+                check("\\begin{theindex}" in index) { index }
+                for (entry in listOf("éclair", "zèbre", "漢字")) check(entry in index) { index }
+                check(root.resolve("run.$log").isRegularFile) { "Missing index transcript" }
+            }
+        },
         "tex_failure_preserves_exit_status_and_stops_later_directives" to { root ->
             document(root, "% arara: pdflatex: { interaction: nonstopmode, options: ['-halt-on-error'] }\n" +
                 "% arara: pdflatex: { interaction: nonstopmode, options: ['-jobname=after-failure'] }",
@@ -111,8 +130,9 @@ internal fun runTexIntegration(options: Map<String, String>) {
     val destination = MPPPath(options["--report"] ?: "build/test-results/texIntegration/results.xml").normalize()
     val cases = mutableListOf<CaseResult>()
     val preflight = runCatching {
-        for (tool in listOf("pdflatex", "bibtex")) {
-            val result = run(listOf(tool, "--version"), workspace)
+        for (tool in listOf("pdflatex", "bibtex", "upmendex")) {
+            val query = if (tool == "upmendex") "--help" else "--version"
+            val result = run(listOf(tool, query), workspace)
             workspace.resolve("$tool.version.txt").writeText(result.output)
             check(result.status == 0) { "$tool is unavailable: ${result.output}" }
         }

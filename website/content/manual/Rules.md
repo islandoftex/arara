@@ -2647,6 +2647,37 @@ format.
 % arara: uplatex: { interaction: scrollmode, shell: yes }
 ```
 
+# `upmendex`
+
+This rule runs `upmendex`, a multilingual Unicode index generator, on the
+corresponding base name of the `❖ currentFile` reference with the `idx` suffix,
+generating an index as an `ind` file.
+
+- `style`: This option sets the index style file, passed to `upmendex` with `-s`.
+
+- `dictionary`: This option sets the dictionary file used for readings of index
+  entries, passed with `-d`.
+
+- **[S]** `compress`: This option compresses consecutive spaces and tabs and
+  ignores leading and trailing blanks in index keys (`-c`).
+
+- `order`: This option accepts `letter` for character ordering (`-l`) or `word`
+  for the default word ordering.
+
+- `input` (default: `idx`): This option sets the input extension.
+
+- `output` (default: `ind`): This option sets the output extension.
+
+- `log` (default: `ilg`): This option sets the transcript extension. These three
+  extensions are appended to the base name of the current file.
+
+- `options`: This option takes a list of raw command line options. An error is
+  thrown if the value is not a list.
+
+```tex
+% arara: upmendex: { compress: yes, style: book.ist, dictionary: readings.dic }
+```
+
 # `uptex`
 
 This rule runs the `uptex` TeX engine on the provided `❖ currentFile`

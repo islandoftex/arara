@@ -1,0 +1,69 @@
+!config
+# Arara, the cool TeX automation tool
+# Copyright (c) 2026, Island of TeX
+# All rights reserved.
+#
+# This rule is part of arara.
+identifier: upmendex
+name: UpMendex
+authors:
+- Island of TeX
+commands:
+- name: The UpMendex index software
+  command: >
+    @{
+        base = getBasename(reference.fileName);
+        infile = base.concat('.').concat(input[0]);
+        outfile = [ '-o', base.concat('.').concat(output[0]) ];
+        logfile = [ '-t', base.concat('.').concat(log[0]) ];
+        return getCommand('upmendex', compress, style, dictionary, order, options,
+                          logfile, infile, outfile);
+    }
+arguments:
+- identifier: input
+  flag: >
+    @{
+      parameters.input
+    }
+  default: idx
+- identifier: output
+  flag: >
+    @{
+      parameters.output
+    }
+  default: ind
+- identifier: log
+  flag: >
+    @{
+      parameters.log
+    }
+  default: ilg
+- identifier: compress
+  flag: >
+    @{
+        isTrue(parameters.compress, '-c')
+    }
+- identifier: order
+  flag: >
+    @{
+        if ([ 'letter', 'word' ].contains(parameters.order)) {
+            return isTrue(parameters.order == 'letter', '-l', '');
+        }
+        else {
+            throwError('The provided order is invalid.');
+        }
+    }
+- identifier: style
+  flag: "@{ [ '-s', parameters.style ] }"
+- identifier: dictionary
+  flag: "@{ [ '-d', parameters.dictionary ] }"
+- identifier: options
+  flag: >
+    @{
+        if (isList(parameters.options)) {
+            return parameters.options;
+        }
+        else {
+            throwError('I was expecting a list of options.');
+        }
+    }
