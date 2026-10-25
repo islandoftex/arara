@@ -356,7 +356,7 @@ resolution for a path in plain string should be kept as simple as possible, so
       presented as follows.
 
       ```
-      ^\s*%\s+
+      ^\s*%\s*
       ```
 
     - The `pattern` key is *mandatory* for new file types and for overriding
@@ -425,22 +425,21 @@ resolution for a path in plain string should be kept as simple as possible, so
       pattern: ^\s*//\s*
     ```
 
-    It is important to note that, if no default file type is explicitly
-    specified, as seen in previous example, the original list of default file
-    types will have the highest priority over the `filetypes` values during the
-    file name lookup. The following list is semantically equivalent to the
-    previous example.
+    Configured file types always come first, in their declaration order;
+    the default types follow in their original order. This also applies when
+    the configuration contains only new file types. The following list has
+    the same lookup priority as the previous example.
 
     ```yaml
     filetypes:
+    - extension: c
+      pattern: ^\s*//\s*
     - extension: tex
     - extension: dtx
     - extension: ltx
     - extension: drv
     - extension: ins
-    - extension: c
-      pattern: ^\s*//\s*
-      ```
+    ```
 
     {% messagebox(title="Do not escape backslashes") %}
 When writing a file type pattern, there is no need for escaping backslashes

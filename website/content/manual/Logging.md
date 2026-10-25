@@ -235,6 +235,12 @@ highly recommended to include at least the `--log` command line option (or
 enable it in the configuration file) in your typical automation workflow, as
 relevant information is gathered into a single consolidated report.
 
+Relative log paths, including the default `arara.log`, resolve against the
+process working directory from which arara was started. `--working-directory`
+and a project's `working_directory` do not rebase them. Database paths, in
+contrast, resolve against the project's working directory; see
+[The file database](@/manual/Database.md#database-location).
+
 {% messagebox(title="Log paths") %}
 From version 6.0 on, the log file may now be specified as path *anywhere* on the
 file system. However, keep in mind that this behavior may be altered for future

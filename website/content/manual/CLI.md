@@ -460,14 +460,14 @@ current option, it will be denoted by `parameter` in the description.
     milliseconds and the task was aborted when the time limit was reached. Note
     that the tool raised an error about it.
 
-- `d` / `--working-directory` `<path>` This option allows you to change the
+- `-d` / `--working-directory` `<path>` This option allows you to change the
   working directory to `<path>`. That is, the commands will run from a different
   directory than the directory you launched arara in. This is especially useful
   when calling a TeX engine as they resolve files against the working
   directory. For that reason, arara will also resolve each file you pass to it
   that has no absolute path against the working directory. The working directory
-  is fixed for the whole call; passing multiple files to arara will resolve all
-  of them against and execute all actions within that one working directory.
+  is shared by loose input files. Lua project specifications can select a
+  different directory for each project; see [Projects](@/manual/Projects.md).
 
 - `-V` / `--version`: This option, as the name indicates, prints the current
   version. It also prints the current revision and a list of libraries with
@@ -597,10 +597,11 @@ detailed later on. arara employs the following scheme for file name lookup:
     Total: 0.69 seconds
     ```
 
-- If the provided file name has an unsupported extension or no extension at all,
-  the tool iterates through the list of default extensions, appending the
-  current element to the file name and attempting an exact match. If the file
-  exists, it will be selected.
+- If no regular file exists under the supplied name, the tool tries extension
+  completion. It iterates through the configured file types followed by the
+  defaults, appending each extension and selecting the first existing regular
+  file. An existing file with an unsupported extension is rejected; its name is
+  not completed further. Safe mode disables extension completion.
 
     ```sh
     $ arara doc11

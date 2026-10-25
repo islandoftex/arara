@@ -492,7 +492,7 @@ A false conditional skips command evaluation, not rule loading or argument
 processing. Unknown rules, invalid parameters and errors in argument processors
 can therefore be reported even for a directive whose conditional is false.
 The conditional operators are detailed below; arara's final status is explained
-in [Command line](@/manual/CLI.md#file-name-lookup).
+in [Exit statuses](#exit-statuses).
 
 {% messagebox(title="What a dry run evaluates") %}
 A dry run skips conditional evaluation and system command execution. Rule
@@ -719,6 +719,107 @@ selected engine; Lua does not accept MVEL's `@{ ... }` tags. See
 Keep in mind that this feature is disabled when arara is running in safe mode,
 as seen in [Command line](@/manual/CLI.md).
 {% end %}
+
+# The header and file types
+
+By default, arara reads the initial block of comments and blank lines. It stops
+at the first line that is neither blank nor a comment according to the file's
+type. For example:
+
+```tex
+% arara: pdflatex
+% arara: bibtex
+\documentclass{article}
+```
+
+Here the header ends at `\documentclass{article}`. Directives below that line
+are not found unless whole-file extraction is enabled with `-w` / `--whole-file`
+or YAML `header: false` (Lua `header = false`).
+
+A file type pairs an extension with a regular expression identifying comment
+lines. The extension controls file lookup; the pattern controls directive
+extraction. Configured types are considered in declaration order before the
+built-in types. The first matching extension wins, including when more than one
+configured extension could match the same name. See
+[File name lookup](@/manual/CLI.md#file-name-lookup) and the `filetypes` examples in
+[Configuration file](@/manual/Configuration.md).
+
+# Sessions
+
+A session is the shared key-and-value map of one arara run. Rules and
+conditionals can use it to pass values between directives, files and projects.
+Unlike the [file database](@/manual/Database.md), these values are not saved
+between separate invocations of the command-line application.
+
+Two prefixes are populated by the command-line application:
+
+- `environment:` holds a copy of the process environment, such as
+  `environment:PATH`.
+- `arg:` holds values loaded with `-F` / `--properties-file` or supplied with
+  `-P` / `--call-property`. Command-line values take priority over file values.
+
+For example, `arara -P builddir=output main.tex` makes `arg:builddir` available
+to a YAML/MVEL rule through:
+
+```java
+getSession().get('arg:builddir')
+```
+
+The equivalent Lua call is:
+
+```lua
+get_session().get("arg:builddir")
+```
+
+Rules can also store their own keys with `put`. The operations and their Lua
+forms are described in [Methods](@/manual/Methods.md#others); mutation records
+are described in [Logging](@/manual/Logging.md).
+
+# The working directory
+
+Without `-d` / `--working-directory`, loose input files are resolved against
+the directory from which arara was invoked. The option selects another base:
+
+```sh
+arara --working-directory chapters chapter1.tex
+```
+
+This processes `chapters/chapter1.tex`, with commands running in `chapters`.
+Project specifications can select a different working directory for each
+project; see [Projects](@/manual/Projects.md). Those directories also determine
+local configuration lookup. Relative database and log paths follow the rules
+in [The file database](@/manual/Database.md#database-location) and
+[Logging](@/manual/Logging.md).
+
+# Exit statuses
+
+A system command normally succeeds when it returns zero. A rule's `exit` check
+can accept another status instead. In a YAML rule, the process status is named
+`value`:
+
+```yaml
+exit: value > 0
+```
+
+A Lua rule supplies a function instead:
+
+```lua
+exit = function(code)
+  return code > 0
+end
+```
+
+Both examples accept a positive process status and reject zero. The check must
+return a boolean. It applies only after a system command has run, not to boolean
+command results or simulated commands in a dry run.
+
+An accepted process status does not make arara fail. A rejected nonzero status
+is retained as a failure; rejecting zero produces failure status `1`. A boolean
+command result of `false` also produces `1`. Application errors use `2`.
+Later successful tasks do not erase an earlier failure. A successful
+`halt(0)` stops the current file without clearing an earlier failure either.
+The final status is available to the calling shell or program, as described in
+[Command line](@/manual/CLI.md#file-name-lookup).
 
 # Important changes in version 8
 
