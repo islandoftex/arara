@@ -9,7 +9,7 @@ actually a quick introduction to what you can (and cannot) expect from
 arara. For now, concepts will be informally presented and will be detailed later
 on, in the next chapters.
 
-For an existing workflow, [migration post](@/news/2026-10-22-Migration-v8.md) collects
+For an existing workflow, [migration post](@/news/2027-02-07-Release-v8.md#migrating-from-arara-7) collects
 the changes to rules, configuration and project specifications. Developers
 embedding the tool can start with [arara as a library](@/manual/Library.md).
 

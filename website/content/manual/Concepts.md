@@ -851,7 +851,7 @@ strings. Null parameter values are rejected.
 Lua is preferred by default. YAML/MVEL rules are detected automatically and are
 deprecated; they will be discontinued in v9.
 The unfinished Kotlin scripting DSL and `.kts` rule lookup have been removed.
-See the [migration post](@/news/2026-10-22-Migration-v8.md) for examples of
+See the [migration post](@/news/2027-02-07-Release-v8.md#migrating-from-arara-7) for examples of
 converting custom rules to Lua.
 {% end %}
 
