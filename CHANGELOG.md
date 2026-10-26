@@ -16,6 +16,9 @@ on.
 
 ### Added
 
+* Per-command task labels in Lua rules through `named_command`; the Lua clean
+  rule identifies each extension being removed. (see #90)
+
 * Lua rules, directive conditionals and option interpolation, with Lua counterparts
   for the official rule pack. `--preferred-engine` (`-e`) selects the preferred
   format; rule lookup falls back to the other format within each search directory.

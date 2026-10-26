@@ -19,4 +19,7 @@ public interface Command {
      * overwritten. Use with care.
      */
     public val workingDirectory: MPPPath?
+
+    /** Optional task label; null or blank uses the rule task name. */
+    public val displayName: String? get() = null
 }

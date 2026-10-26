@@ -22,6 +22,23 @@ class LuaHelperBindingsTest {
     }
 
     @Test
+    fun namedCommandsPreserveInvocationAndLeaveTheOriginalUnchanged() {
+        val globals = LuaRuleEnvironment.newGlobals()
+        val original = globals.load("return get_command_with_working_directory('.', 'echo', 'a b')").call()
+        globals.set("original", original)
+        val command = LuaConversion.toCommand(original)!!
+        for (helper in listOf("named_command", "namedCommand")) {
+            val named = LuaConversion.toCommand(globals.load("return $helper('Cleaning aux', original)").call())!!
+            assertEquals("Cleaning aux", named.displayName)
+            assertEquals(command.elements, named.elements)
+            assertEquals(command.workingDirectory, named.workingDirectory)
+            assertEquals(null, command.displayName)
+            assertFailsWith<Exception> { globals.load("return $helper('label', true)").call() }
+            assertFailsWith<Exception> { globals.load("return $helper(42, original)").call() }
+        }
+    }
+
+    @Test
     fun listHelpersReplaceTheOldDropdownNamesInBothEnvironments() {
         for (globals in listOf(LuaRuleEnvironment.newGlobals(), LuaConditionalEnvironment.newGlobals())) {
             assertTrue(globals.get("showList").isfunction())

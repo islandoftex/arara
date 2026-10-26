@@ -29,7 +29,8 @@ return {
             if ((base .. ".") .. extension) == get_original_file() then
               throw_error("I cannot remove the main file reference.")
             end
-            table.insert(removals, get_command(prefix, (base .. ".") .. extension))
+            table.insert(removals, named_command("Cleaning " .. extension,
+              get_command(prefix, (base .. ".") .. extension)))
           end
           return removals
         end

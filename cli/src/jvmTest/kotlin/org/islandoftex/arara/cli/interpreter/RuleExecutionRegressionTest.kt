@@ -251,6 +251,17 @@ class RuleExecutionRegressionTest {
     }
 
     @Test
+    fun `Lua command labels override task names without changing fallback labels`() = eachEngine { fixture ->
+        val (mvel, lua) = fixture.nativeCommand()
+        val expression = lua.removePrefix("return ")
+        fixture.rule(mvel, "return {named_command('Custom', $expression), " +
+            "named_command(' ', $expression), $expression, true}")
+        assertEquals(0, fixture.execute())
+        assertEquals(if (fixture.engine == RuleEngine.LUA) listOf("Custom", "Task", "Task", "Task")
+            else listOf("Task"), fixture.entries)
+    }
+
+    @Test
     fun `loop caps and one shot conditionals control the number of executions`() = eachEngine { fixture ->
         val (mvel, lua) = fixture.recordBody()
         fixture.rule(mvel, lua)

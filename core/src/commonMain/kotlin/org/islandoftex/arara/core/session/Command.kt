@@ -15,7 +15,9 @@ data class Command(
     /** Executable followed by its arguments, without shell tokenization. */
     override val elements: List<String>,
     /** Subprocess working directory, or null to inherit the process default. */
-    override val workingDirectory: MPPPath? = null
+    override val workingDirectory: MPPPath? = null,
+    /** Optional task label, falling back to the rule task name when absent or blank. */
+    override val displayName: String? = null
 ) : Command {
     /**
      * Provides a textual representation of the current command.

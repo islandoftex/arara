@@ -179,6 +179,14 @@ class OfficialLuaRulesTest {
     }
 
     @Test
+    fun cleanLabelsIdentifyEachExtension() = inProject { reference ->
+        val rule = LuaRuleParser.parse(rules.resolve("arara-rule-clean.lua"), "clean")
+        val values = parameters(rule, reference, mapOf("extensions" to listOf("aux", "log")))
+        val commands = rule.commands.single().evaluate(values) as List<*>
+        assertEquals(listOf("Cleaning aux", "Cleaning log"), commands.map { (it as Command).displayName })
+    }
+
+    @Test
     fun workflowHelpersKeepOriginalFileProtectionAndDirectoryBehavior() = inProject { reference ->
         listOf("clean", "move").forEach { identifier ->
             val rule = LuaRuleParser.parse(rules.resolve("arara-rule-$identifier.lua"), identifier)

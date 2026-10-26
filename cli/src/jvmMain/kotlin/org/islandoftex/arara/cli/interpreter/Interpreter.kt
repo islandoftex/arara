@@ -160,11 +160,8 @@ class Interpreter(
                 }
             }
             .fold(ExecutionStatus.Processing() as ExecutionStatus) { previous, current ->
-                DisplayUtils.printEntry(
-                    rule.displayName!!,
-                    command.name
-                        ?: LanguageController.messages.infoLabelUnnamedTask
-                )
+                val taskName = current.commandDisplayName(command.name)
+                DisplayUtils.printEntry(rule.displayName!!, taskName)
 
                 failureOutput = ""
                 val success = when (current) {
@@ -189,7 +186,7 @@ class Interpreter(
                     executionOptions.haltOnErrors && !success ->
                         throw HaltExpectedException(
                             LanguageController
-                                .messages.errorInterpreterCommandUnsuccessfulExit(command.name.toString()),
+                                .messages.errorInterpreterCommandUnsuccessfulExit(taskName),
                             ExecutionStatus.FinishedWithCode(lastFailureCode)
                         )
                     success -> ExecutionStatus.Processing()
@@ -414,3 +411,7 @@ class Interpreter(
         }
     }
 }
+
+private fun Any?.commandDisplayName(fallback: String?): String =
+    (this as? Command)?.displayName?.takeIf { it.isNotBlank() }
+        ?: fallback ?: LanguageController.messages.infoLabelUnnamedTask

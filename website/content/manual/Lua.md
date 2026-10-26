@@ -73,7 +73,9 @@ lists run their tasks in order; an empty list or `nil` contains no tasks.
 Use `get_command` to build an invocation from a program and its arguments. The
 helper flattens argument lists, so the processed `ctx.options` list in the
 example does not need to be joined into a shell command. Arguments containing
-spaces remain individual arguments.
+spaces remain individual arguments. Use `named_command("Cleaning aux", command)`
+to give an individual command its own task label. Commands without a label use
+the enclosing task name.
 
 Arguments accept a literal `default`, a `flag(ctx, value)` function or both.
 `required = true` requires an explicit directive parameter. Flag contexts contain

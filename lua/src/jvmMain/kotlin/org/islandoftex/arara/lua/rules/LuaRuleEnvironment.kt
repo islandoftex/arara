@@ -101,6 +101,14 @@ internal object LuaRuleEnvironment {
                 RuleMethods.getCommand(*args.kotlinArgs().toTypedArray())
             )
         }
+        bindSpelled(globals, "namedCommand") { name, args ->
+            val label = args.arg(1).stringArgument(name, 1)
+            val command = LuaConversion.toCommand(args.arg(2))
+                ?: throw badArgument(name, 2, "command", args.arg(2))
+            LuaValue.userdataOf(
+                org.islandoftex.arara.core.session.Command(command.elements, command.workingDirectory, label)
+            )
+        }
         bindSpelled(
             globals, "getCommandWithWorkingDirectory"
         ) { name, args ->
