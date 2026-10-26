@@ -168,6 +168,29 @@ class OfficialLuaRulesTest {
     }
 
     @Test
+    fun mptopdfPreservesItsOwnOptionsAndReferenceArguments() {
+        parity("mptopdf") { reference -> listOf("mptopdf", reference.fileName) }
+        parity("mptopdf", mapOf("metafun" to true, "texexec" to true, "latex" to true,
+            "options" to listOf("--custom=value with spaces"))) { reference ->
+            listOf("mptopdf", "--metafun", "--texexec", "--latex", "--custom=value with spaces", reference.fileName)
+        }
+        parity("mptopdf", mapOf("metafun" to false, "texexec" to false, "latex" to false)) { reference ->
+            listOf("mptopdf", reference.fileName)
+        }
+    }
+
+    @Test
+    fun mptopdfRejectsNonListOptionsInBothEngines() = inProject { reference ->
+        val rules = listOf(
+            LuaRuleParser.parse(rules.resolve("arara-rule-mptopdf.lua"), "mptopdf"),
+            org.islandoftex.arara.mvel.rules.Rule.parse(rules.resolve("arara-rule-mptopdf.yaml"), "mptopdf")
+        )
+        for (rule in rules) {
+            assertFailsWith<AraraException> { parameters(rule, reference, mapOf("options" to "--latex")) }
+        }
+    }
+
+    @Test
     fun workflowCommandsMatchYaml() {
         listOf("asymptote", "detex", "frontespizio", "indent", "knitr", "latexmk", "llmk", "ltx2any",
             "make", "metapost", "perltex", "pythontex", "sage", "sketch", "spix", "texcount", "texfmt", "tikzmake")

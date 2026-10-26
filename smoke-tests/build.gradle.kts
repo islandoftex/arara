@@ -37,7 +37,8 @@ tasks.register<Jar>("runnerJar") {
 tasks.processResources {
     from(rootProject.layout.projectDirectory.dir("rules")) {
         include("arara-rule-pdflatex.*", "arara-rule-bibtex.*", "arara-rule-dvips.*",
-            "arara-rule-mkdir.*", "arara-rule-rmdir.*", "arara-rule-halt.*", "arara-rule-upmendex.*")
+            "arara-rule-mkdir.*", "arara-rule-rmdir.*", "arara-rule-halt.*", "arara-rule-upmendex.*",
+            "arara-rule-mptopdf.*")
         into("rules")
     }
 }

@@ -44,7 +44,7 @@ private class TexIntegration(private val options: Map<String, String>, private v
 
     private fun prepare(root: MPPPath) {
         root.resolve("arararc.yaml").writeText("!config\npaths: ['.']\n")
-        for (name in listOf("pdflatex", "bibtex", "upmendex")) {
+        for (name in listOf("pdflatex", "bibtex", "upmendex", "mptopdf")) {
             val file = "arara-rule-$name.$engine"
             val text = checkNotNull(javaClass.getResourceAsStream("/rules/$file")) { "Missing $file" }
                 .bufferedReader(Charsets.UTF_8).use { it.readText() }
@@ -113,6 +113,18 @@ private class TexIntegration(private val options: Map<String, String>, private v
                 check(root.resolve("run.$log").isRegularFile) { "Missing index transcript" }
             }
         },
+        "official_mptopdf_converts_metapost_sources" to { root ->
+            root.resolve("figure.mp").writeText("""
+                beginfig(1);
+                draw (0,0)--(20,20);
+                endfig;
+                end.
+            """.trimIndent() + "\n")
+            document(root, "% arara: mptopdf: { files: ['figure.mp'] }")
+            execute(root)
+            val pdf = root.resolve("figure-1.pdf")
+            check(pdf.read { it.readUtf8(PDF_HEADER.length.toLong()) } == PDF_HEADER) { "Missing converted figure" }
+        },
         "tex_failure_preserves_exit_status_and_stops_later_directives" to { root ->
             document(root, "% arara: pdflatex: { interaction: nonstopmode, options: ['-halt-on-error'] }\n" +
                 "% arara: pdflatex: { interaction: nonstopmode, options: ['-jobname=after-failure'] }",
@@ -130,8 +142,8 @@ internal fun runTexIntegration(options: Map<String, String>) {
     val destination = MPPPath(options["--report"] ?: "build/test-results/texIntegration/results.xml").normalize()
     val cases = mutableListOf<CaseResult>()
     val preflight = runCatching {
-        for (tool in listOf("pdflatex", "bibtex", "upmendex")) {
-            val query = if (tool == "upmendex") "--help" else "--version"
+        for (tool in listOf("pdflatex", "bibtex", "upmendex", "mptopdf")) {
+            val query = if (tool in listOf("upmendex", "mptopdf")) "--help" else "--version"
             val result = run(listOf(tool, query), workspace)
             workspace.resolve("$tool.version.txt").writeText(result.output)
             check(result.status == 0) { "$tool is unavailable: ${result.output}" }

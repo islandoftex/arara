@@ -1702,6 +1702,24 @@ referenced in `❖ getOriginalReference`.
 % arara: --> target: 'backup/thesis.pdf' }
 ```
 
+# `mptopdf`
+
+This rule runs `mptopdf` to convert MetaPost figures to PDF. It accepts a
+MetaPost source file or an existing figure as the reference. The `metapost`
+rule remains available for running `mpost` without PDF conversion.
+Use source file names without spaces: the `mptopdf` script passes them to
+`mpost` through a shell command.
+
+- `metafun`: This boolean option selects the MetaFun format.
+- `texexec`: This boolean option uses ConTeXt's `texexec` for text snippets.
+- `latex`: This boolean option uses LaTeX for text snippets.
+- `options`: This option takes a list of additional command-line arguments.
+  An error is raised if the value is not a list.
+
+```tex
+% arara: mptopdf: { files: [ graphics.mp ], latex: true }
+```
+
 # `nomencl`
 
 This rule runs `makeindex` in order to automatically generate a nomenclature

@@ -1,0 +1,43 @@
+!config
+# Arara, the cool TeX automation tool
+# Copyright (c) 2026, Island of TeX
+# All rights reserved.
+#
+# This rule is part of arara.
+identifier: mptopdf
+name: MPTOPDF
+authors:
+- Island of TeX
+commands:
+- name: MetaPost to PDF
+  command: >
+    @{
+        return getCommand('mptopdf', metafun, texexec, latex,
+               options, reference.fileName);
+    }
+arguments:
+- identifier: metafun
+  flag: >
+    @{
+        return isTrue(parameters.metafun, '--metafun');
+    }
+- identifier: texexec
+  flag: >
+    @{
+        return isTrue(parameters.texexec, '--texexec');
+    }
+- identifier: latex
+  flag: >
+    @{
+        return isTrue(parameters.latex, '--latex');
+    }
+- identifier: options
+  flag: >
+    @{
+        if (isList(parameters.options)) {
+            return parameters.options;
+        }
+        else {
+            throwError('I was expecting a list of options.');
+        }
+    }

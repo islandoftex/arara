@@ -84,7 +84,7 @@
 
         devShells.texIntegration = self.devShells.${system}.default.overrideAttrs (old: {
           nativeBuildInputs = old.nativeBuildInputs ++ [
-            (pkgs.texliveSmall.withPackages (tex: [ tex.upmendex ]))
+            (pkgs.texliveSmall.withPackages (tex: [ tex.upmendex tex.metapost tex.mptopdf ]))
           ];
         });
 

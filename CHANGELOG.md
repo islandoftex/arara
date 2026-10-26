@@ -16,6 +16,9 @@ on.
 
 ### Added
 
+* A separate `mptopdf` rule for converting MetaPost figures to PDF, in Lua
+  and legacy YAML/MVEL. (see #117)
+
 * Selected `MPPPath` properties and methods in Lua rules and conditionals,
   including path resolution, strict text I/O and directory listing. (see #110)
 
