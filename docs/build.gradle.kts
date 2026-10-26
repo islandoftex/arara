@@ -58,6 +58,7 @@ fun registerBook(name: String, isManual: Boolean, baseName: String) = tasks.regi
     manual.set(isManual)
     bookVersion.set(project.version.toString())
     siteUrl.set(websiteBaseUrl)
+    toolchainLock.set(rootProject.layout.projectDirectory.file("flake.lock"))
     htmlFile.set(layout.buildDirectory.file("books/$baseName.html"))
     pdfFile.set(layout.projectDirectory.file("$baseName.pdf"))
 }

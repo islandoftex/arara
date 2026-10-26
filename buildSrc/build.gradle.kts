@@ -43,3 +43,12 @@ val runtimeDependencyTest = tasks.register<JavaExec>("runtimeDependencyTest") {
     args(gradle.gradleHomeDir!!.absolutePath, sourceSets.main.get().output.classesDirs.asPath)
 }
 tasks.check { dependsOn(runtimeDependencyTest) }
+
+val documentationCacheTest = tasks.register<JavaExec>("documentationCacheTest") {
+    group = "verification"
+    dependsOn(tasks.testClasses)
+    classpath = sourceSets.test.get().runtimeClasspath
+    mainClass.set("org.islandoftex.arara.build.DocumentationCacheChecksKt")
+    args(gradle.gradleHomeDir!!.absolutePath, sourceSets.main.get().output.classesDirs.asPath)
+}
+tasks.check { dependsOn(documentationCacheTest) }

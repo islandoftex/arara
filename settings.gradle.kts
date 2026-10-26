@@ -24,3 +24,8 @@ include(
     "docs",
     "smoke-tests"
 )
+
+// CI passes documentation cache entries between jobs as artifacts.
+buildCache {
+    local { directory = file(".gradle/build-cache") }
+}

@@ -189,34 +189,42 @@ test:linux:jdk25:
   stage: pages
   image: nixpkgs/nix-flakes:latest-x86_64-linux
   needs: []
+  variables:
+    PRELEASE: "false"
   script:
-    - nix build .#website
-    # GL pages needs the artifact at the root directory, the manual in website
-    - cp -r result/public ./public
-    - cp -r result/public ./website/public
+    - nix develop -c ./gradlew --build-cache :docs:buildDocs -Prelease=$PRELEASE
+    - cp -r website/public ./public
+  cache:
+    key: "documentation-$CI_COMMIT_REF_SLUG"
+    paths:
+      - .gradle/
+    policy: pull-push
 
 pages:
   <<: *pagesdefinition
   artifacts:
     paths:
       - public
-      # this is required for building the manual and quickstart PDF
       - website/public
+      - docs/*.pdf
+      - .gradle/build-cache/
     expire_in: 1 week
   rules:
-    - if: '$CI_COMMIT_REF_NAME == "master"'
     - if: '$CI_COMMIT_TAG'
+      variables:
+        PRELEASE: "true"
+    - if: '$CI_COMMIT_REF_NAME == "master"'
 
 pages:for-manual:
   <<: *pagesdefinition
   artifacts:
     paths:
-      # this is required for building the manual and quickstart PDF
       - website/public
+      - docs/*.pdf
+      - .gradle/build-cache/
     expire_in: 1 week
   rules:
-    - if: '$CI_COMMIT_REF_NAME != "master"'
-    - if: '$CI_COMMIT_TAG == null'
+    - if: '$CI_COMMIT_REF_NAME != "master" && $CI_COMMIT_TAG == null'
 
 publish:gitlab:
   extends: .corretto
@@ -234,7 +242,7 @@ publish:gitlab:
   stage: publish
   image: nixpkgs/nix-flakes:latest-x86_64-linux
   script:
-    - nix develop -c ./gradlew -Prelease=$PRELEASE assembleCTAN --info
+    - nix develop -c ./gradlew --build-cache -Prelease=$PRELEASE assembleCTAN --info
     - cp build/*.zip ./
   artifacts:
     name: "$CI_COMMIT_REF_NAME-ctan"
@@ -253,6 +261,10 @@ publish:snapshot_tdszip:
     - test:linux:jdk25
     - test:process-smoke
     - job: pages:for-manual
+      optional: true
+      artifacts: true
+    - job: pages
+      optional: true
       artifacts: true
   variables:
     PRELEASE: "false"
@@ -262,6 +274,8 @@ publish:snapshot_tdszip:
     - if: '$CI_COMMIT_TAG == null && $CI_MERGE_REQUEST_ID == null && $CI_COMMIT_REF_NAME == "master"'
 
 publish:tdszip:
+  dependencies:
+    - pages
   variables:
     PRELEASE: "true"
   <<: *ctandefinition

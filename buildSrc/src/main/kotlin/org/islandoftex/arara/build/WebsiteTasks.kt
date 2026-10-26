@@ -6,10 +6,12 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
+import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Internal
+import org.gradle.api.tasks.LocalState
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.PathSensitive
@@ -50,6 +52,7 @@ abstract class CheckWebsiteTask : DefaultTask() {
     @TaskAction fun checkSite() = WebsiteContent.checkSite(siteDirectory.get().asFile, siteUrl.get())
 }
 
+@CacheableTask
 abstract class BuildWebsiteBookTask @Inject constructor(private val execOperations: ExecOperations) : DefaultTask() {
     @get:InputDirectory @get:PathSensitive(PathSensitivity.RELATIVE)
     abstract val siteDirectory: DirectoryProperty
@@ -59,10 +62,20 @@ abstract class BuildWebsiteBookTask @Inject constructor(private val execOperatio
     @get:Input abstract val bookVersion: Property<String>
     @get:Input abstract val siteUrl: Property<String>
     @get:Input abstract val converter: Property<String>
-    @get:OutputFile abstract val htmlFile: RegularFileProperty
+    @get:Input abstract val converterVersion: Property<String>
+    @get:InputFile @get:PathSensitive(PathSensitivity.NONE)
+    abstract val toolchainLock: RegularFileProperty
+    @get:Input val platform: String get() = System.getProperty("os.name") + "/" + System.getProperty("os.arch")
+    // Book HTML contains checkout-specific asset URLs and is regenerated only when rendering.
+    @get:LocalState abstract val htmlFile: RegularFileProperty
     @get:OutputFile abstract val pdfFile: RegularFileProperty
 
-    init { converter.convention("weasyprint") }
+    init {
+        converter.convention("weasyprint")
+        converterVersion.convention(project.providers.exec {
+            commandLine(converter.get(), "--version")
+        }.standardOutput.asText.map { it.trim() })
+    }
 
     @TaskAction fun buildBook() {
         val site = siteDirectory.get().asFile
