@@ -458,6 +458,27 @@ Processing 'article.tex' (size: 281 B, last modified: 01/08/2021
 Total: 2.49 seconds
 ```
 
+***Peter:** I also use Con{{ tex() }}t with files named `file.mkxl`. Can arara
+recognize that extension?*
+
+Certainly, Peter! Put an `arararc.lua` configuration file in the directory from
+which you run arara:
+
+```lua
+return {
+  file_types = {
+    { extension = "mkxl", pattern = [[^\s*%\s*]] },
+  },
+}
+```
+
+This adds `mkxl` to the file types arara recognizes. The pattern selects lines
+beginning with a percent sign, allowing spaces before and after it. In
+`file.mkxl`, add `% arara: context` and run `arara file.mkxl` from that directory.
+The usual file types, such as `tex`, remain available. See
+[Configuration](@/manual/Configuration.md) for other settings and configuration
+file locations.
+
 ***Peter:** Great! I see arara is quite expressive! I am very curious: what
 about other possibilities, will I learn them by looking at the reference manual?
 Surely there are way more features to discover.*
