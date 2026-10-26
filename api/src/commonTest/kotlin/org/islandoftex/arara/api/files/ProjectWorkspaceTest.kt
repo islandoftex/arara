@@ -49,4 +49,15 @@ class ProjectWorkspaceTest {
             assertEquals(BuildSymlinks.PRESERVE, options.symlinks)
         }
     }
+
+    @Test
+    fun selectionsDistinguishLiteralPathsFromGlobPatterns() {
+        val path = MPPPath("notes[1].txt")
+        val options = BuildDirectory(MPPPath("build"), inputs = listOf(
+            BuildSelection.Path(path), BuildSelection.Glob("*.bib")))
+        val selections = requireNotNull(options.inputs)
+        assertEquals(path, (selections[0] as BuildSelection.Path).path)
+        assertEquals("*.bib", (selections[1] as BuildSelection.Glob).pattern)
+    }
+
 }

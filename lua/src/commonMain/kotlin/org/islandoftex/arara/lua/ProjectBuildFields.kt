@@ -3,6 +3,7 @@ package org.islandoftex.arara.lua
 
 import org.islandoftex.arara.api.files.BuildDirectory
 import org.islandoftex.arara.api.files.BuildInput
+import org.islandoftex.arara.api.files.BuildSelection
 import org.islandoftex.arara.api.files.BuildSymlinks
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.core.localization.LanguageController
@@ -31,9 +32,7 @@ internal object ProjectBuildFields {
             ProjectFields.list(entries, "$context.inputs").mapIndexedNotNull { index, value ->
                 val field = "$context.inputs[${index + 1}]"
                 if (value is LuaString) {
-                    value.toString().also {
-                        if (it.isBlank()) throw ProjectParseException(messages.errorScriptNonblank(field))
-                    }
+                    selection(value.toString(), field)
                 } else {
                     mappings += mapping(value, source, field)
                     null
@@ -41,6 +40,11 @@ internal object ProjectBuildFields {
             }
         }
         return BuildDirectory(source.resolve(directory).normalize(), inputs, mappings, mode)
+    }
+
+    private fun selection(value: String, field: String): BuildSelection {
+        if (value.isBlank()) throw ProjectParseException(messages.errorScriptNonblank(field))
+        return if (value.any { it in "*?[" }) BuildSelection.Glob(value) else BuildSelection.Path(MPPPath(value))
     }
 
     private fun required(table: LuaTable, key: String, field: String): String =

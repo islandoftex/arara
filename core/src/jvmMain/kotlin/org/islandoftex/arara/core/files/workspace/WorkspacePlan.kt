@@ -5,6 +5,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import kotlinx.serialization.Serializable
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.files.BuildSelection
 import org.islandoftex.arara.api.files.BuildSymlinks
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.Project
@@ -58,27 +59,29 @@ internal class WorkspacePlan(private val project: Project, private val excluded:
         return entries
     }
 
-    private fun select(selection: String) {
-        val pattern = selectionPattern(selection)
-        val glob = pattern.any { it in "*?[" }
-        val path = if (glob) null else root.resolve(pattern).normalize()
-        if (path != null && present(path)) {
-            visit(path, mapped(path), false, mutableSetOf())
-        } else {
-            val matcher = InputPattern(pattern)
-            var matched = false
-            fun scan(directory: MPPPath) {
-                for (child in directory.listEntries().sortedBy { it.toString() }) {
-                    if (forbidden(child)) continue
-                    if (matcher.matches(relative(root, child))) {
-                        visit(child, mapped(child), false, mutableSetOf())
-                        matched = true
-                    } else if (!link(child) && child.isDirectory) scan(child)
-                }
+    private fun select(selection: BuildSelection) {
+        val pattern = when (selection) {
+            is BuildSelection.Path -> {
+                val path = root.resolve(selection.path).normalize()
+                if (!path.startsWith(root)) invalidInput(path)
+                visit(path, mapped(path), false, mutableSetOf())
+                return
             }
-            scan(root)
-            if (!matched) throw AraraException(messages.errorBuildInputMissing(pattern))
+            is BuildSelection.Glob -> selectionPattern(selection.pattern)
         }
+        val matcher = InputPattern(pattern)
+        var matched = false
+        fun scan(directory: MPPPath) {
+            for (child in directory.listEntries().sortedBy { it.toString() }) {
+                if (forbidden(child)) continue
+                if (matcher.matches(relative(root, child))) {
+                    visit(child, mapped(child), false, mutableSetOf())
+                    matched = true
+                } else if (!link(child) && child.isDirectory) scan(child)
+            }
+        }
+        scan(root)
+        if (!matched) throw AraraException(messages.errorBuildInputMissing(pattern))
     }
 
     private fun forbidden(source: MPPPath): Boolean =

@@ -11,6 +11,7 @@ import kotlin.test.assertTrue
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.BuildDirectory
 import org.islandoftex.arara.api.files.BuildInput
+import org.islandoftex.arara.api.files.BuildSelection
 import org.islandoftex.arara.api.files.BuildSymlinks
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.toJVMPath
@@ -31,7 +32,10 @@ class BuildWorkspacesTest {
     private fun project(source: MPPPath, workspace: MPPPath, inputs: List<String>? = null,
         mappings: List<BuildInput> = emptyList(), links: BuildSymlinks = BuildSymlinks.PRESERVE): Project =
         Project("book", source, setOf(ProjectFile(source.resolve("book.tex"), FileType("tex", "^% +"))),
-            buildDirectory = BuildDirectory(workspace, inputs, mappings, links))
+            buildDirectory = BuildDirectory(workspace, inputs?.map {
+                if (it.any { character -> character in "*?[" }) BuildSelection.Glob(it)
+                else BuildSelection.Path(MPPPath(it))
+            }, mappings, links))
 
     private fun stage(project: Project) = BuildWorkspaces.prepare(project, listOf(project.executionDirectory))
 
@@ -167,6 +171,31 @@ class BuildWorkspacesTest {
         BuildWorkspaces.prepare(project, listOf(workspace, other))
         assertEquals("output", workspace.resolve("images/output.txt").readText())
         assertFalse(workspace.resolve("images/input.txt").exists)
+    }
+
+    @Test
+    fun typedPathsRemainLiteralWhileGlobsSelectPatterns() = fixture { source, workspace ->
+        source.resolve("notes[1].txt").writeText("literal brackets")
+        source.resolve("notes1.txt").writeText("glob match")
+        val literal = project(source, workspace).copy(buildDirectory = BuildDirectory(workspace,
+            inputs = listOf(BuildSelection.Path(MPPPath("notes[1].txt")))))
+        stage(literal)
+        assertEquals("literal brackets", workspace.resolve("notes[1].txt").readText())
+        assertFalse(workspace.resolve("notes1.txt").exists)
+        val glob = project(source, source.parent.resolve("glob")).let {
+            it.copy(buildDirectory = BuildDirectory(it.executionDirectory,
+                inputs = listOf(BuildSelection.Glob("notes[1].txt"))))
+        }
+        stage(glob)
+        assertTrue(glob.executionDirectory.resolve("notes1.txt").exists)
+        assertFalse(glob.executionDirectory.resolve("notes[1].txt").exists)
+        val absolute = literal.copy(buildDirectory = BuildDirectory(workspace,
+            inputs = listOf(BuildSelection.Path(source.resolve("notes[1].txt")))))
+        stage(absolute)
+        assertTrue(workspace.resolve("notes[1].txt").exists)
+        val external = literal.copy(buildDirectory = BuildDirectory(workspace,
+            inputs = listOf(BuildSelection.Path(source.parent.resolve("external")))))
+        assertFailsWith<AraraException> { stage(external) }
     }
 
     @Test
