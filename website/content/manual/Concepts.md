@@ -912,4 +912,4 @@ how to get help.
 If you are upgrading you may also be interested in reading our
 [changelog](https://gitlab.com/islandoftex/arara/-/blob/master/CHANGELOG.md) or
 the announcement blog post of this release in the [news section on our
-website](https://islandoftex.gitlab.io/arara/news/).
+website](@/news/_index.md).

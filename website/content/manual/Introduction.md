@@ -150,7 +150,7 @@ task is done, and the latter is the proper instance of the associated rule on
 the current document, i.e, when and where the commands must be executed.
 
 {% messagebox(title="The name") %}
-![We love araras!](https://islandoftex.gitlab.io/arara/images/manual/arara.png)
+<img src="{{ get_url(url="/images/manual/arara.png") }}" alt="We love araras!"/>
 
 *Do you like araras? We do, specially our tool which shares the same name of
  this colorful bird.*
