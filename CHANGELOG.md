@@ -16,6 +16,9 @@ on.
 
 ### Added
 
+* Selected `MPPPath` properties and methods in Lua rules and conditionals,
+  including path resolution, strict text I/O and directory listing. (see #110)
+
 * Per-command task labels in Lua rules through `named_command`; the Lua clean
   rule identifies each extension being removed. (see #90)
 

@@ -345,6 +345,26 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
             luaRule(root, "load_class('missing.jar', 'Missing'); return true")
             execute(root, APPLICATION_ERROR, listOf("--preferred-engine", "lua", "--safe-run"))
         },
+        "lua_path_methods_in_rules_and_conditionals" to { root ->
+            luaRule(root, """
+                local source = to_file(ctx.reference.path)
+                assert(source == current_file())
+                assert(source == to_file(get_original_reference()))
+                local directory = source.parent:resolve('path output')
+                directory:create_directories()
+                local output = directory:resolve('result.txt')
+                output:write_text('first')
+                output:write_text(' second', true)
+                assert(output:read_text() == 'first second')
+                assert(directory:list_files()[1] == output)
+                return named_command('Path command', get_command(to_file(${quoted(java.toString())}), '-version'))
+            """.trimIndent())
+            root.resolve("run.tex").writeText(
+                "% arara: probe if current_file():read_text() ~= ''\n"
+            )
+            contains(execute(root, 0, listOf("--preferred-engine", "lua")), "Path command")
+            check(root.resolve("path output/result.txt").readText() == "first second")
+        },
         "lua_native_exit_and_output" to { root ->
             luaRule(root, luaNative(FAILURE_STATUS.toString()))
             val output = execute(root, FAILURE_STATUS, listOf("--preferred-engine", "lua", "--verbose"))

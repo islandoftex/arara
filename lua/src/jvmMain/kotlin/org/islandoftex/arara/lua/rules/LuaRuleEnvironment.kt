@@ -22,7 +22,7 @@ import org.luaj.vm2.lib.common.CommonPlatform
 
 /**
  * Binds shared helpers under camelCase and snake_case names.
- * Paths and commands cross the Lua boundary as opaque handles.
+ * Paths expose selected operations; commands remain opaque handles.
  */
 internal object LuaRuleEnvironment {
     private const val PRELUDE = """

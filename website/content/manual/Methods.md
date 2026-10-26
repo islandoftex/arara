@@ -52,13 +52,81 @@ shown.
 
 Lua uses tables for lists and maps, with list indices starting at one. Pass a
 list as `{ "one", "two" }`, rather than MVEL's `[ 'one', 'two' ]`. Paths and
-commands returned by helpers are opaque values; pass them to another helper
-instead of calling Java methods on them. The `ctx.reference` table in rule
-functions is described in [Lua rules](@/manual/Lua.md#commands-and-arguments).
+commands returned by helpers retain their runtime types. Paths expose the
+selected properties and methods described below; commands can be passed to
+other helpers. Neither exposes arbitrary Java methods. The `ctx.reference`
+table in rule functions is described in [Lua rules](@/manual/Lua.md#commands-and-arguments).
 
 Some MVEL helpers have no Lua wrapper: `getOriginalFile`, `getOrNull` and
 `checkClass`. Lua provides table indexing and `type()` for the latter two
 operations; `get_original_reference()` returns the original file reference.
+
+# Path objects
+
+Prefer `MPPPath` properties and methods for file operations in new rules.
+`to_file` creates a path from a string. Lua paths support colon calls for methods
+and dot access for properties; camelCase and snake_case spellings are equivalent.
+The existing file helpers remain available.
+
+```lua
+local source = to_file("thesis.tex")
+local log = source:resolve_sibling("thesis.log")
+if log.exists then
+  local text = log:read_text()
+end
+local output = to_file("output")
+output:create_directories()
+output:resolve("notes.txt"):write_text("First line\n")
+```
+
+| Lua property | Kotlin/MVEL property | Meaning |
+| --- | --- | --- |
+| `file_name` | `fileName` | Last path segment |
+| `file_size` | `fileSize` | Size in bytes; raises an error if unavailable |
+| `parent` | `parent` | Parent path; a root is its own parent |
+| `exists` | `exists` | Whether the path exists |
+| `is_absolute` | `isAbsolute` | Whether the original path spelling is absolute |
+| `is_directory` | `isDirectory` | Whether the path is a directory |
+| `is_regular_file` | `isRegularFile` | Whether the path is a regular file |
+
+| Lua method | Kotlin/MVEL method | Meaning |
+| --- | --- | --- |
+| `normalize()` | `normalize()` | Absolute, normalized path |
+| `resolve(child)` | `resolve(child)` | Resolve a string or path against this path |
+| `resolve_sibling(sibling)` | `resolveSibling(sibling)` | Resolve a string or path against the parent |
+| `starts_with(path)` | `startsWith(path)` | Compare whole path segments using their original spellings |
+| `read_text()` | `readText()` | Read the complete text |
+| `read_lines()` | `readLines()` | Read lines into a list |
+| `write_text(text, append)` | `writeText(text, append)` | Write text; `append` defaults to `false` |
+| `create_directories()` | `createDirectories()` | Create the directory and missing parents |
+| `list_entries()` | `listEntries()` | Direct children as paths |
+| `list_files(recursive)` | `listFiles(recursive)` | Regular files in path order; `recursive` defaults to `false` |
+
+Paths display and access their absolute, normalized locations without resolving
+symbolic links. `is_absolute`, resolution and `starts_with` retain the original
+path spelling; normalize both operands to compare absolute locations.
+The existence and file-kind properties return `false` when inspection fails.
+Text I/O, size and listing methods raise errors when the operation fails, unlike
+`read_from_file` and `write_to_file`, which return an empty list or `false`.
+Recursive listing follows directory links and reports cycles as errors.
+
+In MVEL, the reference is already an `MPPPath`:
+
+```java
+log = reference.resolveSibling('thesis.log');
+if (log.exists) {
+    text = log.readText();
+}
+```
+
+Kotlin callers use the same properties and methods. The complete API also
+provides strict metadata, scoped reads and filesystem exports; see
+[Using arara as a library](@/manual/Library.md). Lua exposes only the members
+listed here. Paths remain valid helper arguments, command arguments and session
+values. `ctx.reference` remains a table; use `to_file(ctx.reference.path)` for
+path methods in a Lua rule. `current_file()` returns a path;
+`get_original_reference()` returns path text in rule functions, which can also
+be converted with `to_file`.
 
 # Files
 
@@ -1042,7 +1110,7 @@ if result.status ~= "SUCCESS" then
 end
 ```
 
-The Java-method syntax in MVEL examples does not apply to Lua's opaque values.
+The Java-method syntax in MVEL examples does not apply to these loaded values in Lua.
 Both loading helpers are rejected in safe mode.
 
 - **[C|R]** `loadClass(File file, String name):

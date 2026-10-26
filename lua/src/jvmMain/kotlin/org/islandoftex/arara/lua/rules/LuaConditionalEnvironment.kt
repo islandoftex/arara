@@ -93,7 +93,7 @@ internal object LuaConditionalEnvironment {
         bindSpelled(
             globals, "toFile"
         ) { name, args ->
-            LuaValue.userdataOf(
+            LuaConversion.toLua(
                 ConditionalMethods.toFile(
                     args.arg(1).stringArgument(name, 1)
                 )
@@ -102,12 +102,12 @@ internal object LuaConditionalEnvironment {
         bindSpelled(
             globals, "currentFile"
         ) { _, _ ->
-            LuaValue.userdataOf(ConditionalMethods.currentFile())
+            LuaConversion.toLua(ConditionalMethods.currentFile())
         }
         bindSpelled(
             globals, "getOriginalReference"
         ) { _, _ ->
-            LuaValue.userdataOf(RuleMethods.originalReference)
+            LuaConversion.toLua(RuleMethods.originalReference)
         }
         bindSpelled(
             globals, "getBasename"

@@ -26,6 +26,7 @@ internal object LuaConversion {
     private fun toLua(value: Any?, visiting: MutableList<Any>): LuaValue = when (value) {
         null -> LuaValue.NIL
         is LuaValue -> value
+        is MPPPath -> LuaPath(value)
         is String -> LuaValue.valueOf(value)
         is Boolean -> LuaValue.valueOf(value)
         is Int -> LuaValue.valueOf(value)

@@ -113,7 +113,9 @@ in [Important concepts](@/manual/Concepts.md).
 # Helper methods
 
 Shared helpers have camelCase and snake_case spellings, such as `getCommand`
-and `get_command`. Paths returned by `to_file` are opaque handles. Session
+and `get_command`. Paths returned by `to_file` expose the selected
+[MPPPath properties and methods](@/manual/Methods.md#path-objects), such as
+`path.exists` and `path:read_text()`. Session
 operations use dot calls: `get_session().put("key", value)`.
 
 Helpers validate their input types: `trim_spaces` requires a string, for
