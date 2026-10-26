@@ -181,3 +181,76 @@ project name. Repeated loose inputs and paths shared with a specification are
 errors, including aliases found through extension completion. Command-line
 options override each project's local configuration; configuration does not
 leak between projects.
+
+# Build directories
+
+A project can compile in a separate directory, keeping generated files out of
+its source directory:
+
+```lua
+return {
+  files = { ["book.tex"] = {} },
+  build = { directory = "build/book" }
+}
+```
+
+The build directory resolves against `working_directory`. Configuration is
+still loaded from the source directory. Rules receive references to staged
+files, and commands run in the build directory. Outputs remain there; arara
+does not copy them back or add tool-specific output options.
+
+By default, arara stages the source tree, respecting `.gitignore` files in each
+directory and the source root's `.dockerignore`. An exclusion in either format
+wins. Git metadata and project build directories are always excluded. Compilation
+targets are always included, even when ignored. Inputs are staged after the
+project's dependencies finish, so earlier projects may generate them.
+
+To select inputs explicitly, provide `inputs`. Compilation targets are included
+in addition to the listed files, directories and globs; ignore files do not
+filter explicit selections. An empty list stages only compilation targets.
+Globs are relative to the source directory: `*` and `?` match within a path
+segment, character classes such as `[a-z]` match one character, and `**` matches
+across directories. A selection that matches nothing is an error.
+
+```lua
+build = {
+  directory = "build/book",
+  inputs = {
+    "chapters/**",
+    "figures",
+    "*.bib",
+    { source = "../shared/styles", destination = "styles" }
+  }
+}
+```
+
+Inputs outside the source directory require a `source`/`destination` mapping.
+To add mappings while keeping automatic source-tree selection, put the same
+mapping tables in `build.mappings` and omit `inputs`.
+Destinations must stay within the build directory. Conflicting mappings and
+paths that would overwrite an existing output are errors. Projects cannot share
+or nest build directories, and a build directory cannot contain a source directory.
+
+Symbolic links are preserved by default and rebased to their staged targets,
+including links originally written as absolute paths. Targets must also be
+selected; external targets require an explicit mapping. Set `symlinks = "copy"`
+in `build` to copy target contents instead. Cycles are errors in both modes.
+Creating preserved links requires operating-system support and permission.
+
+Only new or changed inputs are copied on subsequent runs. Missing staged copies
+are restored, and inputs deleted or excluded from the source are removed from
+the workspace. Generated outputs are retained. Staging uses its own records in
+arara's change database format and does not update the state used by `changed()`.
+Do not edit the `.arara-workspace` directory inside the build directory.
+
+To remove the workspace, including generated outputs, without compiling:
+
+```sh
+arara --clean-build project.proj.lua
+```
+
+Only a directory marked as belonging to that project can be cleaned. A later
+run recreates it and stages its inputs again. An existing, nonempty directory
+without a matching marker is never adopted. Dry runs map the execution paths
+without creating or updating the workspace; rules that inspect staged contents
+therefore need an existing workspace.

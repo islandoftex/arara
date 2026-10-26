@@ -352,6 +352,19 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
             luaRule(root, "load_class('missing.jar', 'Missing'); return true")
             execute(root, APPLICATION_ERROR, listOf("--preferred-engine", "lua", "--safe-run"))
         },
+        "project_build_directory_staging_native_cwd_and_clean" to { root ->
+            root.resolve("project.proj.lua").writeText(
+                "return {files={['run.tex']={}},build={directory='build/document'}}")
+            luaRule(root, luaNative("0"))
+            val output = execute(root, 0, listOf("--preferred-engine", "lua", "--verbose"),
+                reference = "project.proj.lua")
+            contains(output, "SMOKE_CWD=${root.resolve("build/document")}")
+            check(root.resolve("build/document/run.tex").exists)
+            check(!root.resolve("build/document/build/document").exists)
+            execute(root, 0, listOf("--clean-build"), reference = "project.proj.lua")
+            check(!root.resolve("build/document").exists)
+            check(root.resolve("run.tex").exists)
+        },
         "lua_path_methods_in_rules_and_conditionals" to { root ->
             luaRule(root, """
                 local source = to_file(ctx.reference.path)

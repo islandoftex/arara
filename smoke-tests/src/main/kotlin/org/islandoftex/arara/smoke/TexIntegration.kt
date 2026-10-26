@@ -16,9 +16,11 @@ private class TexIntegration(private val options: Map<String, String>, private v
     private val launcher = listOf(options.getValue("--java"), "--module-path", jna.toString(),
         "--add-modules=com.sun.jna", "--enable-native-access=com.sun.jna")
 
-    private fun execute(root: MPPPath, label: String = "run", expected: Int = 0): String {
+    private fun execute(
+        root: MPPPath, label: String = "run", expected: Int = 0, reference: String = "run.tex"
+    ): String {
         val result = run(launcher + listOf("-Duser.home=$root", "-jar", jar.toString(), "-L", "en",
-            "--preferred-engine", engine, "--verbose", "-d", root.toString(), "run.tex"), root,
+            "--preferred-engine", engine, "--verbose", "-d", root.toString(), reference), root,
             timeoutSeconds = TEX_TIMEOUT_SECONDS)
         root.resolve("$label.output.txt").writeText(result.output)
         check(result.status == expected) { "Expected exit $expected, got ${result.status}\n${result.output}" }
@@ -57,6 +59,23 @@ private class TexIntegration(private val options: Map<String, String>, private v
             document(root, "% arara: pdflatex: { interaction: nonstopmode }")
             check(typesettings(execute(root)) == 1)
             pdf(root)
+        },
+        "project_workspace_preserves_assets_and_conditional_database" to { root ->
+            root.resolve("chapters").createDirectories()
+            root.resolve("chapters/intro.tex").writeText("A staged chapter.")
+            document(root, "% arara: pdflatex: { interaction: nonstopmode } if changed('tex')",
+                "\\input{chapters/intro}")
+            root.resolve("project.proj.lua").writeText(
+                "return {files={['run.tex']={}},build={directory='build/document'}}")
+            val workspace = root.resolve("build/document")
+            check(typesettings(execute(root, "first", reference = "project.proj.lua")) == 1)
+            pdf(workspace)
+            check(!root.resolve("run.pdf").exists) { "Output escaped the build directory" }
+            check(typesettings(execute(root, "unchanged", reference = "project.proj.lua")) == 0)
+            val source = root.resolve("run.tex")
+            source.writeText(source.readText().replace("chapters/intro}", "chapters/intro} Updated."))
+            check(typesettings(execute(root, "changed", reference = "project.proj.lua")) == 1)
+            pdf(workspace)
         },
         "repeated_directives_enable_synctex_on_the_final_pass" to { root ->
             document(root, "% arara: pdflatex: { synctex: false, interaction: nonstopmode }\n" +

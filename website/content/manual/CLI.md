@@ -173,6 +173,8 @@ Options:
                                  configuration and --verbose
   -n, --dry-run                  Go through all the motions of running a
                                  command, but with no actual calls
+  --clean-build                 Remove managed project build directories
+                                 without executing commands
   -S, --safe-run                 Run in safe mode and disable potentially
                                  harmful features. Make sure your projects uses
                                  only allowed features.
@@ -328,6 +330,11 @@ current option, it will be denoted by `parameter` in the description.
     This option can also be specified in the configuration file. However, one
     can always override this setting by running the tool with an explicit `-m`
     option.
+
+- `--clean-build`: Remove the build directories belonging to the supplied
+  [projects](@/manual/Projects.md#build-directories), including generated outputs,
+  without running their commands. Directories without a matching ownership marker
+  are not removed.
 
 - `-n` / `--dry-run`: This option makes arara go through all the motions of
   running tasks and subtasks, but with no actual calls. It is a very useful
