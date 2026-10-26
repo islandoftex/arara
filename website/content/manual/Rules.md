@@ -19,6 +19,37 @@ arguments. Lua rules are preferred by default; `--preferred-engine yaml` prefers
 deprecated YAML/MVEL counterparts, which will be discontinued in v9. Directive parameter mappings keep the same YAML syntax in
 both cases. See [Lua rules](@/manual/Lua.md) for writing custom Lua rules.
 
+Use `arara rules` to list the rules available through the configured search paths.
+The list shows the effective rule for each identifier, its format and its source
+path. `--all` includes shadowed copies and alternative formats; `--filter latex`
+limits the list to identifiers containing `latex`, ignoring case. Discovery uses
+the usual local or global configuration without requiring a source file or
+loading a project specification. It searches each rule directory without
+recursing into subdirectories. Listing identifies candidates by filename;
+`--info` validates their metadata.
+
+`arara rules --info pdflatex` shows the selected rule's existing metadata,
+including command names and arguments. It follows the same lookup and parsing
+behavior as execution, so a malformed selected rule is an error rather than a
+reason to try a different copy. Listing does not load rule scripts. Inspecting a
+Lua rule executes its top-level code, but does not evaluate command functions,
+argument functions or default templates.
+
+Both forms accept `--json`, producing an object with `rules` and `diagnostics`
+arrays. Script output is sent to standard error during discovery and inspection.
+Inspection entries also include names, authors, commands and arguments; arguments
+carry `required`, `defaultKind` (`none`, `literal` or `dynamic`) and `default`
+fields. Dynamic defaults are not evaluated and have a null `default`.
+`--all` marks each variant as effective or shadowed. Missing search
+directories are skipped; other directory errors produce diagnostics and a
+nonzero exit status while retaining readable results. An empty filtered list is
+successful. `--info` takes an exact identifier and cannot be combined with
+`--list`, `--all` or `--filter`.
+
+Options such as `-d` and `--preferred-engine` may precede `rules`; these two
+options are also accepted after it. A source file named `rules` must be passed
+as `./rules` to distinguish it from the subcommand.
+
 {% messagebox(title="Can my rule be distributed within the official pack?") %}
 As seen in [Important concepts](@/manual/Concepts.md), the default rule path can be extended
 to include a list of directories in which our tool should search for

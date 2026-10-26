@@ -58,10 +58,12 @@ object ConfigurationFiles {
      * higher levels.
      */
     @Throws(AraraException::class)
-    private fun loadLocalConfiguration(file: MPPPath, currentProject: Project): LocalConfiguration =
+    private fun loadLocalConfiguration(
+        file: MPPPath, currentProject: Project, scriptOutputToStderr: Boolean
+    ): LocalConfiguration =
         when (file.fileName.substringAfterLast('.')) {
             "yaml" -> YamlLocalConfiguration.load(file)
-            "lua" -> LuaLocalConfiguration.load(file, currentProject.workingDirectory)
+            "lua" -> LuaLocalConfiguration.load(file, currentProject.workingDirectory, scriptOutputToStderr)
             else -> throw AraraException("Unsupported configuration format: $file")
         }
 
@@ -70,14 +72,18 @@ object ConfigurationFiles {
      *
      * @param file The Lua or YAML configuration file.
      * @param configureLogging Apply the destination immediately; CLI callers defer this until overrides are applied.
+     * @param scriptOutputToStderr Route Lua script output to diagnostics for structured callers.
      *
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
     @Throws(AraraException::class)
-    fun load(file: MPPPath, currentProject: Project, configureLogging: Boolean = true) {
+    fun load(
+        file: MPPPath, currentProject: Project, configureLogging: Boolean = true,
+        scriptOutputToStderr: Boolean = false
+    ) {
         // then validate it and update the configuration accordingly
-        val resource = loadLocalConfiguration(file, currentProject)
+        val resource = loadLocalConfiguration(file, currentProject, scriptOutputToStderr)
         LinearExecutor.executionOptions = resource.toExecutionOptions(
             currentProject,
             LinearExecutor.executionOptions

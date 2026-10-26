@@ -60,6 +60,7 @@ kotlin {
                 runtimeOnly(libs.mordant.jna)
                 implementation(libs.jna)
                 implementation(libs.clikt.markdown)
+                implementation(libs.kotlinx.serialization.json)
                 implementation(libs.kotaml)
                 implementation(libs.mvel)
                 implementation(libs.log4j.core)
@@ -72,7 +73,6 @@ kotlin {
             dependencies {
                 implementation(libs.kotlin.test.junit5)
                 runtimeOnly(libs.junit.jupiter.engine)
-                implementation(libs.kotlinx.serialization.json)
                 implementation(libs.kotest.runner.jvm)
                 implementation(libs.kotest.assertions.jvm)
             }

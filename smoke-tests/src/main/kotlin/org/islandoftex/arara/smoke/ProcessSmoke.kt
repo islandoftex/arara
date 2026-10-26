@@ -6,6 +6,7 @@ import java.util.jar.JarFile
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.boolean
 import kotlinx.serialization.json.int
+import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.long
@@ -156,6 +157,28 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
             rule(root, "return true;")
             luaRule(root, "return true")
             for (engine in listOf("lua", "yaml")) execute(root, 0, listOf("--preferred-engine", engine))
+        },
+        "rule_discovery_lists_without_loading_and_inspects_the_effective_rule" to { root ->
+            rule(root, "throw new RuntimeException('must not execute');")
+            luaRule(root, "error('must not execute')")
+            root.resolve("broken.proj.lua").writeText("error('must not execute')")
+            fun inspect(expected: Int, vararg flags: String): kotlinx.serialization.json.JsonObject {
+                val result = run(launcher + listOf("-Duser.home=$root", "-jar", jar.toString(),
+                    "-d", root.toString(), "rules", "--json") + flags, root)
+                check(result.status == expected) { result.output }
+                return Json.parseToJsonElement(result.output).jsonObject
+            }
+            val listed = inspect(0, "--filter", "PROBE").getValue("rules").jsonArray
+            check(listed.single().jsonObject.getValue("format").jsonPrimitive.content == "lua")
+            check(inspect(0, "--all", "--filter", "probe").getValue("rules").jsonArray.size == 2)
+            check(inspect(0, "--filter", "absent").getValue("rules").jsonArray.isEmpty())
+            check(inspect(0, "--info", "probe").getValue("diagnostics").jsonArray.isEmpty())
+            root.resolve("probe.lua").writeText("return {}")
+            check(inspect(0, "--filter", "probe").getValue("rules").jsonArray.size == 1)
+            val failed = inspect(2, "--info", "probe")
+            check(failed.getValue("diagnostics").jsonArray.single().jsonObject.getValue("path")
+                .jsonPrimitive.content == root.resolve("probe.lua").toString())
+            check(inspect(0, "-e", "yaml", "--info", "probe").getValue("diagnostics").jsonArray.isEmpty())
         },
         "custom_class_loading_without_kotlin_reflection" to { root ->
             JarFile(jar.toJVMFile()).use { archive ->

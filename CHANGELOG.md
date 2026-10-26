@@ -16,6 +16,9 @@ on.
 
 ### Added
 
+* The `rules` subcommand for listing, filtering and inspecting available rules,
+  including shadowed variants and JSON output. (see #33)
+
 * Optional Lua project build directories with incremental input staging,
   ignore files, explicit mappings, symlink handling and `--clean-build`.
   Generated outputs remain in the build directory. (see #46)

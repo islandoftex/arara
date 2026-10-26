@@ -5,9 +5,11 @@ import com.github.ajalt.clikt.completion.completionOption
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.Context
 import com.github.ajalt.clikt.core.ProgramResult
+import com.github.ajalt.clikt.core.UsageError
 import com.github.ajalt.clikt.core.context
 import com.github.ajalt.clikt.core.installMordantMarkdown
 import com.github.ajalt.clikt.core.main
+import com.github.ajalt.clikt.core.subcommands
 import com.github.ajalt.clikt.core.terminal
 import com.github.ajalt.clikt.output.MordantHelpFormatter
 import com.github.ajalt.clikt.parameters.arguments.argument
@@ -48,7 +50,11 @@ import org.islandoftex.arara.cli.configuration.ConfigurationFiles
 import org.islandoftex.arara.cli.configuration.ConfigurationSnapshot
 import org.islandoftex.arara.cli.console.ConsoleMode
 import org.islandoftex.arara.cli.ruleset.DirectiveUtils
+import org.islandoftex.arara.cli.ruleset.RuleDiscovery
+import org.islandoftex.arara.cli.ruleset.RuleDiscoveryResult
 import org.islandoftex.arara.cli.ruleset.RuleEngine
+import org.islandoftex.arara.cli.ruleset.RuleQuery
+import org.islandoftex.arara.cli.ruleset.RulesCommand
 import org.islandoftex.arara.cli.ui.TerminalDialogRenderer
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.cli.utils.LoggingUtils
@@ -98,7 +104,13 @@ class CLI : CliktCommand("arara") {
             }
         }
         installMordantMarkdown()
+        subcommands(RulesCommand {
+            queryRules(it, workingDirectory, engine, ::updateConfigurationFromCommandLine)
+        })
     }
+
+    /** Process files when no subcommand was selected. */
+    override val invokeWithoutSubcommand = true
 
     /** Show usage when no input files or project specifications were supplied. */
     override val printHelpOnEmptyArgs = true
@@ -199,7 +211,7 @@ class CLI : CliktCommand("arara") {
 
     private val reference by argument("file")
         .help("The file(s) to evaluate and process")
-        .multiple(required = true)
+        .multiple(required = false)
 
     /** Specifications share a graph; loose inputs form a final anonymous project. */
     private fun resolveProjects(configuration: ConfigurationSnapshot): List<org.islandoftex.arara.api.files.Project> {
@@ -323,6 +335,8 @@ class CLI : CliktCommand("arara") {
      * The actual main method of arara (when run in command-line mode)
      */
     override fun run() {
+        if (currentContext.invokedSubcommand != null) return
+        if (reference.isEmpty()) throw UsageError("Missing argument file")
         val configuration = ConfigurationSnapshot.capture()
         val previousRun = LoggingUtils.beginRun()
         val previousHooks = LinearExecutor.hooks
@@ -525,4 +539,29 @@ private fun executeProjects(
         return ExecutionStatus.FinishedWithCode(0)
     }
     return ExecutionStatus.FinishedWithCode(LinearExecutor.execute(projects).exitCode)
+}
+
+private fun queryRules(
+    query: RuleQuery, workingDirectory: MPPPath?, engine: RuleEngine, configure: () -> Unit
+): RuleDiscoveryResult {
+    val configuration = ConfigurationSnapshot.capture()
+    val directory = (query.directory ?: workingDirectory ?: MPPPath(".")).normalize()
+    try {
+        val project = Project("Rule discovery", directory, emptySet(), emptySet())
+        ConfigurationFiles.configFileForProject(project)?.let {
+            ConfigurationFiles.load(it, project, configureLogging = false, scriptOutputToStderr = true)
+        }
+        configure()
+        val preferred = query.engine ?: engine
+        return query.info?.let {
+            RuleDiscovery.inspect(it, LinearExecutor.executionOptions, directory, preferred)
+        } ?: RuleDiscovery.discover(LinearExecutor.executionOptions, directory, preferred).let { result ->
+            result.copy(rules = result.rules.filter {
+                (query.all || it.effective) &&
+                    (query.filter == null || it.identifier.contains(query.filter, ignoreCase = true))
+            })
+        }
+    } finally {
+        configuration.restore(configureLogging = false)
+    }
 }

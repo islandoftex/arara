@@ -22,9 +22,17 @@ import org.luaj.vm2.LuaValue
  * YAML placeholder syntax is not expanded.
  */
 object LuaLocalConfiguration {
-    /** Evaluates [file] once with `user.home`, `user.name` and `cwd` in scope. */
-    fun load(file: MPPPath, workingDirectory: MPPPath): LocalConfiguration = runCatching {
-        val value = LuaScriptEnvironment.newGlobals(workingDirectory).load(file.readText(), file.toString()).call()
+    /**
+     * Evaluates [file] once with `user.home`, `user.name` and `cwd` in scope.
+     *
+     * @param scriptOutputToStderr Route script output to diagnostics for structured callers.
+     */
+    fun load(
+        file: MPPPath, workingDirectory: MPPPath, scriptOutputToStderr: Boolean = false
+    ): LocalConfiguration = runCatching {
+        val globals = LuaScriptEnvironment.newGlobals(workingDirectory)
+        if (scriptOutputToStderr) globals.STDOUT = globals.STDERR
+        val value = globals.load(file.readText(), file.toString()).call()
         extract(Fields.table(value, "configuration"))
     }.getOrElse {
         val cause = when (it) {

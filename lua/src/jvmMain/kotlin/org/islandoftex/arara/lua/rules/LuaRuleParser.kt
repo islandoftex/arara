@@ -22,12 +22,15 @@ object LuaRuleParser {
     /**
      * Reads and evaluates [file], requiring its identifier to match [identifier].
      *
+     * @param scriptOutputToStderr Route script output to diagnostics, preserving structured caller output.
      * @throws AraraException If the script or rule table is invalid.
      */
-    fun parse(file: MPPPath, identifier: String): LuaRule {
+    fun parse(file: MPPPath, identifier: String, scriptOutputToStderr: Boolean = false): LuaRule {
         val header = LanguageController.messages.errorRuleIdentifierAndPath(identifier, file.normalize().parent.toString())
         return LuaConversion.withLuaErrorHandling(header) {
-            val value = LuaRuleEnvironment.newGlobals().load(file.readText(), file.toString()).call()
+            val globals = LuaRuleEnvironment.newGlobals()
+            if (scriptOutputToStderr) globals.STDOUT = globals.STDERR
+            val value = globals.load(file.readText(), file.toString()).call()
             val table = value as? LuaTable ?: invalid(messages.errorScriptTable("rule"))
             extract(table, identifier)
         }

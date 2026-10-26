@@ -106,6 +106,12 @@ interaction if the system command requires user intervention. However, when in
 silent mode, the tool will simply discard this requirement and the command will
 almost surely fail.
 
+# Rule discovery
+
+Use `arara rules` to list available rules and `arara rules --info pdflatex` to
+inspect one. `--all`, `--filter` and `--json` control the listing and output.
+See [the official rule pack](@/manual/Rules.md) for details.
+
 # Options
 
 In order to run arara on your TeX file, the simplest possible way is to provide
@@ -150,7 +156,7 @@ usage and the available options:
 
 ```sh
 $ arara
-Usage: arara [<options>] <file>...
+Usage: arara [<options>] [<file>]... <command> [<args>]...
 
     __ _ _ __ __ _ _ __ __ _
    / _` | '__/ _` | '__/ _` |
@@ -204,6 +210,9 @@ Options:
 
 Arguments:
   <file>  The file(s) to evaluate and process
+
+Commands:
+  rules
 ```
 
 The available options for our tool are detailed as follows. Each option contains

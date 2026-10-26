@@ -21,16 +21,19 @@ object RuleFiles {
      *
      * @param file The rule file.
      * @param identifier The directive identifier.
+     * @param scriptOutputToStderr Route Lua script output to diagnostics for structured callers.
      * @return The rule object.
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
     @Throws(AraraException::class)
-    fun parseRule(file: MPPPath, identifier: String): org.islandoftex.arara.api.rules.Rule {
+    fun parseRule(
+        file: MPPPath, identifier: String, scriptOutputToStderr: Boolean = false
+    ): org.islandoftex.arara.api.rules.Rule {
         return if (file.toString().substringAfterLast('.') == "yaml")
             Rule.parse(file, identifier)
         else if (file.toString().endsWith(".lua"))
-            org.islandoftex.arara.lua.rules.LuaRuleParser.parse(file, identifier)
+            org.islandoftex.arara.lua.rules.LuaRuleParser.parse(file, identifier, scriptOutputToStderr)
         else
             throw AraraException(
                 LanguageController.messages.errorParseRuleUnsupportedFormat(identifier, file.toString())
@@ -52,27 +55,40 @@ object RuleFiles {
         executionOptions: org.islandoftex.arara.api.configuration.ExecutionOptions,
         workingDirectory: MPPPath,
         engine: RuleEngine
-    ): MPPPath =
-        executionOptions.rulePaths.let { paths ->
-            paths.flatMap { path ->
-                val formats = if (engine == RuleEngine.LUA) listOf(RuleFormat.LUA, RuleFormat.MVEL)
-                    else listOf(RuleFormat.MVEL, RuleFormat.LUA)
-                formats.flatMap { format ->
-                    listOf(
-                        construct(path, directive.identifier, format, workingDirectory),
-                        construct(path, "arara-rule-" + directive.identifier, format, workingDirectory)
-                    )
-                }
-            }.firstOrNull { it.exists } ?: throw AraraException(
+    ): MPPPath = resolve(directive.identifier, executionOptions, workingDirectory, engine)
+
+    internal fun resolve(
+        identifier: String,
+        executionOptions: org.islandoftex.arara.api.configuration.ExecutionOptions,
+        workingDirectory: MPPPath,
+        engine: RuleEngine
+    ): MPPPath {
+        val paths = executionOptions.rulePaths
+        return candidates(identifier, paths, workingDirectory, engine).firstOrNull { it.exists }
+            ?: throw AraraException(
                 LanguageController.messages.errorInterpreterRuleNotFound(
-                    directive.identifier,
-                    directive.identifier + ".lua / " + directive.identifier + ".yaml",
-                    paths.joinToString("; ", "(", ")") {
-                        it.normalize().toString()
-                    }
+                    identifier,
+                    "$identifier.lua / $identifier.yaml",
+                    paths.joinToString("; ", "(", ")") { it.normalize().toString() }
                 )
             )
+    }
+
+    internal fun candidates(
+        identifier: String,
+        paths: Set<MPPPath>,
+        workingDirectory: MPPPath,
+        engine: RuleEngine
+    ): List<MPPPath> = paths.flatMap { path ->
+        val formats = if (engine == RuleEngine.LUA) listOf(RuleFormat.LUA, RuleFormat.MVEL)
+            else listOf(RuleFormat.MVEL, RuleFormat.LUA)
+        formats.flatMap { format ->
+            listOf(
+                construct(path, identifier, format, workingDirectory),
+                construct(path, "arara-rule-$identifier", format, workingDirectory)
+            )
         }
+    }.distinct()
 
     /**
      * Constructs the path given the current path and the rule name.
