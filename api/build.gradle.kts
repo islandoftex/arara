@@ -21,7 +21,6 @@ kotlin {
 
         commonMain {
             dependencies {
-                implementation(libs.kotlin.stdlib.common)
                 api(libs.okio)
             }
         }

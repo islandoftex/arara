@@ -17,7 +17,6 @@ kotlin {
 
         commonMain {
             dependencies {
-                implementation(libs.kotlin.stdlib.common)
                 implementation(project(":core"))
                 implementation(libs.kotlinx.serialization)
             }
@@ -26,11 +25,8 @@ kotlin {
         jvmMain {
             dependencies {
                 api(project(":api"))
-                implementation(project(":core"))
-                implementation(libs.kotlin.stdlib)
                 implementation(libs.slf4j.api)
                 implementation(libs.mvel)
-                implementation(libs.kotlinx.serialization)
                 implementation(libs.kotaml)
             }
         }

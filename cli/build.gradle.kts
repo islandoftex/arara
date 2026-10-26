@@ -40,12 +40,12 @@ kotlin {
         configurations {
             jvmMainImplementation {
                 exclude(group = "com.github.ajalt.mordant", module = "mordant-jvm-ffm")
+                exclude(group = "com.github.ajalt.mordant", module = "mordant-jvm-graal-ffi")
             }
         }
 
         commonMain {
             dependencies {
-                implementation(libs.kotlin.stdlib.common)
                 implementation(project(":core"))
                 implementation(project(":lua"))
                 implementation(libs.kotlin.logging)
@@ -54,9 +54,7 @@ kotlin {
 
         jvmMain {
             dependencies {
-                implementation(project(":core"))
                 implementation(project(":mvel"))
-                implementation(libs.kotlin.reflect)
                 implementation(libs.clikt)
                 implementation(libs.mordant.core)
                 runtimeOnly(libs.mordant.jna)
@@ -64,9 +62,8 @@ kotlin {
                 implementation(libs.clikt.markdown)
                 implementation(libs.kotaml)
                 implementation(libs.mvel)
-                implementation(libs.slf4j.api)
                 implementation(libs.log4j.core)
-                implementation(libs.log4j.impl)
+                runtimeOnly(libs.log4j.impl)
                 runtimeOnly(libs.log4j.json)
             }
         }

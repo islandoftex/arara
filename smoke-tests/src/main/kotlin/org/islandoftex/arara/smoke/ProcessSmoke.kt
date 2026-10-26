@@ -157,6 +157,21 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
             luaRule(root, "return true")
             for (engine in listOf("lua", "yaml")) execute(root, 0, listOf("--preferred-engine", engine))
         },
+        "custom_class_loading_without_kotlin_reflection" to { root ->
+            JarFile(jar.toJVMFile()).use { archive ->
+                check(archive.getJarEntry("kotlin/reflect/full/KClasses.class") == null) {
+                    "The application unexpectedly bundles kotlin-reflect"
+                }
+            }
+            val location = quoted(fixture.toString())
+            luaRule(root, "assert(load_class($location, 'SmokeProcess').status == 'SUCCESS'); " +
+                "assert(load_object($location, 'SmokeProcess').status == 'SUCCESS'); return true")
+            execute(root, 0, listOf("--preferred-engine", "lua"))
+            rule(root, "loaded = loadObject($location, 'SmokeProcess'); " +
+                "if (loaded.first.name() != 'SUCCESS' || loaded.second.answer() != 42) " +
+                "{ throw new RuntimeException('Custom class loading failed'); } return true;")
+            execute(root, 0)
+        },
         "packaged_native_terminal_provider_and_access" to { _ ->
             JarFile(jar.toJVMFile()).use { archive ->
                 val provider = "com.github.ajalt.mordant.terminal.terminalinterface.jna.TerminalInterfaceProviderJna"
@@ -168,6 +183,7 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
                 )) { "Missing terminal provider service registration" }
                 val registration = archive.getInputStream(service).bufferedReader().use { it.readText() }
                 check(provider in registration) { "Native terminal provider is not registered" }
+                check("nativeimage" !in registration) { "Unused native-image provider is registered" }
                 check(archive.getJarEntry("com/sun/jna/Native.class") == null) { "JNA must be a separate module" }
                 check(archive.manifest.mainAttributes.getValue("Enable-Native-Access") == null) {
                     "The application must not grant native access to all classpath code"
@@ -908,6 +924,7 @@ private fun compileFixture(root: MPPPath, javac: MPPPath) {
     val source = root.resolve("SmokeProcess.java")
     source.writeText("""
         public class SmokeProcess {
+            public int answer() { return 42; }
             public static void main(String[] args) throws Exception {
                 if (args[0].startsWith("tree-")) {
                     java.nio.file.Path root = java.nio.file.Path.of(args[1]);

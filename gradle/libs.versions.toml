@@ -24,7 +24,6 @@ junit = "6.1.3"
 kotaml = "0.111.0"
 kotest = "6.2.6"
 kotlinLogging = "8.0.4"
-kotlinxCoroutines = "1.11.0"
 kotlinxSerialization = "1.12.0"
 log4j = "2.26.1"
 luak = "3.4.0"
@@ -36,9 +35,6 @@ ztExec = "1.13.0"
 # --------------------------------
 
 [libraries]
-kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
-kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
-kotlin-stdlib-common = { module = "org.jetbrains.kotlin:kotlin-stdlib-common", version.ref = "kotlin" }
 kotlin-test-common = { module = "org.jetbrains.kotlin:kotlin-test-common", version.ref = "kotlin" }
 kotlin-test-annotations-common = { module = "org.jetbrains.kotlin:kotlin-test-annotations-common", version.ref = "kotlin" }
 kotlin-test-junit5 = { module = "org.jetbrains.kotlin:kotlin-test-junit5", version.ref = "kotlin" }
@@ -52,7 +48,6 @@ korlibs-luak = { group = "com.soywiz.korlibs.luak", name = "luak", version.ref =
 kotest-assertions-jvm = { group = "io.kotest", name = "kotest-assertions-core-jvm", version.ref = "kotest" }
 kotest-runner-jvm = { group = "io.kotest", name = "kotest-runner-junit5-jvm", version.ref = "kotest" }
 kotlin-logging = { group = "io.github.oshai", name = "kotlin-logging", version.ref = "kotlinLogging" }
-kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
 kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "kotlinxSerialization" }
 log4j-core = { group = "org.apache.logging.log4j", name = "log4j-core", version.ref = "log4j" }

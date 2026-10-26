@@ -2,7 +2,6 @@
 plugins {
     alias(libs.plugins.kover)
     alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.kotlin.serialization)
 }
 
 kotlin {
@@ -17,7 +16,6 @@ kotlin {
 
         commonMain {
             dependencies {
-                implementation(libs.kotlin.stdlib.common)
                 api(project(":api"))
                 implementation(project(":core"))
                 implementation(libs.korlibs.luak)

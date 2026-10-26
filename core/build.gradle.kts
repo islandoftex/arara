@@ -23,7 +23,6 @@ kotlin {
 
         commonMain {
             dependencies {
-                implementation(libs.kotlin.stdlib.common)
                 api(project(":api"))
                 implementation(libs.kotlin.logging)
                 implementation(libs.kotaml)
