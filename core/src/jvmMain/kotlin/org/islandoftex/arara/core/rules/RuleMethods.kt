@@ -200,7 +200,7 @@ object RuleMethods {
     fun getCommand(elements: List<String>): Command =
         org.islandoftex.arara.core.session.Command(
             elements,
-            LinearExecutor.currentProject!!.workingDirectory
+            LinearExecutor.currentProject!!.executionDirectory
         )
 
     /**
@@ -489,7 +489,7 @@ object RuleMethods {
     fun isSubdirectory(directory: MPPPath): Boolean =
         FileHandling.isSubDirectory(
             directory,
-            LinearExecutor.currentProject!!.workingDirectory
+            LinearExecutor.currentProject!!.executionDirectory
         )
 
     /**

@@ -6,6 +6,28 @@ import org.islandoftex.arara.api.localization.MPPLocale
 /** French message catalog. */
 @Suppress("MaxLineLength", "TooManyFunctions")
 object FrenchMessages : AraraMessages {
+
+    override fun errorScriptChoice(field: String, choices: String): String =
+        "Valeur non prise en charge pour $field ; valeurs attendues : $choices."
+
+    override fun errorBuildDirectoryInvalid(path: String): String =
+        "Répertoire de compilation invalide ou chevauchant : $path."
+
+    override fun errorBuildInputInvalid(path: String): String =
+        "Une entrée ou une destination sort de la correspondance du répertoire de compilation : $path."
+
+    override fun errorBuildWorkspaceUnmanaged(path: String): String =
+        "Le répertoire de compilation n’est pas géré par ce projet : $path."
+
+    override fun errorBuildInputCollision(path: String): String =
+        "Une entrée de compilation entre en conflit avec une autre entrée ou une sortie existante : $path."
+
+    override fun errorBuildLinkCycle(path: String): String =
+        "Cycle de liens symboliques dans les entrées de compilation : $path."
+
+    override fun errorBuildInputMissing(path: String): String =
+        "L’entrée de compilation n’existe pas ou n’est ni un fichier ordinaire ni un répertoire : $path."
+
     override val warningDeprecatedYaml: String =
         "Avertissement de compatibilité : vous avez utilisé des règles YAML obsolètes qui seront supprimées dans la version 9."
 

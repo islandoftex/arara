@@ -9,6 +9,27 @@ import org.islandoftex.arara.api.localization.MPPLocale
  */
 @Suppress("TooManyFunctions")
 interface AraraMessages {
+    /** Unsupported value for the field; expected: allowed values. */
+    fun errorScriptChoice(field: String, choices: String): String
+
+    /** Invalid or overlapping build directory: the path. */
+    fun errorBuildDirectoryInvalid(path: String): String
+
+    /** Input or destination escapes the workspace mapping: the path. */
+    fun errorBuildInputInvalid(path: String): String
+
+    /** The build directory is not managed by this project: the path. */
+    fun errorBuildWorkspaceUnmanaged(path: String): String
+
+    /** Build input collides with another input or an existing output: the path. */
+    fun errorBuildInputCollision(path: String): String
+
+    /** Symbolic link cycle in build inputs: the path. */
+    fun errorBuildLinkCycle(path: String): String
+
+    /** Build input does not exist or is not a regular file or directory: the path. */
+    fun errorBuildInputMissing(path: String): String
+
     /** Summary warning for legacy YAML rules scheduled for removal in version 9. */
     val warningDeprecatedYaml: String
 

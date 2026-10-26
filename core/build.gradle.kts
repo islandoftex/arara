@@ -34,6 +34,7 @@ kotlin {
         jvmMain {
             dependencies {
                 implementation(libs.ztexec)
+                implementation(libs.jgit)
                 runtimeOnly(libs.slf4j.api)
             }
         }

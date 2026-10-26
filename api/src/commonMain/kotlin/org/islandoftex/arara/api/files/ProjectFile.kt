@@ -10,10 +10,13 @@ import org.islandoftex.arara.api.rules.Directive
  */
 public interface ProjectFile {
     /**
-     * The source path. Project loaders resolve relative file names against
-     * [Project.workingDirectory] before constructing this model.
+     * The execution path, pointing to a staged copy when a build directory is used.
+     * Project loaders resolve source file names against [Project.workingDirectory].
      */
     public val path: MPPPath
+
+    /** Original input identity, retained when [path] points into a build workspace. */
+    public val sourcePath: MPPPath get() = path
 
     /**
      * The file's type. This will identify extension and search pattern.

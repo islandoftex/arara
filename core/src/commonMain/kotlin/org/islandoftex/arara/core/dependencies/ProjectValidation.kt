@@ -17,7 +17,7 @@ object ProjectValidation {
         val owners = mutableMapOf<MPPPath, String>()
         projects.forEach { project ->
             project.files.forEach { file ->
-                val path = file.path.normalize()
+                val path = file.sourcePath.normalize()
                 val previous = owners.put(path, project.name)
                 if (previous != null) {
                     throw AraraException(

@@ -6,6 +6,28 @@ import org.islandoftex.arara.api.localization.MPPLocale
 /** German message catalog. */
 @Suppress("MaxLineLength", "TooManyFunctions")
 object GermanMessages : AraraMessages {
+
+    override fun errorScriptChoice(field: String, choices: String): String =
+        "Ungültiger Wert für $field; erwartet: $choices."
+
+    override fun errorBuildDirectoryInvalid(path: String): String =
+        "Ungültiges oder überlappendes Build-Verzeichnis: $path."
+
+    override fun errorBuildInputInvalid(path: String): String =
+        "Eingabe oder Ziel liegt außerhalb der Arbeitsverzeichnis-Zuordnung: $path."
+
+    override fun errorBuildWorkspaceUnmanaged(path: String): String =
+        "Das Build-Verzeichnis wird nicht von diesem Projekt verwaltet: $path."
+
+    override fun errorBuildInputCollision(path: String): String =
+        "Build-Eingabe kollidiert mit einer anderen Eingabe oder einer vorhandenen Ausgabe: $path."
+
+    override fun errorBuildLinkCycle(path: String): String =
+        "Zyklus symbolischer Links in den Build-Eingaben: $path."
+
+    override fun errorBuildInputMissing(path: String): String =
+        "Build-Eingabe fehlt oder ist keine reguläre Datei und kein Verzeichnis: $path."
+
     override val warningDeprecatedYaml: String =
         "Kompatibilitätswarnung: Sie haben veraltete YAML-Regeln verwendet, die in v9 entfernt werden."
 

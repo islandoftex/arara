@@ -15,8 +15,8 @@ public interface Project {
 
     /**
      * The project's home. The working directory will be used to resolve
-     * relative file names against. Furthermore, all tools will be started
-     * within the project's working directory.
+     * relative file names and load local configuration. Tools run here unless
+     * [buildDirectory] selects a separate [executionDirectory].
      */
     public val workingDirectory: MPPPath
 
@@ -25,6 +25,13 @@ public interface Project {
      * in one invocation. Use multiple directives to process a file repeatedly.
      */
     public val files: Set<ProjectFile>
+
+    /** Optional isolated workspace; configuration and source ownership still use [workingDirectory]. */
+    public val buildDirectory: BuildDirectory? get() = null
+
+    /** Directory in which tools run; inputs are staged here when a workspace is configured. */
+    public val executionDirectory: MPPPath
+        get() = buildDirectory?.let { workingDirectory.resolve(it.directory).normalize() } ?: workingDirectory
 
     /**
      * Projects this project depends on. Dependencies are identified by

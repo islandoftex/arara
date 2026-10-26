@@ -3,12 +3,15 @@ package org.islandoftex.arara.core.session
 
 import kotlin.time.TimeSource
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.configuration.ExecutionOptions
+import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.session.ExecutionReport
 import org.islandoftex.arara.api.session.Executor
 import org.islandoftex.arara.core.dependencies.ProjectValidation
+import org.islandoftex.arara.core.files.BuildWorkspaces
 
 /**
  * Executes projects and their files sequentially through [ExecutorHooks].
@@ -65,11 +68,13 @@ object LinearExecutor : Executor {
      */
     override fun execute(projects: List<Project>): ExecutionReport {
         val projectsInOrder = ProjectValidation.executionOrder(projects)
+        BuildWorkspaces.validate(projectsInOrder)
         hooks.executeBeforeExecution()
         val executionStarted = TimeSource.Monotonic.markNow()
         var exitCode = 0
+        val excluded = projects.filter { it.buildDirectory != null }.map { it.executionDirectory }
         for (project in projectsInOrder) {
-            val projectCode = executeProject(project)
+            val projectCode = executeProject(project, excluded)
             if (projectCode != 0) exitCode = projectCode
             if (executionOptions.haltOnErrors && exitCode != 0)
                 break
@@ -80,14 +85,22 @@ object LinearExecutor : Executor {
         return executionReport
     }
 
-    internal fun executeProject(project: Project): Int {
+    internal fun executeProject(
+        project: Project,
+        excluded: List<MPPPath> =
+            if (project.buildDirectory == null) emptyList() else listOf(project.executionDirectory)
+    ): Int {
         var exitCode = 0
         currentProject = project
         try {
             hooks.executeBeforeProject(project)
-            for (file in project.files.sortedWith(
+            val prepared = BuildWorkspaces.prepare(
+                project, excluded, stage = executionOptions.executionMode != ExecutionMode.DRY_RUN
+            )
+            currentProject = prepared
+            for (file in prepared.files.sortedWith(
                 compareByDescending<org.islandoftex.arara.api.files.ProjectFile> { it.priority }
-                    .thenBy { it.path.normalize().toString() }
+                    .thenBy { it.sourcePath.normalize().toString() }
             )) {
                 hooks.executeBeforeFile(file)
                 val report = execute(file)
@@ -95,7 +108,7 @@ object LinearExecutor : Executor {
                 hooks.executeAfterFile(report)
                 if (executionOptions.haltOnErrors && report.exitCode != 0) break
             }
-            hooks.executeAfterProject(project)
+            hooks.executeAfterProject(prepared)
             return exitCode
         } finally {
             currentProject = null

@@ -6,6 +6,28 @@ import org.islandoftex.arara.api.localization.MPPLocale
 /** Dutch message catalog. */
 @Suppress("MaxLineLength", "TooManyFunctions")
 object DutchMessages : AraraMessages {
+
+    override fun errorScriptChoice(field: String, choices: String): String =
+        "Niet-ondersteunde waarde voor $field; verwacht: $choices."
+
+    override fun errorBuildDirectoryInvalid(path: String): String =
+        "Ongeldige of overlappende bouwmap: $path."
+
+    override fun errorBuildInputInvalid(path: String): String =
+        "Invoer of bestemming valt buiten de toewijzing van de bouwmap: $path."
+
+    override fun errorBuildWorkspaceUnmanaged(path: String): String =
+        "De bouwmap wordt niet door dit project beheerd: $path."
+
+    override fun errorBuildInputCollision(path: String): String =
+        "Bouwinvoer conflicteert met andere invoer of bestaande uitvoer: $path."
+
+    override fun errorBuildLinkCycle(path: String): String =
+        "Cyclus van symbolische koppelingen in de bouwinvoer: $path."
+
+    override fun errorBuildInputMissing(path: String): String =
+        "Bouwinvoer ontbreekt of is geen gewoon bestand of map: $path."
+
     override val warningDeprecatedYaml: String =
         "Compatibiliteitswaarschuwing: u hebt verouderde YAML-regels gebruikt die in v9 worden verwijderd."
 
