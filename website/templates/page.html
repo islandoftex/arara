@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% block layout_context %}{% if page.relative_path is starting_with(pat="manual/") %}{% set devlab_layout = "docs" %}{% else %}{% set devlab_layout = "page" %}{% endif %}{% endblock layout_context %}
 {% block content %}
+{% set edit_url = docs_options.page_actions.edit_url | default(value="") %}
+{% set edit_page_label = "Improve this page on GitLab" %}
 {% if docs_section %}<div class="docs-shell">{% include "partials/docs-sidebar.html" %}{% endif %}
 <article class="content{% if docs_section %} docs-content{% endif %}">
   <header class="page-header">
@@ -10,7 +12,11 @@
   <div data-arara-document-content>
     {{ page.content | safe }}
   </div>
-  {% if docs_section %}{% include "partials/docs-prev-next.html" %}{% endif %}
+  {% if docs_section %}
+  {% set has_last_updated = false %}{% set report_url = "" %}{% set page_actions_label = ui.page_actions %}
+  {% include "partials/docs-page-actions.html" %}
+  {% include "partials/docs-prev-next.html" %}
+  {% endif %}
 </article>
 {% if docs_section %}
 {% set toc_items = page.toc %}{% include "partials/docs-toc.html" %}

@@ -68,6 +68,9 @@ show_breadcrumbs = true
 show_toc = true
 show_pagination = true
 
+[extra.devlab.collections.manual.page_actions]
+edit_url = "https://gitlab.com/islandoftex/arara/-/edit/development/website/content/"
+
 [extra.devlab.home]
 layout = "wide"
 
