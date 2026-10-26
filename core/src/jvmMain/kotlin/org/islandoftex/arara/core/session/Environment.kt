@@ -13,7 +13,6 @@ import org.islandoftex.arara.api.files.toJVMFile
 import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.api.utils.OS
 import org.zeroturnaround.exec.ProcessExecutor
-import org.zeroturnaround.exec.listener.ShutdownHookProcessDestroyer
 import org.zeroturnaround.exec.stream.TeeOutputStream
 
 /**
@@ -220,7 +219,8 @@ object Environment {
         timeout: Duration = Duration.ZERO
     ): SystemCommandResult = ByteArrayOutputStream().use { buffer ->
         ProcessExecutor(command.elements).runCatching {
-            addDestroyer(ShutdownHookProcessDestroyer())
+            addDestroyer(ProcessTreeDestroyer())
+            stopper { process -> ProcessTreeDestroyer.stop(process) }
 
             // use the command's working directory as the preferred working
             // directory; although it may be missing in which case we will use

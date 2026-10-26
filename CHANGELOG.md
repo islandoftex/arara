@@ -101,6 +101,9 @@ on.
 
 ### Fixed
 
+* Stop active command descendants on shutdown and timeout; Windows CLI processes
+  also use a Job Object to clean up after forced termination. (see #39)
+
 * Multiline diagnostic logs no longer add indentation to directive lists or
   captured tool output. Tool-supplied whitespace remains unchanged. (see #89)
 * Project validation rejects malformed fields, duplicate names, overlapping file

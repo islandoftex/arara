@@ -19,7 +19,7 @@ private const val APPLICATION_ERROR = 2
 private const val CONFIGURED_CONSOLE_WIDTH = 40
 private const val CLI_CONSOLE_WIDTH = 50
 
-private fun quoted(value: String): String = "\"" + value.replace("\\", "\\\\")
+internal fun quoted(value: String): String = "\"" + value.replace("\\", "\\\\")
     .replace("\"", "\\\"").replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t") + "\""
 
 private class Smoke(private val jar: MPPPath, private val java: MPPPath,
@@ -74,7 +74,14 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
 
     private fun contains(output: String, text: String) = check(text in output) { "Missing $text\n$output" }
 
+    private fun processTree(root: MPPPath) = ProcessTreeCheck(root,
+        launcher + listOf("-Duser.home=$root", "-jar", jar.toString(), "-L", "en", "--preferred-engine", "lua"),
+        listOf(java.toString(), "-cp", fixture.toString(), "SmokeProcess"))
+
     val cases: Map<String, (MPPPath) -> Unit> = linkedMapOf(
+        "active_descendants_stop_when_arara_is_terminated" to { root -> processTree(root).interrupted() },
+        "active_descendants_stop_when_a_command_times_out" to { root -> processTree(root).timedOut() },
+        "normal_completion_preserves_detached_processes" to { root -> processTree(root).detached() },
         "french_configuration_cli_and_console_presentations" to { root ->
             checkFrenchLocalization(root, launcher, jar)
         },
@@ -874,6 +881,21 @@ private fun compileFixture(root: MPPPath, javac: MPPPath) {
     source.writeText("""
         public class SmokeProcess {
             public static void main(String[] args) throws Exception {
+                if (args[0].startsWith("tree-")) {
+                    java.nio.file.Path root = java.nio.file.Path.of(args[1]);
+                    java.nio.file.Files.writeString(root.resolve(args[0] + ".pid"),
+                        Long.toString(ProcessHandle.current().pid()));
+                    if (args[0].equals("tree-leaf")) {
+                        java.nio.file.Files.writeString(root.resolve("tree.ready"), "ready");
+                        Thread.sleep(60000);
+                    } else {
+                        String next = args[0].equals("tree-child") ? "tree-leaf" : "tree-child";
+                        Process child = new ProcessBuilder(ProcessHandle.current().info().command().orElseThrow(),
+                            "-cp", System.getProperty("java.class.path"), "SmokeProcess", next, args[1]).start();
+                        if (!args[0].equals("tree-detach")) child.waitFor();
+                    }
+                    return;
+                }
                 if (args[0].equals("native-access")) {
                     Module jna = Class.forName("com.sun.jna.Native").getModule();
                     if (!"com.sun.jna".equals(jna.getName())) throw new AssertionError("Unnamed JNA");

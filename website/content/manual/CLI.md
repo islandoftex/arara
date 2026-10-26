@@ -426,7 +426,7 @@ current option, it will be denoted by `parameter` in the description.
 
 - `-t` / `--timeout` `<number>`: This option sets an execution timeout for every
   task, in milliseconds. If the timeout is reached before the task ends, arara
-  will kill it and halt the execution. Any positive integer can be used as the
+  will stop it and its child processes and halt the execution. Any positive integer can be used as the
   `<number>` value for this option. Of course, use a sensible value to allow
   proper time for a task to be executed. For instance, consider the following
   recursive call:
@@ -739,3 +739,13 @@ type. Plain dialogs are used when boxes are unsupported or output is redirected.
 
 On Windows, output to MSYS/Cygwin terminal pipes uses UTF-8. Native consoles
 and redirected output use the encoding selected by Java.
+
+# Stopping arara
+
+Interrupting arara stops the active command and its descendants when the
+operating system allows JVM shutdown hooks to run. On Windows, arara also uses
+a process group managed by the operating system to stop descendants after a
+forced termination. If that protection cannot be enabled, the log records the
+reason. Normal completion preserves deliberately detached background tools.
+On Unix, a forced kill such as `SIGKILL` bypasses shutdown hooks and cannot
+provide the same cleanup guarantee.

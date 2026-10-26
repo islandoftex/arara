@@ -55,6 +55,7 @@ import org.islandoftex.arara.cli.utils.LoggingUtils
 import org.islandoftex.arara.cli.utils.RunLog
 import org.islandoftex.arara.cli.utils.RuntimeDiagnostics
 import org.islandoftex.arara.cli.utils.StandardStreams
+import org.islandoftex.arara.cli.utils.WindowsProcessJob
 import org.islandoftex.arara.cli.utils.printFileInformation
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.configuration.LoggingOptions
@@ -355,7 +356,7 @@ class CLI : CliktCommand("arara") {
             ConfigurationFiles.load(it, project, configureLogging = false)
         }
         updateConfigurationFromCommandLine()
-        LoggingUtils.setupLogging(Session.loggingOptions)
+        initializeRuntime()
         applyConsole()
     }
 
@@ -386,7 +387,7 @@ class CLI : CliktCommand("arara") {
 
         // logging has to be initialized only once and for all because
         // context resets lead to missing output
-        LoggingUtils.setupLogging(Session.loggingOptions)
+        initializeRuntime()
 
         // add all key/value pairs found in the properties file, if
         // provided in the command line
@@ -450,8 +451,7 @@ class CLI : CliktCommand("arara") {
             // print the execution time if the command line parsing does not
             // return false as result (it makes no sense to print the execution
             // time for a help message)
-            RunLog.executionOutcome(executionStatus.exitCode)
-            DisplayUtils.printRunSummary(executionStatus.exitCode == 0)
+            finishRuntime(executionStatus.exitCode)
             DisplayUtils.printTime(executionStart.elapsedNow().toDouble(DurationUnit.SECONDS))
 
             throw ProgramResult(executionStatus.exitCode)
@@ -498,4 +498,15 @@ private fun runCommandLine(args: Array<String>) {
             }
         )
         .main(args)
+}
+
+private fun initializeRuntime() {
+    LoggingUtils.setupLogging(Session.loggingOptions)
+    WindowsProcessJob.install()
+}
+
+private fun finishRuntime(exitCode: Int) {
+    WindowsProcessJob.finish()
+    RunLog.executionOutcome(exitCode)
+    DisplayUtils.printRunSummary(exitCode == 0)
 }
