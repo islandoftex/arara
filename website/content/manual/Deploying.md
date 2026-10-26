@@ -24,9 +24,9 @@ The structure overview is presented as follows.
 <img src="{{ get_url(url="/images/manual/structure1.svg") }}" alt="Structure 1" width="648"/>
 
 Provided that this specific directory structure is honoured, the tool is ready
-for use off the shelf. In fact, the official arara CTAN package is available in
+for use off the shelf. A snapshot of the arara CTAN package is available in
 the [artifacts
-section](https://gitlab.com/islandoftex/arara/-/jobs/artifacts/master/download?job=publish:tdszip)
+section](https://gitlab.com/islandoftex/arara/-/jobs/artifacts/master/download?job=publish:snapshot_tdszip)
 of our project repository. Once the package is properly downloaded, we simply
 need to extract it into a proper `ARARA_HOME` location.
 
