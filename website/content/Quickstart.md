@@ -462,8 +462,8 @@ Total: 2.49 seconds
 about other possibilities, will I learn them by looking at the reference manual?
 Surely there are way more features to discover.*
 
-Of course, Peter! The reference manual contains everything there is to know
-about arara, so it is a great resource for learning! In this quickstart guide,
+Of course, Peter! The [reference manual](@/manual/_index.md) contains everything
+there is to know about arara, so it is a great resource for learning! In this quickstart guide,
 we simply covered the basics, as an introductory material. The tool has several
 features, including support for working directory, processing of multiple files,
 argument passing through command line flags, configuration files, default

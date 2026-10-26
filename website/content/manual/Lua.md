@@ -5,8 +5,10 @@ weight = 12
 +++
 
 `arara document.tex` uses Lua rule files and expressions by default.
-Lua lookup searches each configured rule path
-for `name.lua`, then `arara-rule-name.lua`; it does not fall back to YAML.
+Lookup searches each configured rule path for `name.lua`, then
+`arara-rule-name.lua`, before trying their YAML counterparts in that directory.
+`--preferred-engine yaml` reverses the format preference. Each directive uses
+its resolved rule's language for conditionals and option interpolation.
 Configuration files may use Lua or YAML, independently of the selected engine;
 see [Configuration file](@/manual/Configuration.md). Directive parameter maps
 still use YAML. Project specifications remain separate `.proj.lua` files.
