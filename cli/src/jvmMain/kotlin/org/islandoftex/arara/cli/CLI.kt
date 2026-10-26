@@ -57,6 +57,7 @@ import org.islandoftex.arara.cli.utils.RuntimeDiagnostics
 import org.islandoftex.arara.cli.utils.StandardStreams
 import org.islandoftex.arara.cli.utils.WindowsProcessJob
 import org.islandoftex.arara.cli.utils.printFileInformation
+import org.islandoftex.arara.cli.utils.reportBuildWorkspace
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.configuration.LoggingOptions
 import org.islandoftex.arara.core.configuration.PreambleState
@@ -404,6 +405,7 @@ class CLI : CliktCommand("arara") {
 
         try {
             LinearExecutor.hooks = ExecutorHooks(
+                buildWorkspace = ::reportBuildWorkspace,
                 executeBeforeExecution = {
                     RunLog.executionStarted(AraraAPI.version)
                     Session.updateEnvironmentVariables()
@@ -518,8 +520,8 @@ private fun executeProjects(
     projects: List<org.islandoftex.arara.api.files.Project>, cleanBuild: Boolean
 ): ExecutionStatus {
     if (cleanBuild) {
-        org.islandoftex.arara.core.files.BuildWorkspaces.validate(projects)
-        projects.forEach { org.islandoftex.arara.core.files.BuildWorkspaces.clean(it) }
+        org.islandoftex.arara.core.files.BuildWorkspaces.validate(projects, ::reportBuildWorkspace)
+        projects.forEach { org.islandoftex.arara.core.files.BuildWorkspaces.clean(it, ::reportBuildWorkspace) }
         return ExecutionStatus.FinishedWithCode(0)
     }
     return ExecutionStatus.FinishedWithCode(LinearExecutor.execute(projects).exitCode)

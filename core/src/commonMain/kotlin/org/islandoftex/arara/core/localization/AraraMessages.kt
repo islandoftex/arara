@@ -9,6 +9,28 @@ import org.islandoftex.arara.api.localization.MPPLocale
  */
 @Suppress("TooManyFunctions")
 interface AraraMessages {
+    /** Validating build directory: the path */
+    fun infoBuildDirectoryValidating(path: String): String
+
+    /** Preparing build directory: the path */
+    fun infoBuildDirectoryPreparing(path: String): String
+
+    /** Cleaning build directory: the path */
+    fun infoBuildDirectoryCleaning(path: String): String
+
+    /** Build directory ready: copied the file count input files in the elapsed seconds s. */
+    fun infoBuildDirectoryPrepared(files: Int, seconds: String): String
+
+    /** Build directory validated. */
+    val infoBuildDirectoryValidated: String
+
+    /** Build directory cleaned. */
+    val infoBuildDirectoryCleaned: String
+
+    /** Build directory operation failed. */
+    val errorBuildDirectoryOperationFailed: String
+
+
     /** Unsupported value for the field; expected: allowed values. */
     fun errorScriptChoice(field: String, choices: String): String
 

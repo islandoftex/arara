@@ -7,6 +7,28 @@ import org.islandoftex.arara.api.localization.MPPLocale
 @Suppress("MaxLineLength", "TooManyFunctions")
 object FrenchMessages : AraraMessages {
 
+    override fun infoBuildDirectoryValidating(path: String): String =
+        "Vérification du répertoire de compilation : $path"
+
+    override fun infoBuildDirectoryPreparing(path: String): String =
+        "Préparation du répertoire de compilation : $path"
+
+    override fun infoBuildDirectoryCleaning(path: String): String =
+        "Nettoyage du répertoire de compilation : $path"
+
+    override fun infoBuildDirectoryPrepared(files: Int, seconds: String): String =
+        "Répertoire de compilation prêt : $files fichiers copiés en $seconds s."
+
+    override val infoBuildDirectoryValidated: String =
+        "Répertoire de compilation vérifié."
+
+    override val infoBuildDirectoryCleaned: String =
+        "Répertoire de compilation nettoyé."
+
+    override val errorBuildDirectoryOperationFailed: String =
+        "L’opération sur le répertoire de compilation a échoué."
+
+
     override fun errorScriptChoice(field: String, choices: String): String =
         "Valeur non prise en charge pour $field ; valeurs attendues : $choices."
 

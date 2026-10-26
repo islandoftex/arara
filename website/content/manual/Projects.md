@@ -237,6 +237,11 @@ selected; external targets require an explicit mapping. Set `symlinks = "copy"`
 in `build` to copy target contents instead. Cycles are errors in both modes.
 Creating preserved links requires operating-system support and permission.
 
+The console reports validation, preparation and cleanup. Styled output shows
+live feedback when animations are enabled and the terminal supports it. The
+preparation result reports the number of files actually copied and the elapsed
+time; diagnostic logs include these measurements as well.
+
 Only new or changed inputs are copied on subsequent runs. Missing staged copies
 are restored, and inputs deleted or excluded from the source are removed from
 the workspace. Generated outputs are retained. Staging uses its own records in

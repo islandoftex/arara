@@ -68,7 +68,7 @@ object LinearExecutor : Executor {
      */
     override fun execute(projects: List<Project>): ExecutionReport {
         val projectsInOrder = ProjectValidation.executionOrder(projects)
-        BuildWorkspaces.validate(projectsInOrder)
+        BuildWorkspaces.validate(projectsInOrder, hooks.buildWorkspace)
         hooks.executeBeforeExecution()
         val executionStarted = TimeSource.Monotonic.markNow()
         var exitCode = 0
@@ -95,7 +95,8 @@ object LinearExecutor : Executor {
         try {
             hooks.executeBeforeProject(project)
             val prepared = BuildWorkspaces.prepare(
-                project, excluded, stage = executionOptions.executionMode != ExecutionMode.DRY_RUN
+                project, excluded, stage = executionOptions.executionMode != ExecutionMode.DRY_RUN,
+                observer = hooks.buildWorkspace
             )
             currentProject = prepared
             for (file in prepared.files.sortedWith(

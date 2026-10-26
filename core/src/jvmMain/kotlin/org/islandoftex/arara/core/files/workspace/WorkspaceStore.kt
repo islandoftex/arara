@@ -40,7 +40,7 @@ internal class WorkspaceStore(project: Project) {
 
     private fun unmanaged(): Nothing = throw AraraException(messages.errorBuildWorkspaceUnmanaged(root.toString()))
 
-    fun sync(inputs: Map<String, StagedInput>) {
+    fun sync(inputs: Map<String, StagedInput>, copiedFile: () -> Unit) {
         val previous = if (present(root)) {
             if (root.isDirectory && !link(root) && root.listEntries().isEmpty()) WorkspaceState(owner)
             else owned()
@@ -56,7 +56,7 @@ internal class WorkspaceStore(project: Project) {
         val completed = previous.inputs.filterKeys { it in inputs }.toMutableMap()
         try {
             for ((name, input) in inputs) {
-                stageInput(name, input, database)
+                stageInput(name, input, database, copiedFile)
                 completed[name] = input.kind
             }
         } finally {
@@ -79,7 +79,9 @@ internal class WorkspaceStore(project: Project) {
         }
     }
 
-    private fun stageInput(name: String, input: StagedInput, database: org.islandoftex.arara.api.files.Database) {
+    private fun stageInput(
+        name: String, input: StagedInput, database: org.islandoftex.arara.api.files.Database, copiedFile: () -> Unit
+    ) {
         val path = destination(root, name)
         noLinkedParents(root, path)
         path.parent.createDirectories()
@@ -99,6 +101,7 @@ internal class WorkspaceStore(project: Project) {
                     try {
                         Files.copy(input.source.toJVMPath(), temporary, REPLACE_EXISTING, COPY_ATTRIBUTES)
                         replaceAtomic(temporary.toMPPPath(), path)
+                        copiedFile()
                     } finally {
                         Files.deleteIfExists(temporary)
                     }

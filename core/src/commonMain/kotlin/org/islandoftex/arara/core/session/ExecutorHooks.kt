@@ -5,6 +5,7 @@ import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.api.session.ExecutionReport
+import org.islandoftex.arara.core.files.BuildWorkspaceEvent
 
 /**
  * arara's core executor is configurable at some places by inserting hooks.
@@ -24,5 +25,7 @@ data class ExecutorHooks(
     /** Called with the file report after current-file state is cleared; skipped if file execution throws. */
     val executeAfterFile: (ExecutionReport) -> Unit = { _ -> },
     /** Transforms extracted directives before their execution; also receives the current project file. */
-    val processDirectives: (ProjectFile, List<Directive>) -> List<Directive> = { _, l -> l }
+    val processDirectives: (ProjectFile, List<Directive>) -> List<Directive> = { _, l -> l },
+    /** Workspace operations, including validation, preparation metrics and failures. */
+    val buildWorkspace: (BuildWorkspaceEvent) -> Unit = { }
 )

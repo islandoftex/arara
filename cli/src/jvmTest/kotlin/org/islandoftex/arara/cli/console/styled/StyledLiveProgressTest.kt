@@ -41,6 +41,66 @@ class StyledLiveProgressTest {
     }
 
     @Test
+    fun workspacePreparationAnimatesInVerboseModeAndRetiresItsCallbacks() = withRenderer { sink, renderer, scheduler, clock ->
+        LinearExecutor.executionOptions = ExecutionOptions(verbose = true)
+        renderer.startBuildDirectory("Preparing build directory: source/build")
+        clock += 2.seconds
+        scheduler.tasks.single().action()
+        assertTrue("⠋" in sink.output())
+        renderer.finishBuildDirectory("Build directory ready: copied 2 input files in 1.234 s.")
+        assertTrue("copied 2 input files" in sink.output())
+        assertTrue("\u001b[?25h" in sink.output())
+        assertTrue(scheduler.tasks.single().cancelled)
+        val completed = sink.output()
+        scheduler.tasks.single().action()
+        assertEquals(completed, sink.output())
+    }
+
+    @Test
+    fun workspaceResizeRetiresTheSpinnerAndStartsItsResultOnANewLine() = withRenderer { sink, renderer, scheduler, clock ->
+        renderer.startBuildDirectory("Preparing build directory")
+        clock += 2.seconds
+        scheduler.tasks.single().action()
+        sink.width = 30
+        scheduler.tasks.single().action()
+        renderer.finishBuildDirectory("Build directory ready")
+        assertTrue("\nBuild directory ready" in sink.output())
+        val result = sink.output()
+        scheduler.tasks.single().action()
+        assertEquals(result, sink.output())
+        assertTrue(scheduler.tasks.single().cancelled)
+    }
+
+    @Test
+    fun workspaceFeedbackRespectsNoninteractiveStreamsAnimationSettingsAndFailures() {
+        for (sink in listOf(ProgressTestTerminal(interactive = false), ProgressTestTerminal(level = AnsiLevel.NONE),
+            ProgressTestTerminal(width = 10))) {
+            withRenderer(sink) { terminal, renderer, scheduler, _ ->
+                renderer.startBuildDirectory("Validating build directory")
+                renderer.finishBuildDirectory("Build directory validated")
+                assertTrue(scheduler.tasks.isEmpty())
+                assertFalse("\u001b[?25l" in terminal.output())
+            }
+        }
+        withRenderer { _, renderer, scheduler, _ ->
+            Session.userInterfaceOptions = UserInterfaceOptions(enableAnimations = false)
+            renderer.startBuildDirectory("Preparing build directory")
+            renderer.finishBuildDirectory("Build directory ready")
+            assertTrue(scheduler.tasks.isEmpty())
+        }
+        withRenderer { sink, renderer, scheduler, clock ->
+            renderer.startBuildDirectory("Preparing build directory")
+            clock += 2.seconds
+            scheduler.tasks.single().action()
+            renderer.printException("Preparation failed", "read failure")
+            val failed = sink.output()
+            scheduler.tasks.single().action()
+            assertEquals(failed, sink.output())
+            assertTrue(scheduler.tasks.single().cancelled)
+        }
+    }
+
+    @Test
     fun ineligibleStreamsModesAndConfigurationNeverScheduleFeedback() {
         val cases = listOf(
             ProgressTestTerminal(level = AnsiLevel.NONE),

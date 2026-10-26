@@ -355,13 +355,28 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
         "project_build_directory_staging_native_cwd_and_clean" to { root ->
             root.resolve("project.proj.lua").writeText(
                 "return {files={['run.tex']={}},build={directory='build/document'}}")
+            root.resolve(".gitignore").writeText("events.jsonl\n")
+            root.resolve("arararc.lua").writeText(
+                "return {paths={cwd},log={format='json',file=cwd .. '/events.jsonl'}}")
             luaRule(root, luaNative("0"))
             val output = execute(root, 0, listOf("--preferred-engine", "lua", "--verbose"),
                 reference = "project.proj.lua")
+            contains(output, "Validating build directory")
+            contains(output, "Preparing build directory")
+            contains(output, "Build directory ready: copied")
             contains(output, "SMOKE_CWD=${root.resolve("build/document")}")
             check(root.resolve("build/document/run.tex").exists)
             check(!root.resolve("build/document/build/document").exists)
-            execute(root, 0, listOf("--clean-build"), reference = "project.proj.lua")
+            execute(root, 0, listOf("--preferred-engine", "lua"), reference = "project.proj.lua")
+            val events = root.resolve("events.jsonl").readLines().map { Json.parseToJsonElement(it).jsonObject }
+            val prepared = events.single { it["event"]?.jsonPrimitive?.content == "build_directory.completed" &&
+                it.getValue("data").jsonObject["operation"]?.jsonPrimitive?.content == "prepare" }
+                .getValue("data").jsonObject
+            check(prepared.getValue("copiedFiles").jsonPrimitive.int == 0)
+            check(prepared.getValue("durationMs").jsonPrimitive.long >= 0)
+            val cleaned = execute(root, 0, listOf("--clean-build"), reference = "project.proj.lua")
+            contains(cleaned, "Cleaning build directory")
+            contains(cleaned, "Build directory cleaned")
             check(!root.resolve("build/document").exists)
             check(root.resolve("run.tex").exists)
         },

@@ -31,6 +31,12 @@ interface ConsoleRenderer {
     /** Build an output-buffer separator containing the supplied message. */
     fun displayOutputSeparator(message: String): String
 
+    /** Present a workspace operation before validation, staging or cleanup starts. */
+    fun startBuildDirectory(message: String) = printWrapped(message)
+
+    /** Retire workspace feedback and present its localized outcome. */
+    fun finishBuildDirectory(message: String) = printWrapped(message)
+
     /** Suspend live feedback before another component prints or asks for input. */
     fun suspendProgress() { }
 

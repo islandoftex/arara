@@ -8,6 +8,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import kotlin.time.Duration
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.BuildDirectory
 import org.islandoftex.arara.api.files.BuildInput
@@ -16,6 +17,7 @@ import org.islandoftex.arara.api.files.BuildSymlinks
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.toJVMPath
 import org.islandoftex.arara.api.files.toMPPPath
+import org.islandoftex.arara.core.files.workspace.trackWorkspace
 
 class BuildWorkspacesTest {
     private fun fixture(test: (MPPPath, MPPPath) -> Unit) {
@@ -171,6 +173,52 @@ class BuildWorkspacesTest {
         BuildWorkspaces.prepare(project, listOf(workspace, other))
         assertEquals("output", workspace.resolve("images/output.txt").readText())
         assertFalse(workspace.resolve("images/input.txt").exists)
+    }
+
+    @Test
+    fun preparationEventsMeasureActualCopiesAndRetireFailedOperations() = fixture { source, workspace ->
+        source.resolve("asset.txt").writeText("first")
+        val project = project(source, workspace)
+        val events = mutableListOf<BuildWorkspaceEvent>()
+        BuildWorkspaces.validate(listOf(project), events::add)
+        assertEquals(BuildWorkspaceOperation.VALIDATE, events.first().operation)
+        assertTrue((events.last() as BuildWorkspaceEvent.Finished).success)
+        fun prepare(): BuildWorkspaceEvent.Finished {
+            events.clear()
+            BuildWorkspaces.prepare(project, listOf(workspace), observer = events::add)
+            assertEquals(2, events.size)
+            assertTrue(events.first() is BuildWorkspaceEvent.Started)
+            val completed = events.last() as BuildWorkspaceEvent.Finished
+            assertTrue(completed.success)
+            assertEquals(BuildWorkspaceOperation.PREPARE, completed.operation)
+            assertTrue(completed.elapsed >= Duration.ZERO)
+            return completed
+        }
+        assertEquals(2, prepare().copiedFiles)
+        assertEquals(0, prepare().copiedFiles)
+        source.resolve("asset.txt").writeText("changed")
+        assertEquals(1, prepare().copiedFiles)
+        Files.delete(workspace.resolve("asset.txt").toJVMPath())
+        assertEquals(1, prepare().copiedFiles)
+        events.clear()
+        BuildWorkspaces.clean(project, events::add)
+        assertEquals(BuildWorkspaceOperation.CLEAN, events.last().operation)
+        assertTrue((events.last() as BuildWorkspaceEvent.Finished).success)
+        events.clear()
+        assertFailsWith<AraraException> {
+            BuildWorkspaces.validate(listOf(project.copy(buildDirectory = BuildDirectory(source))), events::add)
+        }
+        assertFalse((events.last() as BuildWorkspaceEvent.Finished).success)
+        events.clear()
+        assertFailsWith<IllegalStateException> {
+            trackWorkspace(project, BuildWorkspaceOperation.PREPARE, events::add) {
+                it.copiedFile()
+                error("copy failure after partial work")
+            }
+        }
+        val partial = events.last() as BuildWorkspaceEvent.Finished
+        assertFalse(partial.success)
+        assertEquals(1, partial.copiedFiles)
     }
 
     @Test

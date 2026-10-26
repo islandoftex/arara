@@ -7,6 +7,28 @@ import org.islandoftex.arara.api.localization.MPPLocale
 @Suppress("MaxLineLength", "TooManyFunctions")
 object DutchMessages : AraraMessages {
 
+    override fun infoBuildDirectoryValidating(path: String): String =
+        "Bouwmap controleren: $path"
+
+    override fun infoBuildDirectoryPreparing(path: String): String =
+        "Bouwmap voorbereiden: $path"
+
+    override fun infoBuildDirectoryCleaning(path: String): String =
+        "Bouwmap opruimen: $path"
+
+    override fun infoBuildDirectoryPrepared(files: Int, seconds: String): String =
+        "Bouwmap gereed: $files invoerbestanden gekopieerd in $seconds s."
+
+    override val infoBuildDirectoryValidated: String =
+        "Bouwmap gecontroleerd."
+
+    override val infoBuildDirectoryCleaned: String =
+        "Bouwmap opgeruimd."
+
+    override val errorBuildDirectoryOperationFailed: String =
+        "Bewerking van de bouwmap mislukt."
+
+
     override fun errorScriptChoice(field: String, choices: String): String =
         "Niet-ondersteunde waarde voor $field; verwacht: $choices."
 
