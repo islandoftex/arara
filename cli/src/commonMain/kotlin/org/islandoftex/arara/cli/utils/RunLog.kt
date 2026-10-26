@@ -120,11 +120,12 @@ object RunLog {
     fun commandOutput(output: String) {
         if (!EventLog.isInfoEnabled) return
         val message = if (output.isBlank()) "The tool produced no output."
-            else """
-                ${outputSeparator("BEGIN OUTPUT BUFFER")}
-                $output
-                ${outputSeparator("END OUTPUT BUFFER")}
-            """.trimIndent()
+            else buildString {
+                appendLine(outputSeparator("BEGIN OUTPUT BUFFER"))
+                append(output)
+                if (!output.endsWith('\n')) appendLine()
+                append(outputSeparator("END OUTPUT BUFFER"))
+            }
         EventLog.info("command.output", message, mapOf("output" to output, "empty" to output.isBlank()))
     }
 

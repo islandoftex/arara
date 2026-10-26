@@ -92,6 +92,8 @@ on.
 
 ### Fixed
 
+* Multiline diagnostic logs no longer add indentation to directive lists or
+  captured tool output. Tool-supplied whitespace remains unchanged. (see #89)
 * Project validation rejects malformed fields, duplicate names, overlapping file
   ownership and dependency cycles before execution, with contextual diagnostics.
   Independent projects and equal-priority files have deterministic ordering.

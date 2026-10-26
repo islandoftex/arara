@@ -147,14 +147,12 @@ object DirectiveUtils {
             }
         }.also { result ->
             logger.info {
-                """
-                    All directives were validated.
-                    ${RunLog.outputSeparator(
-                    "DIRECTIVES"
-                )}
-                    ${result.joinToString("\n")}
-                    ${RunLog.separator()}
-                """.trimIndent()
+                buildString {
+                    appendLine("All directives were validated.")
+                    appendLine(RunLog.outputSeparator("DIRECTIVES"))
+                    result.forEach { appendLine(it) }
+                    append(RunLog.separator())
+                }
             }
         }
 }
