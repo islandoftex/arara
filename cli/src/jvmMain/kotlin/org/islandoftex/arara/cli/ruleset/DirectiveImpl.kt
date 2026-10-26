@@ -28,7 +28,7 @@ data class DirectiveImpl(
     /** Execute using the current linear-executor file, project and options, returning the final status. */
     override fun execute(): Int = Interpreter(
         LinearExecutor.executionOptions, LinearExecutor.currentFile!!,
-        LinearExecutor.currentProject!!.workingDirectory, engine
+        LinearExecutor.currentProject!!.executionDirectory, engine
     ).execute(this).exitCode
 
     /** Describe the directive and its source metadata for diagnostics. */

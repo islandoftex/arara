@@ -133,6 +133,9 @@ class CLI : CliktCommand("arara") {
                 "with no actual calls"
         )
         .flag()
+    private val cleanBuild by option("--clean-build")
+        .help("Remove managed project build directories without executing commands")
+        .flag()
     private val safeRun by option("-S", "--safe-run")
         .help(
             "Run in safe mode and disable potentially harmful features. " +
@@ -441,7 +444,7 @@ class CLI : CliktCommand("arara") {
 
             val projects = prepareProjects(resolveProjects(configuration), configuration)
             DisplayUtils.presentation.prepare(projects)
-            ExecutionStatus.FinishedWithCode(LinearExecutor.execute(projects).exitCode)
+            executeProjects(projects, cleanBuild)
         } catch (ex: AraraException) {
             // catch a propagated exception to replace intentionally left
             // out local treatment
@@ -509,4 +512,15 @@ private fun finishRuntime(exitCode: Int) {
     WindowsProcessJob.finish()
     RunLog.executionOutcome(exitCode)
     DisplayUtils.printRunSummary(exitCode == 0)
+}
+
+private fun executeProjects(
+    projects: List<org.islandoftex.arara.api.files.Project>, cleanBuild: Boolean
+): ExecutionStatus {
+    if (cleanBuild) {
+        org.islandoftex.arara.core.files.BuildWorkspaces.validate(projects)
+        projects.forEach { org.islandoftex.arara.core.files.BuildWorkspaces.clean(it) }
+        return ExecutionStatus.FinishedWithCode(0)
+    }
+    return ExecutionStatus.FinishedWithCode(LinearExecutor.execute(projects).exitCode)
 }

@@ -28,14 +28,14 @@ internal class RunPresentation(private val clock: TimeSource = TimeSource.Monoto
         started = null
         ProjectValidation.executionOrder(projects).forEach { project ->
             project.files.sortedWith(compareByDescending<ProjectFile> { it.priority }
-                .thenBy { it.path.normalize().toString() }).forEach { file ->
-                files[file.path.toString()] = FileSummary(file.path, project.name, project.workingDirectory)
+                .thenBy { it.sourcePath.normalize().toString() }).forEach { file ->
+                files[file.sourcePath.toString()] = FileSummary(file.sourcePath, project.name, project.workingDirectory)
             }
         }
     }
 
     fun start(file: ProjectFile, dryRun: Boolean) {
-        current = file.path.toString()
+        current = file.sourcePath.toString()
         started = clock.markNow()
         update { it.copy(dryRun = dryRun) }
     }

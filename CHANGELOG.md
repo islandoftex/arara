@@ -16,6 +16,10 @@ on.
 
 ### Added
 
+* Optional Lua project build directories with incremental input staging,
+  ignore files, explicit mappings, symlink handling and `--clean-build`.
+  Generated outputs remain in the build directory. (see #46)
+
 * A separate `mptopdf` rule for converting MetaPost figures to PDF, in Lua
   and legacy YAML/MVEL. (see #117)
 

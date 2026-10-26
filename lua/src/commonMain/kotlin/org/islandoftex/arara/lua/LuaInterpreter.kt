@@ -52,7 +52,7 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
 
     @Suppress("ThrowsCount")
     private fun project(table: LuaTable, context: String, defaultName: String): Project {
-        ProjectFields.keys(table, setOf("name", "working_directory", "files", "dependencies"), context)
+        ProjectFields.keys(table, setOf("name", "working_directory", "files", "dependencies", "build"), context)
         val name = ProjectFields.string(table["name"], "$context.name") ?: defaultName
         if (name.isBlank()) throw ProjectParseException(messages.errorScriptNonblank("$context.name"))
         val directory = ProjectFields.string(table["working_directory"], "$context.working_directory")
@@ -80,8 +80,15 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
         if (entries.isEmpty()) throw ProjectParseException(messages.errorScriptEmpty("$context.files"))
         val dependencies = ProjectFields.table(table["dependencies"], "$context.dependencies")
             ?.let { ProjectFields.strings(it, "$context.dependencies").toSet() } ?: emptySet()
-        return org.islandoftex.arara.core.files.Project(name, directory, entries, dependencies)
+        return org.islandoftex.arara.core.files.Project(
+            name, directory, entries, dependencies, build(table, directory, context)
+        )
     }
+
+    private fun build(table: LuaTable, directory: MPPPath, context: String) =
+        ProjectFields.table(table["build"], "$context.build")?.let {
+            ProjectBuildFields.parse(it, directory, "$context.build")
+        }
 
     /** A table with named fields denotes one project; a positional table denotes a project list. */
     @Suppress("ThrowsCount")
@@ -141,7 +148,7 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
                 }
             }.toSet()
             return org.islandoftex.arara.core.files.Project(
-                project.name, project.workingDirectory, files, project.dependencies
+                project.name, project.workingDirectory, files, project.dependencies, project.buildDirectory
             )
         }
     }

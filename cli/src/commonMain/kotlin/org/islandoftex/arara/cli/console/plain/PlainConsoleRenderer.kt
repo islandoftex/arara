@@ -309,7 +309,8 @@ class PlainConsoleRenderer : ConsoleRenderer {
 
     override fun printFileInformation(file: ProjectFile) {
         printWrapped(LanguageController.messages.infoDisplayFileInformation(
-            file.path.fileName, DisplayUtils.byteSizeToString(file.path.fileSize), file.path.lastModified.toString()
+            file.path.fileName, DisplayUtils.byteSizeToString(file.sourcePath.fileSize),
+            file.sourcePath.lastModified.toString()
         ))
         println()
     }

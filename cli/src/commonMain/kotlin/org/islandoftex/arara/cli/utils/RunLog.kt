@@ -33,11 +33,11 @@ object RunLog {
     /** Record input metadata when informational logging is enabled. */
     fun fileInformation(file: ProjectFile) {
         if (!EventLog.isInfoEnabled) return
-        val size = file.path.fileSize
+        val size = file.sourcePath.fileSize
         EventLog.info(
             "file.started",
-            "Processing \"${file.path}\" (size: $size bytes, last modified: ${file.path.lastModified})",
-            mapOf("path" to file.path.toString(), "sizeBytes" to size)
+            "Processing \"${file.path}\" (size: $size bytes, last modified: ${file.sourcePath.lastModified})",
+            mapOf("path" to file.path.toString(), "sourcePath" to file.sourcePath.toString(), "sizeBytes" to size)
         )
     }
 

@@ -13,6 +13,7 @@ internal object RuntimeDiagnostics {
         val fields = buildMap<String, Any> {
             put("project", project.name)
             put("workingDirectory", project.workingDirectory.toString())
+            put("executionDirectory", project.executionDirectory.toString())
             put("invocationDirectory", MPPPath(".").toString())
             put("applicationPath", RunLog.applicationPath)
             put("preferredEngine", preferredEngine)

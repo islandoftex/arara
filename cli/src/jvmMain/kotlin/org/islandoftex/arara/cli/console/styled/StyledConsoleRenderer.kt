@@ -96,8 +96,8 @@ class StyledConsoleRenderer internal constructor(
         displayResult = false
         displayException = false
         val name = file.path.fileName
-        val metadata = DisplayUtils.byteSizeToString(file.path.fileSize) +
-            " · " + file.path.lastModified
+        val metadata = DisplayUtils.byteSizeToString(file.sourcePath.fileSize) +
+            " · " + file.sourcePath.lastModified
         val title = hyperlink(name, file.path.toJVMPath().toUri().toASCIIString())
         val fill = layout.width - layout.cells(name) - layout.cells(metadata) - HEADER_SPACING
         if (fill > 0) {
