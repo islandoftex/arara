@@ -7,8 +7,17 @@ import org.apache.logging.log4j.message.MapMessage
 internal actual object EventLog {
     private val logger = LogManager.getLogger(RunLog::class.java)
 
+    actual val isTraceEnabled: Boolean get() = logger.isTraceEnabled
     actual val isInfoEnabled: Boolean get() = logger.isInfoEnabled
     actual val isErrorEnabled: Boolean get() = logger.isErrorEnabled
+
+    actual fun trace(event: String, message: String, fields: Map<String, Any>) {
+        if (logger.isTraceEnabled) logger.trace(EventMessage(event, message, fields))
+    }
+
+    actual fun debug(event: String, message: String, fields: Map<String, Any>) {
+        if (logger.isDebugEnabled) logger.debug(EventMessage(event, message, fields))
+    }
 
     actual fun info(event: String, message: String, fields: Map<String, Any>) {
         if (logger.isInfoEnabled) logger.info(EventMessage(event, message, fields))

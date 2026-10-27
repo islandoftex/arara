@@ -443,6 +443,16 @@ object BrazilianPortugueseMessages : AraraMessages {
     override val infoLabelNoAuthors: String =
         "Nenhum autor informado"
 
+    override val infoDisplayDiagnosticsTitle = "Diagnósticos das ferramentas"
+
+    override val infoDisplayDiagnosticLevel = "Nível"
+
+    override val infoDisplayDiagnosticTool = "Ferramenta"
+
+    override val infoDisplayDiagnosticMessage = "Mensagem"
+
+    override val infoDisplayDiagnosticCount = "Total"
+
     override val infoLabelOnWarning: String =
         "AVISO"
 

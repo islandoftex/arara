@@ -31,8 +31,9 @@ to easily spot each entry.
 
 `--log-level` selects the minimum recorded severity: `trace` (the default),
 `debug`, `info`, `warn` or `error`. It applies to text and JSON logs without
-changing console verbosity. Tool output is recorded at `info`, so `warn` and
-`error` omit it. Lua configuration uses `log.level`; YAML uses `loglevel`.
+changing console verbosity. Recognized tool messages use their reported severity;
+unrecognized output remains at `trace`. Lua configuration uses `log.level`;
+YAML uses `loglevel`.
 
 `--log-retention on-failure` keeps logs only when the invocation finishes
 unsuccessfully, including errors and interruption. Warnings alone do not keep
@@ -193,36 +194,37 @@ Interpreting task "PDFTeX engine" from rule "PDFTeX"
 System command: [ pdftex, doc12.tex ]
 ```
 
-After proper task interpretation, the underlying execution library of arara
-executes the provided system command and includes the output from both output
-and error streams in an *output buffer* block inside the log file.
+After proper task interpretation, arara executes the system command and analyzes
+its captured output and error streams. Common messages from the standard tools
+are logged at `error`, `warn` or `info`; detailed and unrecognized output remains
+at `trace`. For example:
 
 ```text
----------------------- BEGIN OUTPUT BUFFER ----------------------
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018)
-(preloaded format=pdftex)
-restricted \write18 enabled.
-entering extended mode
-(./doc12.tex [1{/usr/local/texlive/2018/texmf-var/fonts/map/
-pdftex/updmap/pdfte
-x.map}] )</usr/local/texlive/2018/texmf-dist/fonts/type1/
-public/amsfonts/cm/cmr
-10.pfb>
-Output written on doc12.pdf (1 page, 11849 bytes).
-Transcript written on doc12.log.
------------------------ END OUTPUT BUFFER -----------------------
+INFO  - This is pdfTeX, Version 3.141592653
+TRACE - (./doc12.tex
+WARN  - LaTeX Warning: There were undefined references.
+INFO  - Output written on doc12.pdf (1 page, 11849 bytes).
+INFO  - Transcript written on doc12.log.
 ```
 
-Observe that the above output buffer block contains the relevant information
-about the `pdftex` execution on the provided file. It is possible to write a
-shell script to extract these blocks from the log file, as a means to provide
-individual information on each execution. The process exit code and duration
-are recorded before the task result:
+Warnings and errors retain their continuation lines and any reported source
+location. Their severity does not change the command's exit check or the final
+run outcome. The process exit code and duration are recorded before the task result:
 
 ```text
 System command exited with value 0 after 25 ms
 Task result: SUCCESS
 ```
+
+In styled mode, the final summary includes a warnings and errors table for each
+processed file with diagnostics. Repeated messages are grouped with an occurrence
+count, including repeated compilation passes. These tables remain available when
+logging is disabled or a stricter log level filters out warnings.
+
+Analysis recognizes common output formats; it cannot identify every message from
+every tool version or language. It reads captured command output, without opening
+separate tool transcripts such as `.log`, `.blg` or `.ilg` files. Use `trace` logging
+to retain output that was not recognized.
 
 The execution proceeds to the next directive in the list and then interprets the
 `clean` rule. The same steps previously described are applied in this
@@ -240,7 +242,7 @@ Task result: SUCCESS
 ```
 
 {% messagebox(title="Command output and failures") %}
-Boolean tasks record their value without an output buffer. System commands with
+Boolean tasks record their value without tool-output analysis. System commands with
 no output produce the explicit silent-output record shown above. Output captured
 before a process failure is retained; failures to start or finish a command also
 record their category, such as `IO`, `TIMEOUT` or `INTERRUPTED`.
@@ -337,7 +339,8 @@ log destinations. Application records add an `event` name and typed `data` field
 | `halt.requested` | `rule`, `engine`, `exitCode`; available `inputFile` |
 | `rule.resolved` | `rule`, `path`, `engine` |
 | `rule.deprecated` (warning) | `rule`, `path`, `engine`, `removalVersion` |
-| `command.output` | `output`, `empty` |
+| `command.output` (trace; silent commands or explicit raw buffers) | `output`, `empty` |
+| `tool.diagnostic` | `tool`, `outputLine`, `argv`; available `rule`, `inputFile`, `workingDirectory`, `sourceFile`, `sourceLine` |
 | `command.completed` | `argv`, `durationMs`, `exitCode`; available `workingDirectory`, `inputFile` |
 | `command.failed` | `argv`, `durationMs`, `failureKind`; available `workingDirectory`, `inputFile` |
 | `task.result` | `success` |

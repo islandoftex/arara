@@ -1,0 +1,129 @@
+# SPDX-License-Identifier: BSD-3-Clause
+# profile, level, anchored diagnostic pattern. Unrecognized output remains TRACE.
+# See tools.tsv for the upstream sources; wrappers also use their child-tool profiles.
+common	ERROR	(?i)^(?:\[[^\]]+\]\s*)?\[?(?:ERROR|FATAL(?: ERROR)?|CRITICAL)(?:\s*[:\]-]|\s+\[)
+common	WARN	(?i)^(?:\[[^\]]+\]\s*)?\[?(?:WARNING|WARN)(?:\s*[:\]-]|\s+\[)
+common	INFO	(?i)^(?:\[[^\]]+\]\s*)?\[?(?:INFO|NOTICE)(?:\s*[:\]-]|\s+\[)
+common	DEBUG	(?i)^(?:\[[^\]]+\]\s*)?\[?DEBUG(?:\s*[:\]-]|\s+\[)
+tex	WARN	^(?:LaTeX(?: Font)?|Package \S+|Class \S+) Warning:
+tex	WARN	^(?:Overfull|Underfull|Loose|Tight) \\[hv]box\b|^Missing character:
+tex	WARN	^\[warning:|^\[MP to PDF\].*\[warning:
+tex	ERROR	^!\s|^(?:LaTeX|Package \S+|Class \S+) Error:|^(?:Undefined control sequence|Emergency stop|Fatal error occurred)
+tex	INFO	^This is (?:.*TeX|MetaPost)|^LaTeX2e |^Output written on |^Transcript written on |^\d+ output files? written:|^No pages of output\.
+tex	TRACE	^\(|^\[\d|^entering |^restricted |^Document Class:|^L3 programming layer
+bibtex	WARN	^Warning--|^\(There (?:was|were) [1-9]\d* warnings?\)
+bibtex	ERROR	^I couldn't (?:open|find)|^I found no |^Illegal, another |^You're missing |^I was expecting |^Repeated entry|^Bad cross reference|^Sorry---|^\(There (?:was|were) [1-9]\d* error messages?\)
+bibtex	INFO	^This is (?:8-bit |Unicode )?(?:BibTeX|pBibTeX|upBibTeX)|^The top-level auxiliary file:|^The style file:|^Database file #
+biber	ERROR	^(?:\[\d+\]\s+\S+\s+)?(?:ERROR|FATAL)\s+-
+biber	WARN	^(?:\[\d+\]\s+\S+\s+)?WARN\s+-
+biber	INFO	^(?:\[\d+\]\s+\S+\s+)?INFO\s+-
+biber	DEBUG	^(?:\[\d+\]\s+\S+\s+)?DEBUG\s+-
+index	ERROR	^!! (?:Input index|Input style|Output) error|^Unknown option|^Couldn't find input index file
+index	WARN	^## Warning|^Warning|^.*\b[1-9]\d* (?:warnings|rejected)\b
+index	INFO	^This is (?:makeindex|upmendex|mendex)|^Scanning |^Sorting |^Generating |^Output written in |^Transcript written in
+xindy	ERROR	^ERROR:|^\*\*\* - |^Unknown (?:attribute|location|keyword)
+xindy	WARN	^WARNING:|^WARNING \[
+xindy	INFO	^This is (?:xindy|texindy)|^Reading |^Markup written into file|^Index written into file
+java	ERROR	^Exception in thread |^Error:|^Fatal error:
+java	WARN	^Warning:|^WARNING:
+java	INFO	^(?:bib2gls|datatooltk|authorindex)\s+\d|^Reading |^Writing |^Written |^Parsing |^Transcript written to
+context	ERROR	^tex error\s+>|^lua error\s+>|^fatal error\s+>
+context	WARN	^.*>\s+(?:warning(?:[:\s])|missing character\b|missing glyph\b)
+context	INFO	^(?:resolvers|system|fonts|backend|mkiv lua stats|mtx-context)\s+>
+dvi	ERROR	^(?:dvipdfmx|xdvipdfmx|dvipdfm):fatal:|^\*\* ERROR \*\*|^Output file removed\.
+dvi	WARN	^(?:dvipdfmx|xdvipdfmx|dvipdfm):warning:|^\*\* WARNING \*\*
+dvi	INFO	^.*\.(?:dvi|xdv) -> |^\d+ bytes written
+dvips	ERROR	^(?:[^:]*[/\\])?dvips(?:\.exe)?: (?:!|.*(?:couldn't|could not|not found|Can't|can't|cannot))
+dvips	WARN	^(?:[^:]*[/\\])?dvips(?:\.exe)?: (?:warning|Warning)|^Warning:
+dvips	INFO	^This is dvips|^\[\d+\]
+ghostscript	ERROR	^Error: /|^(?:GPL |AFPL )?Ghostscript.*Unrecoverable error|^Unrecoverable error:|^\*\*\*\* Error:
+ghostscript	WARN	^\*\*\*\* Warning:|^\s*Warning:|^\*\*\*\* This file had errors
+ghostscript	INFO	^(?:GPL |AFPL )?Ghostscript \d|^Processing pages |^Page \d+|^Loading .* font
+dvisvgm	ERROR	^ERROR:|^error:
+dvisvgm	WARN	^WARNING:|^warning:
+dvisvgm	INFO	^processing (?:DVI|PDF|EPS) file|^page \d+|^graphic size:|^output written to |^\d+ of \d+ pages? converted
+imagemagick	ERROR	^(?:magick|convert|animate)(?:\.exe)?: .* @ (?:error|fatal)/
+imagemagick	WARN	^(?:magick|convert|animate)(?:\.exe)?: .* @ warning/
+imagemagick	INFO	^Version: ImageMagick|^(?:magick|convert|animate): (?:writing|reading)\b
+qpdf	ERROR	^qpdf: (?!operation succeeded|.*%$).*\S
+qpdf	WARN	^WARNING:|^qpdf: operation succeeded with warnings
+qpdf	INFO	^checking |^PDF Version:|^File is not (?:encrypted|linearized)|^No syntax or stream encoding errors found|^qpdf:.*%$
+poppler	ERROR	^Syntax Error(?:\s|:)|^I/O Error:|^Command Line Error:|^Error (?:opening|creating)
+poppler	WARN	^Syntax Warning(?:\s|:)
+poppler	INFO	^pdftocairo version \d
+pdftk	ERROR	^Error:|^Failed to |^Unexpected Exception|^Unhandled Java Exception
+pdftk	WARN	^Warning:
+pdftk	INFO	^pdftk port to java |^pdftk \d|^Done\.
+pdfcrop	ERROR	^!!! (?:Error|ERROR)|^!!!.*(?:failed|not found|cannot)
+pdfcrop	WARN	^!!! (?:Warning|WARNING)
+pdfcrop	INFO	^PDFCROP |^==> |^\*\*\* (?:Page|Pages|BoundingBox|Running|Output)
+asymptote	ERROR	^error:|^syntax error|^runtime: |^Cannot execute
+asymptote	WARN	^warning:
+asymptote	INFO	^Asymptote version |^Wrote |^Wrote output to
+gnuplot	ERROR	^line \d+:|^gnuplot>.*error|^undefined variable:|^unrecognized option
+gnuplot	WARN	^Warning:|^warning:
+gnuplot	INFO	^G N U P L O T|^Version \d
+fig2dev	ERROR	^fig2dev: (?:Can't|Cannot|Unknown|Invalid)|^Unknown (?:graphics )?language|^Error in |^Incomplete (?:line|object)
+fig2dev	WARN	^Warning:|^fig2dev: Warning:
+fig2dev	INFO	^fig2dev Version |^fig2dev version
+make	ERROR	^(?:.*[/\\])?(?:g?make)(?:\[\d+\])?: \*\*\*|^.*:\d+: \*\*\*
+make	WARN	^(?:.*[/\\])?(?:g?make)(?:\[\d+\])?: .*\b(?:warning:|Error \d+ \(ignored\))
+make	INFO	^(?:.*[/\\])?(?:g?make)(?:\[\d+\])?: (?:Entering directory|Leaving directory|Nothing to be done|.*up to date)
+latexmk	ERROR	^Latexmk: (?:Errors|Failure)|^Collected error summary |^Latexmk:.*(?:did not complete|failed)
+latexmk	WARN	^Latexmk: (?:Warnings|Warning|List of undefined refs)|^Latexmk:.*(?:undefined references|undefined citations)
+latexmk	INFO	^Latexmk:|^Run number \d+ of rule |^Rc files read:
+llmk	ERROR	^llmk error:|^\[ERROR\]
+llmk	WARN	^llmk warning:|^\[WARNING\]
+llmk	INFO	^llmk info:|^\[INFO\]
+ltx2any	ERROR	^\[ltx2any\] .*\.\.\. Error\s*$
+ltx2any	WARN	^\[ltx2any\] Warning:
+ltx2any	INFO	^\[ltx2any\]
+spix	ERROR	^spix: error:|^Command .* (?:failed|returned non-zero)|^Traceback \(most recent call last\):
+spix	INFO	^spix |^Running command |^Executing command
+perl	ERROR	^Can't (?:locate|open)|^Compilation failed|^Execution of .* aborted|^syntax error at |^Undefined subroutine |^Died at
+perl	WARN	^Use of uninitialized value |^Possible unintended interpolation |^Name .* used only once:
+pythontex	ERROR	^\* PythonTeX error|^PythonTeX error|^Traceback \(most recent call last\):
+pythontex	WARN	^\* PythonTeX warning|^PythonTeX warning
+pythontex	INFO	^This is PythonTeX|^PythonTeX:|^Summary of (?:errors|warnings)|^ - .* - \d+ error\(s\), \d+ warning\(s\)
+r	ERROR	^Error(?: in |:)|^Execution halted|^Quitting from lines |^Quitting from .+:[0-9]
+r	WARN	^Warning messages?:|^Warning in[ ]
+r	INFO	^processing file:|^output file:|^\d+/\d+|^\s*\|.*\d+%
+scripts	ERROR	^Traceback \(most recent call last\):|^(?:[A-Za-z_][A-Za-z0-9_.]*(?:Error|Exception)|KeyboardInterrupt|SystemExit):|^(?:texlua|lua): .+:\d+:
+scripts	WARN	^.*:\d+: (?:[A-Za-z]+Warning):
+scripts	INFO	^SageMath version |^SageMath Version |^songidx\s+\d
+sketch	INFO	^sketch version |^Sketch version
+texcount	ERROR	^!!!|^ERROR:|^Error:|^File not found:
+texcount	WARN	^WARNING:|^Warning:|^Warning--
+texcount	INFO	^File: |^Encoding: |^Words (?:in|outside)|^Headers:|^Number of |^Sum count:|^Total
+formatter	ERROR	^\[ERROR\]|^ERROR:|^ERROR\b|^Error:
+formatter	WARN	^\[WARN(?:ING)?\]|^WARN(?:ING)?:|^WARN\b
+formatter	INFO	^\[INFO\]|^INFO:|^INFO\b|^latexindent\.pl version |^tex-fmt \d
+formatter	DEBUG	^\[DEBUG\]|^DEBUG:|^DEBUG\b
+xindex	ERROR	^Error:|^xindex:.*(?:[Ee]rror|[Ff]ailed)|^texlua: .+:\d+:
+xindex	WARN	^Warning:|^xindex:.*[Ww]arning
+xindex	INFO	^xindex \d|^This is xindex|^Reading |^Sorting |^Writing[ ]
+detex	ERROR	^detex:.*(?:can't|cannot|could not|error)|^opendetex:.*(?:can't|cannot|could not|error)
+detex	WARN	^detex:.*warning|^opendetex:.*warning
+filesystem	ERROR	^(?:rm|cp|mv): (?!(?:warning|Warning):)|^The system cannot find |^Access is denied\.|^A duplicate file name exists|^The process cannot access the file|^Could Not Find[ ]
+filesystem	INFO	^removed |^renamed |^'.*' -> |^\s*\d+ file\(s\) (?:copied|moved)
+common	TRACE	(?i)^(?:\[[^\]]+\]\s*)?\[?TRACE(?:\s*[:\]-]|\s+\[)
+biber	TRACE	^(?:\[\d+\]\s+\S+\s+)?TRACE\s+-
+formatter	TRACE	^TRACE\b
+glossaries	ERROR	^makeglossaries: Need exactly|^Auxiliary file .* doesn't exist|^Unable to (?:chdir|create)|^No \\@istfilename found|^Error in merging
+glossaries	WARN	^Warning:|^WARNING:
+glossaries	INFO	^makeglossaries(?:-lite)? version |^added glossary type|^Markup written into file
+perl	ERROR	^BibTeX error\. Aborting
+llmk	DEBUG	^llmk debug-[^:]+:
+poppler	ERROR	^(?:Config Error|Permission Error|Unimplemented Feature|Internal Error)(?:\s|:)
+xindex	ERROR	^Sorry\. but we need at least LuaTeX |^Use option -s for StdIn or define an input data file!
+xindex	INFO	^xindex version |^Detected language:
+pdfcrop	INFO	^\* Page \d+:|^PDFCROP \d|^==>\s
+tex	WARN	^(?:pdfTeX|LuaTeX|XeTeX|eTeX) warning\b|^warning\s+\(
+authorindex	ERROR	^You have to include \.aux file|^You must specify at least one BibTeX database|^\\aisee and \\aialso are mutually|^Can't (?:create|replace)
+authorindex	WARN	^Multiple \\authorindexstyle
+sketch	ERROR	^(?:error|fatal), |^summary:.*\b[1-9]\d* (?:error|fatal)
+sketch	WARN	^warning, |^summary:.*\b[1-9]\d* warning
+sketch	INFO	^remark, |^summary: no errors$
+filesystem	WARN	^(?:rm|cp|mv): (?:warning|Warning):
+tex	INFO	^(?:LaTeX(?: Font)?|Package \S+|Class \S+) Info:
+index	ERROR	^(?:Input index|Index style|Source log) file .* not found\.|^Couldn't find input index file

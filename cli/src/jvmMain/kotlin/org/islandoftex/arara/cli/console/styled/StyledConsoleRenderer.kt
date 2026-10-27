@@ -338,7 +338,7 @@ class StyledConsoleRenderer internal constructor(
             terminal.println(terminal.theme.danger(displaySeparator()))
             if (lines.size > FAILURE_TAIL_LINES) {
                 layout.print("...")
-                if (Session.loggingOptions.format != LogFormat.NONE && Session.loggingOptions.level <= LogLevel.INFO) {
+                if (Session.loggingOptions.format != LogFormat.NONE && Session.loggingOptions.level == LogLevel.TRACE) {
                     layout.print(muted(LanguageController.messages.infoDisplayFullOutputInLog))
                 }
             }

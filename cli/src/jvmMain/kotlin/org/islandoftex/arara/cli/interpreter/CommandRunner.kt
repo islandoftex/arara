@@ -4,6 +4,7 @@ package org.islandoftex.arara.cli.interpreter
 import kotlin.time.TimeSource
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.session.Command
+import org.islandoftex.arara.cli.diagnostics.ToolOutputAnalysis
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.cli.utils.RunLog
 import org.islandoftex.arara.core.localization.LanguageController
@@ -30,7 +31,7 @@ internal object CommandRunner {
     @Throws(AraraException::class)
     internal fun run(command: Command): Int = runResult(command).exitCode
 
-    internal fun runResult(command: Command): SystemCommandResult.Completed {
+    internal fun runResult(command: Command, rule: String? = null): SystemCommandResult.Completed {
         val start = TimeSource.Monotonic.markNow()
         val result = Environment.executeSystemCommandResult(
             command,
@@ -39,7 +40,7 @@ internal object CommandRunner {
         )
         val milliseconds = start.elapsedNow().inWholeMilliseconds
         return result.let {
-            RunLog.commandOutput(when (it) {
+            ToolOutputAnalysis.record(command, rule, when (it) {
                 is SystemCommandResult.Completed -> it.output
                 is SystemCommandResult.Failed -> it.output
             })

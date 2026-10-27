@@ -443,6 +443,16 @@ object DutchMessages : AraraMessages {
     override val infoLabelNoAuthors: String =
         "Geen auteurs opgegeven"
 
+    override val infoDisplayDiagnosticsTitle = "Gereedschapsdiagnostiek"
+
+    override val infoDisplayDiagnosticLevel = "Niveau"
+
+    override val infoDisplayDiagnosticTool = "Programma"
+
+    override val infoDisplayDiagnosticMessage = "Melding"
+
+    override val infoDisplayDiagnosticCount = "Aantal"
+
     override val infoLabelOnWarning: String =
         "WAARSCHUWING"
 

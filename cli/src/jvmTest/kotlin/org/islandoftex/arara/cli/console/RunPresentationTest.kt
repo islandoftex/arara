@@ -6,12 +6,32 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.TestTimeSource
+import org.islandoftex.arara.api.configuration.LogLevel
 import org.islandoftex.arara.api.files.MPPPath
+import org.islandoftex.arara.cli.diagnostics.ToolDiagnostic
 import org.islandoftex.arara.core.files.FileType
 import org.islandoftex.arara.core.files.Project
 import org.islandoftex.arara.core.files.ProjectFile
 
 class RunPresentationTest {
+    @Test
+    fun diagnosticSnapshotsAreStableAndPreparationClearsPreviousMessages() {
+        val ledger = RunPresentation()
+        val root = MPPPath(".")
+        val file = ProjectFile(root.resolve("run.tex"), FileType("tex", "^%"))
+        val projects = listOf(Project("project", root, setOf(file)))
+        ledger.prepare(projects)
+        ledger.start(file, false)
+        val warning = ToolDiagnostic("pdflatex", LogLevel.WARN, "Warning", 1)
+        ledger.diagnostic(warning)
+        val before = ledger.summary(true, false)
+        ledger.diagnostic(ToolDiagnostic("pdflatex", LogLevel.ERROR, "Error", 2))
+        assertEquals(listOf(warning), before.files.single().diagnostics)
+        assertEquals(2, ledger.summary(false, false).files.single().diagnostics.size)
+        ledger.prepare(projects)
+        assertEquals(emptyList(), ledger.summary(true, false).files.single().diagnostics)
+    }
+
     @Test
     fun ledgerUsesExecutionOrderAndKeepsUnreachedFilesDistinctFromFailures() {
         val clock = TestTimeSource()

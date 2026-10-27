@@ -87,6 +87,7 @@ class Interpreter(
      * @param conditional The conditional applied to the run (only for printing).
      * @param authors The rule authors (only for printing).
      * @param exitCheck Determines whether the process exit code indicates success.
+     * @param ruleIdentifier Rule context for wrappers invoking other tools.
      * @return Success of the execution.
      * @throws AraraException Execution failed.
      */
@@ -95,7 +96,8 @@ class Interpreter(
         command: Command,
         conditional: DirectiveConditional,
         authors: List<String>,
-        exitCheck: (Int) -> Boolean
+        exitCheck: (Int) -> Boolean,
+        ruleIdentifier: String
     ): Boolean {
         logger.info {
             "System command: $command"
@@ -105,7 +107,7 @@ class Interpreter(
 
         if (executionOptions.executionMode != ExecutionMode.DRY_RUN) {
             DisplayUtils.renderer.printTaskDetails(command.toString(), conditional, authors)
-            val result = CommandRunner.runResult(command)
+            val result = CommandRunner.runResult(command, ruleIdentifier)
             val code = result.exitCode
             commandExitCode = if (code == 0) 1 else code
             success = exitCheck(code)
@@ -171,7 +173,7 @@ class Interpreter(
                     )
                     is Command -> runCommand(
                         current, conditional,
-                        rule.authors, evaluator::isSuccessful
+                        rule.authors, evaluator::isSuccessful, rule.identifier
                     )
                     else ->
                         throw AraraExceptionWithHeader(

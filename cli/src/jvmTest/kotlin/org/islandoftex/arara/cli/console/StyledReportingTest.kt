@@ -224,6 +224,8 @@ class StyledReportingTest {
         assertFalse("log file" in noLog)
         Session.loggingOptions = LoggingOptions(format = LogFormat.JSON)
         assertTrue("the full output is in the log file" in capture { renderer.printCommandFailure(tail) })
+        Session.loggingOptions = LoggingOptions(format = LogFormat.JSON, level = LogLevel.INFO)
+        assertFalse("log file" in capture { renderer.printCommandFailure(tail) })
         Session.loggingOptions = LoggingOptions(format = LogFormat.JSON, level = LogLevel.WARN)
         assertFalse("log file" in capture { renderer.printCommandFailure(tail) })
         assertFalse("..." in capture { renderer.printCommandFailure("short output\n") })

@@ -443,6 +443,16 @@ object NorfolkMessages : AraraMessages {
     override val infoLabelNoAuthors: String =
         "Wuh thass a rum ole dew. There ent no names here. Yew're gotta guess who wrote this masterous jarb"
 
+    override val infoDisplayDiagnosticsTitle = "Tool diagnostics"
+
+    override val infoDisplayDiagnosticLevel = "Level"
+
+    override val infoDisplayDiagnosticTool = "Tool"
+
+    override val infoDisplayDiagnosticMessage = "Message"
+
+    override val infoDisplayDiagnosticCount = "Count"
+
     override val infoLabelOnWarning: String =
         "MIND OUT, BOR"
 

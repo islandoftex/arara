@@ -3,13 +3,16 @@ package org.islandoftex.arara.cli.console
 
 import kotlin.time.TimeMark
 import kotlin.time.TimeSource
+import org.islandoftex.arara.api.configuration.LogLevel
 import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.api.files.ProjectFile
+import org.islandoftex.arara.cli.diagnostics.ToolDiagnostic
 import org.islandoftex.arara.core.dependencies.ProjectValidation
 
 /** Invocation-owned ledger; a renderer never owns execution state. */
 internal class RunPresentation(private val clock: TimeSource = TimeSource.Monotonic) {
     private val files = linkedMapOf<String, FileSummary>()
+    private val fileDiagnostics = mutableMapOf<String, MutableList<ToolDiagnostic>>()
     private var current: String? = null
     private var started: TimeMark? = null
     var deprecatedYamlUsed: Boolean = false
@@ -23,6 +26,7 @@ internal class RunPresentation(private val clock: TimeSource = TimeSource.Monoto
 
     fun prepare(projects: List<Project>) {
         files.clear()
+        fileDiagnostics.clear()
         deprecatedYamlUsed = false
         current = null
         started = null
@@ -42,6 +46,12 @@ internal class RunPresentation(private val clock: TimeSource = TimeSource.Monoto
 
     fun task() = update { it.copy(tasks = it.tasks + 1) }
 
+    fun diagnostic(diagnostic: ToolDiagnostic) {
+        if (diagnostic.level >= LogLevel.WARN) current?.let { path ->
+            fileDiagnostics.getOrPut(path) { mutableListOf() }.add(diagnostic)
+        }
+    }
+
     fun skip() = update { it.copy(skipped = it.skipped + 1) }
 
     fun finish(exitCode: Int) {
@@ -50,7 +60,8 @@ internal class RunPresentation(private val clock: TimeSource = TimeSource.Monoto
         started = null
     }
 
-    fun summary(success: Boolean, dryRun: Boolean): RunSummary = RunSummary(success, dryRun, files.values.toList())
+    fun summary(success: Boolean, dryRun: Boolean): RunSummary = RunSummary(success, dryRun,
+        files.values.map { file -> file.copy(diagnostics = fileDiagnostics[file.path.toString()]?.toList().orEmpty()) })
 
     private fun update(transform: (FileSummary) -> FileSummary) {
         current?.let { path -> files[path]?.let { files[path] = transform(it) } }

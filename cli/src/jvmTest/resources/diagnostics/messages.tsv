@@ -1,0 +1,113 @@
+# SPDX-License-Identifier: BSD-3-Clause
+# Executable, expected severity, representative upstream diagnostic. Sources: production diagnostics/tools.tsv.
+pdflatex	ERROR	! Undefined control sequence.
+xelatex	ERROR	! LaTeX Error: File `missing.sty' not found.
+luatex	WARN	Missing character: There is no Ж in font cmr10!
+latex	WARN	LaTeX Warning: There were undefined references.
+latex-dev	WARN	Package hyperref Warning: Token not allowed in a PDF string
+pdftex	WARN	Overfull \hbox (12.0pt too wide) in paragraph at lines 4--5
+ptex	WARN	Underfull \vbox (badness 10000) has occurred while \output is active
+mpost	INFO	This is MetaPost, version 2.11
+pdflatex	INFO	Output written on example.pdf (1 page, 1234 bytes).
+pdflatex	TRACE	(./warning.tex
+bibtex	ERROR	I couldn't open database file missing.bib
+bibtex	ERROR	I found no \citation commands---while reading file run.aux
+bibtex8	WARN	Warning--I didn't find a database entry for "missing"
+bibtexu	INFO	This is BibTeXu, Version 0.99d
+pbibtex	INFO	The top-level auxiliary file: run.aux
+upbibtex	TRACE	A level-1 auxiliary file: chapter.aux
+biber	ERROR	ERROR - Cannot find 'run.bcf'!
+biber	WARN	[129] Biber.pm:130> WARN - I didn't find a database entry for 'missing'
+biber	INFO	INFO - This is Biber 2.21
+biber	DEBUG	DEBUG - Looking for bibtex file 'run.bib'
+biber	TRACE	TRACE - Found crossref dependency
+makeindex	ERROR	!! Input index error (file = run.idx, line = 12):
+makeindex	WARN	Generating output file run.ind....done (8 lines written, 2 warnings).
+upmendex	INFO	Scanning input file run.idx....done (3 entries accepted, 0 rejected).
+makeindex	INFO	Generating output file run.ind....done (8 lines written, 0 warnings).
+xindy	ERROR	ERROR: Could not find file run.idx.
+texindy	WARN	WARNING: unknown cross-reference-class `see'
+xindy	INFO	Markup written into file run.ind.
+makeglossaries	ERROR	Auxiliary file 'run.aux' doesn't exist. Have you run LaTeX?
+makeglossaries-lite	WARN	Warning: File 'run.glo' doesn't exist.
+makeglossaries	INFO	makeglossaries version 4.52
+bib2gls	ERROR	Error: Missing aux file: run.aux
+datatooltk	WARN	Warning: No data found
+bib2gls	INFO	Reading run.aux
+context	ERROR	tex error       > tex error on line 10 in file ./run.tex: Undefined control sequence
+context	WARN	fonts           > warning: missing glyph
+context	INFO	resolvers       > formats > executing runner 'run luatex format'
+mptopdf	WARN	[MP to PDF] (./figure.1) [warning: the width is less than 1in]
+dvipdfm	ERROR	** ERROR ** Could not open output file
+xdvipdfmx	WARN	xdvipdfmx:warning: Unknown special
+dvipdfmx	INFO	run.dvi -> run.pdf
+dvips	ERROR	dvips: ! Couldn't find header file: missing.pro
+dvips	INFO	This is dvips(k) 2025.1
+gs	ERROR	Error: /undefined in missing
+gswin64c	ERROR	GPL Ghostscript 10.05.1: Unrecoverable error, exit code 1
+ps2pdf	WARN	**** Warning: An error occurred while reading an XREF table.
+gs	INFO	Processing pages 1 through 3.
+dvisvgm	ERROR	ERROR: can't open file 'run.dvi'
+dvisvgm	WARN	WARNING: can't embed font 'missing'
+dvisvgm	INFO	output written to run.svg
+magick	ERROR	magick: unable to open image 'run.png' @ error/blob.c/OpenBlob/2924.
+convert	WARN	convert: unknown image property '%[missing]' @ warning/property.c/InterpretImageProperties/4261.
+animate	INFO	Version: ImageMagick 7.1.2
+qpdf	ERROR	qpdf: warning.pdf: invalid password
+qpdf	WARN	WARNING: run.pdf: file is damaged
+qpdf	WARN	qpdf: operation succeeded with warnings; resulting file may have some problems
+qpdf	INFO	checking run.pdf
+pdftocairo	ERROR	Syntax Error: Couldn't find trailer dictionary
+pdftocairo	WARN	Syntax Warning (100): May not be a PDF file
+pdftk	ERROR	Error: Unable to find file.
+pdftk	WARN	Warning: There are multiple form fields.
+pdfcrop	ERROR	!!! Error: Input file `run.pdf' not found!
+pdfcrop	WARN	!!! Warning: Empty Bounding Box is returned by Ghostscript!
+pdfcrop	INFO	PDFCROP 1.42
+asy	ERROR	runtime: cannot open output file
+gnuplot	WARN	warning: Skipping data file with no valid points
+fig2dev	ERROR	Unknown graphics language missing
+fig2dev	WARN	Warning: Missing font
+make	ERROR	make[1]: *** [Makefile:12: all] Error 1
+make	WARN	make: warning: overriding recipe for target 'all'
+make	INFO	make: Nothing to be done for 'all'.
+latexmk	ERROR	Latexmk: Errors, so I did not complete making targets
+latexmk	INFO	Latexmk: Missing input file 'run.aux' message in .log file:
+llmk	ERROR	llmk error: cannot open run.toml
+llmk	WARN	llmk warning: unknown key
+llmk	INFO	llmk info: running command
+llmk	DEBUG	llmk debug-exec: pdflatex run.tex
+ltx2any	ERROR	[ltx2any] Error: Failed to compile document
+ltx2any	WARN	[ltx2any] Warning: There were warnings
+ltx2any	INFO	[ltx2any] Running pdflatex
+spix	ERROR	spix: error: argument FILE: file not found
+perltex	ERROR	Can't locate missing.pm in @INC
+latexindent	WARN	WARN: YAML setting not found
+latexindent	INFO	INFO: latexindent.pl version 3.24
+tex-fmt	ERROR	ERROR: Failed to read file
+tex-fmt	DEBUG	DEBUG Checking configuration
+pythontex	ERROR	* PythonTeX error
+pythontex	WARN	* PythonTeX warning
+pythontex	INFO	This is PythonTeX 0.18
+rscript	ERROR	Error in eval(expr) : object 'missing' not found
+rscript	WARN	Warning message:
+rscript	INFO	processing file: run.Rnw
+sage	ERROR	Traceback (most recent call last):
+sage	ERROR	ZeroDivisionError: division by zero
+songidx	ERROR	songidx.lua:12: attempt to index a nil value
+texcount	ERROR	!!! File not found: missing.tex !!!
+texcount	INFO	Words in text: 123
+xindex	ERROR	Use option -s for StdIn or define an input data file!
+xindex	INFO	xindex version 0.72
+opendetex	ERROR	detex: can't open file missing.tex
+rm	ERROR	rm: cannot remove 'run.aux': Permission denied
+cp	INFO	'run.tex' -> 'build/run.tex'
+authorindex	WARN	Multiple \authorindexstyle
+authorindex	ERROR	BibTeX error. Aborting leaving all temporary files tmp.123
+sketch	ERROR	scene.sk(12) : error, syntax error
+sketch	WARN	scene.sk(16) : warning, degenerate polygon
+sketch	INFO	summary: no errors
+pdflatex	INFO	LaTeX Font Info: Checking defaults for OML/cmm/m/it on input line 4.
+pdflatex	INFO	Package hyperref Info: Link coloring OFF on input line 5.
+makeindex	ERROR	Input index file missing.idx not found.
+makeindex	ERROR	Index style file missing.ist not found.

@@ -3,6 +3,7 @@ package org.islandoftex.arara.cli.console
 
 import kotlin.time.Duration
 import org.islandoftex.arara.api.files.MPPPath
+import org.islandoftex.arara.cli.diagnostics.ToolDiagnostic
 
 /** Presentation data retained across project configuration and renderer changes. */
 data class FileSummary(
@@ -21,7 +22,9 @@ data class FileSummary(
     /** Directives skipped because their conditions did not hold. */
     val skipped: Int = 0,
     /** Whether this file was evaluated without executing system commands. */
-    val dryRun: Boolean = false
+    val dryRun: Boolean = false,
+    /** Warnings and errors parsed from this file's tools, independently of diagnostic log filtering. */
+    val diagnostics: List<ToolDiagnostic> = emptyList()
 )
 
 /**

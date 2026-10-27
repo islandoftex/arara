@@ -35,6 +35,7 @@ internal class StyledSummaryRenderer(private val terminal: Terminal, private val
                 layout.print("${messages.infoLabelProject} ${project.first} (${project.second})")
             }
             printFiles(files)
+            files.forEach { StyledDiagnosticRenderer(terminal, layout).print(it, displayPath(it)) }
         }
     }
 

@@ -597,6 +597,21 @@ interface AraraMessages {
      */
     val infoLabelNoAuthors: String
 
+    /** Heading of a processed file's tool diagnostics. */
+    val infoDisplayDiagnosticsTitle: String
+
+    /** Diagnostic table severity column. */
+    val infoDisplayDiagnosticLevel: String
+
+    /** Diagnostic table executable column. */
+    val infoDisplayDiagnosticTool: String
+
+    /** Diagnostic table message column. */
+    val infoDisplayDiagnosticMessage: String
+
+    /** Diagnostic table occurrence-count column. */
+    val infoDisplayDiagnosticCount: String
+
     /** The warning dialog label. */
     val infoLabelOnWarning: String
 

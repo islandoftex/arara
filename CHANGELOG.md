@@ -16,6 +16,9 @@ on.
 
 ### Added
 
+* Tool-output analysis for standard rules, with severity-aware diagnostic logs
+  and per-file warnings and errors tables in styled output. (see #7)
+
 * Configurable diagnostic log levels and retention through configuration,
   `--log-level` and `--log-retention`. Successful runs can discard their log
   output while preserving earlier appended records. (see #7)

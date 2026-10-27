@@ -756,6 +756,27 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
                 }
             }
         },
+        "tool_diagnostics_are_filtered_but_styled_summaries_keep_warnings" to { root ->
+            rule(root, native("diagnostics"))
+            luaRule(root, luaNative("diagnostics"))
+            for (engine in listOf("lua", "yaml")) {
+                val flags = listOf("--preferred-engine", engine, "--console", "styled",
+                    "--log-format", "json", "--log-level", "error")
+                val output = execute(root, 0, flags)
+                contains(output, "Tool diagnostics")
+                contains(output, "native-warning")
+                contains(output, "native-error")
+                contains(output, "TOTAL SUCCESS")
+                val events = root.resolve("arara.log").readLines().map { Json.parseToJsonElement(it).jsonObject }
+                val diagnostics = events.filter { it["event"]?.jsonPrimitive?.content == "tool.diagnostic" }
+                check(diagnostics.size == 1) { "Severity filtering lost or duplicated a diagnostic" }
+                check(diagnostics.single().getValue("level").jsonPrimitive.content == "ERROR")
+                execute(root, 0, flags + listOf("--log-format", "none"))
+                val discarded = execute(root, 0, flags + listOf("--log-retention", "on-failure"))
+                contains(discarded, "native-error")
+                check(!root.resolve("arara.log").exists) { "Text diagnostics changed the successful run outcome" }
+            }
+        },
         "log_retention_and_levels_follow_the_invocation_outcome" to { root ->
             rule(root, "return true;")
             val log = root.resolve("arara.log")
@@ -988,6 +1009,13 @@ private fun compileFixture(root: MPPPath, javac: MPPPath) {
                         throw new AssertionError("Native access is not isolated");
                     }
                     System.out.println("NATIVE_ACCESS_ISOLATED");
+                    return;
+                }
+                if (args[0].equals("diagnostics")) {
+                    System.out.println("INFO: native-info");
+                    System.out.println("TRACE: native-trace");
+                    System.err.println("WARNING: native-warning");
+                    System.err.println("ERROR: native-error");
                     return;
                 }
                 System.out.println("SMOKE_STDOUT");

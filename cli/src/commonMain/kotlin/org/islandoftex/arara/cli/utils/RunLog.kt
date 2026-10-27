@@ -116,9 +116,9 @@ object RunLog {
         LinearExecutor.currentFile?.let { put("inputFile", it.path.toString()) }
     }
 
-    /** Record captured tool output, including an explicit empty-output marker. */
+    /** Record an explicitly supplied raw output buffer at trace level. */
     fun commandOutput(output: String) {
-        if (!EventLog.isInfoEnabled) return
+        if (!EventLog.isTraceEnabled) return
         val message = if (output.isBlank()) "The tool produced no output."
             else buildString {
                 appendLine(outputSeparator("BEGIN OUTPUT BUFFER"))
@@ -126,7 +126,7 @@ object RunLog {
                 if (!output.endsWith('\n')) appendLine()
                 append(outputSeparator("END OUTPUT BUFFER"))
             }
-        EventLog.info("command.output", message, mapOf("output" to output, "empty" to output.isBlank()))
+        EventLog.trace("command.output", message, mapOf("output" to output, "empty" to output.isBlank()))
     }
 
     /** Record the command exit code and duration in milliseconds. */

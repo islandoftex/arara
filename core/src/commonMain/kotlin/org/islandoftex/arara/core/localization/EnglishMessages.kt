@@ -443,6 +443,16 @@ object EnglishMessages : AraraMessages {
     override val infoLabelNoAuthors: String =
         "No authors provided"
 
+    override val infoDisplayDiagnosticsTitle = "Tool diagnostics"
+
+    override val infoDisplayDiagnosticLevel = "Level"
+
+    override val infoDisplayDiagnosticTool = "Tool"
+
+    override val infoDisplayDiagnosticMessage = "Message"
+
+    override val infoDisplayDiagnosticCount = "Count"
+
     override val infoLabelOnWarning: String =
         "WARNING"
 

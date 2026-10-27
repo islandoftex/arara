@@ -17,10 +17,11 @@ private class TexIntegration(private val options: Map<String, String>, private v
         "--add-modules=com.sun.jna", "--enable-native-access=com.sun.jna")
 
     private fun execute(
-        root: MPPPath, label: String = "run", expected: Int = 0, reference: String = "run.tex"
+        root: MPPPath, label: String = "run", expected: Int = 0, reference: String = "run.tex",
+        flags: List<String> = emptyList()
     ): String {
         val result = run(launcher + listOf("-Duser.home=$root", "-jar", jar.toString(), "-L", "en",
-            "--preferred-engine", engine, "--verbose", "-d", root.toString(), reference), root,
+            "--preferred-engine", engine, "--verbose", "-d", root.toString()) + flags + reference, root,
             timeoutSeconds = TEX_TIMEOUT_SECONDS)
         root.resolve("$label.output.txt").writeText(result.output)
         check(result.status == expected) { "Expected exit $expected, got ${result.status}\n${result.output}" }
@@ -55,6 +56,23 @@ private class TexIntegration(private val options: Map<String, String>, private v
     }
 
     val cases: Map<String, (MPPPath) -> Unit> = linkedMapOf<String, (MPPPath) -> Unit>(
+        "real_tex_warnings_are_analyzed_without_failing_the_build" to { root ->
+            document(root, "% arara: pdflatex: { interaction: nonstopmode }", """
+                \PackageWarning{araraprobe}{Native warning marker}
+                Hello, arara!
+            """.trimIndent())
+            val output = execute(root, flags =
+                listOf("--console", "styled", "--log-format", "json", "--log-level", "warn"))
+            check("Tool diagnostics" in output) { output }
+            val records = root.resolve("arara.log").readLines()
+            check(records.any { "tool.diagnostic" in it && "WARN" in it && "Native warning marker" in it }) {
+                "Real TeX warning was not classified"
+            }
+            check(records.none { "tool.diagnostic" in it && "TRACE" in it }) {
+                "Trace output escaped severity filtering"
+            }
+            pdf(root)
+        },
         "official_pdflatex_produces_pdf" to { root ->
             document(root, "% arara: pdflatex: { interaction: nonstopmode }")
             check(typesettings(execute(root)) == 1)
