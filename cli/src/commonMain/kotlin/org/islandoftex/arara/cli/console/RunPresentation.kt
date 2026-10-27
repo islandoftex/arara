@@ -24,13 +24,13 @@ internal class RunPresentation(private val clock: TimeSource = TimeSource.Monoto
 
     val multipleProjects: Boolean get() = files.values.map { it.project to it.directory }.distinct().size > 1
 
-    fun prepare(projects: List<Project>) {
+    fun prepare(projects: List<Project>, selected: Set<String> = projects.map { it.name }.toSet()) {
         files.clear()
         fileDiagnostics.clear()
         deprecatedYamlUsed = false
         current = null
         started = null
-        ProjectValidation.executionOrder(projects).forEach { project ->
+        ProjectValidation.executionOrder(projects).filter { it.name in selected }.forEach { project ->
             project.files.sortedWith(compareByDescending<ProjectFile> { it.priority }
                 .thenBy { it.sourcePath.normalize().toString() }).forEach { file ->
                 files[file.sourcePath.toString()] = FileSummary(file.sourcePath, project.name, project.workingDirectory)

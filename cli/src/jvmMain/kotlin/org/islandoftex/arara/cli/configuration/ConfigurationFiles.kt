@@ -36,7 +36,11 @@ object ConfigurationFiles {
      * try to look up in a global directory, that is, the user home. Within
      * each directory Lua names precede YAML names. Only regular files qualify.
      */
-    fun configFileForProject(project: Project): MPPPath? {
+    fun configFileForProject(project: Project): MPPPath? =
+        candidatesForProject(project).firstOrNull { it.exists && it.isRegularFile }
+
+    /** All lookup candidates, including absent higher-priority files monitored by continuous compilation. */
+    fun candidatesForProject(project: Project): List<MPPPath> {
         val names = listOf("lua", "yaml").flatMap { extension ->
             listOf(".araraconfig", "araraconfig", ".arararc", "arararc").map { "$it.$extension" }
         }
@@ -44,9 +48,7 @@ object ConfigurationFiles {
             project.workingDirectory,
             Environment.getSystemPropertyOrNull("user.home")?.let { MPPPath(it) }
         )
-        return directories.firstNotNullOfOrNull { directory ->
-            names.map { directory / it }.firstOrNull { it.exists && it.isRegularFile }
-        }
+        return directories.flatMap { directory -> names.map { directory / it } }
     }
 
     /**

@@ -218,7 +218,7 @@ object Environment {
         silenceSystemOut: Boolean = true,
         timeout: Duration = Duration.ZERO
     ): SystemCommandResult = ByteArrayOutputStream().use { buffer ->
-        ProcessExecutor(command.elements).runCatching {
+        ProcessExecutor(ProcessInterrupts.elements(command.elements)).runCatching {
             addDestroyer(ProcessTreeDestroyer())
             stopper { process -> ProcessTreeDestroyer.stop(process) }
 

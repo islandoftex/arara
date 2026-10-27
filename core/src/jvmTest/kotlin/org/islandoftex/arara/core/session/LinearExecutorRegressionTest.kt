@@ -49,6 +49,53 @@ class LinearExecutorRegressionTest {
     }
 
     @Test
+    fun watchStopHookPreservesExistingPositionalLifecycleArguments() {
+        var started = false
+        val hooks = ExecutorHooks({ started = true })
+        hooks.executeBeforeExecution()
+        assertEquals(true, started)
+        assertEquals(false, hooks.shouldStopExecution())
+    }
+
+    @Test
+    fun watchCyclesBlockFailedDependentsAndRetainIndependentResults() {
+        var failure = true
+        val ran = mutableListOf<String>()
+        val a = Project("a", MPPPath("."), setOf(file("a.tex", { ran += "a"; if (failure) 9 else 0 })))
+        val b = Project("b", MPPPath("."), setOf(file("b.tex", { ran += "b"; 0 })), setOf("a"))
+        val c = Project("c", MPPPath("."), setOf(file("c.tex", { ran += "c"; 0 })))
+        LinearExecutor.executionOptions = ExecutionOptions(haltOnErrors = true)
+        val projects = listOf(a, b, c)
+        val first = LinearExecutor.executeWatchCycle(projects, setOf("a", "b", "c"), emptyMap()) { _, _ -> }
+        assertEquals(9, first["a"])
+        assertNull(first["b"])
+        assertEquals(0, first["c"])
+        assertEquals(setOf("a", "c"), ran.toSet())
+        failure = false
+        ran.clear()
+        val repaired = LinearExecutor.executeWatchCycle(projects, setOf("a", "b"), first) { _, _ -> }
+        assertEquals(mapOf("a" to 0, "b" to 0, "c" to 0), repaired)
+        assertEquals(listOf("a", "b"), ran)
+    }
+
+    @Test
+    fun watchCyclesCatchProjectExceptionsAndHonorCooperativeStop() {
+        val broken = Project("broken", MPPPath("."), setOf(file("broken.tex", { throw AraraException("bad") })))
+        var stopped = false
+        val other = Project("other", MPPPath("."), setOf(file("other.tex", { 0 })))
+        val errors = mutableListOf<String>()
+        LinearExecutor.hooks = ExecutorHooks(shouldStopExecution = { stopped })
+        val results = LinearExecutor.executeWatchCycle(listOf(broken, other), setOf("broken", "other"), emptyMap()) {
+            project, _ -> errors += project.name; stopped = true
+        }
+        assertEquals(listOf("broken"), errors)
+        assertEquals(1, results["broken"])
+        assertNull(results["other"])
+        assertNull(LinearExecutor.currentFile)
+        assertNull(LinearExecutor.currentProject)
+    }
+
+    @Test
     fun laterSuccessfulDirectivesAndFilesDoNotHideFailures() {
         val project = Project("Test", MPPPath("."), linkedSetOf(
             file("one.tex", { 7 }, { 0 }), file("two.tex", { 0 })

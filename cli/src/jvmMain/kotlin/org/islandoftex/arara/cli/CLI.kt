@@ -59,6 +59,7 @@ import org.islandoftex.arara.cli.ruleset.RuleQuery
 import org.islandoftex.arara.cli.ruleset.RulesCommand
 import org.islandoftex.arara.cli.ui.TerminalDialogRenderer
 import org.islandoftex.arara.cli.utils.DisplayUtils
+import org.islandoftex.arara.cli.utils.EventLog
 import org.islandoftex.arara.cli.utils.LoggingUtils
 import org.islandoftex.arara.cli.utils.RunLog
 import org.islandoftex.arara.cli.utils.RuntimeDiagnostics
@@ -66,6 +67,11 @@ import org.islandoftex.arara.cli.utils.StandardStreams
 import org.islandoftex.arara.cli.utils.WindowsProcessJob
 import org.islandoftex.arara.cli.utils.printFileInformation
 import org.islandoftex.arara.cli.utils.reportBuildWorkspace
+import org.islandoftex.arara.cli.watch.WatchGraph
+import org.islandoftex.arara.cli.watch.WatchProjectLoader
+import org.islandoftex.arara.cli.watch.WatchReporter
+import org.islandoftex.arara.cli.watch.WatchSession
+import org.islandoftex.arara.cli.watch.WatchSettings
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.configuration.LoggingOptions
 import org.islandoftex.arara.core.configuration.PreambleState
@@ -78,6 +84,7 @@ import org.islandoftex.arara.core.session.ExecutorHooks
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.ui.Dialogs
+import org.islandoftex.arara.core.watch.WatchMode
 import org.islandoftex.arara.lua.LuaInterpreter
 
 /**
@@ -87,6 +94,8 @@ import org.islandoftex.arara.lua.LuaInterpreter
  * @version 5.0
  * @since 5.0
  */
+// Options and their configuration application belong to the same command.
+@Suppress("TooManyFunctions")
 class CLI : CliktCommand("arara") {
 
     init {
@@ -151,6 +160,22 @@ class CLI : CliktCommand("arara") {
     private val cleanBuild by option("--clean-build")
         .help("Remove managed project build directories without executing commands")
         .flag()
+    private val watch by option("--watch")
+        .help("Continuously compile Lua projects when their inputs change")
+        .flag()
+    private val watchMode by option("--watch-mode")
+        .help("Filesystem monitoring: auto, native or polling")
+        .choice("auto" to WatchMode.AUTO,
+            "native" to WatchMode.NATIVE,
+            "polling" to WatchMode.POLLING)
+        .default(WatchMode.AUTO)
+    private val watchDebounce by option("--watch-debounce")
+        .help("Wait for input changes to settle (milliseconds; default 300)")
+        .int().restrictTo(min = 1).default(WatchSettings.DEFAULT_DEBOUNCE)
+    private val watchInterval by option("--watch-interval")
+        .help("Maximum delay between content reconciliations (milliseconds; default 1000)")
+        .int().restrictTo(min = 1).default(WatchSettings.DEFAULT_INTERVAL)
+
     private val safeRun by option("-S", "--safe-run")
         .help(
             "Run in safe mode and disable potentially harmful features. " +
@@ -350,6 +375,10 @@ class CLI : CliktCommand("arara") {
     override fun run() {
         if (currentContext.invokedSubcommand != null) return
         if (reference.isEmpty()) throw UsageError("Missing argument file")
+        if (watch && (cleanBuild || reference.any { !it.endsWith(".proj.lua") })) {
+            throw UsageError("--watch requires only Lua project specifications " +
+                "and cannot be combined with --clean-build")
+        }
         val configuration = ConfigurationSnapshot.capture()
         val previousRun = LoggingUtils.beginRun()
         val previousHooks = LinearExecutor.hooks
@@ -370,6 +399,7 @@ class CLI : CliktCommand("arara") {
                 DisplayUtils.renderer.close()
             } finally {
                 LoggingUtils.finishRun(successful)
+                LoggingUtils.endWatch()
                 configuration.restore(configureLogging = false)
                 LoggingUtils.resumeLogging(configuration.logging)
                 LinearExecutor.hooks = previousHooks
@@ -383,7 +413,8 @@ class CLI : CliktCommand("arara") {
 
     private fun configureProject(
         project: org.islandoftex.arara.api.files.Project,
-        configuration: ConfigurationSnapshot
+        configuration: ConfigurationSnapshot,
+        configureLogging: Boolean = true
     ) {
         configuration.restore(configureLogging = false)
         LanguageController.loadMessagesFor(language?.let { MPPLocale(it) } ?: Session.userInterfaceOptions.locale)
@@ -393,21 +424,59 @@ class CLI : CliktCommand("arara") {
             ConfigurationFiles.load(it, project, configureLogging = false)
         }
         updateConfigurationFromCommandLine()
-        initializeRuntime()
+        if (configureLogging) initializeRuntime()
         applyConsole()
     }
 
     private fun prepareProjects(
         projects: List<org.islandoftex.arara.api.files.Project>,
-        configuration: ConfigurationSnapshot
+        configuration: ConfigurationSnapshot,
+        configureLogging: Boolean = true
     ): List<org.islandoftex.arara.api.files.Project> = try {
         projects.map { project ->
-            configureProject(project, configuration)
+            configureProject(project, configuration, configureLogging)
             LuaInterpreter.resolvePendingFileTypes(project, LinearExecutor.executionOptions)
         }
     } finally {
         configuration.restore(configureLogging = false)
         updateConfigurationFromCommandLine()
+    }
+
+    private fun runWatch(configuration: ConfigurationSnapshot): ExecutionStatus {
+        val root = (workingDirectory ?: MPPPath(".")).normalize()
+        val specifications = reference.map { root.resolve(it).normalize() }.toSet()
+        val fallback = WatchGraph(emptyList(), specifications +
+            ConfigurationFiles.candidatesForProject(Project("Watch", root, emptySet())))
+        LoggingUtils.beginWatch()
+        return ExecutionStatus.FinishedWithCode(WatchSession(
+            fallback = fallback,
+            load = WatchProjectLoader(
+                specifications, { prepareProjects(resolveProjects(configuration), configuration, false) },
+                { configureProject(it, configuration, false) },
+                { configuration.restore(configureLogging = false); updateConfigurationFromCommandLine() }
+            )::load,
+            execute = { graph, selected, previous, number ->
+                graph.projects.firstOrNull { it.name in selected }?.let { configureProject(it, configuration) }
+                EventLog.info("watch.cycle.started", "Watch build $number",
+                    mapOf("cycle" to number, "projects" to selected))
+                DisplayUtils.presentation.prepare(graph.projects, selected)
+                val results = LinearExecutor.executeWatchCycle(graph.projects, selected, previous) { _, exception ->
+                    DisplayUtils.printException(exception)
+                }
+                val code = if (selected.any { results[it] != 0 }) 1 else 0
+                DisplayUtils.printRunSummary(code == 0)
+                results
+            },
+            report = WatchReporter(),
+            settings = WatchSettings(
+                watchMode, watchDebounce.toLong(), watchInterval.toLong())
+        ).run())
+    }
+
+    private fun runProjects(configuration: ConfigurationSnapshot): ExecutionStatus {
+        val projects = prepareProjects(resolveProjects(configuration), configuration)
+        DisplayUtils.presentation.prepare(projects)
+        return executeProjects(projects, cleanBuild)
     }
 
     private fun runSession(configuration: ConfigurationSnapshot) {
@@ -438,6 +507,7 @@ class CLI : CliktCommand("arara") {
 
         try {
             LinearExecutor.hooks = ExecutorHooks(
+                shouldStopExecution = { watch && Thread.currentThread().isInterrupted },
                 buildWorkspace = ::reportBuildWorkspace,
                 executeBeforeExecution = {
                     RunLog.executionStarted(AraraAPI.version)
@@ -455,7 +525,6 @@ class CLI : CliktCommand("arara") {
                         DisplayUtils.presentation.multipleProjects)
                 },
                 executeBeforeFile = {
-                    // TODO: do we have to reset some more file-specific config?
                     updateConfigurationFromCommandLine()
                     it.printFileInformation()
                 },
@@ -477,9 +546,7 @@ class CLI : CliktCommand("arara") {
                 }
             )
 
-            val projects = prepareProjects(resolveProjects(configuration), configuration)
-            DisplayUtils.presentation.prepare(projects)
-            executeProjects(projects, cleanBuild)
+            if (watch) runWatch(configuration) else runProjects(configuration)
         } catch (ex: AraraException) {
             // catch a propagated exception to replace intentionally left
             // out local treatment
@@ -489,7 +556,7 @@ class CLI : CliktCommand("arara") {
             // print the execution time if the command line parsing does not
             // return false as result (it makes no sense to print the execution
             // time for a help message)
-            finishRuntime(executionStatus.exitCode)
+            if (watch) WindowsProcessJob.finish() else finishRuntime(executionStatus.exitCode)
             DisplayUtils.printTime(executionStart.elapsedNow().toDouble(DurationUnit.SECONDS))
 
             throw ProgramResult(executionStatus.exitCode)

@@ -15,13 +15,32 @@ import org.islandoftex.arara.api.configuration.LoggingOptions
 import org.islandoftex.arara.core.localization.LanguageController
 
 /** Configures a single file appender and releases it when logging is disabled. */
+// Destination setup, scoped retention and restoration share ownership of the file appender.
+@Suppress("TooManyFunctions")
 object LoggingUtils {
     private data class Destination(
         val path: String, val append: Boolean, val format: LogFormat, val retention: LogRetention
     )
     private var active: Destination? = null
     private var tracker: LogRetentionTracker? = null
+    private var watching = false
+    private val watchDestinations = mutableSetOf<String>()
     private var segment: LogRetentionTracker.Segment? = null
+
+    internal fun beginWatch() {
+        finishRun(true)
+        watching = true
+        watchDestinations.clear()
+    }
+
+    internal fun beginWatchCycle() {
+        tracker = LogRetentionTracker()
+    }
+
+    internal fun endWatch() {
+        watching = false
+        watchDestinations.clear()
+    }
 
     internal val isJson: Boolean get() = active?.format == LogFormat.JSON
 
@@ -59,8 +78,10 @@ object LoggingUtils {
             if (active != destination) {
                 closeAppender(context)
                 val path = loggingOptions.logFile.normalize()
-                val append = preserveExisting || destination.append || tracker?.hasOpened(path) == true
+                val append = preserveExisting || destination.append || tracker?.hasOpened(path) == true ||
+                    (watching && destination.path in watchDestinations)
                 segment = tracker?.open(path, append, destination.retention)
+                if (watching) watchDestinations += destination.path
                 ThreadContext.put("araraLogFile", destination.path)
                 ThreadContext.put("araraAppendLog", append.toString())
                 val resource = if (destination.format == LogFormat.JSON) "log4j2-json.xml" else "log4j2.xml"

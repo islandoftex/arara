@@ -85,6 +85,35 @@ object LinearExecutor : Executor {
         return executionReport
     }
 
+    /**
+     * Run selected projects against the complete validated graph. Failed prerequisites block their dependents;
+     * independent projects continue. Results for unselected projects retain their previous state.
+     * A null result denotes a blocked or not-yet-executed project.
+     */
+    fun executeWatchCycle(
+        projects: List<Project>, selected: Set<String>, previous: Map<String, Int?>,
+        onFailure: (Project, AraraException) -> Unit
+    ): Map<String, Int?> {
+        val ordered = ProjectValidation.executionOrder(projects)
+        BuildWorkspaces.validate(ordered, hooks.buildWorkspace)
+        val results = projects.associate { it.name to previous[it.name] }.toMutableMap()
+        val excluded = projects.filter { it.buildDirectory != null }.map { it.executionDirectory }
+        hooks.executeBeforeExecution()
+        val started = TimeSource.Monotonic.markNow()
+        for (project in ordered.filter { it.name in selected }) {
+            if (hooks.shouldStopExecution()) break
+            results[project.name] = if (project.dependencies.any { results[it] != 0 }) null else try {
+                executeProject(project, excluded)
+            } catch (exception: AraraException) {
+                onFailure(project, exception)
+                1
+            }
+        }
+        val code = if (results.values.any { it != 0 }) 1 else 0
+        hooks.executeAfterExecution(ExecutionReport(started, TimeSource.Monotonic.markNow(), code))
+        return results
+    }
+
     internal fun executeProject(
         project: Project,
         excluded: List<MPPPath> =
@@ -102,7 +131,7 @@ object LinearExecutor : Executor {
             for (file in prepared.files.sortedWith(
                 compareByDescending<org.islandoftex.arara.api.files.ProjectFile> { it.priority }
                     .thenBy { it.sourcePath.normalize().toString() }
-            )) {
+            ).asSequence().takeWhile { !hooks.shouldStopExecution() }) {
                 hooks.executeBeforeFile(file)
                 val report = execute(file)
                 if (report.exitCode != 0) exitCode = report.exitCode
@@ -140,7 +169,7 @@ object LinearExecutor : Executor {
 
     private fun executeDirectives(directives: List<org.islandoftex.arara.api.rules.Directive>): Int {
         var exitCode = 0
-        for (directive in directives) {
+        for (directive in directives.asSequence().takeWhile { !hooks.shouldStopExecution() }) {
             val code = directive.execute()
             if (code != 0) exitCode = code
             val haltCode = HaltRequest.exitCode
