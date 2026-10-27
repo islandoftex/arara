@@ -17,5 +17,7 @@ data class Project(
     /** Names of projects that must run before this project. */
     override val dependencies: Set<String> = setOf(),
     /** Optional input staging and execution workspace. */
-    override val buildDirectory: BuildDirectory? = null
+    override val buildDirectory: BuildDirectory? = null,
+    /** Source selection for continuous compilation. */
+    override val watch: org.islandoftex.arara.api.files.WatchOptions = org.islandoftex.arara.api.files.WatchOptions()
 ) : Project

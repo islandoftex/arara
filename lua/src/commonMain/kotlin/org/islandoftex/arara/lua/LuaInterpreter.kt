@@ -52,7 +52,8 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
 
     @Suppress("ThrowsCount")
     private fun project(table: LuaTable, context: String, defaultName: String): Project {
-        ProjectFields.keys(table, setOf("name", "working_directory", "files", "dependencies", "build"), context)
+        ProjectFields.keys(table,
+            setOf("name", "working_directory", "files", "dependencies", "build", "watch"), context)
         val name = ProjectFields.string(table["name"], "$context.name") ?: defaultName
         if (name.isBlank()) throw ProjectParseException(messages.errorScriptNonblank("$context.name"))
         val directory = ProjectFields.string(table["working_directory"], "$context.working_directory")
@@ -81,7 +82,8 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
         val dependencies = ProjectFields.table(table["dependencies"], "$context.dependencies")
             ?.let { ProjectFields.strings(it, "$context.dependencies").toSet() } ?: emptySet()
         return org.islandoftex.arara.core.files.Project(
-            name, directory, entries, dependencies, build(table, directory, context)
+            name, directory, entries, dependencies, build(table, directory, context),
+            ProjectWatchFields.parse(table, directory, context)
         )
     }
 
@@ -148,7 +150,8 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
                 }
             }.toSet()
             return org.islandoftex.arara.core.files.Project(
-                project.name, project.workingDirectory, files, project.dependencies, project.buildDirectory
+                project.name, project.workingDirectory, files, project.dependencies,
+                project.buildDirectory, project.watch
             )
         }
     }

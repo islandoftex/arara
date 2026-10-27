@@ -29,6 +29,9 @@ public interface Project {
     /** Optional isolated workspace; configuration and source ownership still use [workingDirectory]. */
     public val buildDirectory: BuildDirectory? get() = null
 
+    /** Source selection for continuous compilation; ordinary execution ignores these settings. */
+    public val watch: WatchOptions get() = WatchOptions()
+
     /** Directory in which tools run; inputs are staged here when a workspace is configured. */
     public val executionDirectory: MPPPath
         get() = buildDirectory?.let { workingDirectory.resolve(it.directory).normalize() } ?: workingDirectory
