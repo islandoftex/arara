@@ -270,6 +270,15 @@ object BrazilianPortugueseMessages : AraraMessages {
     override fun errorLogFormatUnknown(value: String): String =
         "Formato de log desconhecido '${value}'. Use none, text ou json."
 
+    override fun errorLogLevelUnknown(value: String): String =
+        "Nível de log desconhecido '${value}'. Use trace, debug, info, warn ou error."
+
+    override fun errorLogRetentionUnknown(value: String): String =
+        "Retenção de log desconhecida '${value}'. Use always ou on-failure."
+
+    override fun errorLogCleanupFailed(reason: String): String =
+        "Não foi possível remover o log da execução bem-sucedida: ${reason}"
+
     override fun errorTerminalWidthInvalid(minimum: Int): String =
         "A largura do terminal deve ser de pelo menos ${minimum} colunas."
 

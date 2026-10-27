@@ -756,6 +756,21 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
                 }
             }
         },
+        "log_retention_and_levels_follow_the_invocation_outcome" to { root ->
+            rule(root, "return true;")
+            val log = root.resolve("arara.log")
+            val flags = listOf("--log-format", "json", "--log-retention", "on-failure", "--log-level", "error")
+            execute(root, 0, flags)
+            check(!log.exists) { "Successful invocation retained its log" }
+            rule(root, "return false;")
+            execute(root, 1, flags)
+            val records = log.readLines().map { Json.parseToJsonElement(it).jsonObject }
+            check(records.isNotEmpty()) { "Failed invocation lost its log" }
+            check(records.all { it.getValue("level").jsonPrimitive.content == "ERROR" }) {
+                "Log severity filter was not applied"
+            }
+            contains(log.readText(), "run.failed")
+        },
         "json_logging_is_available_in_the_packaged_jar" to { root ->
             rule(root, "return true;")
             execute(root, 0)

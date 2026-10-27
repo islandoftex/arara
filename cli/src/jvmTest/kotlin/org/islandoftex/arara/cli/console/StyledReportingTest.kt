@@ -16,6 +16,7 @@ import kotlin.test.assertSame
 import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.milliseconds
 import org.islandoftex.arara.api.configuration.LogFormat
+import org.islandoftex.arara.api.configuration.LogLevel
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.toMPPPath
 import org.islandoftex.arara.api.localization.MPPLocale
@@ -223,6 +224,8 @@ class StyledReportingTest {
         assertFalse("log file" in noLog)
         Session.loggingOptions = LoggingOptions(format = LogFormat.JSON)
         assertTrue("the full output is in the log file" in capture { renderer.printCommandFailure(tail) })
+        Session.loggingOptions = LoggingOptions(format = LogFormat.JSON, level = LogLevel.WARN)
+        assertFalse("log file" in capture { renderer.printCommandFailure(tail) })
         assertFalse("..." in capture { renderer.printCommandFailure("short output\n") })
         LinearExecutor.executionOptions = ExecutionOptions(verbose = true)
         assertEquals("", capture { renderer.printCommandFailure(tail) })

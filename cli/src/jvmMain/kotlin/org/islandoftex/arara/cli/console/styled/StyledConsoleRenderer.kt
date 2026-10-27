@@ -7,6 +7,7 @@ import com.github.ajalt.mordant.terminal.Terminal
 import kotlin.time.TimeSource
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.configuration.LogFormat
+import org.islandoftex.arara.api.configuration.LogLevel
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.files.toJVMPath
@@ -337,7 +338,7 @@ class StyledConsoleRenderer internal constructor(
             terminal.println(terminal.theme.danger(displaySeparator()))
             if (lines.size > FAILURE_TAIL_LINES) {
                 layout.print("...")
-                if (Session.loggingOptions.format != LogFormat.NONE) {
+                if (Session.loggingOptions.format != LogFormat.NONE && Session.loggingOptions.level <= LogLevel.INFO) {
                     layout.print(muted(LanguageController.messages.infoDisplayFullOutputInLog))
                 }
             }

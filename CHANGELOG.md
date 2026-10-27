@@ -16,6 +16,10 @@ on.
 
 ### Added
 
+* Configurable diagnostic log levels and retention through configuration,
+  `--log-level` and `--log-retention`. Successful runs can discard their log
+  output while preserving earlier appended records. (see #7)
+
 * The `rules` subcommand for listing, filtering and inspecting available rules,
   including shadowed variants and JSON output. (see #33)
 

@@ -197,6 +197,10 @@ Options:
                                  within the session.
   -F, --properties-file=<path>   Pass a properties file to the application to
                                  be used within the session.
+  --log-level=(trace|debug|info|warn|error)
+                                 Set the minimum diagnostic severity (default: trace)
+  --log-retention=(always|on-failure)
+                                 Keep logs always or only after failure
   --log-format=(none|text|json)  Set the diagnostic log format: none (default),
                                  text or json
   -c, --console=(plain|styled)   Set the console presentation: plain or styled
@@ -245,7 +249,7 @@ current option, it will be denoted by `parameter` in the description.
     be extracted. This option can also be disabled by default in the
     configuration file.
 
-- `-l` / `--log`: Shorthand for `--log-format text`. All
+- `-l` / `--log`: Shorthand for `--log-format text`. With the default log level,
   streams from all system commands will be logged and, at the end of the
   execution, a consolidated log file named `arara.log` will be generated. This
   option can also be activated by default in the configuration file. Refer to
@@ -253,6 +257,14 @@ current option, it will be denoted by `parameter` in the description.
 
 - `--log-format`: Selects `none` (default), `text` or `json`. This option
   overrides configuration and `-l` / `--log`.
+
+- `--log-level`: Minimum diagnostic severity: `trace` (default), `debug`,
+  `info`, `warn` or `error`, independently of console verbosity.
+
+- `--log-retention`: Keeps logs `always` (default) or only `on-failure`.
+  Failed and interrupted invocations retain their logs; successful invocations
+  remove their output. Both options override configuration without enabling
+  logging. See [Logging](@/manual/Logging.md#level-and-retention).
 
 - `-L` / `--language`: This option sets the language of the current execution of
   arara according to the language code identified by the `code` value provided

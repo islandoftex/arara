@@ -12,6 +12,8 @@ import kotlinx.serialization.json.jsonPrimitive
 import org.apache.logging.log4j.LogManager
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.LogFormat
+import org.islandoftex.arara.api.configuration.LogLevel
+import org.islandoftex.arara.api.configuration.LogRetention
 import org.islandoftex.arara.api.files.toMPPPath
 import org.islandoftex.arara.core.configuration.LocalConfiguration
 import org.islandoftex.arara.core.configuration.LoggingOptions
@@ -19,6 +21,35 @@ import org.islandoftex.arara.lua.configuration.LuaLocalConfiguration
 import org.islandoftex.arara.mvel.configuration.YamlLocalConfiguration
 
 class JsonLoggingTest {
+    @Test
+    fun bothConfigurationFormatsValidateLevelsAndRetentionAndPreserveInheritedSettings() {
+        val root = Files.createTempDirectory("arara log policies ").toMPPPath()
+        try {
+            val lua = root.resolve("config.lua")
+            val yaml = root.resolve("config.yaml")
+            val base = LoggingOptions(LogFormat.JSON, true, root.resolve("inherited.log"),
+                LogLevel.DEBUG, LogRetention.ON_FAILURE)
+            assertEquals(base, LocalConfiguration().toLoggingOptions(base))
+            for (level in LogLevel.entries) {
+                for ((retention, name) in listOf(LogRetention.ALWAYS to "always", LogRetention.ON_FAILURE to "on-failure")) {
+                    lua.writeText("return {log={level='${level.name.lowercase()}',retention='$name'}}")
+                    yaml.writeText("!config\nloglevel: ${level.name.lowercase()}\nlogretention: $name\n")
+                    val expected = base.copy(level = level, retention = retention)
+                    assertEquals(expected, LuaLocalConfiguration.load(lua, root).toLoggingOptions(base))
+                    assertEquals(expected, YamlLocalConfiguration.load(yaml).toLoggingOptions(base))
+                }
+            }
+            for ((field, value) in listOf("level" to "verbose", "retention" to "sometimes")) {
+                lua.writeText("return {log={$field='$value'}}")
+                yaml.writeText("!config\nlog$field: $value\n")
+                assertFailsWith<AraraException> { LuaLocalConfiguration.load(lua, root).toLoggingOptions() }
+                assertFailsWith<AraraException> { YamlLocalConfiguration.load(yaml).toLoggingOptions() }
+            }
+        } finally {
+            root.removeDirectory()
+        }
+    }
+
     @Test
     fun jsonLinesEscapeMessagesAndExceptionsAndAppendWithoutTruncation() {
         val root = Files.createTempDirectory("arara json log ").toMPPPath()

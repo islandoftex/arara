@@ -93,6 +93,11 @@ object TaskHelper {
                 Write a text log (shorthand for --log-format=text).
                 .IP \fB--log-format\fP none|text|json
                 Select the diagnostic log format (default: none).
+                .IP \fB--log-level\fP trace|debug|info|warn|error
+                Set the minimum diagnostic severity (default: trace), independently of console verbosity.
+                .IP \fB--log-retention\fP always|on-failure
+                Keep logs always (default) or only after unsuccessful invocations.
+                Successful append-mode runs remove only their own output.
                 .IP \fB--verbose\fP / \fB--silent\fP
                 Print or suppress command output.
                 .IP \fB--dry-run\fP

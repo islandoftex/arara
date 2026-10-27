@@ -270,6 +270,15 @@ object NorfolkMessages : AraraMessages {
     override fun errorLogFormatUnknown(value: String): String =
         "I don't know that log format '${value}', bor. Use none, text or json."
 
+    override fun errorLogLevelUnknown(value: String): String =
+        "I don't know that log level '${value}', bor. Use trace, debug, info, warn or error."
+
+    override fun errorLogRetentionUnknown(value: String): String =
+        "I don't know that log retention '${value}', bor. Use always or on-failure."
+
+    override fun errorLogCleanupFailed(reason: String): String =
+        "I couldn't remove the successful run's log, bor: ${reason}"
+
     override fun errorTerminalWidthInvalid(minimum: Int): String =
         "Terminal width hev ter be at least ${minimum} columns, bor."
 

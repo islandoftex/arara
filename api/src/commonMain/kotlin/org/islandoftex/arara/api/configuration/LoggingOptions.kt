@@ -20,4 +20,32 @@ public interface LoggingOptions {
 
     /** Diagnostic log format; [LogFormat.NONE] disables logging. */
     public val format: LogFormat
+
+    /** Minimum diagnostic severity; console verbosity is configured separately. */
+    public val level: LogLevel get() = LogLevel.TRACE
+
+    /** Whether successful invocations keep their diagnostic output. */
+    public val retention: LogRetention get() = LogRetention.ALWAYS
+}
+
+/** Selection and encoding of a diagnostic log file, independently of console presentation. */
+public enum class LogFormat {
+    NONE,
+    TEXT,
+    JSON
+}
+
+/** Minimum severity recorded in diagnostic logs, independently of console verbosity. */
+public enum class LogLevel {
+    TRACE,
+    DEBUG,
+    INFO,
+    WARN,
+    ERROR
+}
+
+/** Whether diagnostic output is retained after a successful invocation. */
+public enum class LogRetention {
+    ALWAYS,
+    ON_FAILURE
 }

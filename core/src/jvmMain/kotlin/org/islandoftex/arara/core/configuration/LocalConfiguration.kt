@@ -6,6 +6,8 @@ import kotlinx.serialization.Transient
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionOptions
 import org.islandoftex.arara.api.configuration.LogFormat
+import org.islandoftex.arara.api.configuration.LogLevel
+import org.islandoftex.arara.api.configuration.LogRetention
 import org.islandoftex.arara.api.configuration.LoggingOptions
 import org.islandoftex.arara.api.configuration.UserInterfaceOptions
 import org.islandoftex.arara.api.files.MPPPath
@@ -43,7 +45,9 @@ data class LocalConfiguration(
     val prependPreambleIfDirectivesGiven: Boolean = true,
     @Transient private val expandPathTokens: Boolean = true,
     private val animations: Boolean? = null,
-    private val terminalWidth: Int? = null
+    private val terminalWidth: Int? = null,
+    private val loglevel: String? = null,
+    private val logretention: String? = null
 ) {
     /**
      * Convert the relevant properties of the configuration to execution
@@ -130,6 +134,9 @@ data class LocalConfiguration(
             ?: baseOptions.logFile
         return org.islandoftex.arara.core.configuration.LoggingOptions(
             logFile = logName,
+            appendLog = baseOptions.appendLog,
+            level = loglevel?.let(::parseLogLevel) ?: baseOptions.level,
+            retention = logretention?.let(::parseLogRetention) ?: baseOptions.retention,
             format = when (logformat) {
                 null -> baseOptions.format
                 "none" -> LogFormat.NONE
@@ -140,6 +147,16 @@ data class LocalConfiguration(
                 )
             }
         )
+    }
+
+    private fun parseLogLevel(value: String): LogLevel =
+        LogLevel.entries.firstOrNull { it.name.lowercase() == value }
+            ?: throw AraraException(LanguageController.messages.errorLogLevelUnknown(value))
+
+    private fun parseLogRetention(value: String): LogRetention = when (value) {
+        "always" -> LogRetention.ALWAYS
+        "on-failure" -> LogRetention.ON_FAILURE
+        else -> throw AraraException(LanguageController.messages.errorLogRetentionUnknown(value))
     }
 
     /**

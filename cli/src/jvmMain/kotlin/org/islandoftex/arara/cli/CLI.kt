@@ -40,6 +40,8 @@ import org.islandoftex.arara.api.AraraAPI
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.configuration.LogFormat
+import org.islandoftex.arara.api.configuration.LogLevel
+import org.islandoftex.arara.api.configuration.LogRetention
 import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.toMPPPath
@@ -184,6 +186,15 @@ class CLI : CliktCommand("arara") {
         .help("Set the diagnostic log format: none (default), text or json")
         .choice("none" to LogFormat.NONE, "text" to LogFormat.TEXT, "json" to LogFormat.JSON)
 
+    private val logLevel by option("--log-level")
+        .help("Set the minimum diagnostic log level: trace (default), debug, info, warn or error")
+        .choice("trace" to LogLevel.TRACE, "debug" to LogLevel.DEBUG, "info" to LogLevel.INFO,
+            "warn" to LogLevel.WARN, "error" to LogLevel.ERROR)
+
+    private val logRetention by option("--log-retention")
+        .help("Keep diagnostic logs always (default) or only on-failure")
+        .choice("always" to LogRetention.ALWAYS, "on-failure" to LogRetention.ON_FAILURE)
+
     private val console by option("-c", "--console")
         .help("Set the console presentation: plain or styled")
         .choice("plain" to ConsoleMode.PLAIN, "styled" to ConsoleMode.STYLED)
@@ -290,7 +301,9 @@ class CLI : CliktCommand("arara") {
         Session.loggingOptions = LoggingOptions(
             appendLog = Session.loggingOptions.appendLog,
             logFile = Session.loggingOptions.logFile,
-            format = logFormat ?: log ?: Session.loggingOptions.format
+            format = logFormat ?: log ?: Session.loggingOptions.format,
+            level = logLevel ?: Session.loggingOptions.level,
+            retention = logRetention ?: Session.loggingOptions.retention
         )
     }
 
@@ -346,13 +359,19 @@ class CLI : CliktCommand("arara") {
         val previousDialogs = Dialogs.renderer
         appliedConsole = null
         DisplayUtils.renderer = org.islandoftex.arara.cli.console.plain.PlainConsoleRenderer()
+        var successful = false
         try {
             runSession(configuration)
+        } catch (result: ProgramResult) {
+            successful = result.statusCode == 0
+            throw result
         } finally {
             try {
                 DisplayUtils.renderer.close()
             } finally {
-                configuration.restore()
+                LoggingUtils.finishRun(successful)
+                configuration.restore(configureLogging = false)
+                LoggingUtils.resumeLogging(configuration.logging)
                 LinearExecutor.hooks = previousHooks
                 DisplayUtils.renderer = previousRenderer
                 DisplayUtils.presentation = previousPresentation

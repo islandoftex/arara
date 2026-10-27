@@ -48,7 +48,7 @@ object LuaLocalConfiguration {
             "paths", "file_types", "language", "console", "animations", "loops", "verbose", "header",
             "database", "log", "preamble", "warn_deprecated_yaml", "terminal_width"
         ), "configuration")
-        val log = Fields.group(table, "log", setOf("file", "format"))
+        val log = Fields.group(table, "log", setOf("file", "format", "level", "retention"))
         val preamble = Fields.group(table, "preamble", setOf("default", "prepend", "definitions"))
         val loops = Fields.integer(table["loops"], "loops")
         require(loops == null || loops > 0) { messages.errorConfigurationLoopsInvalidRange }
@@ -71,6 +71,8 @@ object LuaLocalConfiguration {
             dbname = Fields.string(table["database"], "database"),
             logname = Fields.string(log["file"], "log.file"),
             logformat = Fields.string(log["format"], "log.format"),
+            loglevel = Fields.string(log["level"], "log.level"),
+            logretention = Fields.string(log["retention"], "log.retention"),
             preambles = definitions(preamble["definitions"]),
             defaultPreamble = Fields.string(preamble["default"], "preamble.default"),
             prependPreambleIfDirectivesGiven = prepend,

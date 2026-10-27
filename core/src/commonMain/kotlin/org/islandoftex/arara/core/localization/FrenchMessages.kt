@@ -264,6 +264,15 @@ object FrenchMessages : AraraMessages {
     override fun errorLogFormatUnknown(value: String): String =
         "Format de journal inconnu : '${value}'. Utilisez none, text ou json."
 
+    override fun errorLogLevelUnknown(value: String): String =
+        "Niveau de journal inconnu : '${value}'. Utilisez trace, debug, info, warn ou error."
+
+    override fun errorLogRetentionUnknown(value: String): String =
+        "Conservation de journal inconnue : '${value}'. Utilisez always ou on-failure."
+
+    override fun errorLogCleanupFailed(reason: String): String =
+        "Impossible de supprimer le journal de l’exécution réussie : ${reason}"
+
     override fun errorTerminalWidthInvalid(minimum: Int): String =
         "La largeur du terminal doit être d’au moins ${minimum} colonnes."
 

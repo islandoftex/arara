@@ -14,11 +14,13 @@ internal class ProcessTreeCheck(private val root: MPPPath, private val applicati
     private val output = root.resolve("tree.output.txt")
     private val handles = mutableListOf<ProcessHandle>()
 
-    fun interrupted() = withTree("tree-root") { process ->
+    fun interrupted() = withTree("tree-root",
+        listOf("--log-format", "text", "--log-retention", "on-failure")) { process ->
         ready()
         process.destroy() // SIGTERM on Unix; TerminateProcess (without JVM hooks) on Windows.
         check(process.waitFor(TREE_WAIT_SECONDS, TimeUnit.SECONDS)) { "arara did not terminate" }
         await("descendant termination") { handles.none { it.isAlive } }
+        check(root.resolve("arara.log").readText().isNotEmpty()) { "Interrupted run lost its diagnostic log" }
     }
 
     fun timedOut() = withTree("tree-root", listOf("--timeout", "10000")) { process ->

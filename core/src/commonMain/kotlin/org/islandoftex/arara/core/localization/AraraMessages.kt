@@ -325,6 +325,15 @@ interface AraraMessages {
     /** Unknown diagnostic log format; argument: supplied format. */
     fun errorLogFormatUnknown(value: String): String
 
+    /** Unknown diagnostic severity; argument: supplied level. */
+    fun errorLogLevelUnknown(value: String): String
+
+    /** Unknown log retention policy; argument: supplied policy. */
+    fun errorLogRetentionUnknown(value: String): String
+
+    /** Failure to discard successful diagnostic output; argument: filesystem error. */
+    fun errorLogCleanupFailed(reason: String): String
+
     /** Unknown console presentation; argument: supplied mode. */
     fun errorConsoleModeUnknown(mode: String): String
 

@@ -2,6 +2,8 @@
 package org.islandoftex.arara.core.configuration
 
 import org.islandoftex.arara.api.configuration.LogFormat
+import org.islandoftex.arara.api.configuration.LogLevel
+import org.islandoftex.arara.api.configuration.LogRetention
 import org.islandoftex.arara.api.configuration.LoggingOptions
 import org.islandoftex.arara.api.files.MPPPath
 
@@ -12,5 +14,9 @@ data class LoggingOptions(
     /** Whether an existing log is appended to instead of replaced. */
     override val appendLog: Boolean = false,
     /** Destination path for the selected log format. */
-    override val logFile: MPPPath = MPPPath("arara.log")
+    override val logFile: MPPPath = MPPPath("arara.log"),
+    /** Minimum severity recorded in the log. */
+    override val level: LogLevel = LogLevel.TRACE,
+    /** Retention policy applied to the whole invocation's outcome. */
+    override val retention: LogRetention = LogRetention.ALWAYS
 ) : LoggingOptions

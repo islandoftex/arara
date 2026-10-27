@@ -104,6 +104,7 @@ or `without-directives`. Definitions are lists of directive lines.
 | `file_types` | `filetypes` |
 | `database` | `dbname` |
 | `log.format`, `log.file` | `logformat`, `logname` |
+| `log.level`, `log.retention` | `loglevel`, `logretention` |
 | `preamble.default`, `preamble.definitions` | `defaultPreamble`, `preambles` |
 | `preamble.prepend` | `prependPreambleIfDirectivesGiven` |
 
@@ -236,6 +237,15 @@ resolution for a path in plain string should be kept as simple as possible, so
     ```yaml
     verbose: true
     ```
+
+- **[O]** *(string)* `loglevel` (default: `trace`): Minimum diagnostic
+  severity: `trace`, `debug`, `info`, `warn` or `error`. This does not change
+  console verbosity. `--log-level` overrides this setting.
+
+- **[O]** *(string)* `logretention` (default: `always`): Use `on-failure` to
+  discard the current invocation's log output after success. Errors and
+  interruption retain it. `--log-retention` overrides this setting.
+  See [Logging](@/manual/Logging.md#level-and-retention) for append behaviour.
 
 - **[O]** *(string)* `logformat` (default: `none`): Selects `none`, `text` or
   `json`. `none` disables logging. `--log-format` overrides configuration;

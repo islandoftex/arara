@@ -270,6 +270,15 @@ object GermanMessages : AraraMessages {
     override fun errorLogFormatUnknown(value: String): String =
         "Unbekanntes Protokollformat '${value}'. Verwenden Sie none, text oder json."
 
+    override fun errorLogLevelUnknown(value: String): String =
+        "Unbekannte Protokollstufe '${value}'. Verwenden Sie trace, debug, info, warn oder error."
+
+    override fun errorLogRetentionUnknown(value: String): String =
+        "Unbekannte Protokollaufbewahrung '${value}'. Verwenden Sie always oder on-failure."
+
+    override fun errorLogCleanupFailed(reason: String): String =
+        "Protokollausgabe des erfolgreichen Laufs konnte nicht entfernt werden: ${reason}"
+
     override fun errorTerminalWidthInvalid(minimum: Int): String =
         "Die Terminalbreite muss mindestens ${minimum} Spalten betragen."
 

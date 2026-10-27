@@ -27,6 +27,32 @@ discussed below. Note that timestamps were deliberated removed from the log
 entries in order to declutter the output, and line breaks were included in order
 to easily spot each entry.
 
+# Level and retention
+
+`--log-level` selects the minimum recorded severity: `trace` (the default),
+`debug`, `info`, `warn` or `error`. It applies to text and JSON logs without
+changing console verbosity. Tool output is recorded at `info`, so `warn` and
+`error` omit it. Lua configuration uses `log.level`; YAML uses `loglevel`.
+
+`--log-retention on-failure` keeps logs only when the invocation finishes
+unsuccessfully, including errors and interruption. Warnings alone do not keep
+a successful run's log. The default, `always`, keeps logs after every run.
+Lua configuration uses `log.retention`; YAML uses `logretention`. Command-line
+options override configuration. Neither option enables logging by itself.
+
+```lua
+return {
+    log = { format = "text", level = "debug", retention = "on-failure" }
+}
+```
+
+Logs are written directly during execution. After success, overwrite-mode logs
+are deleted; an older log replaced at startup is not restored. In append mode,
+only the current invocation's output is removed, preserving earlier contents.
+For multiple projects, retention uses the outcome of the entire invocation.
+A forced termination can leave the log in place. Avoid sharing a log file between
+concurrent invocations.
+
 # System information
 
 The very first entry to appear in the log file is the current version of arara.

@@ -270,6 +270,15 @@ object DutchMessages : AraraMessages {
     override fun errorLogFormatUnknown(value: String): String =
         "Onbekend logformaat '${value}'. Gebruik none, text of json."
 
+    override fun errorLogLevelUnknown(value: String): String =
+        "Onbekend logniveau '${value}'. Gebruik trace, debug, info, warn of error."
+
+    override fun errorLogRetentionUnknown(value: String): String =
+        "Onbekend logbewaarbeleid '${value}'. Gebruik always of on-failure."
+
+    override fun errorLogCleanupFailed(reason: String): String =
+        "Loguitvoer van de geslaagde uitvoering kon niet worden verwijderd: ${reason}"
+
     override fun errorTerminalWidthInvalid(minimum: Int): String =
         "De terminalbreedte moet minstens ${minimum} kolommen zijn."
 

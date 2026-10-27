@@ -270,6 +270,15 @@ object EnglishMessages : AraraMessages {
     override fun errorLogFormatUnknown(value: String): String =
         "Unknown log format '${value}'. Use none, text or json."
 
+    override fun errorLogLevelUnknown(value: String): String =
+        "Unknown log level '${value}'. Use trace, debug, info, warn or error."
+
+    override fun errorLogRetentionUnknown(value: String): String =
+        "Unknown log retention '${value}'. Use always or on-failure."
+
+    override fun errorLogCleanupFailed(reason: String): String =
+        "Could not remove successful log output: ${reason}"
+
     override fun errorTerminalWidthInvalid(minimum: Int): String =
         "Terminal width must be at least ${minimum} columns."
 

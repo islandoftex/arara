@@ -9,8 +9,12 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
+import org.islandoftex.arara.api.configuration.LogFormat
+import org.islandoftex.arara.api.configuration.LogRetention
 import org.islandoftex.arara.api.files.toMPPPath
+import org.islandoftex.arara.cli.utils.LoggingUtils
 import org.islandoftex.arara.core.configuration.ExecutionOptions
+import org.islandoftex.arara.core.configuration.LoggingOptions
 import org.islandoftex.arara.core.configuration.PreambleState
 import org.islandoftex.arara.core.session.HaltRequest
 import org.islandoftex.arara.core.session.LinearExecutor
@@ -43,6 +47,58 @@ class CLIRegressionTest {
             HaltRequest.clear()
             root.deleteRecursively()
         }
+    }
+
+    @Test
+    fun successfulInvocationRestoresOnlyEarlierAppendedLogBytes() = fixture { directory ->
+        val root = directory.toPath().toMPPPath()
+        val log = root.resolve("appended.log")
+        Session.loggingOptions = LoggingOptions(
+            LogFormat.JSON, true, log,
+            retention = LogRetention.ON_FAILURE)
+        root.resolve("arararc.lua").writeText("return { paths={cwd} }")
+        root.resolve("probe.lua").writeText("""
+            return {identifier='probe', name='Probe', commands={{command=function() return true end}}}
+        """.trimIndent())
+        root.resolve("run.tex").writeText("% arara: probe\n")
+        for (original in listOf(null, "earlier run: ação 目录\n")) {
+            original?.let { log.writeText(it) }
+            assertEquals(0, assertFailsWith<ProgramResult> {
+                CLI().parse(listOf("-d", root.toString(), "run.tex"))
+            }.statusCode)
+            if (original == null) assertTrue(!log.exists) else assertEquals(original, log.readText())
+            LoggingUtils.init()
+        }
+    }
+
+    @Test
+    fun logPoliciesOverrideConfigurationAndUseTheWholeInvocationOutcome() = fixture { directory ->
+        val root = directory.toPath().toMPPPath()
+        val log = root.resolve("arara.log")
+        root.resolve("arararc.lua").writeText("""
+            return { paths={cwd}, log={format='json', file=cwd .. '/arara.log',
+                level='error', retention='always'} }
+        """.trimIndent())
+        root.resolve("probe.lua").writeText("""
+            return {identifier='probe', name='Probe', commands={{command=function() return true end}}}
+        """.trimIndent())
+        root.resolve("run.tex").writeText("% arara: probe\n")
+        val success = assertFailsWith<ProgramResult> {
+            CLI().parse(listOf("-d", root.toString(), "--log-level=trace", "--log-retention=on-failure", "run.tex"))
+        }
+        assertEquals(0, success.statusCode)
+        assertTrue(!log.exists)
+        root.resolve("failure.lua").writeText("""
+            return {identifier='failure', name='Failure', commands={{command=function() return false end}}}
+        """.trimIndent())
+        root.resolve("zzz.tex").writeText("% arara: failure\n")
+        val failure = assertFailsWith<ProgramResult> {
+            CLI().parse(listOf("-d", root.toString(), "--log-level=trace", "--log-retention=on-failure",
+                "run.tex", "zzz.tex"))
+        }
+        assertTrue(failure.statusCode != 0)
+        assertTrue("run.failed" in log.readText())
+        assertTrue("probe.lua" in log.readText())
     }
 
     @Test
