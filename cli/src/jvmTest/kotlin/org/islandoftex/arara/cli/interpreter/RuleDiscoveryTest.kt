@@ -7,8 +7,8 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.toMPPPath
+import org.islandoftex.arara.api.rules.RuleEngine
 import org.islandoftex.arara.cli.ruleset.DirectiveImpl
-import org.islandoftex.arara.cli.ruleset.RuleEngine
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.files.FileType
 import org.islandoftex.arara.core.files.ProjectFile

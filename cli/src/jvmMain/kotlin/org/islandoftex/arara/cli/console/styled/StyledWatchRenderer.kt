@@ -2,7 +2,7 @@
 package org.islandoftex.arara.cli.console.styled
 
 import com.github.ajalt.mordant.terminal.Terminal
-import org.islandoftex.arara.cli.console.WatchSummary
+import org.islandoftex.arara.api.reporting.WatchSummary
 import org.islandoftex.arara.core.localization.LanguageController
 
 /** Compact watch history with a wrapped layout on narrow terminals. */

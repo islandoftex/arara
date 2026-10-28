@@ -7,6 +7,7 @@ import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
+import org.islandoftex.arara.api.rules.DirectiveFetchingHooks
 import org.islandoftex.arara.core.localization.LanguageController
 
 /**

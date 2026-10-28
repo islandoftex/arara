@@ -18,7 +18,6 @@ import org.islandoftex.arara.api.configuration.LogLevel
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.toMPPPath
 import org.islandoftex.arara.cli.configuration.ConfigurationSnapshot
-import org.islandoftex.arara.cli.console.RunPresentation
 import org.islandoftex.arara.cli.console.styled.StyledConsoleRenderer
 import org.islandoftex.arara.cli.console.styled.StyledLayout
 import org.islandoftex.arara.cli.utils.DisplayUtils
@@ -28,6 +27,7 @@ import org.islandoftex.arara.core.configuration.UserInterfaceOptions
 import org.islandoftex.arara.core.files.FileType
 import org.islandoftex.arara.core.files.Project
 import org.islandoftex.arara.core.files.ProjectFile
+import org.islandoftex.arara.core.reporting.RunLedger
 import org.islandoftex.arara.core.session.Command
 import org.islandoftex.arara.core.session.Session
 
@@ -38,7 +38,7 @@ class ToolOutputAnalysisTest {
         val presentation = DisplayUtils.presentation
         try {
             LoggingUtils.init()
-            DisplayUtils.presentation = RunPresentation()
+            DisplayUtils.presentation = RunLedger()
             test(root)
         } finally {
             LoggingUtils.init()

@@ -4,9 +4,9 @@ package org.islandoftex.arara.cli.ui
 import java.io.BufferedReader
 import java.io.PrintWriter
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.ui.DialogRenderer
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Session
-import org.islandoftex.arara.core.ui.DialogRenderer
 
 /** Terminal dialogs use host-owned streams and the current configured column width. */
 open class TerminalDialogRenderer(

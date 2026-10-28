@@ -6,8 +6,8 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import org.islandoftex.arara.api.files.toMPPPath
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
+import org.islandoftex.arara.api.rules.RuleEngine
 import org.islandoftex.arara.cli.ruleset.DirectiveImpl
-import org.islandoftex.arara.cli.ruleset.RuleEngine
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.files.FileType
 import org.islandoftex.arara.core.files.ProjectFile

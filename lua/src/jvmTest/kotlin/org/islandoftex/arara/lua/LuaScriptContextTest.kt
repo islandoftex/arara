@@ -6,6 +6,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import org.islandoftex.arara.api.files.MPPPath
+import org.islandoftex.arara.api.files.ProjectParseException
 import org.islandoftex.arara.api.files.toMPPPath
 import org.islandoftex.arara.lua.configuration.LuaLocalConfiguration
 

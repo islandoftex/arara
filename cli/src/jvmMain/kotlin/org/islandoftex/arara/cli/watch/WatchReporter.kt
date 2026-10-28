@@ -2,8 +2,8 @@
 package org.islandoftex.arara.cli.watch
 
 import org.islandoftex.arara.api.AraraException
-import org.islandoftex.arara.cli.console.WatchRun
-import org.islandoftex.arara.cli.console.WatchSummary
+import org.islandoftex.arara.api.reporting.WatchRun
+import org.islandoftex.arara.api.reporting.WatchSummary
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.cli.utils.EventLog
 import org.islandoftex.arara.core.localization.LanguageController

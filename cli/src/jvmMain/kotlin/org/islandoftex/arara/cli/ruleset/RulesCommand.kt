@@ -12,6 +12,9 @@ import com.github.ajalt.clikt.parameters.types.path
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.toMPPPath
+import org.islandoftex.arara.api.rules.RuleDiagnostic
+import org.islandoftex.arara.api.rules.RuleDiscoveryResult
+import org.islandoftex.arara.api.rules.RuleEngine
 
 internal data class RuleQuery(
     val directory: MPPPath?, val engine: RuleEngine?, val info: String?, val filter: String?, val all: Boolean

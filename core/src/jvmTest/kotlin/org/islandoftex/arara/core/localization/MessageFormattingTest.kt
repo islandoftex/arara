@@ -6,6 +6,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.localization.AraraMessages
 import org.islandoftex.arara.core.files.FileType
 
 class MessageFormattingTest {

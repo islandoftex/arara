@@ -5,32 +5,9 @@ import kotlin.time.Duration.Companion.seconds
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.ProjectFile
+import org.islandoftex.arara.api.ui.DisplayRunActions
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.LinearExecutor
-
-/** File accounting, invocation summaries and application diagnostics. */
-interface DisplayRunActions {
-    /** Finish the current file in the run ledger; the final summary renders its status. */
-    fun printFileResult(exitCode: Int)
-
-    /** Present the retained invocation ledger with the aggregate success flag. */
-    fun printRunSummary(success: Boolean)
-
-    /** Retain compatibility warnings across files and project configuration changes. */
-    fun deprecatedYamlUsed()
-
-    /** Count a conditional skip and present it through the active renderer. */
-    fun printSkippedDirective(identifier: String)
-
-    /** Start file accounting and present its metadata. */
-    fun printFileInformation(file: ProjectFile)
-
-    /** Record an application error, finish file accounting with status 2 and present cause details. */
-    fun printException(exception: AraraException)
-
-    /** Log and present elapsed time in seconds. */
-    fun printTime(seconds: Double)
-}
 
 private object DefaultDisplayRunActions : DisplayRunActions {
     private val renderer get() = DisplayUtils.renderer

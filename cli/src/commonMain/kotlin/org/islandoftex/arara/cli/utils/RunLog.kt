@@ -2,6 +2,9 @@
 package org.islandoftex.arara.cli.utils
 
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.logging.CommandExecutionLog
+import org.islandoftex.arara.api.logging.RuleExecutionLog
+import org.islandoftex.arara.api.logging.RunLifecycleLog
 import org.islandoftex.arara.core.configuration.ConfigurationUtils
 import org.islandoftex.arara.core.session.Session
 

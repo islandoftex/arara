@@ -13,12 +13,12 @@ import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.ProjectFile as APIProjectFile
 import org.islandoftex.arara.api.files.toMPPPath
+import org.islandoftex.arara.api.session.ExecutorHooks
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.files.FileType
 import org.islandoftex.arara.core.files.Project
 import org.islandoftex.arara.core.files.ProjectFile
 import org.islandoftex.arara.core.session.Environment
-import org.islandoftex.arara.core.session.ExecutorHooks
 import org.islandoftex.arara.core.session.HaltRequest
 import org.islandoftex.arara.core.session.LinearExecutor
 

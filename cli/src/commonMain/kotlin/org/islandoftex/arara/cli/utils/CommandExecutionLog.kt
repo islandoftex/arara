@@ -1,20 +1,9 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.utils
 
+import org.islandoftex.arara.api.logging.CommandExecutionLog
 import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.core.session.LinearExecutor
-
-/** Diagnostic events for tool output, completion and process failures. */
-interface CommandExecutionLog {
-    /** Record an explicitly supplied raw output buffer at trace level. */
-    fun commandOutput(output: String)
-
-    /** Record the command exit code and duration in milliseconds. */
-    fun commandCompleted(command: Command, exitCode: Int, durationMs: Long)
-
-    /** Record a backend failure category, duration in milliseconds and original cause. */
-    fun commandFailed(command: Command, kind: String, durationMs: Long, cause: Throwable)
-}
 
 private object DefaultCommandExecutionLog : CommandExecutionLog {
     /** Record an explicitly supplied raw output buffer at trace level. */

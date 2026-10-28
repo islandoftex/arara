@@ -3,6 +3,7 @@ package org.islandoftex.arara.cli.ruleset
 
 import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.api.rules.DirectiveConditional
+import org.islandoftex.arara.api.rules.RuleEngine
 import org.islandoftex.arara.cli.interpreter.Interpreter
 import org.islandoftex.arara.core.session.LinearExecutor
 

@@ -14,6 +14,8 @@ import org.islandoftex.arara.api.files.BuildDirectory
 import org.islandoftex.arara.api.files.BuildInput
 import org.islandoftex.arara.api.files.BuildSelection
 import org.islandoftex.arara.api.files.BuildSymlinks
+import org.islandoftex.arara.api.files.BuildWorkspaceEvent
+import org.islandoftex.arara.api.files.BuildWorkspaceOperation
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.toJVMPath
 import org.islandoftex.arara.api.files.toMPPPath

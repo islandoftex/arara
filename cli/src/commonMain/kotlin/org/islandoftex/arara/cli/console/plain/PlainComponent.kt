@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.console.plain
 
-import org.islandoftex.arara.cli.console.ConsoleOutput
-import org.islandoftex.arara.cli.console.ConsoleSeparators
+import org.islandoftex.arara.api.ui.ConsoleOutput
+import org.islandoftex.arara.api.ui.ConsoleSeparators
 import org.islandoftex.arara.cli.utils.center
 import org.islandoftex.arara.cli.utils.wrap
 import org.islandoftex.arara.core.localization.LanguageController

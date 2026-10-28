@@ -13,7 +13,7 @@ import com.github.ajalt.clikt.parameters.types.choice
 import com.github.ajalt.clikt.parameters.types.path
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.toMPPPath
-import org.islandoftex.arara.cli.ruleset.RuleEngine
+import org.islandoftex.arara.api.rules.RuleEngine
 
 /** Parsed invocation options; registration remains owned by the command. */
 internal class InvocationFlags : OptionGroup() {

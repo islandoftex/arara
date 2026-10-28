@@ -13,8 +13,8 @@ import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TestTimeSource
 import org.islandoftex.arara.api.configuration.ExecutionMode
+import org.islandoftex.arara.api.reporting.RunSummary
 import org.islandoftex.arara.cli.configuration.ConfigurationSnapshot
-import org.islandoftex.arara.cli.console.RunSummary
 import org.islandoftex.arara.cli.ui.TerminalDialogRenderer
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.configuration.UserInterfaceOptions

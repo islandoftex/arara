@@ -4,8 +4,8 @@ package org.islandoftex.arara.cli.console.styled
 import com.github.ajalt.mordant.rendering.TextStyle
 import com.github.ajalt.mordant.terminal.Terminal
 import org.islandoftex.arara.api.files.toJVMPath
-import org.islandoftex.arara.cli.console.FileSummary
-import org.islandoftex.arara.cli.console.RunSummary
+import org.islandoftex.arara.api.reporting.FileSummary
+import org.islandoftex.arara.api.reporting.RunSummary
 import org.islandoftex.arara.core.localization.LanguageController
 
 /** Group the invocation ledger by project, including files never reached. */

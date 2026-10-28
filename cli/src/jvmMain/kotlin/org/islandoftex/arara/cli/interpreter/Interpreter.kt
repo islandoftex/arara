@@ -12,10 +12,10 @@ import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.api.rules.Rule
+import org.islandoftex.arara.api.rules.RuleEngine
 import org.islandoftex.arara.api.session.ExecutionStatus
 import org.islandoftex.arara.cli.ruleset.DirectiveImpl
 import org.islandoftex.arara.cli.ruleset.DirectiveUtils
-import org.islandoftex.arara.cli.ruleset.RuleEngine
 import org.islandoftex.arara.cli.ruleset.RuleFiles
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.cli.utils.RunLog

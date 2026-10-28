@@ -6,6 +6,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.shouldBe
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.rules.RuleEngine
 import org.islandoftex.arara.core.files.FileType
 import org.islandoftex.arara.core.rules.Directives
 

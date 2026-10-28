@@ -4,9 +4,11 @@ package org.islandoftex.arara.cli.utils
 import kotlin.math.ln
 import kotlin.math.pow
 import kotlin.time.Duration.Companion.seconds
-import org.islandoftex.arara.cli.console.ConsoleRenderer
-import org.islandoftex.arara.cli.console.RunPresentation
+import org.islandoftex.arara.api.ui.ConsoleRenderer
+import org.islandoftex.arara.api.ui.DisplayRunActions
+import org.islandoftex.arara.api.ui.DisplayTaskActions
 import org.islandoftex.arara.cli.console.plain.PlainConsoleRenderer
+import org.islandoftex.arara.core.reporting.RunLedger
 import org.islandoftex.arara.core.session.Session
 
 /** The generated version object belongs to the platform source set. */
@@ -22,7 +24,7 @@ object DisplayUtils : DisplayRunActions by displayRunActions,
 
     /** Active terminal renderer; log output remains independent of this choice. */
     var renderer: ConsoleRenderer = PlainConsoleRenderer()
-    internal var presentation = RunPresentation()
+    internal var presentation = RunLedger()
 
     /** Selected configuration filename shown in diagnostics. */
     var configurationFileName: String = "[none]"

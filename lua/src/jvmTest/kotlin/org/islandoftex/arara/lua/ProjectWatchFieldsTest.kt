@@ -5,6 +5,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import org.islandoftex.arara.api.files.MPPPath
+import org.islandoftex.arara.api.files.ProjectParseException
 
 class ProjectWatchFieldsTest {
 

@@ -10,6 +10,7 @@ import kotlin.test.assertNull
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.rules.Directive
+import org.islandoftex.arara.api.session.ExecutorHooks
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.files.FileType
 import org.islandoftex.arara.core.files.Project

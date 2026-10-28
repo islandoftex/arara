@@ -4,6 +4,8 @@ package org.islandoftex.arara.lua
 import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.Project
+import org.islandoftex.arara.api.files.ProjectParseException
+import org.islandoftex.arara.api.files.ProjectValidationException
 import org.islandoftex.arara.core.configuration.ConfigurationUtils
 import org.islandoftex.arara.core.files.UNKNOWN_TYPE
 import org.islandoftex.arara.core.localization.LanguageController

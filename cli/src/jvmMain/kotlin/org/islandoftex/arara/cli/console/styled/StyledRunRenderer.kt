@@ -2,14 +2,14 @@
 package org.islandoftex.arara.cli.console.styled
 
 import org.islandoftex.arara.api.files.MPPPath
-import org.islandoftex.arara.cli.console.ConsoleSummaries
-import org.islandoftex.arara.cli.console.FileSummary
-import org.islandoftex.arara.cli.console.RunSummary
-import org.islandoftex.arara.cli.console.WatchSummary
+import org.islandoftex.arara.api.reporting.FileSummary
+import org.islandoftex.arara.api.reporting.RunSummary
+import org.islandoftex.arara.api.reporting.WatchSummary
 import org.islandoftex.arara.core.localization.LanguageController
+import org.islandoftex.arara.core.ui.LocalizedSummaries
 
 /** Focused styled presentation component. */
-internal class StyledRunRenderer(state: StyledRenderState) : StyledComponent(state), ConsoleSummaries {
+internal class StyledRunRenderer(state: StyledRenderState) : StyledComponent(state), LocalizedSummaries {
     override fun printProjectInformation(name: String, directory: String) {
         state.progressOutput.suspendProgress()
         layout.print("${LanguageController.messages.infoLabelProject} $name ($directory)")

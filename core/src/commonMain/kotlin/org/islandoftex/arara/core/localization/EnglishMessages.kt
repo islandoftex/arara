@@ -1,7 +1,27 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.localization
 
+import org.islandoftex.arara.api.localization.AraraMessages
+import org.islandoftex.arara.api.localization.CatalogMetadata
+import org.islandoftex.arara.api.localization.ConfigurationMessages
+import org.islandoftex.arara.api.localization.DirectiveMessages
+import org.islandoftex.arara.api.localization.ExecutionMessages
+import org.islandoftex.arara.api.localization.FileDataMessages
+import org.islandoftex.arara.api.localization.FileLookupMessages
+import org.islandoftex.arara.api.localization.InterpreterMessages
+import org.islandoftex.arara.api.localization.LogEventMessages
+import org.islandoftex.arara.api.localization.LoggingMessages
+import org.islandoftex.arara.api.localization.LuaMessages
 import org.islandoftex.arara.api.localization.MPPLocale
+import org.islandoftex.arara.api.localization.ProjectMessages
+import org.islandoftex.arara.api.localization.ReportingMessages
+import org.islandoftex.arara.api.localization.RuleValidationMessages
+import org.islandoftex.arara.api.localization.ScriptStructureMessages
+import org.islandoftex.arara.api.localization.ScriptTypeMessages
+import org.islandoftex.arara.api.localization.TaskMessages
+import org.islandoftex.arara.api.localization.TerminalMessages
+import org.islandoftex.arara.api.localization.WatchMessages
+import org.islandoftex.arara.api.localization.WorkspaceMessages
 
 /** English message catalog. */
 object EnglishMessages : AraraMessages,

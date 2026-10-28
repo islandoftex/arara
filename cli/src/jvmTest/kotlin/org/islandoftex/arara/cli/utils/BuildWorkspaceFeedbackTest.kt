@@ -15,6 +15,8 @@ import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.long
 import org.islandoftex.arara.api.configuration.LogFormat
 import org.islandoftex.arara.api.files.BuildDirectory
+import org.islandoftex.arara.api.files.BuildWorkspaceEvent
+import org.islandoftex.arara.api.files.BuildWorkspaceOperation
 import org.islandoftex.arara.api.files.toMPPPath
 import org.islandoftex.arara.api.localization.MPPLocale
 import org.islandoftex.arara.cli.configuration.ConfigurationSnapshot
@@ -22,8 +24,6 @@ import org.islandoftex.arara.cli.console.styled.ProgressTestTerminal
 import org.islandoftex.arara.cli.console.styled.StyledConsoleRenderer
 import org.islandoftex.arara.core.configuration.LoggingOptions
 import org.islandoftex.arara.core.configuration.UserInterfaceOptions
-import org.islandoftex.arara.core.files.BuildWorkspaceEvent
-import org.islandoftex.arara.core.files.BuildWorkspaceOperation
 import org.islandoftex.arara.core.files.Project
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Session

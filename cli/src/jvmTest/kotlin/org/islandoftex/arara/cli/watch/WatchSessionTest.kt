@@ -8,10 +8,10 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import org.islandoftex.arara.api.files.MPPPath
+import org.islandoftex.arara.api.files.WatchMode
 import org.islandoftex.arara.api.files.toMPPPath
 import org.islandoftex.arara.cli.utils.LoggingUtils
 import org.islandoftex.arara.core.files.Project
-import org.islandoftex.arara.core.watch.WatchMode
 
 @org.junit.jupiter.api.Timeout(15)
 class WatchSessionTest {

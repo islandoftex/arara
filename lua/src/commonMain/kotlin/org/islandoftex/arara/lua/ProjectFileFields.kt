@@ -2,6 +2,7 @@
 package org.islandoftex.arara.lua
 
 import org.islandoftex.arara.api.files.MPPPath
+import org.islandoftex.arara.api.files.ProjectParseException
 import org.islandoftex.arara.core.localization.LanguageController
 import org.luaj.vm2.LuaValue
 

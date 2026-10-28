@@ -7,6 +7,7 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
+import org.islandoftex.arara.api.files.ProjectParseException
 import org.islandoftex.arara.core.files.FileType
 import org.islandoftex.arara.core.localization.LanguageController
 

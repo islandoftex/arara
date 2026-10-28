@@ -4,6 +4,7 @@ package org.islandoftex.arara.core.localization
 import java.util.Properties
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import org.islandoftex.arara.api.localization.AraraMessages
 
 class MessageRenderingContractTest {
     @Test

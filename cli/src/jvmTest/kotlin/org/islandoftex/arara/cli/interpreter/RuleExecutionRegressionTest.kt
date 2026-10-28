@@ -12,9 +12,9 @@ import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.toMPPPath
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
-import org.islandoftex.arara.cli.console.ConsoleRenderer
+import org.islandoftex.arara.api.rules.RuleEngine
+import org.islandoftex.arara.api.ui.ConsoleRenderer
 import org.islandoftex.arara.cli.ruleset.DirectiveImpl
-import org.islandoftex.arara.cli.ruleset.RuleEngine
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.files.FileType

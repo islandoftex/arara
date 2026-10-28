@@ -10,6 +10,7 @@ import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.session.ExecutionReport
 import org.islandoftex.arara.api.session.Executor
+import org.islandoftex.arara.api.session.ExecutorHooks
 import org.islandoftex.arara.core.dependencies.ProjectValidation
 import org.islandoftex.arara.core.files.BuildWorkspaces
 

@@ -2,9 +2,9 @@
 package org.islandoftex.arara.core.files.workspace
 
 import kotlin.time.TimeSource
+import org.islandoftex.arara.api.files.BuildWorkspaceEvent
+import org.islandoftex.arara.api.files.BuildWorkspaceOperation
 import org.islandoftex.arara.api.files.Project
-import org.islandoftex.arara.core.files.BuildWorkspaceEvent
-import org.islandoftex.arara.core.files.BuildWorkspaceOperation
 
 internal class WorkspaceActivity {
     var copiedFiles = 0

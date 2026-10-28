@@ -3,6 +3,7 @@ package org.islandoftex.arara.core.watch
 
 import java.nio.file.Files
 import kotlin.test.Test
+import org.islandoftex.arara.api.files.WatchMode
 import org.islandoftex.arara.api.files.toMPPPath
 
 class WatchMonitorTest {

@@ -8,6 +8,7 @@ import kotlin.test.assertNull
 import org.islandoftex.arara.api.files.BuildSelection
 import org.islandoftex.arara.api.files.BuildSymlinks
 import org.islandoftex.arara.api.files.MPPPath
+import org.islandoftex.arara.api.files.ProjectParseException
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 
 class ProjectBuildFieldsTest {

@@ -5,7 +5,7 @@ import java.io.Closeable
 import java.io.IOException
 import java.util.concurrent.atomic.AtomicReference
 import org.islandoftex.arara.api.AraraException
-import org.islandoftex.arara.core.watch.WatchMode
+import org.islandoftex.arara.api.files.WatchMode
 import org.islandoftex.arara.core.watch.WatchMonitor
 
 /** Captures changes while the execution thread is busy running tools. */

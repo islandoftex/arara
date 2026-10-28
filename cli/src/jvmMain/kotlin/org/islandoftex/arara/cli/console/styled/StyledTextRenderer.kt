@@ -3,7 +3,7 @@ package org.islandoftex.arara.cli.console.styled
 
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.files.toJVMPath
-import org.islandoftex.arara.cli.console.ConsoleText
+import org.islandoftex.arara.api.ui.ConsoleText
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.core.localization.LanguageController
 

@@ -3,30 +3,7 @@ package org.islandoftex.arara.cli.utils
 
 import kotlin.time.Duration.Companion.seconds
 import org.islandoftex.arara.api.files.ProjectFile
-
-/** Diagnostic events for invocation, project and file lifecycles. */
-interface RunLifecycleLog {
-    /** Record the application version greeting. */
-    fun welcome(version: String)
-
-    /** Record input metadata when informational logging is enabled. */
-    fun fileInformation(file: ProjectFile)
-
-    /** Record an application error with optional details and the original cause. */
-    fun exception(message: String?, details: String?, cause: Throwable? = null)
-
-    /** Record elapsed seconds as text and milliseconds as a structured field. */
-    fun executionTime(seconds: Double)
-
-    /** Record the project name and working directory. */
-    fun project(name: String, directory: String)
-
-    /** Record invocation startup with the application version. */
-    fun executionStarted(version: String)
-
-    /** Record the final exit code; unsuccessful runs use the error level. */
-    fun executionOutcome(exitCode: Int)
-}
+import org.islandoftex.arara.api.logging.RunLifecycleLog
 
 private object DefaultRunLifecycleLog : RunLifecycleLog {
     private const val MILLISECONDS_PER_SECOND = 1000

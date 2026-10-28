@@ -3,7 +3,7 @@ package org.islandoftex.arara.cli.watch
 
 import kotlin.time.TimeSource
 import org.islandoftex.arara.api.AraraException
-import org.islandoftex.arara.cli.console.WatchRun
+import org.islandoftex.arara.api.reporting.WatchRun
 import org.islandoftex.arara.cli.utils.LoggingUtils
 import org.islandoftex.arara.core.session.ProcessInterrupts
 

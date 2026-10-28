@@ -8,8 +8,8 @@ import java.io.PrintStream
 import kotlin.test.Test
 import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.milliseconds
-import org.islandoftex.arara.cli.console.WatchRun
-import org.islandoftex.arara.cli.console.WatchSummary
+import org.islandoftex.arara.api.reporting.WatchRun
+import org.islandoftex.arara.api.reporting.WatchSummary
 import org.islandoftex.arara.cli.console.styled.StyledConsoleRenderer
 import org.islandoftex.arara.core.configuration.UserInterfaceOptions
 import org.islandoftex.arara.core.session.Session

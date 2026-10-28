@@ -6,9 +6,10 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.rules.Directive
+import org.islandoftex.arara.api.rules.DirectiveFetchingHooks
+import org.islandoftex.arara.api.rules.RuleEngine
 import org.islandoftex.arara.cli.utils.RunLog
 import org.islandoftex.arara.core.localization.LanguageController
-import org.islandoftex.arara.core.rules.DirectiveFetchingHooks
 import org.islandoftex.arara.core.rules.Directives
 import org.islandoftex.arara.lua.rules.LuaInterpolation
 import org.islandoftex.arara.mvel.utils.MvelState

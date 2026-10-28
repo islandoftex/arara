@@ -20,20 +20,21 @@
 
 ### Module roles (dependencies, not obvious from names)
 
-- `api` — public KMP API surfaces (`MPPPath`, `FileType`, directives,etc.). Built
+- `api` — public KMP API surfaces (`MPPPath`, `FileType`, directives, host hooks, reporting, UI and localization contracts). Built
   with `explicitApi()`. Exposes Okio for scoped reads and normalized path exports.
   MPPPath keeps native JVM path algebra/identity and instance-bound filesystem I/O;
   derived paths retain their backend. Test injection is internal, without global state.
   `ForeignPath` is explicit POSIX/Windows lexical algebra with no filesystem access.
 - `core` — runtime engine (configuration, file searching, rules, sessions,
-  executor). `api(project(":api"))`.
+  executor, rule lookup, diagnostic analysis and localized UI defaults).
+  `api(project(":api"))`.
 - `mvel` — MVEL expression interpreter used by rules. JVM-only; pulls
   `org.mvel:mvel2`, `kotaml` (the compatible Kaml fork). Interpreter-neutral rule and conditional helpers
   live in `core.rules`; MVEL's registry binds their JVM static methods.
   Shared configuration models live in `core.configuration`; MVEL retains the
   YAML loader (`YamlLocalConfiguration`).
   `MvelCommandEvaluator` supplies results and exit predicates to the CLI through
-  the engine-neutral `core.rules.CommandEvaluator` interface.
+  the engine-neutral `api.rules.CommandEvaluator` interface.
 - `lua` — Luak interpreter for project specifications and Lua rules. JVM helper
   environments, parser, conditionals and interpolation live in `lua.rules`; the
   CLI prefers Lua by default; `--preferred-engine` (`-e`) changes the format preference.
@@ -177,7 +178,8 @@ without downloading Gradle dependencies.
 Dokka warnings, including undocumented public declarations and unresolved KDoc links. Maven publications carry Kotlin sources and
 HTML API reference jars (the `javadoc` classifier).
 `./gradlew checkPublications` checks staged Maven artifacts and uses Gradle TestKit
-to build and run an independent Kotlin consumer of core and its transitive API
+to compile API-only host implementations and build and run an independent Kotlin
+consumer of core without CLI or interpreter dependencies
 on Java 21. Artifacts are under `build/publication-check/repository`.
 
 ## Release / packaging
@@ -217,7 +219,7 @@ by pre-commit).
 
 - Application-owned Lua validation and helper diagnostics use the selected
   message catalog. Keep field names, Lua type names and script-supplied errors
-  literal. The complete `AraraMessages` interface and locale objects live in
+  literal. The `AraraMessages` contracts live in `api` common code; locale objects live in
   `core` common code; parameterized messages use named, typed functions.
 
 

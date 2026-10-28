@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.console.plain
 
-import org.islandoftex.arara.cli.console.ConsoleTasks
+import org.islandoftex.arara.api.ui.ConsoleTasks
 import org.islandoftex.arara.cli.utils.abbreviate
 
 /** Focused plain presentation component. */

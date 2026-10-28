@@ -3,8 +3,8 @@ package org.islandoftex.arara.cli.utils
 
 import java.util.Locale
 import kotlin.time.DurationUnit
-import org.islandoftex.arara.core.files.BuildWorkspaceEvent
-import org.islandoftex.arara.core.files.BuildWorkspaceOperation
+import org.islandoftex.arara.api.files.BuildWorkspaceEvent
+import org.islandoftex.arara.api.files.BuildWorkspaceOperation
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Session
 

@@ -6,6 +6,7 @@ import org.islandoftex.arara.api.files.BuildInput
 import org.islandoftex.arara.api.files.BuildSelection
 import org.islandoftex.arara.api.files.BuildSymlinks
 import org.islandoftex.arara.api.files.MPPPath
+import org.islandoftex.arara.api.files.ProjectParseException
 import org.islandoftex.arara.core.localization.LanguageController
 import org.luaj.vm2.LuaString
 import org.luaj.vm2.LuaTable

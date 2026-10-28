@@ -6,6 +6,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.localization.MPPLocale
+import org.islandoftex.arara.api.rules.RuleEngine
 import org.islandoftex.arara.core.localization.LanguageController
 
 class OptionInterpolationTest {

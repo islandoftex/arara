@@ -2,9 +2,11 @@
 package org.islandoftex.arara.cli.diagnostics
 
 import org.islandoftex.arara.api.configuration.LogLevel
+import org.islandoftex.arara.api.diagnostics.ToolDiagnostic
 import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.cli.utils.EventLog
+import org.islandoftex.arara.core.diagnostics.ToolOutputAnalyzer
 import org.islandoftex.arara.core.session.LinearExecutor
 
 /** Sends parsed diagnostics to logging and the invocation ledger without coupling their filters. */

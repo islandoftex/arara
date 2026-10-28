@@ -2,8 +2,8 @@
 package org.islandoftex.arara.cli.console.styled
 
 import com.github.ajalt.mordant.rendering.TextStyle
-import org.islandoftex.arara.cli.console.ConsoleOutput
-import org.islandoftex.arara.cli.console.ConsoleSeparators
+import org.islandoftex.arara.api.ui.ConsoleOutput
+import org.islandoftex.arara.api.ui.ConsoleSeparators
 import org.islandoftex.arara.core.localization.LanguageController
 
 /** Common text geometry and access to one renderer’s state. */

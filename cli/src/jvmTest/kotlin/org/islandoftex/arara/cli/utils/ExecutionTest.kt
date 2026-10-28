@@ -15,12 +15,12 @@ import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.toJVMPath
+import org.islandoftex.arara.api.session.ExecutorHooks
 import org.islandoftex.arara.cli.configuration.ConfigurationFiles
 import org.islandoftex.arara.cli.ruleset.DirectiveUtils
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.files.FileSearching
 import org.islandoftex.arara.core.files.Project
-import org.islandoftex.arara.core.session.ExecutorHooks
 import org.islandoftex.arara.core.session.LinearExecutor
 
 @Isolate

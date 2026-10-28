@@ -13,7 +13,12 @@ repositories {
     }
 }
 
+val apiContracts by sourceSets.creating
+
 dependencies {
+    add(apiContracts.implementationConfigurationName,
+        "org.islandoftex.arara:arara-api-jvm:${providers.gradleProperty("publicationVersion").get()}")
+    implementation(apiContracts.output)
     implementation("org.islandoftex.arara:arara-core-jvm:${providers.gradleProperty("publicationVersion").get()}")
 }
 

@@ -3,6 +3,7 @@ package org.islandoftex.arara.cli.console
 
 import com.github.ajalt.mordant.terminal.Terminal
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.ui.ConsoleRenderer
 import org.islandoftex.arara.cli.console.plain.PlainConsoleRenderer
 import org.islandoftex.arara.cli.console.styled.StyledConsoleRenderer
 import org.islandoftex.arara.core.localization.LanguageController

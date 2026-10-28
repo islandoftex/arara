@@ -3,8 +3,8 @@ package org.islandoftex.arara.cli.console.styled
 
 import com.github.ajalt.mordant.terminal.Terminal
 import org.islandoftex.arara.api.configuration.LogLevel
-import org.islandoftex.arara.cli.console.FileSummary
-import org.islandoftex.arara.cli.diagnostics.ToolDiagnostic
+import org.islandoftex.arara.api.diagnostics.ToolDiagnostic
+import org.islandoftex.arara.api.reporting.FileSummary
 import org.islandoftex.arara.core.localization.LanguageController
 
 /** Per-file diagnostic tables, retaining complete messages at narrow terminal widths. */

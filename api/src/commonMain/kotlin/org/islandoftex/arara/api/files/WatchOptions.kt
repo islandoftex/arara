@@ -10,3 +10,13 @@ public data class WatchOptions(
     /** Root-relative globs excluding inputs; compilation targets remain watched. */
     public val exclude: List<String> = emptyList()
 )
+
+/** Notification preference; all modes reconcile contents periodically to recover missed events. */
+public enum class WatchMode {
+    /** Prefer native notifications, falling back to polling when unavailable. */
+    AUTO,
+    /** Require native notification registration; report unsupported filesystems. */
+    NATIVE,
+    /** Use timed content scans without native notification registration. */
+    POLLING
+}

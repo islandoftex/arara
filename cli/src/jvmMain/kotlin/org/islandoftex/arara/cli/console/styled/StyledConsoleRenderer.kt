@@ -3,15 +3,15 @@ package org.islandoftex.arara.cli.console.styled
 
 import com.github.ajalt.mordant.terminal.Terminal
 import kotlin.time.TimeSource
-import org.islandoftex.arara.cli.console.ConsoleProgress
-import org.islandoftex.arara.cli.console.ConsoleRenderer
-import org.islandoftex.arara.cli.console.ConsoleSummaries
-import org.islandoftex.arara.cli.console.ConsoleTaskDetails
-import org.islandoftex.arara.cli.console.ConsoleTasks
-import org.islandoftex.arara.cli.console.ConsoleText
+import org.islandoftex.arara.api.ui.ConsoleProgress
+import org.islandoftex.arara.api.ui.ConsoleSummaries
+import org.islandoftex.arara.api.ui.ConsoleTaskDetails
+import org.islandoftex.arara.api.ui.ConsoleTasks
+import org.islandoftex.arara.api.ui.ConsoleText
+import org.islandoftex.arara.core.ui.LocalizedConsoleRenderer
 
 /** Terminal-cell-aware presentation composed from focused renderers sharing one state. */
-class StyledConsoleRenderer private constructor(private val parts: StyledComponents) : ConsoleRenderer,
+class StyledConsoleRenderer private constructor(private val parts: StyledComponents) : LocalizedConsoleRenderer,
     ConsoleText by parts.text, ConsoleTasks by parts.tasks,
     ConsoleTaskDetails by parts.state.details, ConsoleProgress by parts.state.progressOutput,
     ConsoleSummaries by parts.summary {
@@ -20,6 +20,7 @@ class StyledConsoleRenderer private constructor(private val parts: StyledCompone
         this(StyledComponents(StyledRenderState(terminal, clock, schedulerFactory)))
     /** Create a renderer using the default monotonic progress scheduler. */
     constructor(terminal: Terminal) : this(terminal, TimeSource.Monotonic, { ExecutorProgressScheduler() })
+    /** Print prose through this renderer’s shared text component. */
     override fun printWrapped(text: String) = parts.text.printWrapped(text)
 }
 

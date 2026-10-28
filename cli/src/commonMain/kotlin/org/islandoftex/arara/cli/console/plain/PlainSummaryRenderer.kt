@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.console.plain
 
-import org.islandoftex.arara.cli.console.ConsoleSummaries
-import org.islandoftex.arara.cli.console.RunSummary
+import org.islandoftex.arara.api.reporting.RunSummary
 import org.islandoftex.arara.core.localization.LanguageController
+import org.islandoftex.arara.core.ui.LocalizedSummaries
 
 /** Focused plain presentation component. */
-internal class PlainSummaryRenderer(state: PlainRenderState) : PlainComponent(state), ConsoleSummaries {
+internal class PlainSummaryRenderer(state: PlainRenderState) : PlainComponent(state), LocalizedSummaries {
     override fun printRunSummary(summary: RunSummary) {
         if (summary.files.isEmpty()) return
         val messages = LanguageController.messages

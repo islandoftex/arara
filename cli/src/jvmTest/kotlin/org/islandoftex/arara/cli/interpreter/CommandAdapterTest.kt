@@ -12,6 +12,7 @@ import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.AraraExceptionWithHeader
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.MPPPath
+import org.islandoftex.arara.api.rules.CommandEvaluator
 import org.islandoftex.arara.api.rules.Rule
 import org.islandoftex.arara.api.rules.RuleArgument
 import org.islandoftex.arara.api.rules.RuleCommand
@@ -19,7 +20,6 @@ import org.islandoftex.arara.cli.ruleset.DirectiveImpl
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.files.FileType
 import org.islandoftex.arara.core.files.ProjectFile
-import org.islandoftex.arara.core.rules.CommandEvaluator
 import org.islandoftex.arara.core.rules.DirectiveConditional
 import org.islandoftex.arara.core.session.Command
 import org.islandoftex.arara.core.session.HaltRequest

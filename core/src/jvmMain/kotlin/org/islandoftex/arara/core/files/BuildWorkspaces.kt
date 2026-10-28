@@ -3,6 +3,8 @@ package org.islandoftex.arara.core.files
 
 import java.io.IOException
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.files.BuildWorkspaceEvent
+import org.islandoftex.arara.api.files.BuildWorkspaceOperation
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.api.files.ProjectFile

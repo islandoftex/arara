@@ -19,9 +19,11 @@ import kotlinx.serialization.json.jsonPrimitive
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.toMPPPath
+import org.islandoftex.arara.api.rules.RuleEngine
 import org.islandoftex.arara.cli.CLI
 import org.islandoftex.arara.cli.configuration.ConfigurationSnapshot
 import org.islandoftex.arara.core.configuration.ExecutionOptions
+import org.islandoftex.arara.core.rules.RuleLookup
 import org.islandoftex.arara.core.session.LinearExecutor
 
 class RuleDiscoveryTest {
@@ -96,14 +98,14 @@ class RuleDiscoveryTest {
         assertTrue(result.diagnostics.isEmpty())
         assertEquals(listOf("probe", "probe", "probe", "zebra"), result.rules.map { it.identifier })
         assertEquals(listOf(true, false, false, true), result.rules.map { it.effective })
-        assertEquals(root / "probe.lua", RuleFiles.resolve("probe", LinearExecutor.executionOptions, root, RuleEngine.LUA))
+        assertEquals(root / "probe.lua", RuleLookup.resolve("probe", LinearExecutor.executionOptions, root, RuleEngine.LUA))
         assertEquals("yaml", RuleDiscovery.discover(LinearExecutor.executionOptions, root, RuleEngine.YAML)
             .rules.first().format)
         val later = root / "later"
         later.createDirectories()
         lua(later)
         val options = ExecutionOptions(rulePaths = linkedSetOf(root, later))
-        assertEquals(root / "probe.yaml", RuleFiles.resolve("probe", options, root, RuleEngine.YAML))
+        assertEquals(root / "probe.yaml", RuleLookup.resolve("probe", options, root, RuleEngine.YAML))
         assertFalse(RuleDiscovery.discover(options, root, RuleEngine.LUA).rules.last { it.identifier == "probe" }.effective)
     }
 
@@ -146,7 +148,7 @@ class RuleDiscoveryTest {
         val result = RuleDiscovery.inspect("probe", options, root, RuleEngine.LUA)
         assertEquals(root.resolve("probe.lua").toString(), result.diagnostics.single().path)
         assertEquals(null, result.metadata)
-        assertFailsWith<AraraException> { RuleFiles.parseRule(RuleFiles.resolve("probe", options, root, RuleEngine.LUA), "probe") }
+        assertFailsWith<AraraException> { RuleFiles.parseRule(RuleLookup.resolve("probe", options, root, RuleEngine.LUA), "probe") }
         assertTrue(RuleDiscovery.inspect("probe", options, root, RuleEngine.YAML).diagnostics.isEmpty())
         assertTrue(RuleDiscovery.inspect("unknown", options, root, RuleEngine.LUA).diagnostics.isNotEmpty())
     }

@@ -2,8 +2,8 @@
 package org.islandoftex.arara.mvel.interpreter
 
 import org.islandoftex.arara.api.AraraExceptionWithHeader
+import org.islandoftex.arara.api.rules.CommandEvaluator
 import org.islandoftex.arara.core.localization.LanguageController
-import org.islandoftex.arara.core.rules.CommandEvaluator
 import org.islandoftex.arara.mvel.rules.SerialRuleCommand
 import org.islandoftex.arara.mvel.utils.MvelState
 import org.mvel2.templates.TemplateRuntime

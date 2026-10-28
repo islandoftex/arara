@@ -5,12 +5,12 @@ import org.islandoftex.arara.api.configuration.LogFormat
 import org.islandoftex.arara.api.configuration.LogLevel
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
-import org.islandoftex.arara.cli.console.ConsoleTaskDetails
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Session
+import org.islandoftex.arara.core.ui.LocalizedTaskDetails
 
 /** Focused styled presentation component. */
-internal class StyledDetailsRenderer(state: StyledRenderState) : StyledComponent(state), ConsoleTaskDetails {
+internal class StyledDetailsRenderer(state: StyledRenderState) : StyledComponent(state), LocalizedTaskDetails {
     override fun printAuthors(authors: List<String>) {
         val line = if (authors.size == 1)
             LanguageController.messages.infoLabelAuthor

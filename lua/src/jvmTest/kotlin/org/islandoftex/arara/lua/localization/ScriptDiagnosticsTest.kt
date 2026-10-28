@@ -8,8 +8,9 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
+import org.islandoftex.arara.api.files.ProjectParseException
 import org.islandoftex.arara.api.files.toMPPPath
-import org.islandoftex.arara.core.localization.AraraMessages
+import org.islandoftex.arara.api.localization.AraraMessages
 import org.islandoftex.arara.core.localization.BrazilianPortugueseMessages
 import org.islandoftex.arara.core.localization.DutchMessages
 import org.islandoftex.arara.core.localization.EnglishMessages
@@ -19,7 +20,6 @@ import org.islandoftex.arara.core.localization.ItalianMessages
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.localization.NorfolkMessages
 import org.islandoftex.arara.lua.LuaInterpreter
-import org.islandoftex.arara.lua.ProjectParseException
 import org.islandoftex.arara.lua.configuration.LuaLocalConfiguration
 
 class ScriptDiagnosticsTest {

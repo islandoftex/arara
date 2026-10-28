@@ -20,6 +20,8 @@ import org.islandoftex.arara.api.configuration.LogLevel
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.toMPPPath
 import org.islandoftex.arara.api.localization.MPPLocale
+import org.islandoftex.arara.api.reporting.FileSummary
+import org.islandoftex.arara.api.reporting.RunSummary
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.cli.CLI
 import org.islandoftex.arara.cli.configuration.ConfigurationSnapshot

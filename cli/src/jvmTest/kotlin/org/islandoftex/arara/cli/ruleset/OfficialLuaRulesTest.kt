@@ -13,11 +13,11 @@ import org.islandoftex.arara.api.files.toMPPPath
 import org.islandoftex.arara.api.rules.Rule
 import org.islandoftex.arara.api.rules.RuleArgument
 import org.islandoftex.arara.api.session.Command
+import org.islandoftex.arara.api.session.ExecutorHooks
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.files.FileType
 import org.islandoftex.arara.core.files.Project
 import org.islandoftex.arara.core.files.ProjectFile
-import org.islandoftex.arara.core.session.ExecutorHooks
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.lua.rules.LuaRuleParser
 import org.islandoftex.arara.mvel.interpreter.MvelCommandEvaluator

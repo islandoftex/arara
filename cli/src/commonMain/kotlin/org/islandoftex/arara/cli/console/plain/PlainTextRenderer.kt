@@ -2,7 +2,7 @@
 package org.islandoftex.arara.cli.console.plain
 
 import org.islandoftex.arara.api.files.ProjectFile
-import org.islandoftex.arara.cli.console.ConsoleText
+import org.islandoftex.arara.api.ui.ConsoleText
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.cli.utils.abbreviate
 import org.islandoftex.arara.core.localization.LanguageController

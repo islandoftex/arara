@@ -3,6 +3,7 @@ package org.islandoftex.arara.core.localization
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlin.jvm.JvmStatic
+import org.islandoftex.arara.api.localization.AraraMessages
 import org.islandoftex.arara.api.localization.MPPLocale
 
 /**

@@ -1,29 +1,9 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.utils
 
+import org.islandoftex.arara.api.logging.RuleExecutionLog
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.core.session.LinearExecutor
-
-/** Diagnostic events for rule selection, tasks and directive control flow. */
-interface RuleExecutionLog {
-    /** Record a task starting within a rule. */
-    fun entry(name: String, task: String)
-
-    /** Record the task success flag. */
-    fun taskResult(success: Boolean)
-
-    /** Record the resolved rule path and engine. */
-    fun rule(identifier: String, path: String, engine: String)
-
-    /** Record each resolved legacy rule, including skipped directives and dry runs. */
-    fun deprecatedYaml(identifier: String, path: String)
-
-    /** Record a directive whose initial condition prevented command evaluation. */
-    fun skipped(identifier: String, conditional: DirectiveConditional, engine: String)
-
-    /** Record the effective halt request made while evaluating a directive, including status zero. */
-    fun haltRequested(identifier: String, code: Int, engine: String)
-}
 
 private object DefaultRuleExecutionLog : RuleExecutionLog {
     /** Record a task starting within a rule. */

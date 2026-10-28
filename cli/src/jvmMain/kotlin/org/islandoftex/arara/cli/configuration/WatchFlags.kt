@@ -10,8 +10,8 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.choice
 import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.parameters.types.restrictTo
+import org.islandoftex.arara.api.files.WatchMode
 import org.islandoftex.arara.cli.watch.WatchSettings
-import org.islandoftex.arara.core.watch.WatchMode
 
 /** Parsed watch options; registration remains owned by the command. */
 internal class WatchFlags : OptionGroup() {

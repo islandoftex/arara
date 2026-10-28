@@ -11,17 +11,8 @@ import java.nio.file.WatchKey
 import java.nio.file.WatchService
 import java.util.concurrent.TimeUnit
 import org.islandoftex.arara.api.files.MPPPath
+import org.islandoftex.arara.api.files.WatchMode
 import org.islandoftex.arara.api.files.toJVMPath
-
-/** Notification preference; all modes reconcile contents periodically to recover missed events. */
-enum class WatchMode {
-    /** Prefer native notifications, falling back to polling when unavailable. */
-    AUTO,
-    /** Require native notification registration; report unsupported filesystems. */
-    NATIVE,
-    /** Use timed content scans without native notification registration. */
-    POLLING
-}
 
 /** Native notifications are hints; snapshots remain the authority for deciding whether inputs changed. */
 class WatchMonitor(private val mode: WatchMode) : Closeable {

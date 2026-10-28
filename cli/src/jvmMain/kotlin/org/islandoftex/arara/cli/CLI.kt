@@ -31,6 +31,8 @@ import org.islandoftex.arara.api.AraraAPI
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.localization.MPPLocale
+import org.islandoftex.arara.api.rules.RuleDiscoveryResult
+import org.islandoftex.arara.api.rules.RuleEngine
 import org.islandoftex.arara.api.session.ExecutionStatus
 import org.islandoftex.arara.cli.configuration.ConfigurationFiles
 import org.islandoftex.arara.cli.configuration.ConfigurationSnapshot
@@ -41,8 +43,6 @@ import org.islandoftex.arara.cli.configuration.PresentationFlags
 import org.islandoftex.arara.cli.configuration.WatchFlags
 import org.islandoftex.arara.cli.console.ConsoleMode
 import org.islandoftex.arara.cli.ruleset.RuleDiscovery
-import org.islandoftex.arara.cli.ruleset.RuleDiscoveryResult
-import org.islandoftex.arara.cli.ruleset.RuleEngine
 import org.islandoftex.arara.cli.ruleset.RuleQuery
 import org.islandoftex.arara.cli.ruleset.RulesCommand
 import org.islandoftex.arara.cli.ui.TerminalDialogRenderer
@@ -199,7 +199,7 @@ class CLI : CliktCommand("arara") {
         val previousHooks = LinearExecutor.hooks
         val previousRenderer = DisplayUtils.renderer
         val previousPresentation = DisplayUtils.presentation
-        DisplayUtils.presentation = org.islandoftex.arara.cli.console.RunPresentation()
+        DisplayUtils.presentation = org.islandoftex.arara.core.reporting.RunLedger()
         val previousDialogs = Dialogs.renderer
         appliedConsole = null
         DisplayUtils.renderer = org.islandoftex.arara.cli.console.plain.PlainConsoleRenderer()

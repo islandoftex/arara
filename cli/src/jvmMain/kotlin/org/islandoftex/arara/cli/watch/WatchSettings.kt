@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.watch
 
-import org.islandoftex.arara.core.watch.WatchMode
+import org.islandoftex.arara.api.files.WatchMode
 
 internal data class WatchSettings(
     val mode: WatchMode = WatchMode.AUTO,

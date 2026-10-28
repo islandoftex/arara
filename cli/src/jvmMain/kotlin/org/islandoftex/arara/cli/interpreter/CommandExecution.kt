@@ -6,6 +6,7 @@ import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.AraraExceptionWithHeader
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.configuration.ExecutionOptions
+import org.islandoftex.arara.api.rules.CommandEvaluator
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.Rule
 import org.islandoftex.arara.api.rules.RuleCommand
@@ -13,7 +14,6 @@ import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.api.session.ExecutionStatus
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.core.localization.LanguageController
-import org.islandoftex.arara.core.rules.CommandEvaluator
 import org.islandoftex.arara.core.rules.InputHandling
 import org.islandoftex.arara.core.session.HaltRequest
 import org.islandoftex.arara.mvel.interpreter.MvelCommandEvaluator
