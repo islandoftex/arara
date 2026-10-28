@@ -1,13 +1,11 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.watch
 
-import kotlin.time.Duration
 import kotlin.time.TimeSource
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.cli.console.WatchRun
 import org.islandoftex.arara.cli.utils.LoggingUtils
 import org.islandoftex.arara.core.session.ProcessInterrupts
-
-internal data class WatchRun(val number: Int, val projects: Set<String>, val exitCode: Int, val elapsed: Duration)
 
 /** Sequential execution on the owning thread, with input collection continuing independently during builds. */
 internal class WatchSession(
@@ -91,7 +89,11 @@ internal class WatchSession(
             report.failure(exception)
             results + selected.associateWith { 1 }
         }
-        val code = if (selected.any { results[it] != 0 }) 1 else 0
+        val code = when {
+            Thread.currentThread().isInterrupted -> INTERRUPTED
+            selected.any { results[it] != 0 } -> 1
+            else -> 0
+        }
         val run = WatchRun(runs.size + 1, selected, code, start.elapsedNow())
         runs += run
         report.completed(run)

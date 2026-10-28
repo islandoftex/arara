@@ -3,6 +3,7 @@ package org.islandoftex.arara.cli.watch
 
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.Project
+import org.islandoftex.arara.cli.configuration.ConfigurationSnapshot
 import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.watch.WatchInputs
 import org.islandoftex.arara.core.watch.WatchSnapshot
@@ -11,7 +12,8 @@ internal data class WatchGraph(
     val projects: List<Project>,
     val controlFiles: Set<MPPPath>,
     val ruleDirectories: Set<MPPPath> = emptySet(),
-    val excluded: Set<MPPPath> = emptySet()
+    val excluded: Set<MPPPath> = emptySet(),
+    val configuration: Map<String, WatchProjectConfiguration> = emptyMap()
 ) {
     fun observe(): WatchObservation {
         val controls = controlFiles + ruleDirectories.filter { it.isDirectory }.flatMap { directory ->
@@ -45,3 +47,5 @@ internal data class WatchObservation(
         previous.inputs[name]?.let { snapshot.changesSince(it).isNotEmpty() } ?: true
     }.keys
 }
+
+internal data class WatchProjectConfiguration(val snapshot: ConfigurationSnapshot, val file: MPPPath?)

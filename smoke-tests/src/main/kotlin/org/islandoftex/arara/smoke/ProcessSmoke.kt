@@ -80,6 +80,24 @@ private class Smoke(private val jar: MPPPath, private val java: MPPPath,
         listOf(java.toString(), "-cp", fixture.toString(), "SmokeProcess"))
 
     val cases: Map<String, (MPPPath) -> Unit> = linkedMapOf(
+        "watch_queues_changes_and_rebuilds_only_dependents" to { root ->
+            WatchCheck(root, launcher, jar, fixture).queuedChanges()
+        },
+        "watch_recovers_failures_and_retains_failed_cycle_logs" to { root ->
+            WatchCheck(root, launcher, jar, fixture).failureRecovery()
+        },
+        "watch_pauses_invalid_configuration_and_reloads" to { root ->
+            WatchCheck(root, launcher, jar, fixture).reloadConfiguration()
+        },
+        "watch_active_build_keeps_original_configuration" to { root ->
+            WatchCheck(root, launcher, jar, fixture).activeConfigurationIsFrozen()
+        },
+        "watch_first_interrupt_finishes_active_build" to { root ->
+            WatchCheck(root, launcher, jar, fixture).gracefulInterrupt()
+        },
+        "watch_second_interrupt_stops_active_tools" to { root ->
+            WatchCheck(root, launcher, jar, fixture).forcedInterrupt()
+        },
         "active_descendants_stop_when_arara_is_terminated" to { root -> processTree(root).interrupted() },
         "active_descendants_stop_when_a_command_times_out" to { root -> processTree(root).timedOut() },
         "normal_completion_preserves_detached_processes" to { root -> processTree(root).detached() },
@@ -980,6 +998,7 @@ private fun initialize(root: MPPPath) {
 }
 
 private fun compileFixture(root: MPPPath, javac: MPPPath) {
+    compileWatchFixture(root, javac)
     val source = root.resolve("SmokeProcess.java")
     source.writeText("""
         public class SmokeProcess {

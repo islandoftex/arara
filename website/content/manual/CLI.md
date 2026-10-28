@@ -179,6 +179,10 @@ Options:
                                  configuration and --verbose
   -n, --dry-run                  Go through all the motions of running a
                                  command, but with no actual calls
+  --watch                       Continuously compile Lua projects
+  --watch-mode=(auto|native|polling)
+  --watch-debounce=<int>         Input settling delay in milliseconds
+  --watch-interval=<int>         Reconciliation interval in milliseconds
   --clean-build                 Remove managed project build directories
                                  without executing commands
   -S, --safe-run                 Run in safe mode and disable potentially
@@ -351,6 +355,12 @@ current option, it will be denoted by `parameter` in the description.
     This option can also be specified in the configuration file. However, one
     can always override this setting by running the tool with an explicit `-m`
     option.
+
+- `--watch`: Compile Lua projects continuously as inputs change. Use
+  `--watch-mode` to select `auto`, `native` or `polling` monitoring,
+  `--watch-debounce` for the settling delay (default: 300 ms), and
+  `--watch-interval` for the reconciliation interval (default: 1000 ms).
+  See [continuous compilation](@/manual/Projects.md#continuous-compilation).
 
 - `--clean-build`: Remove the build directories belonging to the supplied
   [projects](@/manual/Projects.md#build-directories), including generated outputs,

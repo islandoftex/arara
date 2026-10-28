@@ -7,6 +7,34 @@ import org.islandoftex.arara.api.localization.MPPLocale
 @Suppress("MaxLineLength", "TooManyFunctions")
 object FrenchMessages : AraraMessages {
 
+    override val infoWatchWaiting: String =
+        "Surveillance des modifications. Appuyez sur Ctrl+C pour arrêter."
+
+    override val infoWatchStopping: String =
+        "Arrêt après la compilation en cours. Appuyez de nouveau sur Ctrl+C pour arrêter les outils actifs."
+
+    override val infoWatchPaused: String =
+        "La configuration de surveillance est invalide ; les compilations sont suspendues jusqu’à sa correction."
+
+    override fun infoWatchStarting(number: Int, projects: String): String =
+        "Compilation surveillée $number : $projects"
+
+    override fun infoWatchSummary(runs: Int, code: Int): String =
+        "Session de surveillance : $runs compilations ; code de sortie $code."
+
+    override fun warningWatchInput(path: String): String =
+        "Entrée surveillée indisponible : $path"
+
+    override val errorWatchArguments: String =
+        "--watch exige uniquement des spécifications de projet Lua et ne peut pas être combiné avec --clean-build."
+
+    override val infoWatchCycle: String =
+        "Compilation"
+
+    override val infoWatchProjects: String =
+        "Projets"
+
+
     override fun infoBuildDirectoryValidating(path: String): String =
         "Vérification du répertoire de compilation : $path"
 

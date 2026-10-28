@@ -7,6 +7,34 @@ import org.islandoftex.arara.api.localization.MPPLocale
 @Suppress("MaxLineLength", "TooManyFunctions")
 object EnglishMessages : AraraMessages {
 
+    override val infoWatchWaiting: String =
+        "Watching for changes. Press Ctrl+C to stop."
+
+    override val infoWatchStopping: String =
+        "Stopping watch mode after the current build. Press Ctrl+C again to stop active tools."
+
+    override val infoWatchPaused: String =
+        "Watch configuration is invalid; builds are paused until it is corrected."
+
+    override fun infoWatchStarting(number: Int, projects: String): String =
+        "Watch build $number: $projects"
+
+    override fun infoWatchSummary(runs: Int, code: Int): String =
+        "Watch session: $runs builds; exit code $code."
+
+    override fun warningWatchInput(path: String): String =
+        "Watch input unavailable: $path"
+
+    override val errorWatchArguments: String =
+        "--watch requires only Lua project specifications and cannot be combined with --clean-build."
+
+    override val infoWatchCycle: String =
+        "Build"
+
+    override val infoWatchProjects: String =
+        "Projects"
+
+
     override fun infoBuildDirectoryValidating(path: String): String =
         "Validating build directory: $path"
 

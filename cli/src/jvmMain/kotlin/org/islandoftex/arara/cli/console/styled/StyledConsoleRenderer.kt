@@ -16,6 +16,7 @@ import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.cli.console.ConsoleRenderer
 import org.islandoftex.arara.cli.console.FileSummary
 import org.islandoftex.arara.cli.console.RunSummary
+import org.islandoftex.arara.cli.console.WatchSummary
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.LinearExecutor
@@ -345,6 +346,11 @@ class StyledConsoleRenderer internal constructor(
             lines.takeLast(FAILURE_TAIL_LINES).forEach(layout::print)
             terminal.println(terminal.theme.danger(displaySeparator()))
         }
+    }
+
+    override fun printWatchSummary(summary: WatchSummary) {
+        suspendProgress()
+        StyledWatchRenderer(terminal, layout).print(summary)
     }
 
     override fun printRunSummary(summary: RunSummary) {

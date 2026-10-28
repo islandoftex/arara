@@ -68,6 +68,7 @@ import org.islandoftex.arara.cli.utils.WindowsProcessJob
 import org.islandoftex.arara.cli.utils.printFileInformation
 import org.islandoftex.arara.cli.utils.reportBuildWorkspace
 import org.islandoftex.arara.cli.watch.WatchGraph
+import org.islandoftex.arara.cli.watch.WatchProjectConfiguration
 import org.islandoftex.arara.cli.watch.WatchProjectLoader
 import org.islandoftex.arara.cli.watch.WatchReporter
 import org.islandoftex.arara.cli.watch.WatchSession
@@ -228,6 +229,8 @@ class CLI : CliktCommand("arara") {
         .help("Set the maximum console width in columns (at least 20)")
         .int().restrictTo(min = UserInterfaceOptions.MINIMUM_TERMINAL_WIDTH)
 
+    private var watchConfiguration = emptyMap<String, WatchProjectConfiguration>()
+
     private var appliedConsole: ConsoleMode? = null
 
     private fun applyConsole() {
@@ -373,11 +376,13 @@ class CLI : CliktCommand("arara") {
      * The actual main method of arara (when run in command-line mode)
      */
     override fun run() {
-        if (currentContext.invokedSubcommand != null) return
+        if (currentContext.invokedSubcommand != null) {
+            if (watch) throw UsageError(LanguageController.messages.errorWatchArguments)
+            return
+        }
         if (reference.isEmpty()) throw UsageError("Missing argument file")
         if (watch && (cleanBuild || reference.any { !it.endsWith(".proj.lua") })) {
-            throw UsageError("--watch requires only Lua project specifications " +
-                "and cannot be combined with --clean-build")
+            throw UsageError(LanguageController.messages.errorWatchArguments)
         }
         val configuration = ConfigurationSnapshot.capture()
         val previousRun = LoggingUtils.beginRun()
@@ -400,6 +405,7 @@ class CLI : CliktCommand("arara") {
             } finally {
                 LoggingUtils.finishRun(successful)
                 LoggingUtils.endWatch()
+                watchConfiguration = emptyMap()
                 configuration.restore(configureLogging = false)
                 LoggingUtils.resumeLogging(configuration.logging)
                 LinearExecutor.hooks = previousHooks
@@ -416,13 +422,12 @@ class CLI : CliktCommand("arara") {
         configuration: ConfigurationSnapshot,
         configureLogging: Boolean = true
     ) {
-        configuration.restore(configureLogging = false)
+        val frozen = watchConfiguration[project.name]
+        (frozen?.snapshot ?: configuration).restore(configureLogging = false)
         LanguageController.loadMessagesFor(language?.let { MPPLocale(it) } ?: Session.userInterfaceOptions.locale)
-        DisplayUtils.configurationFileName = "[none]"
-        ConfigurationFiles.configFileForProject(project)?.let {
-            DisplayUtils.configurationFileName = it.toString()
-            ConfigurationFiles.load(it, project, configureLogging = false)
-        }
+        val file = if (frozen != null) frozen.file else ConfigurationFiles.configFileForProject(project)
+        DisplayUtils.configurationFileName = file?.toString() ?: "[none]"
+        if (frozen == null && file != null) ConfigurationFiles.load(file, project, configureLogging = false)
         updateConfigurationFromCommandLine()
         if (configureLogging) initializeRuntime()
         applyConsole()
@@ -456,16 +461,21 @@ class CLI : CliktCommand("arara") {
                 { configuration.restore(configureLogging = false); updateConfigurationFromCommandLine() }
             )::load,
             execute = { graph, selected, previous, number ->
-                graph.projects.firstOrNull { it.name in selected }?.let { configureProject(it, configuration) }
-                EventLog.info("watch.cycle.started", "Watch build $number",
-                    mapOf("cycle" to number, "projects" to selected))
-                DisplayUtils.presentation.prepare(graph.projects, selected)
-                val results = LinearExecutor.executeWatchCycle(graph.projects, selected, previous) { _, exception ->
-                    DisplayUtils.printException(exception)
+                watchConfiguration = graph.configuration
+                try {
+                    graph.projects.firstOrNull { it.name in selected }?.let { configureProject(it, configuration) }
+                    EventLog.info("watch.cycle.started", "Watch build $number",
+                        mapOf("cycle" to number, "projects" to selected))
+                    DisplayUtils.presentation.prepare(graph.projects, selected)
+                    val results = LinearExecutor.executeWatchCycle(graph.projects, selected, previous) { _, exception ->
+                        DisplayUtils.printException(exception)
+                    }
+                    val code = if (selected.any { results[it] != 0 }) 1 else 0
+                    DisplayUtils.printRunSummary(code == 0)
+                    results
+                } finally {
+                    watchConfiguration = emptyMap()
                 }
-                val code = if (selected.any { results[it] != 0 }) 1 else 0
-                DisplayUtils.printRunSummary(code == 0)
-                results
             },
             report = WatchReporter(),
             settings = WatchSettings(

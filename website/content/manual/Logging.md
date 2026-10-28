@@ -362,3 +362,8 @@ unknown event names and additional fields within a supported schema version.
 
 For example, `jq 'select(.event == "command.completed") | .data.exitCode' arara.log`
 extracts native process exit codes without parsing message text.
+
+In watch mode, build cycles share one session log. Retention applies separately
+to each cycle: `on-failure` removes successful cycles' output while preserving
+failed cycles and earlier appended records. JSON events identify watch cycles
+with `watch.cycle.started`, `watch.cycle.completed` and `watch.cycle.failed`.

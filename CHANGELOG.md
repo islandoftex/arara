@@ -16,6 +16,10 @@ on.
 
 ### Added
 
+* Continuous compilation of Lua projects with `--watch`, selective dependency
+  rebuilds, input filtering, automatic configuration reloads and watch-run
+  summaries. (see #64)
+
 * Tool-output analysis for standard rules, with severity-aware diagnostic logs
   and per-file warnings and errors tables in styled output. (see #7)
 

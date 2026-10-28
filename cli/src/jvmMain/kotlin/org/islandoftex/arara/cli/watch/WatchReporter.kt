@@ -2,18 +2,22 @@
 package org.islandoftex.arara.cli.watch
 
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.cli.console.WatchRun
+import org.islandoftex.arara.cli.console.WatchSummary
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.cli.utils.EventLog
+import org.islandoftex.arara.core.localization.LanguageController
 
 internal class WatchReporter {
     fun stopping() {
-        System.err.println("Stopping watch mode after the current build. Press Ctrl+C again to stop active tools.")
+        System.err.println(LanguageController.messages.infoWatchStopping)
     }
 
-    fun waiting() = DisplayUtils.renderer.printWrapped("Watching for changes. Press Ctrl+C to stop.")
+    fun waiting() = DisplayUtils.renderer.printWrapped(LanguageController.messages.infoWatchWaiting)
 
     fun starting(number: Int, projects: Set<String>) {
-        DisplayUtils.renderer.printWrapped("Watch build $number: ${projects.joinToString(", ")}")
+        DisplayUtils.renderer.printWrapped(
+            LanguageController.messages.infoWatchStarting(number, projects.joinToString(", ")))
     }
 
     fun completed(run: WatchRun) {
@@ -27,19 +31,15 @@ internal class WatchReporter {
 
     fun invalid(exception: AraraException) {
         DisplayUtils.printException(exception)
-        DisplayUtils.renderer.printWrapped("Watch configuration is invalid; builds are paused until it is corrected.")
+        DisplayUtils.renderer.printWrapped(LanguageController.messages.infoWatchPaused)
     }
 
     fun problem(message: String) {
-        DisplayUtils.renderer.printWrapped("Watch input unavailable: $message")
+        DisplayUtils.renderer.printWrapped(LanguageController.messages.warningWatchInput(message))
         EventLog.warn("watch.input.unavailable", "Watch input unavailable: $message", mapOf("path" to message))
     }
 
     fun summary(runs: List<WatchRun>, code: Int) {
-        DisplayUtils.renderer.printWrapped("Watch session: ${runs.size} builds; exit code $code.")
-        runs.forEach {
-            DisplayUtils.renderer.printWrapped("${it.number}: ${it.projects.joinToString(", ")} — " +
-                "${it.exitCode}, ${it.elapsed.inWholeMilliseconds} ms")
-        }
+        DisplayUtils.renderer.printWatchSummary(WatchSummary(runs.toList(), code))
     }
 }

@@ -4,6 +4,7 @@ package org.islandoftex.arara.cli.watch
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.cli.configuration.ConfigurationFiles
+import org.islandoftex.arara.cli.configuration.ConfigurationSnapshot
 import org.islandoftex.arara.core.dependencies.ProjectValidation
 import org.islandoftex.arara.core.files.BuildWorkspaces
 import org.islandoftex.arara.core.session.LinearExecutor
@@ -19,9 +20,12 @@ internal class WatchProjectLoader(
         val controls = specifications.toMutableSet()
         val rules = mutableSetOf<MPPPath>()
         val excluded = mutableSetOf<MPPPath>()
+        val configuration = mutableMapOf<String, WatchProjectConfiguration>()
         try {
             resolved.forEach { project ->
                 configure(project)
+                configuration[project.name] = WatchProjectConfiguration(ConfigurationSnapshot.capture(),
+                    ConfigurationFiles.configFileForProject(project))
                 controls += ConfigurationFiles.candidatesForProject(project)
                 rules += LinearExecutor.executionOptions.rulePaths.map {
                     project.executionDirectory.resolve(it).normalize()
@@ -35,6 +39,6 @@ internal class WatchProjectLoader(
         ProjectValidation.executionOrder(resolved)
         BuildWorkspaces.validate(resolved)
         // Validate wildcard syntax and collect native registrations before accepting the replacement graph.
-        return WatchGraph(resolved, controls, rules, excluded).also { it.observe() }
+        return WatchGraph(resolved, controls, rules, excluded, configuration).also { it.observe() }
     }
 }

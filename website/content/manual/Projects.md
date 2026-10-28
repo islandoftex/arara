@@ -259,3 +259,67 @@ run recreates it and stages its inputs again. An existing, nonempty directory
 without a matching marker is never adopted. Dry runs map the execution paths
 without creating or updating the workspace; rules that inspect staged contents
 therefore need an existing workspace.
+
+## Continuous compilation
+
+Use `--watch` with one or more Lua project specifications to compile immediately
+and rebuild when their inputs change:
+
+```sh
+arara --watch book.proj.lua
+```
+
+Ordinary file arguments and `--clean-build` cannot be combined with `--watch`.
+Each project watches its source tree, compilation targets, build-directory
+mappings and additional `watch.paths`. External paths are allowed. Shared inputs
+trigger every project watching them; dependencies are rebuilt before their
+dependents. Independent projects retain their previous results.
+
+```lua
+return {
+  name = "book",
+  files = { ["book.tex"] = {} },
+  watch = {
+    paths = { "../bibliography" },
+    include = { "figures/**/*.pdf" },
+    exclude = { "drafts/**" }
+  }
+}
+```
+
+Paths resolve against `working_directory`. Globs use slash-separated paths
+relative to that directory; inside an additional external directory they are
+relative to that external directory. Git and Docker ignore files apply by default,
+including ignore files in additional watched directories.
+Known generated files, including PDFs, auxiliary files and tool logs, are
+excluded; `include` overrides these defaults and ignore files. `exclude` takes
+precedence over `include`, but compilation targets always remain watched.
+Build directories, Git metadata, arara's logs and change databases are never
+watched as source inputs. Watch selections do not change which inputs are staged
+in a build directory. Exclude additional generated source files to avoid rebuild
+loops when tools write into the source tree.
+
+Content changes, additions and deletions trigger builds; changing timestamps
+alone does not. Watch state is separate from the database used by `changed()`.
+Symbolic links are followed with cycle detection. Broken links are reported,
+and watching continues so they can be repaired.
+
+`--watch-debounce` sets the settling delay in milliseconds (default: 300).
+Changes during a build are collected for a subsequent build; builds never
+overlap. Failed projects block their dependents while independent projects
+continue. Watching remains active after failures.
+
+Project specifications, configuration lookup locations and rule directories are
+also watched. Changes reload the complete graph and trigger a full build.
+Invalid specifications or configuration pause new builds until corrected;
+a running build finishes with its original settings.
+
+`--watch-mode` selects `auto` (default), `native` or `polling` monitoring.
+Automatic mode falls back to polling if native notifications are unavailable.
+All modes reconcile file contents periodically; `--watch-interval` sets the
+maximum wait between scans in milliseconds (default: 1000).
+
+The first Ctrl+C stops scheduling builds and lets the current build finish.
+A second Ctrl+C interrupts active tools. On exit, arara summarizes the build
+cycles. A graceful exit succeeds if every project last built successfully and
+configuration remains valid; repaired failures do not make the exit fail.

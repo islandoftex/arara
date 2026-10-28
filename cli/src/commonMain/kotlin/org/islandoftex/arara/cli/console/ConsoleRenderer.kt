@@ -54,6 +54,17 @@ interface ConsoleRenderer {
     fun printRunSummary(summary: RunSummary) =
         printRunSummary(summary.success, summary.files.map { it.path.toString() to it.exitCode })
 
+    /** Present completed watch cycles and the final graph result. */
+    fun printWatchSummary(summary: WatchSummary) {
+        val messages = LanguageController.messages
+        printWrapped(messages.infoWatchSummary(summary.runs.size, summary.exitCode))
+        summary.runs.forEach { run ->
+            val status = if (run.exitCode == 0) messages.infoLabelOnSuccess else messages.infoLabelOnFailure
+            printWrapped("${run.number}: ${run.projects.joinToString(", ")} · " +
+                "$status (${run.exitCode}) · ${run.elapsed.inWholeMilliseconds} ms")
+        }
+    }
+
     /** Present command, conditional and author fields; the default emits nothing. */
     fun printTaskDetails(command: String, conditional: DirectiveConditional, authors: List<String>) { }
 
