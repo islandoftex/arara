@@ -82,6 +82,7 @@ output:resolve("notes.txt"):write_text("First line\n")
 | Lua property | Kotlin/MVEL property | Meaning |
 | --- | --- | --- |
 | `file_name` | `fileName` | Last path segment |
+| `supplied_spelling` | `suppliedSpelling` | Supplied text before path normalization |
 | `file_size` | `fileSize` | Size in bytes; raises an error if unavailable |
 | `parent` | `parent` | Parent path; a root is its own parent |
 | `exists` | `exists` | Whether the path exists |
@@ -103,8 +104,9 @@ output:resolve("notes.txt"):write_text("First line\n")
 | `list_files(recursive)` | `listFiles(recursive)` | Regular files in path order; `recursive` defaults to `false` |
 
 Paths display and access their absolute, normalized locations without resolving
-symbolic links. `is_absolute`, resolution and `starts_with` retain the original
-path spelling; normalize both operands to compare absolute locations.
+symbolic links. `supplied_spelling` retains the text passed to `to_file`; derived
+paths expose their resulting native spelling. `is_absolute`, resolution and
+`starts_with` retain the original path spelling; normalize both operands to compare absolute locations.
 The existence and file-kind properties return `false` when inspection fails.
 Text I/O, size and listing methods raise errors when the operation fails, unlike
 `read_from_file` and `write_to_file`, which return an empty list or `false`.

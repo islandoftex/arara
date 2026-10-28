@@ -54,13 +54,19 @@ public actual class MPPPath private constructor(private val identity: NativePath
     internal val referencePath: Path get() = identity.referencePath
 
     /** Construct a native path retaining its provided spelling. */
-    public actual constructor(path: String) : this(Paths.get(path))
+    public actual constructor(path: String) : this(Paths.get(path), suppliedSpelling = path)
 
     /** Copy path identity and retain its filesystem backend. */
     public constructor(initPath: MPPPath) : this(initPath.identity)
 
-    internal constructor(initPath: Path, fileSystem: FileSystem = initPath.fileSystem.asOkioFileSystem()) :
-        this(NativePathIdentity(initPath, fileSystem))
+    internal constructor(
+        initPath: Path,
+        fileSystem: FileSystem = initPath.fileSystem.asOkioFileSystem(),
+        suppliedSpelling: String = initPath.toString()
+    ) : this(NativePathIdentity(initPath, fileSystem, suppliedSpelling))
+
+    /** Supplied text retained separately from native path parsing and normalized exports. */
+    public actual val suppliedSpelling: String get() = identity.suppliedSpelling
 
     /**
      * Check whether a path is absolute. Does not guarantee it is normalized.

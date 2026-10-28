@@ -39,4 +39,5 @@ fun verifyApiContracts() {
     ExecutorHooks().executeBeforeExecution()
     check(DirectiveFetchingHooks().processPotentialDirective(1, "directive") == "directive")
     check(MPPPath(".").normalize().isAbsolute)
+    check(MPPPath("./nested//../chapter.tex").suppliedSpelling == "./nested//../chapter.tex")
 }

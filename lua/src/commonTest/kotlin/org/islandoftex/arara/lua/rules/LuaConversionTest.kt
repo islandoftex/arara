@@ -99,11 +99,12 @@ class LuaConversionTest {
 
     @Test
     fun referencesExposeLuaDataAndFunctionFallbackRemainsAString() {
-        val path = MPPPath("book.tex").normalize()
+        val path = MPPPath("./folder//../book.tex")
         val reference = LuaValues.referenceToLua(path)
         assertEquals("book.tex", reference["file_name"].tojstring())
         assertEquals(path.toString(), reference["path"].tojstring())
         assertEquals(path.parent.toString(), reference["parent"].tojstring())
+        assertEquals("./folder//../book.tex", reference["supplied_spelling"].tojstring())
         val function = CommonPlatform.standardGlobals().load("return function() end").call()
         assertTrue(LuaConversion.fromLua(function) is String)
     }

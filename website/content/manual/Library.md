@@ -48,7 +48,8 @@ workflow, use the runnable application described in
 # Paths and file-change checks
 
 Use `MPPPath` for file operations. Its string representation and JVM path
-accessors are absolute and normalized. Native equality and resolution semantics
+accessors are absolute and normalized. `suppliedSpelling` exposes the supplied
+text for display or textual matching. Native equality and resolution semantics
 are retained; symbolic links are not collapsed when comparing paths. The
 separate `ForeignPath` API provides explicit POSIX or Windows path operations
 without filesystem access.

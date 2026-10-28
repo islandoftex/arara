@@ -12,6 +12,23 @@ import org.islandoftex.arara.api.files.toMPPPath
 import org.luaj.vm2.LuaValue
 
 class LuaPathTest {
+    @Test
+    fun suppliedSpellingIsExplicitAndReadOnlyInBothEnvironments() {
+        listOf(LuaRuleEnvironment.newGlobals(), LuaConditionalEnvironment.newGlobals()).forEach { globals ->
+            globals.load("""
+                local path = to_file('./nested//../chapter.tex')
+                assert(path.supplied_spelling == './nested//../chapter.tex')
+                assert(path.suppliedSpelling == path.supplied_spelling)
+                assert(tostring(path) == tostring(path:normalize()))
+                assert(path:normalize().supplied_spelling == tostring(path))
+                assert(path == path:normalize())
+                local ok = pcall(function() path.supplied_spelling = 'changed' end)
+                assert(not ok)
+                assert(path.supplied_spelling == './nested//../chapter.tex')
+            """.trimIndent()).call()
+        }
+    }
+
     private fun inDirectory(test: (MPPPath) -> Unit) {
         val root = Files.createTempDirectory("arara Lua paths ").toMPPPath()
         try { test(root) } finally { root.removeDirectory() }

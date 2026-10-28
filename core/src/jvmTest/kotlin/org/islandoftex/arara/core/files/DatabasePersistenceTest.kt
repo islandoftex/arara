@@ -17,6 +17,24 @@ import org.islandoftex.arara.api.files.toMPPPath
 import org.islandoftex.arara.core.localization.LanguageController
 
 class DatabasePersistenceTest {
+    @Test
+    fun failuresNameTheSuppliedPathWithoutChangingDatabaseKeys() = fixture { root, cache ->
+        val suppliedCache = MPPPath("${root}/./nested/../arara.yaml")
+        val source = MPPPath("${root}/./nested/../book.tex")
+        val database = Database().apply { this[source] = 123L }
+        database.save(suppliedCache)
+        assertEquals(123L, Database.load(cache)[source.normalize()])
+        assertEquals(Database(mutableMapOf(source.toString() to 123L)), Database.load(cache))
+        suppliedCache.writeText("malformed")
+        val load = assertFailsWith<AraraException> { Database.load(suppliedCache) }
+        assertEquals(LanguageController.messages.errorLoadCouldNotLoadDatabase(suppliedCache.suppliedSpelling),
+            load.message)
+        val suppliedDirectory = MPPPath("${root}/./")
+        val save = assertFailsWith<AraraException> { database.save(suppliedDirectory) }
+        assertEquals(LanguageController.messages.errorSaveCouldNotSaveDatabase(suppliedDirectory.suppliedSpelling),
+            save.message)
+    }
+
     private fun fixture(check: (MPPPath, MPPPath) -> Unit) {
         val root = Files.createTempDirectory("arara cache records ").toMPPPath()
         try {

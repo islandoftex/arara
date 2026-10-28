@@ -6,7 +6,8 @@ import org.islandoftex.arara.api.time.DateTime
 
 /**
  * A lexical path with its original spelling and an absolute, normalized reference.
- * Equality, hashing, display and I/O use the reference; [isAbsolute], [startsWith]
+ * [suppliedSpelling] exposes the supplied text explicitly. Equality, hashing,
+ * display and I/O use the reference; [isAbsolute], [startsWith]
  * and resolution use the original spelling. Normalization does not resolve symlinks.
  * JVM identity follows the native path provider, including Windows case handling.
  */
@@ -18,6 +19,16 @@ public expect class MPPPath : PathAlgebra, PathReading, PathWriting {
     // The expect constructor is implemented by each platform.
     @Suppress("unused")
     public constructor(path: String)
+
+    /**
+     * Spelling supplied when constructing this path, before absolutizing or normalizing it.
+     *
+     * String construction retains the exact text, including redundant separators and an empty string.
+     * Native path conversions use the native path's string representation. Copies retain this value;
+     * derived paths use their resulting native spelling, so [normalize] produces a normalized spelling.
+     * This value is for display or explicit textual matching, not path identity or filesystem access.
+     */
+    public val suppliedSpelling: String
 
     /**
      * Check whether a path is absolute. Does not guarantee it is normalized.

@@ -29,7 +29,7 @@ class LuaRule(
  * Evaluates a Lua command closure through [CommandEvaluator].
  *
  * The closure receives processed argument lists and a `reference` table with
- * string fields `file_name`, `path` and `parent`. It returns command handles,
+ * string fields `file_name`, `path`, `parent` and `supplied_spelling`. It returns command handles,
  * booleans or nested lists of either. An optional exit closure accepts a process
  * exit code and must return a boolean; without one, only zero indicates success.
  */
@@ -79,7 +79,7 @@ class LuaRuleCommand(
  *
  * The flag receives `(ctx, value)`, where `ctx.parameters` contains the raw
  * directive parameters (including this argument's value) and `ctx.reference`
- * contains string fields `file_name`, `path` and `parent`. Its result becomes
+ * contains string fields `file_name`, `path`, `parent` and `supplied_spelling`. Its result becomes
  * a list of flag strings. Without a flag closure, the input is converted to
  * a single string. Required arguments must be supplied explicitly.
  */

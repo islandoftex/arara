@@ -90,7 +90,7 @@ data class Database(
             path.normalize().writeText(content)
         }.getOrElse {
             throw AraraException(
-                LanguageController.messages.errorSaveCouldNotSaveDatabase(path.toString()),
+                LanguageController.messages.errorSaveCouldNotSaveDatabase(path.suppliedSpelling),
                 it as? Exception ?: RuntimeException(it)
             )
         }
@@ -122,7 +122,7 @@ data class Database(
                 }.getOrElse {
                     throw AraraException(
                         LanguageController
-                            .messages.errorLoadCouldNotLoadDatabase(path.toString()),
+                            .messages.errorLoadCouldNotLoadDatabase(path.suppliedSpelling),
                         it as? Exception ?: RuntimeException(it)
                     )
                 }

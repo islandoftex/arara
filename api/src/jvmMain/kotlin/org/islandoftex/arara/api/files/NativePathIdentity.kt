@@ -9,7 +9,11 @@ import okio.FileSystem
 import okio.Path.Companion.toPath
 import org.islandoftex.arara.api.AraraIOException
 
-internal class NativePathIdentity(val providedPath: Path, val fileSystem: FileSystem) {
+internal class NativePathIdentity(
+    val providedPath: Path,
+    val fileSystem: FileSystem,
+    val suppliedSpelling: String = providedPath.toString()
+) {
     val referencePath: Path = providedPath.toAbsolutePath().normalize()
     val exists: Boolean get() = probe { io { resolvedMetadata() }; true }
     val isDirectory: Boolean get() = probe { io { resolvedMetadata().second.isDirectory } }

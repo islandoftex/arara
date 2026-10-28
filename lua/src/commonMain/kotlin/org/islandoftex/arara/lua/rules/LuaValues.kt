@@ -12,6 +12,7 @@ internal object LuaValues {
     fun referenceToLua(path: MPPPath): LuaTable = LuaValue.tableOf().also { table ->
         table.set("file_name", LuaValue.valueOf(path.fileName))
         table.set("path", LuaValue.valueOf(path.toString()))
+        table.set("supplied_spelling", LuaValue.valueOf(path.suppliedSpelling))
         table.set("parent", LuaValue.valueOf(path.parent.toString()))
     }
 

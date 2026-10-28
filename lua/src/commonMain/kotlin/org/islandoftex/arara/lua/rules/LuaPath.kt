@@ -23,6 +23,7 @@ internal class LuaPath(private val path: MPPPath) : LuaUserdata(path) {
 
     private val properties: Map<String, (MPPPath) -> Any> = aliases(mapOf(
         "fileName" to { it.fileName },
+        "suppliedSpelling" to { it.suppliedSpelling },
         "fileSize" to { it.fileSize },
         "parent" to { it.parent },
         "exists" to { it.exists },

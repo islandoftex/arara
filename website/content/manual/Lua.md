@@ -63,7 +63,8 @@ by the official rules.
 
 Commands return a command handle, a boolean or nested lists of these. `exit` is
 optional and defaults to accepting zero. Each processed argument is a list of
-strings. `reference` contains string fields `file_name`, `path` and `parent`.
+strings. `reference` contains string fields `file_name`, `path`, `parent` and
+`supplied_spelling`.
 
 A command table requires `command = function(ctx) ... end`; its `name` and
 `exit` fields are optional. A returned `true` represents a successful logical
@@ -107,6 +108,8 @@ a number or a nested list of these; the result becomes a flat list of strings.
 
 `ctx.reference` describes the file selected for the directive. Its `file_name`
 is the name without parent directories; `path` and `parent` are absolute paths.
+`supplied_spelling` retains the spelling of the selected path, which may already
+be absolute after file resolution.
 The special directive parameter `files` can select other references, as described
 in [Important concepts](@/manual/Concepts.md).
 

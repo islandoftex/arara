@@ -16,6 +16,9 @@ on.
 
 ### Added
 
+* Explicit supplied path spelling through `MPPPath.suppliedSpelling` and Lua
+  `supplied_spelling`, alongside normalized path exports.
+
 * Continuous compilation of Lua projects with `--watch`, selective dependency
   rebuilds, input filtering, automatic configuration reloads and watch-run
   summaries. (see #64)

@@ -13,6 +13,35 @@ import org.junit.jupiter.api.Assumptions.assumeTrue
 
 class PathContractTest {
     @Test
+    fun suppliedSpellingRetainsExactInputWithoutChangingNormalizedExports() {
+        for (spelling in listOf("", ".", "./folder//../chapter ü.tex")) {
+            val path = MPPPath(spelling)
+            val normalized = Paths.get(spelling).toAbsolutePath().normalize()
+            assertEquals(spelling, path.suppliedSpelling)
+            assertEquals(normalized.toString(), path.toString())
+            assertEquals(normalized, path.toJVMPath())
+            assertEquals(normalized.toFile(), path.toJVMFile())
+            assertEquals(normalized.toString(), path.toOkioPath().toString())
+            assertEquals(path, path.normalize())
+            assertEquals(path.hashCode(), path.normalize().hashCode())
+        }
+    }
+
+    @Test
+    fun copiesRetainSuppliedSpellingAndDerivedPathsDescribeTheirOwnSpelling() {
+        val spelling = "./parent//nested/../chapter.tex"
+        val native = Paths.get(spelling)
+        val path = MPPPath(spelling)
+        assertEquals(spelling, MPPPath(path).suppliedSpelling)
+        assertEquals(native.toString(), native.toMPPPath().suppliedSpelling)
+        assertEquals(native.toFile().toPath().toString(), native.toFile().toMPPPath().suppliedSpelling)
+        assertEquals(path.toString(), path.normalize().suppliedSpelling)
+        assertEquals(native.resolve("child.tex").toString(), path.resolve("child.tex").suppliedSpelling)
+        assertEquals(path.parent.toString(), path.parent.suppliedSpelling)
+        assertEquals(spelling, path.suppliedSpelling)
+    }
+
+    @Test
     fun equivalentSpellingsShareIdentityWithoutLosingTheirOriginalForm() {
         val raw = Paths.get("path contracts", "nested", "..", "file.tex")
         val path = MPPPath(raw.toString())
