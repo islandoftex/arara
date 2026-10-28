@@ -37,12 +37,14 @@ internal object WindowsTerminal {
         return if (valid) String(name.getByteArray(Int.SIZE_BYTES.toLong(), length), Charsets.UTF_16LE) else null
     }
 
+    // JNA resolves these names against the native Windows exports.
     @Suppress("FunctionName")
     internal interface Kernel32 : StdCallLibrary {
         fun GetStdHandle(descriptor: Int): Pointer?
         fun GetFileType(handle: Pointer): Int
     }
 
+    // JNA resolves these names against the native Windows exports.
     @Suppress("FunctionName")
     internal interface NtDll : StdCallLibrary {
         fun NtQueryInformationFile(handle: Pointer, status: Pointer, information: Pointer,

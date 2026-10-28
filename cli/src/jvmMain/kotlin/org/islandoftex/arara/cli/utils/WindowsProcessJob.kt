@@ -141,6 +141,7 @@ internal object WindowsProcessJob {
         @JvmField var peakJobMemory = SizeT()
     }
 
+    // JNA resolves these names against the native Windows exports.
     @Suppress("FunctionName")
     internal interface Kernel32 : StdCallLibrary {
         fun CreateJobObjectW(attributes: Pointer?, name: Pointer?): Pointer?

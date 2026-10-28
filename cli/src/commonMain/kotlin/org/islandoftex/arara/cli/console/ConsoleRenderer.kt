@@ -5,32 +5,72 @@ import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.core.localization.LanguageController
 
-/** Terminal presentation only; logging belongs to the display facade. */
-@Suppress("TooManyFunctions")
-interface ConsoleRenderer {
-    /** Print the application logo and version. */
-    fun printBanner()
-    /** Begin presentation of a task within its rule. */
-    fun printEntry(name: String, task: String)
-    /** Finish the current task with a success or failure result. */
-    fun printEntryResult(value: Boolean)
-    /** Present an application error and optional cause details. */
-    fun printException(text: String, details: String?)
+/** Terminal presentation composed from focused output, task, summary and progress capabilities. */
+interface ConsoleRenderer : ConsoleText, ConsoleTasks, ConsoleTaskDetails, ConsoleProgress, ConsoleSummaries
+
+/** Output capability of a terminal presentation. */
+interface ConsoleOutput {
     /** Print prose wrapped to the available terminal width. */
     fun printWrapped(text: String)
-    /** Present the rule authors. */
-    fun printAuthors(authors: List<String>)
-    /** Present the directive conditional, including its expression. */
-    fun printConditional(conditional: DirectiveConditional)
-    /** Present elapsed time in seconds. */
-    fun printTime(seconds: Double)
-    /** Present the input path, size and modification time. */
-    fun printFileInformation(file: ProjectFile)
+}
+
+/** Separators capability of a terminal presentation. */
+interface ConsoleSeparators {
     /** Build a separator for the current output width. */
     fun displaySeparator(): String
+
     /** Build an output-buffer separator containing the supplied message. */
     fun displayOutputSeparator(message: String): String
+}
 
+/** Text capability of a terminal presentation. */
+interface ConsoleText : ConsoleOutput, ConsoleSeparators {
+    /** Print the application logo and version. */
+    fun printBanner()
+
+    /** Present an application error and optional cause details. */
+    fun printException(text: String, details: String?)
+
+    /** Present elapsed time in seconds. */
+    fun printTime(seconds: Double)
+
+    /** Present the input path, size and modification time. */
+    fun printFileInformation(file: ProjectFile)
+}
+
+/** Tasks capability of a terminal presentation. */
+interface ConsoleTasks {
+    /** Begin presentation of a task within its rule. */
+    fun printEntry(name: String, task: String)
+
+    /** Finish the current task with a success or failure result. */
+    fun printEntryResult(value: Boolean)
+}
+
+/** TaskDetails capability of a terminal presentation. */
+interface ConsoleTaskDetails : ConsoleOutput {
+    /** Present the rule authors. */
+    fun printAuthors(authors: List<String>)
+
+    /** Present the directive conditional, including its expression. */
+    fun printConditional(conditional: DirectiveConditional)
+
+    /** Present command, conditional and author fields; the default emits nothing. */
+    fun printTaskDetails(command: String, conditional: DirectiveConditional, authors: List<String>) { }
+
+    /** Present a simulated command; the default prints the localized dry-run message. */
+    fun printDryRunCommand(command: String) =
+        printWrapped(LanguageController.messages.infoInterpreterDryRunModeSystemCommand(command))
+
+    /** Present a directive skipped by its conditional; the default emits nothing. */
+    fun printSkippedDirective(identifier: String) { }
+
+    /** Present a process launch or execution failure; the default emits nothing. */
+    fun printCommandFailure(output: String) { }
+}
+
+/** Progress capability of a terminal presentation. */
+interface ConsoleProgress : ConsoleOutput {
     /** Present a workspace operation before validation, staging or cleanup starts. */
     fun startBuildDirectory(message: String) = printWrapped(message)
 
@@ -42,7 +82,10 @@ interface ConsoleRenderer {
 
     /** Release presentation-owned resources; host streams remain open. */
     fun close() { }
+}
 
+/** Summaries capability of a terminal presentation. */
+interface ConsoleSummaries : ConsoleOutput {
     /** Legacy project presentation hook; the default emits nothing. */
     fun printProjectInformation(name: String, directory: String) { }
 
@@ -64,19 +107,6 @@ interface ConsoleRenderer {
                 "$status (${run.exitCode}) · ${run.elapsed.inWholeMilliseconds} ms")
         }
     }
-
-    /** Present command, conditional and author fields; the default emits nothing. */
-    fun printTaskDetails(command: String, conditional: DirectiveConditional, authors: List<String>) { }
-
-    /** Present a simulated command; the default prints the localized dry-run message. */
-    fun printDryRunCommand(command: String) =
-        printWrapped(LanguageController.messages.infoInterpreterDryRunModeSystemCommand(command))
-
-    /** Present a directive skipped by its conditional; the default emits nothing. */
-    fun printSkippedDirective(identifier: String) { }
-
-    /** Present a process launch or execution failure; the default emits nothing. */
-    fun printCommandFailure(output: String) { }
 
     /** Legacy run summary hook; null file statuses identify files never reached. The default emits nothing. */
     fun printRunSummary(success: Boolean, files: List<Pair<String, Int?>>) { }

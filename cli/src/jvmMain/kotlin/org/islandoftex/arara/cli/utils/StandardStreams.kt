@@ -15,11 +15,10 @@ internal object StandardStreams {
         val error = System.err
         val adaptedOutput = adapt(output, pipeName(STD_OUTPUT_HANDLE))
         val adaptedError = adapt(error, pipeName(STD_ERROR_HANDLE))
-        if (adaptedOutput === output && adaptedError === error) return action()
-        try {
+        return if (adaptedOutput === output && adaptedError === error) action() else try {
             System.setOut(adaptedOutput)
             System.setErr(adaptedError)
-            return action()
+            action()
         } finally {
             adaptedOutput.flush()
             adaptedError.flush()

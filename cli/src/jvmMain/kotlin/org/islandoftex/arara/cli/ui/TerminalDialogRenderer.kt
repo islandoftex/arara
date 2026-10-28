@@ -10,11 +10,13 @@ import org.islandoftex.arara.core.ui.DialogRenderer
 
 /** Terminal dialogs use host-owned streams and the current configured column width. */
 open class TerminalDialogRenderer(
-    private val input: BufferedReader = System.`in`.bufferedReader(),
+    input: BufferedReader = System.`in`.bufferedReader(),
     protected val output: PrintWriter = PrintWriter(System.out, true),
     private val columns: () -> Int = { Session.userInterfaceOptions.terminalOutputWidth },
     protected val beforeDialog: () -> Unit = {}
 ) : DialogRenderer {
+    private val answers = DialogAnswers(input)
+
     /** Print the message without reading a response. */
     override fun showMessage(type: Int, title: String, text: String) {
         block(type, title, text)
@@ -25,28 +27,16 @@ open class TerminalDialogRenderer(
         block(type, title, text)
         output.print("> ")
         output.flush()
-        return answer().trim()
+        return answers.read().trim()
     }
 
     /** Return a one-based button choice, or zero for cancellation or an empty choice list. */
     override fun showOptions(type: Int, title: String, text: String, buttons: Array<out Any>): Int =
-        selection(type, title, text, buttons)
+        answers.selection(buttons, { selectionBlock(type, title, text, buttons) }, ::prompt)
 
     /** Return a one-based list choice, or zero for cancellation or an empty list. */
     override fun showList(type: Int, title: String, text: String, elements: Array<out Any>): Int =
-        selection(type, title, text, elements)
-
-    private fun selection(type: Int, title: String, text: String, entries: Array<out Any>): Int {
-        if (entries.isEmpty()) return 0
-        selectionBlock(type, title, text, entries)
-        while (true) {
-            val range = "0-${entries.size}"
-            prompt(range)
-            val raw = answer().trim()
-            val chosen = raw.toIntOrNull()
-            if (chosen != null && chosen in 0..entries.size) return chosen
-        }
-    }
+        answers.selection(elements, { selectionBlock(type, title, text, elements) }, ::prompt)
 
     /** Present choices before the shared selection loop reads an answer. */
     protected open fun selectionBlock(type: Int, title: String, text: String, entries: Array<out Any>) {
@@ -60,10 +50,6 @@ open class TerminalDialogRenderer(
         output.print("> ")
         output.flush()
     }
-
-    private fun answer(): String = input.readLine() ?: throw AraraException(
-        LanguageController.messages.errorDialogInputClosed
-    )
 
     protected open fun block(type: Int, title: String, text: String) {
         beforeDialog()
@@ -108,4 +94,21 @@ open class TerminalDialogRenderer(
         const val QUESTION = 4
     }
 
+}
+
+private class DialogAnswers(private val input: BufferedReader) {
+    fun read(): String = input.readLine() ?: throw AraraException(
+        LanguageController.messages.errorDialogInputClosed
+    )
+
+    fun selection(entries: Array<out Any>, present: () -> Unit, prompt: (String) -> Unit): Int {
+        if (entries.isEmpty()) return 0
+        present()
+        val size = entries.size
+        while (true) {
+            prompt("0-$size")
+            val chosen = read().trim().toIntOrNull()
+            if (chosen != null && chosen in 0..size) return chosen
+        }
+    }
 }

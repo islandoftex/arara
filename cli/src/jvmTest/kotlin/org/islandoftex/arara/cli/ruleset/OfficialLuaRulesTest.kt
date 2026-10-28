@@ -66,13 +66,14 @@ class OfficialLuaRulesTest {
         }
     }
 
-    @Suppress("UNCHECKED_CAST")
     private fun parameters(rule: Rule, reference: MPPPath, values: Map<String, Any>): Map<String, Any> =
         rule.arguments.associate { argument ->
             check(!argument.isRequired || argument.identifier in values) { "Missing ${argument.identifier}" }
             val input = values[argument.identifier] ?: argument.defaultValue
             argument.identifier to if (input == null) emptyList<String>() else {
-                (argument as RuleArgument<Any?>).processor(input,
+                @Suppress("UNCHECKED_CAST")
+                val typed = argument as RuleArgument<Any?>
+                typed.processor(input,
                     mapOf("parameters" to values, "reference" to reference))
             }
         } + ("reference" to reference)

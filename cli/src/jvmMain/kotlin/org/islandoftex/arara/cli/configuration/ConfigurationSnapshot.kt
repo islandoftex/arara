@@ -34,7 +34,8 @@ internal data class ConfigurationSnapshot(
     companion object {
         fun capture(): ConfigurationSnapshot = ConfigurationSnapshot(
             LinearExecutor.executionOptions, Session.loggingOptions, Session.userInterfaceOptions,
-            PreambleState.preambles.toMap(), PreambleState.defaultPreamble, PreambleState.prependPreambleIfDirectivesGiven
+            PreambleState.preambles.toMap(), PreambleState.defaultPreamble,
+            PreambleState.prependPreambleIfDirectivesGiven
         )
     }
 }

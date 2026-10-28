@@ -125,7 +125,8 @@ object DirectiveUtils {
 
             if (parameters.containsKey("reference"))
                 throw AraraException(
-                    LanguageController.messages.errorValidateReferenceIsReserved(directive.lineNumbers.joinToString(", ", "(", ")"))
+                    LanguageController.messages.errorValidateReferenceIsReserved(
+                        directive.lineNumbers.joinToString(", ", "(", ")"))
                 )
 
             if (parameters.containsKey("files")) {

@@ -15,43 +15,31 @@ import com.github.ajalt.clikt.output.MordantHelpFormatter
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.help
 import com.github.ajalt.clikt.parameters.arguments.multiple
-import com.github.ajalt.clikt.parameters.options.associate
-import com.github.ajalt.clikt.parameters.options.convert
-import com.github.ajalt.clikt.parameters.options.default
-import com.github.ajalt.clikt.parameters.options.flag
+import com.github.ajalt.clikt.parameters.groups.provideDelegate
 import com.github.ajalt.clikt.parameters.options.help
-import com.github.ajalt.clikt.parameters.options.option
-import com.github.ajalt.clikt.parameters.options.switch
 import com.github.ajalt.clikt.parameters.options.versionOption
-import com.github.ajalt.clikt.parameters.types.choice
-import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.parameters.types.path
-import com.github.ajalt.clikt.parameters.types.restrictTo
 import com.github.ajalt.mordant.rendering.AnsiLevel
 import com.github.ajalt.mordant.rendering.Theme
 import com.github.ajalt.mordant.terminal.Terminal
 import io.github.oshai.kotlinlogging.KotlinLoggingConfiguration
 import java.time.LocalDate
 import java.util.Properties
-import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.DurationUnit
 import kotlin.time.TimeSource
 import org.islandoftex.arara.api.AraraAPI
 import org.islandoftex.arara.api.AraraException
-import org.islandoftex.arara.api.configuration.ExecutionMode
-import org.islandoftex.arara.api.configuration.LogFormat
-import org.islandoftex.arara.api.configuration.LogLevel
-import org.islandoftex.arara.api.configuration.LogRetention
-import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.MPPPath
-import org.islandoftex.arara.api.files.toMPPPath
 import org.islandoftex.arara.api.localization.MPPLocale
-import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.api.session.ExecutionStatus
 import org.islandoftex.arara.cli.configuration.ConfigurationFiles
 import org.islandoftex.arara.cli.configuration.ConfigurationSnapshot
+import org.islandoftex.arara.cli.configuration.ExecutionFlags
+import org.islandoftex.arara.cli.configuration.InvocationFlags
+import org.islandoftex.arara.cli.configuration.LoggingFlags
+import org.islandoftex.arara.cli.configuration.PresentationFlags
+import org.islandoftex.arara.cli.configuration.WatchFlags
 import org.islandoftex.arara.cli.console.ConsoleMode
-import org.islandoftex.arara.cli.ruleset.DirectiveUtils
 import org.islandoftex.arara.cli.ruleset.RuleDiscovery
 import org.islandoftex.arara.cli.ruleset.RuleDiscoveryResult
 import org.islandoftex.arara.cli.ruleset.RuleEngine
@@ -62,10 +50,8 @@ import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.cli.utils.EventLog
 import org.islandoftex.arara.cli.utils.LoggingUtils
 import org.islandoftex.arara.cli.utils.RunLog
-import org.islandoftex.arara.cli.utils.RuntimeDiagnostics
 import org.islandoftex.arara.cli.utils.StandardStreams
 import org.islandoftex.arara.cli.utils.WindowsProcessJob
-import org.islandoftex.arara.cli.utils.printFileInformation
 import org.islandoftex.arara.cli.utils.reportBuildWorkspace
 import org.islandoftex.arara.cli.watch.WatchGraph
 import org.islandoftex.arara.cli.watch.WatchProjectConfiguration
@@ -73,19 +59,13 @@ import org.islandoftex.arara.cli.watch.WatchProjectLoader
 import org.islandoftex.arara.cli.watch.WatchReporter
 import org.islandoftex.arara.cli.watch.WatchSession
 import org.islandoftex.arara.cli.watch.WatchSettings
-import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.configuration.LoggingOptions
-import org.islandoftex.arara.core.configuration.PreambleState
 import org.islandoftex.arara.core.configuration.UserInterfaceOptions
-import org.islandoftex.arara.core.files.FileSearching
 import org.islandoftex.arara.core.files.Project
 import org.islandoftex.arara.core.localization.LanguageController
-import org.islandoftex.arara.core.rules.Directives
-import org.islandoftex.arara.core.session.ExecutorHooks
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.ui.Dialogs
-import org.islandoftex.arara.core.watch.WatchMode
 import org.islandoftex.arara.lua.LuaInterpreter
 
 /**
@@ -96,7 +76,7 @@ import org.islandoftex.arara.lua.LuaInterpreter
  * @since 5.0
  */
 // Options and their configuration application belong to the same command.
-@Suppress("TooManyFunctions")
+
 class CLI : CliktCommand("arara") {
 
     init {
@@ -117,7 +97,8 @@ class CLI : CliktCommand("arara") {
         }
         installMordantMarkdown()
         subcommands(RulesCommand {
-            queryRules(it, workingDirectory, engine, ::updateConfigurationFromCommandLine)
+            queryRules(
+                it, invocationFlags.workingDirectory, invocationFlags.engine, ::updateConfigurationFromCommandLine)
         })
     }
 
@@ -139,102 +120,25 @@ class CLI : CliktCommand("arara") {
         feature conditional execution and parameter expansion.
     """.trimMargin("@")
 
-    private val engine by option("-e", "--preferred-engine")
-        .help("Preferred rule engine: lua (default) or deprecated yaml; falls back to the other format")
-        .choice("lua" to RuleEngine.LUA, "yaml" to RuleEngine.YAML).default(RuleEngine.LUA)
+    private val invocationFlags by InvocationFlags()
+    private val executionFlags by ExecutionFlags()
+    private val loggingFlags by LoggingFlags()
+    private val presentationFlags by PresentationFlags()
+    private val watchFlags by WatchFlags()
 
-    private val log by option("-l", "--log")
-        .help("Write a text diagnostic log (shorthand for --log-format=text)")
-        .switch("-l" to LogFormat.TEXT, "--log" to LogFormat.TEXT)
-    private val verbose by option("-v", "--verbose")
-        .help("Print the command output")
-        .flag()
-    private val silent by option("-s", "--silent")
-        .help("Suppress command output, overriding configuration and --verbose")
-        .flag()
-    private val dryRun by option("-n", "--dry-run")
-        .help(
-            "Go through all the motions of running a command, but " +
-                "with no actual calls"
+    private val projectResolver
+        get() = ProjectResolver(
+            invocationFlags.workingDirectory,
+            { project, snapshot -> configureProject(project, snapshot) },
+            ::updateConfigurationFromCommandLine
         )
-        .flag()
-    private val cleanBuild by option("--clean-build")
-        .help("Remove managed project build directories without executing commands")
-        .flag()
-    private val watch by option("--watch")
-        .help("Continuously compile Lua projects when their inputs change")
-        .flag()
-    private val watchMode by option("--watch-mode")
-        .help("Filesystem monitoring: auto, native or polling")
-        .choice("auto" to WatchMode.AUTO,
-            "native" to WatchMode.NATIVE,
-            "polling" to WatchMode.POLLING)
-        .default(WatchMode.AUTO)
-    private val watchDebounce by option("--watch-debounce")
-        .help("Wait for input changes to settle (milliseconds; default 300)")
-        .int().restrictTo(min = 1).default(WatchSettings.DEFAULT_DEBOUNCE)
-    private val watchInterval by option("--watch-interval")
-        .help("Maximum delay between content reconciliations (milliseconds; default 1000)")
-        .int().restrictTo(min = 1).default(WatchSettings.DEFAULT_INTERVAL)
-
-    private val safeRun by option("-S", "--safe-run")
-        .help(
-            "Run in safe mode and disable potentially harmful features. " +
-                "Make sure your projects uses only allowed features."
-        )
-        .flag()
-    private val wholeFile by option("-w", "--whole-file")
-        .help("Extract directives in the file, not only in the header")
-        .flag()
-    private val preamble by option("-p", "--preamble")
-        .help("Set the file preamble based on the configuration file")
-    private val timeout by option("-t", "--timeout")
-        .help("Set the execution timeout (in milliseconds)")
-        .int().restrictTo(min = 1)
-    private val language by option("-L", "--language")
-        .help("Set the application language")
-    private val maxLoops by option("-m", "--max-loops")
-        .help("Set the maximum number of loops (> 0)")
-        .int().restrictTo(min = 1)
-    private val workingDirectory: MPPPath? by option("-d", "--working-directory")
-        .help("Set the working directory for all tools")
-        .path(mustExist = true, canBeFile = false, mustBeReadable = true)
-        .convert { it.toMPPPath() }
-    private val parameters: Map<String, String> by option("-P", "--call-property")
-        .help("Pass parameters to the application to be used within the session.")
-        .associate()
-    private val properties: MPPPath? by option("-F", "--properties-file")
-        .help("Pass a properties file to the application to be used within the session.")
-        .path(mustExist = true, canBeDir = false, mustBeReadable = true)
-        .convert { it.toMPPPath() }
-
-    private val logFormat by option("--log-format")
-        .help("Set the diagnostic log format: none (default), text or json")
-        .choice("none" to LogFormat.NONE, "text" to LogFormat.TEXT, "json" to LogFormat.JSON)
-
-    private val logLevel by option("--log-level")
-        .help("Set the minimum diagnostic log level: trace (default), debug, info, warn or error")
-        .choice("trace" to LogLevel.TRACE, "debug" to LogLevel.DEBUG, "info" to LogLevel.INFO,
-            "warn" to LogLevel.WARN, "error" to LogLevel.ERROR)
-
-    private val logRetention by option("--log-retention")
-        .help("Keep diagnostic logs always (default) or only on-failure")
-        .choice("always" to LogRetention.ALWAYS, "on-failure" to LogRetention.ON_FAILURE)
-
-    private val console by option("-c", "--console")
-        .help("Set the console presentation: plain or styled")
-        .choice("plain" to ConsoleMode.PLAIN, "styled" to ConsoleMode.STYLED)
-
-    private val terminalWidth by option("--terminal-width")
-        .help("Set the maximum console width in columns (at least 20)")
-        .int().restrictTo(min = UserInterfaceOptions.MINIMUM_TERMINAL_WIDTH)
 
     private var watchConfiguration = emptyMap<String, WatchProjectConfiguration>()
 
     private var appliedConsole: ConsoleMode? = null
 
     private fun applyConsole() {
-        val mode = ConsoleMode.resolve(console, Session.userInterfaceOptions.consoleMode)
+        val mode = ConsoleMode.resolve(presentationFlags.console, Session.userInterfaceOptions.consoleMode)
         if (mode != appliedConsole) {
             DisplayUtils.renderer.close()
             DisplayUtils.renderer = mode.renderer(terminal)
@@ -252,124 +156,30 @@ class CLI : CliktCommand("arara") {
         .help("The file(s) to evaluate and process")
         .multiple(required = false)
 
-    /** Specifications share a graph; loose inputs form a final anonymous project. */
-    private fun resolveProjects(configuration: ConfigurationSnapshot): List<org.islandoftex.arara.api.files.Project> {
-        val workingDir = (workingDirectory ?: MPPPath(".")).normalize()
-        val (specifications, inputs) = reference.partition { it.endsWith(".proj.lua") }
-        val projects = specifications.flatMap { specification ->
-            val path = workingDir.resolve(specification)
-            LuaInterpreter(workingDir).parseProjectsFromLua(
-                path.readText(), path.fileName.removeSuffix(".proj.lua"), path.toString()
-            )
-        }
-        // Specification dependencies refer only to named specification projects.
-        org.islandoftex.arara.core.dependencies.ProjectValidation.executionOrder(projects)
-        return if (inputs.isEmpty()) projects else projects + resolveLooseInputs(
-            inputs, workingDir, configuration, projects.map { it.name }.toSet()
-        )
-    }
-
-    private fun resolveLooseInputs(
-        inputs: List<String>,
-        workingDir: MPPPath,
-        configuration: ConfigurationSnapshot,
-        dependencies: Set<String>
-    ): org.islandoftex.arara.api.files.Project {
-        val project = Project("Single files", workingDir, emptySet(), dependencies)
-        return try {
-            configureProject(project, configuration)
-            val files = inputs.map { FileSearching.resolveFile(it, workingDir, LinearExecutor.executionOptions) }
-            if (files.map { it.path.normalize() }.toSet().size != files.size) {
-                throw AraraException("Loose inputs refer to the same file more than once.")
-            }
-            Project(project.name, workingDir, files.toSet(), dependencies)
-        } finally {
-            configuration.restore(configureLogging = false)
-            updateConfigurationFromCommandLine()
-        }
-    }
-
     /**
      * Update arara's configuration with the command line arguments.
      */
     private fun updateConfigurationFromCommandLine() {
         Session.userInterfaceOptions = UserInterfaceOptions(
-            locale = language?.let { MPPLocale(it) }
+            locale = presentationFlags.language?.let { MPPLocale(it) }
                 ?: Session.userInterfaceOptions.locale,
-            terminalOutputWidth = terminalWidth ?: Session.userInterfaceOptions.terminalOutputWidth,
-            terminalOutputWidthLimit = terminalWidth ?: Session.userInterfaceOptions.terminalOutputWidthLimit,
+            terminalOutputWidth = presentationFlags.terminalWidth ?: Session.userInterfaceOptions.terminalOutputWidth,
+            terminalOutputWidthLimit = presentationFlags.terminalWidth
+                ?: Session.userInterfaceOptions.terminalOutputWidthLimit,
             consoleMode = Session.userInterfaceOptions.consoleMode,
             enableAnimations = Session.userInterfaceOptions.enableAnimations
         )
         LanguageController.loadMessagesFor(Session.userInterfaceOptions.locale)
 
-        LinearExecutor.executionOptions = ExecutionOptions
-            .from(LinearExecutor.executionOptions)
-            .copy(
-                maxLoops = maxLoops
-                    ?: LinearExecutor.executionOptions.maxLoops,
-                timeoutValue = timeout?.let { it.milliseconds }
-                    ?: LinearExecutor.executionOptions.timeoutValue,
-                verbose = when {
-                    silent -> false
-                    verbose -> true
-                    else -> LinearExecutor.executionOptions.verbose
-                },
-                executionMode = when {
-                    dryRun -> ExecutionMode.DRY_RUN
-                    safeRun -> ExecutionMode.SAFE_RUN
-                    else -> LinearExecutor.executionOptions.executionMode
-                },
-                parseOnlyHeader = if (wholeFile)
-                    false
-                else
-                    LinearExecutor.executionOptions.parseOnlyHeader
-            )
+        LinearExecutor.executionOptions = executionFlags.apply(LinearExecutor.executionOptions)
 
         Session.loggingOptions = LoggingOptions(
             appendLog = Session.loggingOptions.appendLog,
             logFile = Session.loggingOptions.logFile,
-            format = logFormat ?: log ?: Session.loggingOptions.format,
-            level = logLevel ?: Session.loggingOptions.level,
-            retention = logRetention ?: Session.loggingOptions.retention
+            format = loggingFlags.logFormat ?: loggingFlags.log ?: Session.loggingOptions.format,
+            level = loggingFlags.logLevel ?: Session.loggingOptions.level,
+            retention = loggingFlags.logRetention ?: Session.loggingOptions.retention
         )
-    }
-
-    /**
-     * Prepend potential preamble lines to the given directives.
-     *
-     * If there is no preamble given on command-line, returns the [directives],
-     * otherwise checks existence of the preamble and returns the processed
-     * preamble for a file of [fileType] prepended to [directives].
-     */
-    private fun prependPreambleDirectives(
-        fileType: FileType,
-        directives: List<Directive>
-    ): List<Directive> {
-        val resolvedPreamble = preamble ?: PreambleState.defaultPreamble
-        if (resolvedPreamble != null && resolvedPreamble !in PreambleState.preambles) {
-            throw AraraException(
-                LanguageController.messages
-                    .errorParserInvalidPreamble(resolvedPreamble)
-            )
-        }
-        val allDirectives = resolvedPreamble
-            ?.takeIf { PreambleState.preambles.containsKey(it) }
-            ?.let { preambleName ->
-                Directives.extractDirectives(
-                    PreambleState.preambles.getValue(preambleName)
-                        .lines()
-                        .filterNot { it.isEmpty() },
-                    true,
-                    fileType
-                ).plus(directives)
-            } ?: directives
-        if (allDirectives.isEmpty())
-            throw AraraException(
-                LanguageController
-                    .messages.errorValidateNoDirectivesFound
-            )
-        return allDirectives
     }
 
     /**
@@ -377,11 +187,11 @@ class CLI : CliktCommand("arara") {
      */
     override fun run() {
         if (currentContext.invokedSubcommand != null) {
-            if (watch) throw UsageError(LanguageController.messages.errorWatchArguments)
+            if (watchFlags.watch) throw UsageError(LanguageController.messages.errorWatchArguments)
             return
         }
         if (reference.isEmpty()) throw UsageError("Missing argument file")
-        if (watch && (cleanBuild || reference.any { !it.endsWith(".proj.lua") })) {
+        if (watchFlags.watch && (invocationFlags.cleanBuild || reference.any { !it.endsWith(".proj.lua") })) {
             throw UsageError(LanguageController.messages.errorWatchArguments)
         }
         val configuration = ConfigurationSnapshot.capture()
@@ -424,7 +234,8 @@ class CLI : CliktCommand("arara") {
     ) {
         val frozen = watchConfiguration[project.name]
         (frozen?.snapshot ?: configuration).restore(configureLogging = false)
-        LanguageController.loadMessagesFor(language?.let { MPPLocale(it) } ?: Session.userInterfaceOptions.locale)
+        LanguageController.loadMessagesFor(presentationFlags.language?.let { MPPLocale(it) }
+            ?: Session.userInterfaceOptions.locale)
         val file = if (frozen != null) frozen.file else ConfigurationFiles.configFileForProject(project)
         DisplayUtils.configurationFileName = file?.toString() ?: "[none]"
         if (frozen == null && file != null) ConfigurationFiles.load(file, project, configureLogging = false)
@@ -448,7 +259,7 @@ class CLI : CliktCommand("arara") {
     }
 
     private fun runWatch(configuration: ConfigurationSnapshot): ExecutionStatus {
-        val root = (workingDirectory ?: MPPPath(".")).normalize()
+        val root = (invocationFlags.workingDirectory ?: MPPPath(".")).normalize()
         val specifications = reference.map { root.resolve(it).normalize() }.toSet()
         val fallback = WatchGraph(emptyList(), specifications +
             ConfigurationFiles.candidatesForProject(Project("Watch", root, emptySet())))
@@ -456,7 +267,8 @@ class CLI : CliktCommand("arara") {
         return ExecutionStatus.FinishedWithCode(WatchSession(
             fallback = fallback,
             load = WatchProjectLoader(
-                specifications, { prepareProjects(resolveProjects(configuration), configuration, false) },
+                specifications,
+                { prepareProjects(projectResolver.resolveProjects(reference, configuration), configuration, false) },
                 { configureProject(it, configuration, false) },
                 { configuration.restore(configureLogging = false); updateConfigurationFromCommandLine() }
             )::load,
@@ -479,14 +291,14 @@ class CLI : CliktCommand("arara") {
             },
             report = WatchReporter(),
             settings = WatchSettings(
-                watchMode, watchDebounce.toLong(), watchInterval.toLong())
+                watchFlags.watchMode, watchFlags.watchDebounce.toLong(), watchFlags.watchInterval.toLong())
         ).run())
     }
 
     private fun runProjects(configuration: ConfigurationSnapshot): ExecutionStatus {
-        val projects = prepareProjects(resolveProjects(configuration), configuration)
+        val projects = prepareProjects(projectResolver.resolveProjects(reference, configuration), configuration)
         DisplayUtils.presentation.prepare(projects)
-        return executeProjects(projects, cleanBuild)
+        return executeProjects(projects, invocationFlags.cleanBuild)
     }
 
     private fun runSession(configuration: ConfigurationSnapshot) {
@@ -507,56 +319,25 @@ class CLI : CliktCommand("arara") {
 
         // add all key/value pairs found in the properties file, if
         // provided in the command line
-        properties?.let { path ->
-            Properties().apply { ConfigurationFiles.loadProperties(this, path) }
-        }?.let(ConfigurationFiles::toMap)?.forEach { (key, value) -> Session.put("arg:$key", value) }
+        invocationFlags.properties
+            ?.let { path -> Properties().apply { ConfigurationFiles.loadProperties(this, path) } }
+            ?.let(ConfigurationFiles::toMap)
+            ?.forEach { (key, value) -> Session.put("arg:$key", value) }
 
         // add all command line call parameters to the session
         // (command line parameters take precedence over properties)
-        parameters.forEach { (key, value) -> Session.put("arg:$key", value) }
+        invocationFlags.parameters.forEach { (key, value) -> Session.put("arg:$key", value) }
 
         try {
-            LinearExecutor.hooks = ExecutorHooks(
-                shouldStopExecution = { watch && Thread.currentThread().isInterrupted },
-                buildWorkspace = ::reportBuildWorkspace,
-                executeBeforeExecution = {
-                    RunLog.executionStarted(AraraAPI.version)
-                    Session.updateEnvironmentVariables()
-                    // directive processing has to be initialized, so that the core
-                    // component respects our MVEL processing
-                    DirectiveUtils.initializeDirectiveCore(engine)
-                },
-                executeBeforeProject = { project ->
-                    configureProject(project, configuration)
-                    RuntimeDiagnostics.record(
-                        project, engine.name.lowercase(), checkNotNull(appliedConsole).name.lowercase(),
-                        DisplayUtils.configurationFileName.takeUnless { it == "[none]" })
-                    DisplayUtils.renderer.printProjectInformation(project.name, project.workingDirectory.toString(),
-                        DisplayUtils.presentation.multipleProjects)
-                },
-                executeBeforeFile = {
-                    updateConfigurationFromCommandLine()
-                    it.printFileInformation()
-                },
-                executeAfterFile = { report ->
-                    DisplayUtils.printFileResult(report.exitCode)
-                    // add an empty line between file executions
-                    println()
-                },
-                processDirectives = { file, list ->
-                    DirectiveUtils.process(
-                        file,
-                        list
-                            .takeIf {
-                                list.isNotEmpty() && !PreambleState.prependPreambleIfDirectivesGiven && preamble == null
-                            }
-                            ?: prependPreambleDirectives(file.fileType, list),
-                        engine
-                    )
-                }
+            LinearExecutor.hooks = executionHooks(
+                invocationFlags.engine, watchFlags.watch, executionFlags.preamble,
+                ExecutionConfiguration(
+                    { configureProject(it, configuration) }, ::updateConfigurationFromCommandLine,
+                    { checkNotNull(appliedConsole) }
+                )
             )
 
-            if (watch) runWatch(configuration) else runProjects(configuration)
+            if (watchFlags.watch) runWatch(configuration) else runProjects(configuration)
         } catch (ex: AraraException) {
             // catch a propagated exception to replace intentionally left
             // out local treatment
@@ -566,7 +347,7 @@ class CLI : CliktCommand("arara") {
             // print the execution time if the command line parsing does not
             // return false as result (it makes no sense to print the execution
             // time for a help message)
-            if (watch) WindowsProcessJob.finish() else finishRuntime(executionStatus.exitCode)
+            if (watchFlags.watch) WindowsProcessJob.finish() else finishRuntime(executionStatus.exitCode)
             DisplayUtils.printTime(executionStart.elapsedNow().toDouble(DurationUnit.SECONDS))
 
             throw ProgramResult(executionStatus.exitCode)
