@@ -10,6 +10,16 @@ import java.nio.file.Files
 import org.islandoftex.arara.api.AraraIOException
 
 class JVMMPPPathTest : ShouldSpec({
+    should("retain checked IO exceptions on concrete Java entry points") {
+        val operations = setOf("readLines", "readText", "metadata", "read", "listEntries", "listFiles",
+            "writeText", "createDirectories", "removeDirectory")
+        MPPPath::class.java.methods.filter { it.name in operations }.also { methods ->
+            methods.map { it.name }.toSet() shouldBe operations
+        }.forEach { method ->
+            method.exceptionTypes.toList() shouldBe listOf(AraraIOException::class.java)
+        }
+    }
+
     context("read and write operations") {
         should("read from file") {
             val tmp = tempfile()
