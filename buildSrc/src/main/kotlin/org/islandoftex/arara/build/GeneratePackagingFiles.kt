@@ -30,7 +30,8 @@ abstract class GeneratePackagingFiles : DefaultTask() {
         val directory = outputDirectory.get().asFile.toPath()
         Files.createDirectories(directory)
         TaskHelper.createScript(directory.resolve("arara.sh"))
-        val date = LocalDate.parse(manPageDate.get()).format(DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale.ENGLISH))
+        val date = LocalDate.parse(manPageDate.get())
+            .format(DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale.ENGLISH))
         TaskHelper.createManPage(directory.resolve("arara.1"), packageVersion.get(), date)
     }
 }

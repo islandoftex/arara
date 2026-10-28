@@ -21,27 +21,7 @@ class AraraPackaging : Plugin<Project> {
                 .orElse(target.provider { LocalDate.now(ZoneOffset.UTC).toString() }))
             outputDirectory.set(target.layout.buildDirectory.dir("packaging/generated"))
         }
-        val sources = target.tasks.register("assembleCTANSourceZip", Zip::class.java) {
-            configureArchive(this, target, "arara-$version-src.zip")
-            from(target.projectDir) {
-                include("api/**", "core/**", "lua/**", "mvel/**", "cli/**", "docs/**", "smoke-tests/**")
-                include("buildSrc/**", "gradle/**", "website/**", "rules/**")
-                include("*.gradle.kts", "gradle.properties", "gradlew", "gradlew.bat")
-                include("README.md", "CHANGELOG.md", "LICENSE", "detekt-config.yml", ".editorconfig")
-                include("flake.nix", "flake.lock", ".gitmodules", ".gitattributes", ".gitignore")
-                exclude("*/build/**", "build/**", "**/.gradle/**", "**/.git", "**/.git/**", "website/public/**")
-                exclude("docs/*.pdf", "docs/resources/version.txt", "**/arara.log")
-                exclude("api/src/jvmMain/kotlin/org/islandoftex/arara/api/AraraAPI.kt")
-            }
-            eachFile {
-                val marker = "version https://git-lfs.github.com/spec/v1"
-                val prefix = Files.newInputStream(file.toPath()).use {
-                    String(it.readNBytes(marker.length), Charsets.US_ASCII)
-                }
-                check(prefix != marker) { "Unresolved Git LFS pointer in source archive: $path" }
-            }
-            filesMatching("gradlew") { permissions { unix("0755") } }
-        }
+        val sources = sourceArchive(target, version)
         val website = target.files(target.layout.projectDirectory.dir("website/public"))
             .builtBy(":docs:buildWebsite")
         val documentationSources = target.tasks.register("assembleDocumentationSourceZip", Zip::class.java) {
@@ -83,6 +63,14 @@ class AraraPackaging : Plugin<Project> {
             from(tds)
             filesMatching("**/arara.sh") { permissions { unix("0755") } }
         }
+        ctanArchive(target, tds, tdsZip)
+    }
+
+    private fun ctanArchive(
+        target: Project,
+        tds: org.gradle.api.tasks.TaskProvider<Sync>,
+        tdsZip: org.gradle.api.tasks.TaskProvider<Zip>
+    ) {
         val ctan = target.tasks.register("assembleCTANTree", Sync::class.java) {
             group = "distribution"
             duplicatesStrategy = DuplicatesStrategy.FAIL
@@ -106,6 +94,29 @@ class AraraPackaging : Plugin<Project> {
             filesMatching("**/arara.sh") { permissions { unix("0755") } }
         }
     }
+
+    private fun sourceArchive(target: Project, version: String) =
+        target.tasks.register("assembleCTANSourceZip", Zip::class.java) {
+            configureArchive(this, target, "arara-$version-src.zip")
+            from(target.projectDir) {
+                include("api/**", "core/**", "lua/**", "mvel/**", "cli/**", "docs/**", "smoke-tests/**")
+                include("buildSrc/**", "gradle/**", "website/**", "rules/**")
+                include("*.gradle.kts", "gradle.properties", "gradlew", "gradlew.bat")
+                include("README.md", "CHANGELOG.md", "LICENSE", "detekt-config.yml", ".editorconfig")
+                include("flake.nix", "flake.lock", ".gitmodules", ".gitattributes", ".gitignore")
+                exclude("*/build/**", "build/**", "**/.gradle/**", "**/.git", "**/.git/**", "website/public/**")
+                exclude("docs/*.pdf", "docs/resources/version.txt", "**/arara.log")
+                exclude("api/src/jvmMain/kotlin/org/islandoftex/arara/api/AraraAPI.kt")
+            }
+            eachFile {
+                val marker = "version https://git-lfs.github.com/spec/v1"
+                val prefix = Files.newInputStream(file.toPath()).use {
+                    String(it.readNBytes(marker.length), Charsets.US_ASCII)
+                }
+                check(prefix != marker) { "Unresolved Git LFS pointer in source archive: $path" }
+            }
+            filesMatching("gradlew") { permissions { unix("0755") } }
+        }
 
     private fun configureArchive(task: Zip, target: Project, name: String) {
         task.group = "distribution"

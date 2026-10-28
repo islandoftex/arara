@@ -58,11 +58,12 @@ spotless {
                 "docs/build.gradle.kts",
                 "smoke-tests/build.gradle.kts"
         )
-        // Only import ordering is enabled; surrounding Kotlin formatting stays unchanged.
+        // Check imports without rewriting the surrounding Kotlin formatting.
         ktlint(libs.versions.ktlint.get()).editorConfigOverride(
             mapOf(
                 "ktlint_standard" to "disabled",
                 "ktlint_standard_import-ordering" to "enabled",
+                "ktlint_standard_no-unused-imports" to "enabled",
                 "ij_kotlin_imports_layout" to "*"
             )
         )
@@ -80,11 +81,12 @@ spotless {
                 "buildSrc/src/**/*.kt",
                 "smoke-tests/src/**/*.kt"
         )
-        // Only import ordering is enabled; surrounding Kotlin formatting stays unchanged.
+        // Check imports without rewriting the surrounding Kotlin formatting.
         ktlint(libs.versions.ktlint.get()).editorConfigOverride(
             mapOf(
                 "ktlint_standard" to "disabled",
                 "ktlint_standard_import-ordering" to "enabled",
+                "ktlint_standard_no-unused-imports" to "enabled",
                 "ij_kotlin_imports_layout" to "*"
             )
         )
@@ -177,6 +179,7 @@ val araraKotlinLanguage = KotlinVersion.fromVersion(providers.gradleProperty("ar
 val warningsAsErrors = providers.gradleProperty("warningsAsErrors").map(String::toBooleanStrict).orElse(false)
 
 tasks.withType<Detekt>().configureEach {
+    exclude("**/AraraAPI.kt") // Generated version metadata has no hand-maintained implementation to lint.
     jvmTarget = araraJVMString
 }
 

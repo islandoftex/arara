@@ -3,7 +3,6 @@ package org.islandoftex.arara.build
 
 import java.nio.file.FileSystems
 import java.nio.file.Files
-import java.nio.file.Path
 import java.nio.file.Paths
 import java.nio.file.attribute.FileTime
 import java.nio.file.attribute.PosixFilePermissions

@@ -1,6 +1,5 @@
 build:
-  # maxIssues: 0
-  maxIssues: 20
+  maxIssues: 0
   excludeCorrectable: false
   weights:
     # complexity: 2
@@ -10,7 +9,7 @@ build:
 
 config:
   validation: true
-  warningsAsErrors: false
+  warningsAsErrors: true
   checkExhaustiveness: false
   # when writing own rules with new properties, exclude the property path e.g.: 'my_rule_set,.*>.*>[my_property]'
   excludes: ''
@@ -606,8 +605,18 @@ style:
       - reason: 'println does not allow you to configure the output stream. Use a logger instead.'
         value: 'kotlin.io.println'
   ForbiddenSuppress:
-    active: false
-    rules: []
+    active: true
+    rules:
+      - LongMethod
+      - CyclomaticComplexMethod
+      - NestedBlockDepth
+      - LargeClass
+      - LongParameterList
+      - ThrowsCount
+      - ReturnCount
+      - MagicNumber
+      - SpreadOperator
+      - MaxLineLength
   ForbiddenVoid:
     active: true
     ignoreOverridden: false

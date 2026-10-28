@@ -61,13 +61,25 @@ object TaskHelper {
      * @throws IOException The file could not be written.
      */
     @Throws(IOException::class)
-    @Suppress("LongMethod")
     fun createManPage(file: Path, version: String, date: String) {
         try {
             Files.writeString(
                 file,
-                """
-                .TH ARARA 1 "$date" "v$version"
+                MAN_PAGE_TEMPLATE.replace("@DATE@", date).replace("@VERSION@", version)
+            )
+        } catch (_: IOException) {
+            throw IOException(
+                "I could not create the man page for " +
+                    "arara due to an IO error. Please make sure the " +
+                    "current directory has the correct permissions " +
+                    "and try again. The application will halt now."
+            )
+        }
+    }
+}
+
+private val MAN_PAGE_TEMPLATE = """
+                .TH ARARA 1 "@DATE@" "v@VERSION@"
                 .SH NAME
                 arara \- a TeX automation tool based on rules and directives.
                 .SH SYNOPSIS
@@ -131,15 +143,4 @@ object TaskHelper {
                 Issue tracker at
                 .UR https://gitlab.com/islandoftex/arara/-/issues
                 .UE .
-                """.trimIndent() + "\n"
-            )
-        } catch (_: IOException) {
-            throw IOException(
-                "I could not create the man page for " +
-                    "arara due to an IO error. Please make sure the " +
-                    "current directory has the correct permissions " +
-                    "and try again. The application will halt now."
-            )
-        }
-    }
-}
+""".trimIndent() + "\n"

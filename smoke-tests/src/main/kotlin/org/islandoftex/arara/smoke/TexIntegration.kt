@@ -39,7 +39,8 @@ private class TexIntegration(private val options: Map<String, String>, private v
     }
 
     private fun pdf(root: MPPPath) {
-        check(root.resolve("run.pdf").read { it.readUtf8(PDF_HEADER.length.toLong()) } == PDF_HEADER) { "Missing PDF header" }
+        check(root.resolve("run.pdf").read { it.readUtf8(PDF_HEADER.length.toLong()) }
+            == PDF_HEADER) { "Missing PDF header" }
         check(root.resolve("run.log").exists) { "Missing TeX log" }
     }
 
