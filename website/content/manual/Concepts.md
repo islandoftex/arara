@@ -66,10 +66,10 @@ Save it as `hello.lua` in a configured rule path and use `% arara: hello`.
 
 ## Legacy YAML/MVEL rule structure
 
-With the legacy `yaml` engine (`--preferred-engine yaml`), a rule is a plain text file written in the YAML
-format, described in [YAML](@/manual/YAML.md). The rule structure and examples
+A legacy YAML rule is a plain text file written in the YAML format, described
+in [YAML](@/manual/YAML.md). The rule structure and examples
 below describe this format. Lua rules return a table instead; their structure
-and examples are covered in [Lua rules](@/manual/Lua.md). Select them with
+and examples are covered in [Lua rules](@/manual/Lua.md). Prefer them with
 `arara --preferred-engine lua document.tex`.
 
 I opted for YAML because back then it was cleaner
@@ -618,8 +618,9 @@ arara provides logical expressions and special operators processed at runtime
 in order to determine whether and how a directive
 should be processed. This feature is named *directive conditional*, or simply
 *conditional* as an abbreviation. The following list describes all conditional
-operators available in the directive context. Expressions use Lua by default and MVEL with the
-legacy `yaml` engine (`--preferred-engine yaml`). The examples below use Lua.
+operators available in the directive context. Expressions use the language of
+the resolved rule: Lua for a Lua rule, MVEL for a legacy YAML rule. The
+`--preferred-engine` option changes lookup preference. The examples below use Lua.
 
 | Operation | Lua | MVEL |
 | --- | --- | --- |
@@ -711,8 +712,7 @@ reference. Such methods are detailed later on.
 
 {% messagebox(title="Orb tag expansion in parameter values") %}
 arara can expand tags within the special `options` parameter in the directive
-context. With the default Lua engine, use double-curly-brace tags and Lua
-expressions:
+context. For a Lua rule, use double-curly-brace tags and Lua expressions:
 
 ```tex
 % arara: lualatex: { options: ['--jobname={{ "draft" .. "-copy" }}'] }
@@ -721,7 +721,7 @@ expressions:
 The example produces the option `--jobname=draft-copy`. See
 [Lua rules](@/manual/Lua.md#conditionals-and-options) for the corresponding rules.
 
-With the legacy YAML/MVEL engine, use orb tags instead:
+For a legacy YAML/MVEL rule, use orb tags instead:
 
 ```tex
 % arara: lualatex: {
@@ -733,7 +733,7 @@ With the legacy YAML/MVEL engine, use orb tags instead:
 
 This form supports the methods described in [Methods](@/manual/Methods.md):
 `❖ getBasename`, `❖ getSession` and `❖ getOriginalReference`. The tags belong to
-the selected engine; Lua does not accept MVEL's `@{ ... }` tags.
+the resolved rule's language; Lua does not accept MVEL's `@{ ... }` tags.
 
 Keep in mind that this feature is disabled when arara is running in safe mode,
 as seen in [Command line](@/manual/CLI.md).

@@ -110,8 +110,9 @@ additional parameters. For files, there are the following additional options:
   default priority is `0`. If a file *A* has higher priority than file *B* it
   means that *A* will be executed before *B*.
 * `directives`: Specify a list of directives that will be used instead of the
-  directives specified in the file. They have to correspond to the file type's
-  directives, i.e. they will be accepted if they would be accepted by the
+  directives specified in the file. Omit this field to read the file's directives;
+  an empty list does not fall back to its header. They have to correspond to the
+  file type's directives, i.e. they will be accepted if they would be accepted by the
   patterns of the file type.
 * `file_type`: Specify the file type of the file. The same rules as for
   specifying a file type in the configuration file apply. The `extension` is
@@ -124,8 +125,10 @@ that for technical reasons arara's Lua interpreter only accepts Lua 5.2.
 
 Project fields are checked strictly: unknown keys and values of the wrong type
 are errors. `directives` and `dependencies` must be contiguous lists of strings;
-`priority` must be a 32-bit integer. A list of projects requires an explicit,
-nonblank, unique name for each entry. Errors identify the offending field.
+`priority` must be a 32-bit integer. Every project requires at least one file
+and a nonblank name, whether supplied explicitly or derived from its filename.
+A list of projects requires an explicit, nonblank, unique name for each entry.
+Errors identify the offending field.
 
 Relative working directories resolve against the invocation directory (`-d` when
 provided). File paths resolve against their project's working directory. An

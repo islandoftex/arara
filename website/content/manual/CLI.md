@@ -723,6 +723,11 @@ directory, arara tries the preferred format first, then the other format. In
 each format, an unprefixed filename takes priority over `arara-rule-<name>`.
 A malformed rule is an error, not a reason to try another format.
 
+When migrating a custom rule, use `arara rules --info <name>` to check the
+selected file and format before running it. `--preferred-engine lua` still
+allows a YAML fallback; it does not prove that a Lua replacement was selected.
+See [Rule discovery](@/manual/Rules.md) for listing all available variants.
+
 The resolved rule determines the language of its directive conditionals and
 interpolated options:
 
@@ -774,6 +779,12 @@ label and value on separate lines.
 
 Styled dialogs show the message and numbered choices in a box colored by message
 type. Plain dialogs are used when boxes are unsupported or output is redirected.
+Input is read from standard input in either presentation; redirected answers
+are accepted. End of input without an answer reports an error.
+
+Styled output requires a terminal and font that can display its Unicode markers.
+If the markers appear as missing glyphs, select a suitable font or use
+`--console plain`.
 
 On Windows, output to MSYS/Cygwin terminal pipes uses UTF-8. Native consoles
 and redirected output use the encoding selected by Java.

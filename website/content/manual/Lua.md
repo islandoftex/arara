@@ -70,6 +70,8 @@ A command table requires `command = function(ctx) ... end`; its `name` and
 `exit` fields are optional. A returned `true` represents a successful logical
 task and `false` a failed one. Command handles invoke an external program. Nested
 lists run their tasks in order; an empty list or `nil` contains no tasks.
+A command string or number is not an executable result: use `get_command` for
+an external program. The `exit(code)` function must return a boolean.
 
 Use `get_command` to build an invocation from a program and its arguments. The
 helper flattens argument lists, so the processed `ctx.options` list in the
@@ -103,8 +105,10 @@ An omitted optional argument without a default produces an empty processed list;
 its flag is not called. With a default, the flag receives that value instead.
 An explicit value is required when `required = true`, even if a default is
 also declared. Defaults are literal values, not functions. Without a flag, a
-provided value or default is converted to one string. Flags may return a string,
-a number or a nested list of these; the result becomes a flat list of strings.
+provided value or default is converted to one string. Flags may return scalar
+values or nested lists; scalars become strings and `nil` produces an empty list.
+For example, a flag returning `false` contributes the text `"false"`, whereas a
+command returning `false` reports a failed task.
 
 `ctx.reference` describes the file selected for the directive. Its `file_name`
 is the name without parent directories; `path` and `parent` are absolute paths.
@@ -123,7 +127,8 @@ operations use dot calls: `get_session().put("key", value)`.
 
 Helpers validate their input types: `trim_spaces` requires a string, for
 instance, and the append argument of `write_to_file` requires a boolean. The
-error identifies the helper and the argument that did not match.
+error identifies the helper and the argument that did not match. Helpers taking
+integer indices or counts require 32-bit integer values.
 The helper reference and Lua examples are in [Methods](@/manual/Methods.md).
 
 # Conditionals and options
