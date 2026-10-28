@@ -236,5 +236,5 @@ by pre-commit).
   (`ExperimentalTime`, `RequiresOptIn`,
   `ExperimentalUnsignedTypes`) — configured per-source-set in each module's
   `build.gradle.kts`; you usually do not need to add them at call sites.
-- Tests use Kotest (`kotest-runner-junit5-jvm`, 6.2.6) in `core`, `mvel`,
-  `cli`; `lua` uses plain `kotlin("test-common")`.
+- Tests use `kotlin.test` assertions and annotations, with JUnit Jupiter on the JVM.
+  JUnit provides temporary directories, conditional tests and dynamic test cases.

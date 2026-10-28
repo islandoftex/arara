@@ -1,16 +1,16 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.utils
 
-import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.core.annotation.Isolate
-import io.kotest.core.spec.style.ShouldSpec
-import io.kotest.matchers.shouldBe
-import io.kotest.matchers.string.shouldContain
-import io.kotest.matchers.string.shouldNotContain
 import java.io.ByteArrayOutputStream
-import java.io.File
 import java.io.PrintStream
 import java.nio.file.Files
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertContains
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.MPPPath
@@ -21,12 +21,29 @@ import org.islandoftex.arara.cli.ruleset.DirectiveUtils
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.files.FileSearching
 import org.islandoftex.arara.core.files.Project
+import org.islandoftex.arara.core.rules.Directives
 import org.islandoftex.arara.core.session.LinearExecutor
+import org.junit.jupiter.api.parallel.Isolated
 
-@Isolate
-class ExecutionTest : ShouldSpec({
-    beforeSpec {
+@Isolated
+class ExecutionTest {
+    private val originalHooks = LinearExecutor.hooks
+    private val originalOptions = LinearExecutor.executionOptions
+    private val originalDirectiveHooks = Directives.hooks
+    private val originalConfigurationName = DisplayUtils.configurationFileName
+
+    @AfterTest
+    fun restoreState() {
+        LinearExecutor.hooks = originalHooks
+        LinearExecutor.executionOptions = originalOptions
+        Directives.hooks = originalDirectiveHooks
+        DisplayUtils.configurationFileName = originalConfigurationName
+    }
+
+    @BeforeTest
+    fun prepareTest() {
         DirectiveUtils.initializeDirectiveCore()
+        LinearExecutor.executionOptions = ExecutionOptions()
 
         LinearExecutor.hooks = ExecutorHooks(
             executeBeforeProject = { project ->
@@ -44,8 +61,8 @@ class ExecutionTest : ShouldSpec({
         )
     }
 
-    fun getPathForTest(name: String): String = "src/jvmTest/resources/executiontests/$name"
-    fun outputForTest(
+    private fun getPathForTest(name: String): String = "src/jvmTest/resources/executiontests/$name"
+    private fun outputForTest(
         testName: String,
         fileName: String = "$testName.tex"
     ): String {
@@ -69,140 +86,147 @@ class ExecutionTest : ShouldSpec({
                 )
             )
             return output.toByteArray().toString(Charsets.UTF_8)
-        } catch (ex: Exception) {
-            throw ex
         } finally {
             System.setOut(sysout)
             output.close()
         }
     }
 
-    should("be able to store variables sessions") {
-        outputForTest("sessions") shouldContain "MeowQuack"
+    @Test
+    fun `be able to store variables sessions`() {
+        assertContains(outputForTest("sessions"), "MeowQuack")
     }
 
-    should("honor falsy existence test") {
-        val file = File(getPathForTest("conditionals") + "/conditionals.quack")
-        if (file.exists()) file.delete()
+    @Test
+    fun `honor falsy existence test`() {
+        val file = MPPPath(getPathForTest("conditionals")).resolve("conditionals.quack")
+        Files.deleteIfExists(file.toJVMPath())
         val output = outputForTest("conditionals")
-        output shouldContain "QuackOne"
-        output shouldContain "QuackFour"
-        output shouldNotContain "QuackTwo"
-        output shouldNotContain "QuackThree"
+        assertContains(output, "QuackOne")
+        assertContains(output, "QuackFour")
+        assertFalse(output.contains("QuackTwo"))
+        assertFalse(output.contains("QuackThree"))
     }
-    should("honor truthy existence (falsy contains) test") {
-        val file = File(getPathForTest("conditionals") + "/conditionals.quack")
+
+    @Test
+    fun `honor truthy existence (falsy contains) test`() {
+        val file = MPPPath(getPathForTest("conditionals")).resolve("conditionals.quack")
         file.writeText("Meow")
         val output = outputForTest("conditionals")
-        file.delete()
-        output shouldContain "QuackOne"
-        output shouldContain "QuackFour"
-        output shouldContain "QuackTwo"
-        output shouldNotContain "QuackThree"
-    }
-    should("honor truthy contains test") {
-        val file = File(getPathForTest("conditionals") + "/conditionals.quack")
-        file.writeText("Duck")
-        val output = outputForTest("conditionals")
-        file.delete()
-        output shouldContain "QuackOne"
-        output shouldContain "QuackFour"
-        output shouldContain "QuackTwo"
-        output shouldContain "QuackThree"
+        Files.deleteIfExists(file.toJVMPath())
+        assertContains(output, "QuackOne")
+        assertContains(output, "QuackFour")
+        assertContains(output, "QuackTwo")
+        assertFalse(output.contains("QuackThree"))
     }
 
-    should("track changes") {
+    @Test
+    fun `honor truthy contains test`() {
+        val file = MPPPath(getPathForTest("conditionals")).resolve("conditionals.quack")
+        file.writeText("Duck")
+        val output = outputForTest("conditionals")
+        Files.deleteIfExists(file.toJVMPath())
+        assertContains(output, "QuackOne")
+        assertContains(output, "QuackFour")
+        assertContains(output, "QuackTwo")
+        assertContains(output, "QuackThree")
+    }
+
+    @Test
+    fun `track changes`() {
         val cache = MPPPath(getPathForTest("changes")).resolve("arara.yaml")
         Files.deleteIfExists(cache.toJVMPath())
         try {
-            outputForTest("changes") shouldContain "QuackOne"
-            outputForTest("changes") shouldNotContain "QuackOne"
+            assertContains(outputForTest("changes"), "QuackOne")
+            assertFalse(outputForTest("changes").contains("QuackOne"))
         } finally {
             Files.deleteIfExists(cache.toJVMPath())
         }
     }
 
-    should("gracefully halt on halt rule") {
+    @Test
+    fun `gracefully halt on halt rule`() {
         val output = outputForTest("halt")
-        output shouldContain "QuackOne"
-        output shouldNotContain "QuackTwo"
-    }
-    should("forcefully halt on halt error rule") {
-        val output = outputForTest("halt-error")
-        output shouldContain "QuackOne"
-        output shouldNotContain "QuackTwo"
+        assertContains(output, "QuackOne")
+        assertFalse(output.contains("QuackTwo"))
     }
 
-    should("fail on invalid config") {
-        val exception = shouldThrow<AraraException> {
+    @Test
+    fun `forcefully halt on halt error rule`() {
+        val output = outputForTest("halt-error")
+        assertContains(output, "QuackOne")
+        assertFalse(output.contains("QuackTwo"))
+    }
+
+    @Test
+    fun `fail on invalid config`() {
+        val exception = assertFailsWith<AraraException> {
             outputForTest("invalid-config")
         }
-        exception.message shouldContain "could not parse the configuration"
+        assertContains(exception.message.orEmpty(), "could not parse the configuration")
     }
 
-    // TODO: uncomment tests (but not here because they do not test the
-    // linear executor but FileSearching)
-//    should("read foreign extension") {
-//        val output = outputForTest("foreign-extension", "foreign-extension.my")
-//        output shouldContain "QuackOne"
-//    }
-//    should("fail on unknown extension") {
-//        shouldThrow<AraraException> {
-//            outputForTest("foreign-extension", "foreign-extension.xy")
-//        }
-//    }
-
-    should("accept empty pattern on known extension") {
+    @Test
+    fun `accept empty pattern on known extension`() {
         val output = outputForTest("known-extension")
-        output shouldContain "QuackOne"
+        assertContains(output, "QuackOne")
     }
 
-    should("execute option-less directives") {
+    @Test
+    fun `execute option-less directives`() {
         val output = outputForTest("simple-directive")
-        output shouldContain "The echoer"
-        output shouldContain "SUCCESS"
-    }
-    should("execute directive with options") {
-        val output = outputForTest("directive-with-options")
-        output shouldContain "The echoer"
-        output shouldContain "batchmode"
-        output shouldContain "SUCCESS"
-        output shouldNotContain "FAILURE"
+        assertContains(output, "The echoer")
+        assertContains(output, "SUCCESS")
     }
 
-    should("interpret orb tags in directives") {
-        val output = outputForTest("directive-with-mvel-options")
-        output shouldContain "testdirective-with-mvel-optionsquack"
-        output shouldContain "nothing"
+    @Test
+    fun `execute directive with options`() {
+        val output = outputForTest("directive-with-options")
+        assertContains(output, "The echoer")
+        assertContains(output, "batchmode")
+        assertContains(output, "SUCCESS")
+        assertFalse(output.contains("FAILURE"))
     }
-    should("not interpret orb tags in directives in safe mode") {
+
+    @Test
+    fun `interpret orb tags in directives`() {
+        val output = outputForTest("directive-with-mvel-options")
+        assertContains(output, "testdirective-with-mvel-optionsquack")
+        assertContains(output, "nothing")
+    }
+
+    @Test
+    fun `not interpret orb tags in directives in safe mode`() {
         val options = LinearExecutor.executionOptions
         LinearExecutor.executionOptions = ExecutionOptions.from(options)
             .copy(executionMode = ExecutionMode.SAFE_RUN)
         val output = outputForTest("directive-with-mvel-options")
-        output shouldNotContain "testdirective-with-mvel-optionsquack"
-        output shouldContain "test@{getBasename(getOriginalReference())}quack"
-        output shouldContain "nothing"
+        assertFalse(output.contains("testdirective-with-mvel-optionsquack"))
+        assertContains(output, "test@{getBasename(getOriginalReference())}quack")
+        assertContains(output, "nothing")
         LinearExecutor.executionOptions = options
     }
 
-    should("process multiple files (files array)") {
+    @Test
+    fun `process multiple files (files array)`() {
         val output = outputForTest("multiple-files")
-        output shouldContain "doc1.tex"
-        output shouldContain "doc2.tex"
-        output shouldNotContain "doc3.tex"
+        assertContains(output, "doc1.tex")
+        assertContains(output, "doc2.tex")
+        assertFalse(output.contains("doc3.tex"))
     }
 
-    should("identify types correctly") {
+    @Test
+    fun `identify types correctly`() {
         val output = outputForTest("typetests")
-        output shouldContain "Bool test success"
-        output shouldContain "String test success"
-        output shouldContain "List test success"
-        output shouldContain "Map test success"
+        assertContains(output, "Bool test success")
+        assertContains(output, "String test success")
+        assertContains(output, "List test success")
+        assertContains(output, "Map test success")
     }
 
-    should("skip comments in header mode") {
+    @Test
+    fun `skip comments in header mode`() {
         val output = outputForTest("header-comments")
-        (output.length - output.replace("QuackOne", "").length) / "QuackOne".length shouldBe 3
+        assertEquals(3, (output.length - output.replace("QuackOne", "").length) / "QuackOne".length)
     }
-})
+}

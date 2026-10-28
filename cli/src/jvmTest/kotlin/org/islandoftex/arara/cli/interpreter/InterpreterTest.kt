@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.interpreter
 
-import io.kotest.core.spec.style.ShouldSpec
-import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldNotBe
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.cli.ruleset.DirectiveImpl
 import org.islandoftex.arara.core.configuration.ExecutionOptions
@@ -11,13 +13,17 @@ import org.islandoftex.arara.core.files.FileType
 import org.islandoftex.arara.core.files.ProjectFile
 import org.islandoftex.arara.core.rules.Directives
 
-class InterpreterTest : ShouldSpec({
-    beforeTest { org.islandoftex.arara.core.session.HaltRequest.clear() }
-    afterTest { org.islandoftex.arara.core.session.HaltRequest.clear() }
+class InterpreterTest {
+    @BeforeTest
+    fun prepareTest() { org.islandoftex.arara.core.session.HaltRequest.clear() }
 
-    val texFile = FileType("tex", "^\\s*%\\s+")
+    @AfterTest
+    fun cleanTest() { org.islandoftex.arara.core.session.HaltRequest.clear() }
 
-    should("return zero exit code for ordinary halt") {
+    private val texFile = FileType("tex", "^\\s*%\\s+")
+
+    @Test
+    fun `return zero exit code for ordinary halt`() {
         val rulePath = MPPPath("../rules").normalize()
         val filePath = MPPPath("src/jvmTest/resources/executiontests/halt")
             .normalize() / "halt.tex"
@@ -31,14 +37,15 @@ class InterpreterTest : ShouldSpec({
             )
         }
 
-        Interpreter(
+        assertEquals(0, Interpreter(
             ExecutionOptions(rulePaths = setOf(rulePath)),
             ProjectFile(filePath, texFile), filePath.parent
         )
-            .execute(haltDirective).exitCode shouldBe 0
+            .execute(haltDirective).exitCode)
     }
 
-    should("return non-zero exit code for error halt") {
+    @Test
+    fun `return non-zero exit code for error halt`() {
         val rulePath = MPPPath("src/jvmTest/resources/executiontests/halt-error")
             .normalize()
         val filePath = MPPPath(rulePath / "halt-error.tex")
@@ -52,10 +59,10 @@ class InterpreterTest : ShouldSpec({
             )
         }
 
-        Interpreter(
+        assertNotEquals(0, Interpreter(
             ExecutionOptions(rulePaths = setOf(rulePath)),
             ProjectFile(filePath, texFile), rulePath
         )
-            .execute(haltDirective).exitCode shouldNotBe 0
+            .execute(haltDirective).exitCode)
     }
-})
+}

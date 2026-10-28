@@ -1,60 +1,78 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.session
 
-import io.kotest.core.spec.style.ShouldSpec
-import io.kotest.matchers.collections.shouldContain
-import io.kotest.matchers.shouldBe
-import io.kotest.matchers.string.shouldContain
 import java.util.concurrent.TimeoutException
+import kotlin.test.Test
+import kotlin.test.assertContains
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.milliseconds
+import org.junit.jupiter.api.condition.DisabledOnOs
+import org.junit.jupiter.api.condition.OS
 
-class EnvironmentTest : ShouldSpec({
-    should("return null on non-existent system variable") {
-        Environment.getSystemPropertyOrNull("asdf") shouldBe null
-    }
-    should("hold a fallback value on non-existent system variable") {
-        Environment.getSystemProperty("asdf", "fallback") shouldBe "fallback"
-    }
-
-    should("have a non-null value for existent variable") {
-        listOf("/", "\\") shouldContain Environment.getSystemPropertyOrNull("file.separator")
-    }
-    should("have a non-fallback value for existent variable") {
-        listOf("/", "\\") shouldContain Environment.getSystemProperty("file.separator", "fallback")
+class EnvironmentTest {
+    @Test
+    fun `return null on non-existent system variable`() {
+        assertNull(Environment.getSystemPropertyOrNull("asdf"))
     }
 
-    should("find system utils") {
-        Environment.isOnPath("echo") shouldBe true
+    @Test
+    fun `hold a fallback value on non-existent system variable`() {
+        assertEquals("fallback", Environment.getSystemProperty("asdf", "fallback"))
     }
-    should("not find utils with fantasy name") {
+
+    @Test
+    fun `have a non-null value for existent variable`() {
+        assertContains(listOf("/", "\\"), Environment.getSystemPropertyOrNull("file.separator"))
+    }
+
+    @Test
+    fun `have a non-fallback value for existent variable`() {
+        assertContains(listOf("/", "\\"), Environment.getSystemProperty("file.separator", "fallback"))
+    }
+
+    @Test
+    fun `find system utils`() {
+        assertTrue(Environment.isOnPath("echo"))
+    }
+
+    @Test
+    fun `not find utils with fantasy name`() {
         // hopefully no one will have such a command in the path…
-        Environment.isOnPath("echoQuackForArara") shouldBe false
+        assertFalse(Environment.isOnPath("echoQuackForArara"))
     }
 
-    if (!Environment.checkOS(Environment.SupportedOS.WINDOWS)) {
-        // if we are not on Windows execute tests with execution
-        should("run successfully") {
-            val (exit, output) = Environment.executeSystemCommand(Command(listOf("true")))
-            exit shouldBe 0
-            output shouldBe ""
-        }
-        should("error with exit code 1") {
-            val (exit, output) = Environment.executeSystemCommand(Command(listOf("false")))
-            exit shouldBe 1
-            output shouldBe ""
-        }
-        should("error with timeout exception") {
-            val (exit, output) = Environment.executeSystemCommand(
-                if (Environment.checkOS(Environment.SupportedOS.MACOS)) {
-                    Command(listOf("sleep", "1"))
-                } else {
-                    Command(listOf("sleep", "1s"))
-                },
-                true,
-                500.milliseconds
-            )
-            exit shouldBe Environment.ERROR_EXIT_STATUS
-            output shouldContain TimeoutException::class.java.name
-        }
+    @DisabledOnOs(OS.WINDOWS)
+    @Test
+    fun `run successfully`() {
+        val (exit, output) = Environment.executeSystemCommand(Command(listOf("true")))
+        assertEquals(0, exit)
+        assertEquals("", output)
     }
-})
+
+    @DisabledOnOs(OS.WINDOWS)
+    @Test
+    fun `error with exit code 1`() {
+        val (exit, output) = Environment.executeSystemCommand(Command(listOf("false")))
+        assertEquals(1, exit)
+        assertEquals("", output)
+    }
+
+    @DisabledOnOs(OS.WINDOWS)
+    @Test
+    fun `error with timeout exception`() {
+        val (exit, output) = Environment.executeSystemCommand(
+            if (Environment.checkOS(Environment.SupportedOS.MACOS)) {
+                Command(listOf("sleep", "1"))
+            } else {
+                Command(listOf("sleep", "1s"))
+            },
+            true,
+            500.milliseconds
+        )
+        assertEquals(Environment.ERROR_EXIT_STATUS, exit)
+        assertContains(output, TimeoutException::class.java.name)
+    }
+}

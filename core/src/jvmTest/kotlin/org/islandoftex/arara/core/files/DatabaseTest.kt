@@ -1,50 +1,56 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.files
 
-import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.core.spec.style.ShouldSpec
-import io.kotest.engine.spec.tempfile
-import io.kotest.matchers.shouldBe
-import io.kotest.matchers.string.shouldContain
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import java.nio.file.Path
+import kotlin.test.Test
+import kotlin.test.assertContains
+import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.toMPPPath
+import org.junit.jupiter.api.io.TempDir
 
-class DatabaseTest : ShouldSpec({
-    should("normalize paths") {
+class DatabaseTest {
+    @TempDir
+    lateinit var temporaryDirectory: Path
+
+    @Test
+    fun `normalize paths`() {
         val db = Database()
         db[MPPPath("./././")] = 1L
-        (MPPPath("./") in db) shouldBe true
+        assertTrue(MPPPath("./") in db)
     }
 
-    should("remove existent elements") {
+    @Test
+    fun `remove existent elements`() {
         val db = Database()
-        (MPPPath(".") in db) shouldBe false
+        assertFalse(MPPPath(".") in db)
         db[MPPPath(".")] = 1L
-        (MPPPath(".") in db) shouldBe true
+        assertTrue(MPPPath(".") in db)
         db.remove(MPPPath("."))
-        (MPPPath(".") in db) shouldBe false
-    }
-    should("throw when removing non-existent path") {
-        shouldThrow<NoSuchElementException> { Database().remove(MPPPath(".")) }
-            .message shouldContain "non-existent path"
+        assertFalse(MPPPath(".") in db)
     }
 
-    should("be able to perform save-load cycle") {
-        withContext(Dispatchers.IO) {
-            val tmp = tempfile("db").toMPPPath()
-            val db = Database()
-            db[MPPPath(".")] = 1L
-            db[MPPPath("quack")] = 2L
-            db.save(tmp)
-            val dbCopy = Database.load(tmp)
-            (MPPPath(".") in db) shouldBe true
-            (MPPPath(".") in dbCopy) shouldBe true
-            (MPPPath("quack") in db) shouldBe true
-            (MPPPath("quack") in dbCopy) shouldBe true
-            (MPPPath("no") in db) shouldBe false
-            (MPPPath("no") in dbCopy) shouldBe false
-        }
+    @Test
+    fun `throw when removing non-existent path`() {
+        assertContains(assertFailsWith<NoSuchElementException> { Database().remove(MPPPath(".")) }
+            .message.orEmpty(), "non-existent path")
     }
-})
+
+    @Test
+    fun `be able to perform save-load cycle`() {
+        val tmp = temporaryDirectory.resolve("db.yaml").toMPPPath()
+        val db = Database()
+        db[MPPPath(".")] = 1L
+        db[MPPPath("quack")] = 2L
+        db.save(tmp)
+        val dbCopy = Database.load(tmp)
+        assertTrue(MPPPath(".") in db)
+        assertTrue(MPPPath(".") in dbCopy)
+        assertTrue(MPPPath("quack") in db)
+        assertTrue(MPPPath("quack") in dbCopy)
+        assertFalse(MPPPath("no") in db)
+        assertFalse(MPPPath("no") in dbCopy)
+    }
+}

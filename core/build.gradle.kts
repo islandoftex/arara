@@ -42,8 +42,6 @@ kotlin {
             dependencies {
                 implementation(libs.kotlin.test.junit5)
                 runtimeOnly(libs.junit.jupiter.engine)
-                implementation(libs.kotest.runner.jvm)
-                implementation(libs.kotest.assertions.jvm)
                 runtimeOnly(libs.slf4j.simple)
             }
         }

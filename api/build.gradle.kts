@@ -32,8 +32,6 @@ kotlin {
                 implementation(libs.kotlin.test.junit5)
                 runtimeOnly(libs.junit.jupiter.engine)
                 implementation(libs.okio.fakefilesystem)
-                implementation(libs.kotest.runner.jvm)
-                implementation(libs.kotest.assertions.jvm)
             }
         }
 

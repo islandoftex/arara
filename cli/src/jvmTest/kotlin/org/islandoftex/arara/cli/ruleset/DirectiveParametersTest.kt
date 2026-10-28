@@ -1,46 +1,58 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.ruleset
 
-import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.core.spec.style.ShouldSpec
-import io.kotest.matchers.shouldBe
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.core.files.FileType
 import org.islandoftex.arara.core.rules.Directives
 
-class DirectiveParametersTest : ShouldSpec({
-    beforeTest { DirectiveUtils.initializeDirectiveCore() }
-    afterTest { DirectiveUtils.initializeDirectiveCore() }
+class DirectiveParametersTest {
+    @BeforeTest
+    fun prepareTest() { DirectiveUtils.initializeDirectiveCore() }
 
-    fun parameters(text: String): Map<String, Any> = Directives.extractDirectives(
+    @AfterTest
+    fun cleanTest() { DirectiveUtils.initializeDirectiveCore() }
+
+    private fun parameters(text: String): Map<String, Any> = Directives.extractDirectives(
         listOf("% arara: probe: $text"), false, FileType("tex", "^\\s*%\\s+")
     ).single().parameters
 
-    should("preserve strings and nested directive parameter collections") {
+    @Test
+    fun `preserve strings and nested directive parameter collections`() {
         val values = parameters("{ label: 'with spaces', values: [one, two], nested: { key: value } }")
-        values["label"] shouldBe "with spaces"
-        values["values"] shouldBe listOf("one", "two")
-        values["nested"] shouldBe mapOf("key" to "value")
+        assertEquals("with spaces", values["label"])
+        assertEquals(listOf("one", "two"), values["values"])
+        assertEquals(mapOf("key" to "value"), values["nested"])
     }
 
-    should("decode ordinary numeric and boolean directive parameters") {
+    @Test
+    fun `decode ordinary numeric and boolean directive parameters`() {
         val values = parameters("{ count: 42, ratio: 1.5, enabled: true, disabled: false }")
-        values["count"] shouldBe 42
-        values["ratio"] shouldBe 1.5
-        values["enabled"] shouldBe true
-        values["disabled"] shouldBe false
+        assertEquals(42, values["count"])
+        assertEquals(1.5, values["ratio"])
+        assertEquals(true, values["enabled"])
+        assertEquals(false, values["disabled"])
     }
 
-    should("keep quoted booleans and numeric strings literal") {
-        parameters("{ enabled: 'true', count: '001', empty: '' }") shouldBe
-            mapOf("enabled" to "true", "count" to "001", "empty" to "")
+    @Test
+    fun `keep quoted booleans and numeric strings literal`() {
+        assertEquals(
+            mapOf("enabled" to "true", "count" to "001", "empty" to ""),
+            parameters("{ enabled: 'true', count: '001', empty: '' }")
+        )
     }
 
-    should("wrap malformed parameter YAML as an application error") {
-        shouldThrow<AraraException> { parameters("{ values: [one }") }
+    @Test
+    fun `wrap malformed parameter YAML as an application error`() {
+        assertFailsWith<AraraException> { parameters("{ values: [one }") }
     }
 
-    should("retain traditional yes and no rule argument strings") {
-        parameters("{ synctex: yes, draft: no }") shouldBe mapOf("synctex" to "yes", "draft" to "no")
+    @Test
+    fun `retain traditional yes and no rule argument strings`() {
+        assertEquals(mapOf("synctex" to "yes", "draft" to "no"), parameters("{ synctex: yes, draft: no }"))
     }
-})
+}

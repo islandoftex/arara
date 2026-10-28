@@ -1,35 +1,33 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.files
 
-import io.kotest.core.spec.style.ShouldSpec
-import io.kotest.engine.spec.tempfile
-import io.kotest.matchers.shouldBe
+import java.nio.file.Path
 import kotlin.io.path.deleteExisting
-import kotlin.io.path.deleteIfExists
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlin.test.Test
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 import org.islandoftex.arara.api.files.toJVMPath
 import org.islandoftex.arara.api.files.toMPPPath
+import org.junit.jupiter.api.io.TempDir
 
-class JVMFileHandlingTest : ShouldSpec({
-    should("detect changes on file") {
-        withContext(Dispatchers.IO) {
-            val file = tempfile().toMPPPath()
-            val databaseFile = tempfile().toMPPPath()
-            databaseFile.toJVMPath().deleteIfExists()
-            FileHandling.hasChanged(file, databaseFile) shouldBe true
-            FileHandling.hasChanged(file, databaseFile) shouldBe false
-            file.writeText("QUACK")
-            FileHandling.hasChanged(file, databaseFile) shouldBe true
-            FileHandling.hasChanged(file, databaseFile) shouldBe false
-            file.writeText("QUACK2")
-            FileHandling.hasChanged(file, databaseFile) shouldBe true
-            file.toJVMPath().deleteExisting()
-            FileHandling.hasChanged(file, databaseFile) shouldBe true
-            FileHandling.hasChanged(file, databaseFile) shouldBe false
-            // kotest does not handle that we deleted the file ourselves
-            // so we have to restore it by writing new text
-            file.writeText("")
-        }
+class JVMFileHandlingTest {
+    @TempDir
+    lateinit var temporaryDirectory: Path
+
+    @Test
+    fun `detect changes on file`() {
+        val file = temporaryDirectory.resolve("input.txt").toMPPPath().apply { writeText("") }
+        val databaseFile = temporaryDirectory.resolve("database.yaml").toMPPPath()
+        assertTrue(FileHandling.hasChanged(file, databaseFile))
+        assertFalse(FileHandling.hasChanged(file, databaseFile))
+        file.writeText("QUACK")
+        assertTrue(FileHandling.hasChanged(file, databaseFile))
+        assertFalse(FileHandling.hasChanged(file, databaseFile))
+        file.writeText("QUACK2")
+        assertTrue(FileHandling.hasChanged(file, databaseFile))
+        file.toJVMPath().deleteExisting()
+        assertTrue(FileHandling.hasChanged(file, databaseFile))
+        assertFalse(FileHandling.hasChanged(file, databaseFile))
+
     }
-})
+}
