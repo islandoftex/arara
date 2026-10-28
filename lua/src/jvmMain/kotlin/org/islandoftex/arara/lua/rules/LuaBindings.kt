@@ -12,7 +12,7 @@ internal object LuaBindings {
     fun bindSpelled(globals: Globals, name: String, body: (String, Varargs) -> LuaValue) {
         val snake = name.replace(Regex("([a-z0-9])([A-Z])"), "$1_$2").lowercase()
         setOf(name, snake).forEach { spelling ->
-            globals.set(spelling, LuaConversion.luaFunction { body(spelling, it) })
+            globals.set(spelling, LuaValues.luaFunction { body(spelling, it) })
         }
     }
 }

@@ -5,10 +5,10 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import org.islandoftex.arara.api.AraraException
-import org.islandoftex.arara.api.AraraExceptionWithHeader
 import org.islandoftex.arara.api.rules.RuleArgument
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.rules.InputHandling
+import org.islandoftex.arara.mvel.interpreter.withMvelErrorHandling
 import org.islandoftex.arara.mvel.utils.MvelState
 import org.mvel2.templates.TemplateRuntime
 import org.slf4j.LoggerFactory
@@ -44,7 +44,9 @@ class RuleArgument : RuleArgument<Any?> {
     /** Evaluate the MVEL flag template with the supplied value and raw parameter context. */
     @Transient
     override val processor: (Any?, Map<String, Any>) -> List<String> = { input, context ->
-        try {
+        withMvelErrorHandling(header = true,
+            message = { LanguageController.messages.errorInterpreterFlagRuntimeException }
+        ) {
             val resolvedContext = context.plus(
                 "parameters" to (
                     context
@@ -67,12 +69,6 @@ class RuleArgument : RuleArgument<Any?> {
                     }
                 }
             } ?: listOf(input.toString())
-        } catch (exception: RuntimeException) {
-            throw AraraExceptionWithHeader(
-                LanguageController.messages
-                    .errorInterpreterFlagRuntimeException,
-                exception
-            )
         }
     }
 

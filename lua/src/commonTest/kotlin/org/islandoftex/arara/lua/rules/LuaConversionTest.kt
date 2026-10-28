@@ -45,8 +45,8 @@ class LuaConversionTest {
             assertTrue(wrapped.isuserdata())
             assertSame(value, LuaConversion.fromLua(wrapped))
         }
-        assertSame(command, LuaConversion.toCommand(LuaConversion.toLua(command)))
-        assertEquals(null, LuaConversion.toCommand(LuaConversion.toLua(path)))
+        assertSame(command, LuaValues.toCommand(LuaConversion.toLua(command)))
+        assertEquals(null, LuaValues.toCommand(LuaConversion.toLua(path)))
     }
 
     @Test
@@ -77,7 +77,7 @@ class LuaConversionTest {
     fun cyclesFailWithoutRejectingSharedNoncyclicValues() {
         val cycle = LuaTable().apply { set("self", this) }
         assertFailsWith<LuaHelperException> { LuaConversion.fromLua(cycle) }
-        assertFailsWith<LuaHelperException> { LuaConversion.commandResultToList(cycle) }
+        assertFailsWith<LuaHelperException> { LuaResults.commandResultToList(cycle) }
         val list = mutableListOf<Any>()
         list.add(list)
         assertFailsWith<LuaHelperException> { LuaConversion.toLua(list) }
@@ -89,18 +89,18 @@ class LuaConversionTest {
     fun commandAndFlagResultsPreserveOrderAndOpaqueHandles() {
         val command = Command(listOf("pdflatex"))
         val values = LuaConversion.toLua(listOf(false, listOf(command, true)))
-        assertEquals(listOf(false, command, true), LuaConversion.commandResultToList(values))
-        assertEquals(listOf("--draft", "--synctex=1"), LuaConversion.flagResultToList(
+        assertEquals(listOf(false, command, true), LuaResults.commandResultToList(values))
+        assertEquals(listOf("--draft", "--synctex=1"), LuaResults.flagResultToList(
             LuaConversion.toLua(listOf("--draft", listOf("--synctex=1")))
         ))
-        assertEquals(emptyList(), LuaConversion.flagResultToList(LuaValue.NIL))
-        assertEquals(emptyList(), LuaConversion.commandResultToList(LuaValue.NIL))
+        assertEquals(emptyList(), LuaResults.flagResultToList(LuaValue.NIL))
+        assertEquals(emptyList(), LuaResults.commandResultToList(LuaValue.NIL))
     }
 
     @Test
     fun referencesExposeLuaDataAndFunctionFallbackRemainsAString() {
         val path = MPPPath("book.tex").normalize()
-        val reference = LuaConversion.referenceToLua(path)
+        val reference = LuaValues.referenceToLua(path)
         assertEquals("book.tex", reference["file_name"].tojstring())
         assertEquals(path.toString(), reference["path"].tojstring())
         assertEquals(path.parent.toString(), reference["parent"].tojstring())

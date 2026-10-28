@@ -26,8 +26,9 @@ object LuaRuleParser {
      * @throws AraraException If the script or rule table is invalid.
      */
     fun parse(file: MPPPath, identifier: String, scriptOutputToStderr: Boolean = false): LuaRule {
-        val header = LanguageController.messages.errorRuleIdentifierAndPath(identifier, file.normalize().parent.toString())
-        return LuaConversion.withLuaErrorHandling(header) {
+        val header = LanguageController.messages.errorRuleIdentifierAndPath(
+            identifier, file.normalize().parent.toString())
+        return LuaFailures.withLuaErrorHandling(header) {
             val globals = LuaRuleEnvironment.newGlobals()
             if (scriptOutputToStderr) globals.STDOUT = globals.STDERR
             val value = globals.load(file.readText(), file.toString()).call()

@@ -20,74 +20,83 @@ import org.islandoftex.arara.core.localization.LanguageController
  * @receiver The glob pattern to convert.
  * @return A regex to recognize the given glob pattern.
  */
-@Suppress("ComplexMethod")
-internal fun String.globToRegex(): Regex =
-    buildString(length) {
-        var inGroup = 0
-        var inClass = 0
-        var firstIndexInClass = -1
-        val arr = toCharArray()
-        var i = 0
-        while (i < arr.size) {
-            when (val ch = arr[i]) {
-                '\\' -> {
-                    i += 1
-                    if (i >= arr.size) {
-                        append('\\')
-                    } else {
-                        val next = arr[i]
-                        when (next) {
-                            ',' -> {
-                                // escape not needed
-                                // do nothing
-                            }
-                            'Q', 'E' ->
-                                // extra escape needed
-                                append("\\\\")
-                            else ->
-                                append('\\')
-                        }
-                        append(next)
-                    }
-                }
-                '*' -> append(if (inClass == 0) ".*" else '*')
-                '?' -> append(if (inClass == 0) '.' else '?')
-                '[' -> {
-                    inClass++
-                    firstIndexInClass = i + 1
-                    append('[')
-                }
-                ']' -> {
-                    inClass--
-                    append(']')
-                }
-                '.', '(', ')', '+', '|', '^', '$', '@', '%' -> {
-                    if (inClass == 0 || (firstIndexInClass == i && ch == '^')) {
-                        append('\\')
-                    }
-                    append(ch)
-                }
-                '!' -> append(if (firstIndexInClass == i) '^' else '!')
-                '{' -> {
-                    inGroup++
-                    append('(')
-                }
-                '}' -> {
-                    inGroup--
-                    append(')')
-                }
-                ',' -> append(if (inGroup > 0) '|' else ',')
-                else -> append(ch)
-            }
-            i++
+
+internal fun String.globToRegex(): Regex {
+    val pattern = GlobPattern(this).render()
+    return try {
+        pattern.toRegex()
+    } catch (exception: IllegalArgumentException) {
+        throw AraraException(
+            LanguageController.messages.errorGlobPatternInvalid(this, exception.message.orEmpty()), exception
+        )
+    }
+}
+
+private class GlobPattern(private val source: String) {
+    private val output = StringBuilder(source.length)
+    private var groupDepth = 0
+    private var classDepth = 0
+    private var firstClassIndex = -1
+    private var index = 0
+
+    fun render(): String {
+        while (index < source.length) {
+            append(source[index])
+            index++
         }
-    }.let { pattern ->
-        try {
-            pattern.toRegex()
-        } catch (exception: IllegalArgumentException) {
-            throw AraraException(
-                LanguageController.messages.errorGlobPatternInvalid(this, exception.message.orEmpty()),
-                exception
-            )
+        return output.toString()
+    }
+
+    private fun append(character: Char) {
+        when (character) {
+            '\\' -> escape()
+            '*' -> output.append(if (classDepth == 0) ".*" else '*')
+            '?' -> output.append(if (classDepth == 0) '.' else '?')
+            '[' -> {
+                classDepth++
+                firstClassIndex = index + 1
+                output.append('[')
+            }
+            ']' -> {
+                classDepth--
+                output.append(']')
+            }
+            else -> appendGroupOrLiteral(character)
         }
     }
+
+    private fun appendGroupOrLiteral(character: Char) {
+        when (character) {
+            '.', '(', ')', '+', '|', '^', '$', '@', '%' -> {
+                if (classDepth == 0 || (firstClassIndex == index && character == '^')) output.append('\\')
+                output.append(character)
+            }
+            '!' -> output.append(if (firstClassIndex == index) '^' else '!')
+            '{' -> {
+                groupDepth++
+                output.append('(')
+            }
+            '}' -> {
+                groupDepth--
+                output.append(')')
+            }
+            ',' -> output.append(if (groupDepth > 0) '|' else ',')
+            else -> output.append(character)
+        }
+    }
+
+    private fun escape() {
+        index++
+        if (index >= source.length) {
+            output.append('\\')
+        } else {
+            val next = source[index]
+            when (next) {
+                ',' -> Unit
+                'Q', 'E' -> output.append("\\\\")
+                else -> output.append('\\')
+            }
+            output.append(next)
+        }
+    }
+}

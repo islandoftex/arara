@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.lua.rules
 
-import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.core.localization.LanguageController
 
 /**
@@ -12,7 +11,7 @@ import org.islandoftex.arara.core.localization.LanguageController
 object LuaInterpolation {
     /** Evaluate each Lua interpolation tag in fresh conditional globals; preserve the surrounding text. */
     fun interpolate(template: String): String =
-        LuaConversion.withLuaErrorHandling(LanguageController.messages.errorLuaInterpolationFailure) {
+        LuaFailures.withLuaErrorHandling(LanguageController.messages.errorLuaInterpolationFailure) {
             if ("@{" in template) fail(LanguageController.messages.errorYamlTagsInLua)
             val output = StringBuilder()
             var index = 0

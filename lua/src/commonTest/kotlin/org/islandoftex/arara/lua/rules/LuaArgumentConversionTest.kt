@@ -8,11 +8,11 @@ import kotlin.test.assertSame
 import kotlin.test.assertTrue
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
-import org.islandoftex.arara.lua.rules.LuaConversion.booleanArgument
-import org.islandoftex.arara.lua.rules.LuaConversion.numberArgument
-import org.islandoftex.arara.lua.rules.LuaConversion.pathArgument
-import org.islandoftex.arara.lua.rules.LuaConversion.stringArgument
-import org.islandoftex.arara.lua.rules.LuaConversion.stringListArgument
+import org.islandoftex.arara.lua.rules.LuaArguments.booleanArgument
+import org.islandoftex.arara.lua.rules.LuaArguments.numberArgument
+import org.islandoftex.arara.lua.rules.LuaArguments.pathArgument
+import org.islandoftex.arara.lua.rules.LuaArguments.stringArgument
+import org.islandoftex.arara.lua.rules.LuaArguments.stringListArgument
 import org.luaj.vm2.LuaTable
 import org.luaj.vm2.LuaValue
 
@@ -57,10 +57,10 @@ class LuaArgumentConversionTest {
 
     @Test
     fun exitPredicatesMustReturnBooleansRatherThanTruthyValues() {
-        assertEquals(false, LuaConversion.booleanResult(LuaValue.valueOf(false), "exit"))
-        assertEquals(true, LuaConversion.booleanResult(LuaValue.valueOf(true), "exit"))
+        assertEquals(false, LuaResults.booleanResult(LuaValue.valueOf(false), "exit"))
+        assertEquals(true, LuaResults.booleanResult(LuaValue.valueOf(true), "exit"))
         for (value in listOf(LuaValue.valueOf(0), LuaValue.valueOf("true"), LuaValue.NIL)) {
-            val error = assertFailsWith<AraraException> { LuaConversion.booleanResult(value, "exit") }
+            val error = assertFailsWith<AraraException> { LuaResults.booleanResult(value, "exit") }
             assertTrue(error.exception is LuaHelperException)
             assertTrue(error.exception!!.message.orEmpty().contains("exit"))
         }

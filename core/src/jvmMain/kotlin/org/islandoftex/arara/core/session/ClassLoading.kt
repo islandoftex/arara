@@ -83,23 +83,27 @@ object ClassLoading {
     @JvmStatic
     fun loadClass(path: MPPPath, name: String): Pair<ClassLoadingStatus, Class<*>> {
         if (!path.exists) return ClassLoadingStatus.FILE_NOT_FOUND to Any::class.java
-        val archive = try {
-            openArchive(path)
-        } catch (_: MalformedURLException) {
-            return ClassLoadingStatus.MALFORMED_URL to Any::class.java
-        } catch (_: IOException) {
-            return ClassLoadingStatus.CLASS_NOT_FOUND to Any::class.java
-        } catch (_: AraraIOException) {
-            return ClassLoadingStatus.CLASS_NOT_FOUND to Any::class.java
-        }
+        return runCatching { openArchive(path) }.fold(
+            onSuccess = { archive -> loadFromArchive(archive, name) },
+            onFailure = { exception ->
+                when (exception) {
+                    is MalformedURLException -> ClassLoadingStatus.MALFORMED_URL
+                    is IOException, is AraraIOException -> ClassLoadingStatus.CLASS_NOT_FOUND
+                    else -> throw exception
+                } to Any::class.java
+            }
+        )
+    }
+
+    private fun loadFromArchive(archive: LoadedArchive, name: String): Pair<ClassLoadingStatus, Class<*>> {
         var retained = false
-        try {
+        return try {
             val loaded = Class.forName(name, true, archive.loader)
             synchronized(archives) { archives.add(archive) }
             retained = true
-            return ClassLoadingStatus.SUCCESS to loaded
+            ClassLoadingStatus.SUCCESS to loaded
         } catch (_: ClassNotFoundException) {
-            return ClassLoadingStatus.CLASS_NOT_FOUND to Any::class.java
+            ClassLoadingStatus.CLASS_NOT_FOUND to Any::class.java
         } finally {
             if (!retained) archive.close()
         }
@@ -112,48 +116,20 @@ object ClassLoading {
      * @return A pair representing the status and the class object.
      */
     @JvmStatic
-    fun loadObject(path: MPPPath, name: String): Pair<ClassLoadingStatus, Any> {
-        // load the corresponding class
-        // based on the qualified name
-        val pair = loadClass(path, name)
-
-        // status and object to be returned,
-        // it defaults to an object
-        var status = pair.first
-        var value = Any()
-
-        // checks if the class actually
-        // exists, otherwise simply
-        // ignore instantiation
-        if (status == ClassLoadingStatus.SUCCESS) {
-            // object instantiation relies
-            // on the default constructor
-            // (without arguments), class
-            // must implement it
-
-            // OBS: constructors with arguments
-            // must be invoked through reflection
-            try {
-                // get the class reference from
-                // the pair and instantiate it
-                // by invoking the default
-                // constructor (without arguments)
-                value = pair.second.getDeclaredConstructor().newInstance()
-            } catch (_: IllegalAccessException) {
-                status = ClassLoadingStatus.ILLEGAL_ACCESS
-            } catch (_: NoSuchMethodException) {
-                status = ClassLoadingStatus.INSTANTIATION_EXCEPTION
-            } catch (_: InstantiationException) {
-                // the user wanted to instantiate an abstract class
-                status = ClassLoadingStatus.INSTANTIATION_EXCEPTION
-            } catch (_: InvocationTargetException) {
-                // the underlying constructor caused an exception
-                status = ClassLoadingStatus.INSTANTIATION_EXCEPTION
-            }
+    fun loadObject(path: MPPPath, name: String): Pair<ClassLoadingStatus, Any> =
+        loadClass(path, name).let { (status, loaded) ->
+            if (status == ClassLoadingStatus.SUCCESS) instantiate(loaded) else status to Any()
         }
 
-        // return a new pair based on the
-        // current status and object holder
-        return status to value
+    private fun instantiate(type: Class<*>): Pair<ClassLoadingStatus, Any> = try {
+        ClassLoadingStatus.SUCCESS to type.getDeclaredConstructor().newInstance()
+    } catch (_: IllegalAccessException) {
+        ClassLoadingStatus.ILLEGAL_ACCESS to Any()
+    } catch (_: NoSuchMethodException) {
+        ClassLoadingStatus.INSTANTIATION_EXCEPTION to Any()
+    } catch (_: InstantiationException) {
+        ClassLoadingStatus.INSTANTIATION_EXCEPTION to Any()
+    } catch (_: InvocationTargetException) {
+        ClassLoadingStatus.INSTANTIATION_EXCEPTION to Any()
     }
 }

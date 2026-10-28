@@ -2,284 +2,130 @@
 package org.islandoftex.arara.core.rules
 
 import org.islandoftex.arara.api.AraraException
-import org.islandoftex.arara.api.AraraIOException
-import org.islandoftex.arara.api.SafeRunViolationException
-import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.MPPPath
-import org.islandoftex.arara.core.files.FileHandling
-import org.islandoftex.arara.core.localization.LanguageController
-import org.islandoftex.arara.core.session.ClassLoading
 import org.islandoftex.arara.core.session.ClassLoading.ClassLoadingStatus
-import org.islandoftex.arara.core.session.LinearExecutor
-import org.islandoftex.arara.core.session.Session
-import org.islandoftex.arara.core.ui.DialogRenderer
-import org.islandoftex.arara.core.ui.Dialogs
 
-/** Interpreter-neutral conditional helpers exposed to rule engines. */
-@Suppress("unused", "TooManyFunctions")
+/**
+ * Compatibility-only JVM static entry points for existing rules and reflective MVEL bindings.
+ * Implementations live in the focused helper domains linked by each method.
+ */
+// The flat static ABI is intentional; this facade owns no execution state or business logic.
+@Suppress("TooManyFunctions")
 object ConditionalMethods {
-    private val dialogs: DialogRenderer get() = Dialogs.renderer
-
-    /**
-     * Checks if the file exists according to its extension.
-     *
-     * @param extension The extension.
-     * @return A boolean value.
-     * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
-     */
+    /** Compatibility entry point for [ConditionalFileHelpers.exists]. */
     @JvmStatic
     @Throws(AraraException::class)
-    fun exists(extension: String): Boolean = FileHandling.changeExtension(
-        LinearExecutor.currentFile!!.path, extension
-    ).exists
+    fun exists(extension: String): Boolean =
+        ConditionalFileHelpers.exists(extension)
 
-    /**
-     * Checks if the file is missing according to its extension.
-     *
-     * @param extension The extension.
-     * @return A boolean value.
-     * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
-     */
+    /** Compatibility entry point for [ConditionalFileHelpers.missing]. */
     @JvmStatic
     @Throws(AraraException::class)
-    fun missing(extension: String): Boolean = !exists(extension)
+    fun missing(extension: String): Boolean =
+        ConditionalFileHelpers.missing(extension)
 
-    /**
-     * Checks if the file has changed, according to its extension.
-     *
-     * @param extension The extension.
-     * @return A boolean value.
-     * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
-     */
+    /** Compatibility entry point for [ConditionalFileHelpers.changed]. */
     @JvmStatic
     @Throws(AraraException::class)
-    fun changed(extension: String): Boolean = changed(
-        FileHandling.changeExtension(
-            LinearExecutor.currentFile!!.path, extension
-        )
-    )
+    fun changed(extension: String): Boolean =
+        ConditionalFileHelpers.changed(extension)
 
-    /**
-     * Checks if the file is unchanged according to its extension.
-     *
-     * @param extension The extension.
-     * @return A boolean value.
-     * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
-     */
+    /** Compatibility entry point for [ConditionalFileHelpers.unchanged]. */
     @JvmStatic
     @Throws(AraraException::class)
-    fun unchanged(extension: String): Boolean = !changed(extension)
+    fun unchanged(extension: String): Boolean =
+        ConditionalFileHelpers.unchanged(extension)
 
-    /**
-     * Checks if the file exists.
-     *
-     * @param filename The file.
-     * @return A boolean value.
-     */
+    /** Compatibility entry point for [ConditionalFileHelpers.exists]. */
     @JvmStatic
-    fun exists(filename: MPPPath): Boolean = filename.exists
+    fun exists(filename: MPPPath): Boolean =
+        ConditionalFileHelpers.exists(filename)
 
-    /**
-     * Checks if the file is missing.
-     *
-     * @param filename The file.
-     * @return A boolean value.
-     */
+    /** Compatibility entry point for [ConditionalFileHelpers.missing]. */
     @JvmStatic
-    fun missing(filename: MPPPath): Boolean = !exists(filename)
+    fun missing(filename: MPPPath): Boolean =
+        ConditionalFileHelpers.missing(filename)
 
-    /**
-     * Checks if the file has changed.
-     *
-     * @param filename The file.
-     * @return A boolean value.
-     * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
-     */
+    /** Compatibility entry point for [ConditionalFileHelpers.changed]. */
     @JvmStatic
     @Throws(AraraException::class)
-    fun changed(filename: MPPPath): Boolean = FileHandling.hasChanged(
-        filename,
-        LinearExecutor.currentProject!!.executionDirectory /
-            LinearExecutor.executionOptions.databaseName
-    )
+    fun changed(filename: MPPPath): Boolean =
+        ConditionalFileHelpers.changed(filename)
 
-    /**
-     * Checks if the file is unchanged.
-     *
-     * @param filename The file.
-     * @return A boolean value.
-     * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
-     */
+    /** Compatibility entry point for [ConditionalFileHelpers.unchanged]. */
     @JvmStatic
     @Throws(AraraException::class)
-    fun unchanged(filename: MPPPath): Boolean = !changed(filename)
+    fun unchanged(filename: MPPPath): Boolean =
+        ConditionalFileHelpers.unchanged(filename)
 
-    /**
-     * Checks if the file contains the regex, based on its extension.
-     *
-     * @param extension The extension.
-     * @param regex The regex.
-     * @return A boolean value.
-     * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
-     */
+    /** Compatibility entry point for [ConditionalFileHelpers.found]. */
     @JvmStatic
     @Throws(AraraException::class)
-    fun found(extension: String, regex: String): Boolean = found(
-        FileHandling.changeExtension(
-            LinearExecutor.currentFile!!.path, extension
-        ),
-        regex
-    )
+    fun found(extension: String, regex: String): Boolean =
+        ConditionalFileHelpers.found(extension, regex)
 
-    /**
-     * Checks if the file contains the provided regex.
-     *
-     * @param file The file.
-     * @param regex The regex.
-     * @return A boolean value.
-     * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
-     */
+    /** Compatibility entry point for [ConditionalFileHelpers.found]. */
     @JvmStatic
     @Throws(AraraException::class)
-    fun found(file: MPPPath, regex: String): Boolean = try {
-        val text = file.readText()
-        regex.toRegex().containsMatchIn(text)
-    } catch (exception: AraraIOException) {
-        throw AraraException(
-            LanguageController.messages.errorCheckRegexIoException(file.fileName),
-            exception
-        )
-    }
+    fun found(file: MPPPath, regex: String): Boolean =
+        ConditionalFileHelpers.found(file, regex)
 
-    /**
-     * Returns a file object based on the provided name.
-     *
-     * @param name The file name.
-     * @return A file object.
-     */
+    /** Compatibility entry point for [ConditionalReferenceHelpers.toFile]. */
     @JvmStatic
-    fun toFile(name: String): MPPPath = MPPPath(name)
+    fun toFile(name: String): MPPPath =
+        ConditionalReferenceHelpers.toFile(name)
 
-    /**
-     * Shows a message with options presented as an array of buttons.
-     *
-     * @param type Type of message.
-     * @param title Title of the message.
-     * @param text Text of the message.
-     * @param buttons An array of objects to be presented as buttons.
-     * @return The index of the selected button, starting from 1.
-     */
+    /** Compatibility entry point for [ConditionalDialogHelpers.showOptions]. */
     @JvmStatic
     fun showOptions(
         type: Int,
         title: String,
         text: String,
         vararg buttons: Any
-    ): Int = dialogs.showOptions(type, title, text, buttons)
+    ): Int =
+        ConditionalDialogHelpers.showOptions(type, title, text, buttons)
 
-    /**
-     * Shows a message with a text input.
-     *
-     * @param type Type of message.
-     * @param title Title of the message.
-     * @param text Text of the message.
-     * @return The string representing the input text.
-     */
+    /** Compatibility entry point for [ConditionalDialogHelpers.showInput]. */
     @JvmStatic
     fun showInput(
         type: Int,
         title: String,
         text: String
-    ): String = dialogs.showInput(type, title, text)
+    ): String =
+        ConditionalDialogHelpers.showInput(type, title, text)
 
-    /**
-     * Shows a message with options presented as a numbered list of elements.
-     *
-     * @param type Type of message.
-     * @param title Title of the message.
-     * @param text Text of the message.
-     * @param elements An array of objects representing the elements.
-     * @return The index of the selected element, starting from 1.
-     */
+    /** Compatibility entry point for [ConditionalDialogHelpers.showList]. */
     @JvmStatic
     fun showList(
         type: Int,
         title: String,
         text: String,
         vararg elements: Any
-    ): Int = dialogs.showList(type, title, text, elements)
+    ): Int =
+        ConditionalDialogHelpers.showList(type, title, text, elements)
 
-    /**
-     * Gets the file reference for the current directive. It is important to
-     * observe that version 4.0 of arara replicates the directive when 'files'
-     * is detected amongst the parameters, so each instance will have a
-     * different reference.
-     *
-     * @return A file reference for the current directive.
-     */
+    /** Compatibility entry point for [ConditionalReferenceHelpers.currentFile]. */
     @JvmStatic
-    fun currentFile(): MPPPath = LinearExecutor.currentFile!!.path
+    fun currentFile(): MPPPath =
+        ConditionalReferenceHelpers.currentFile()
 
-    /**
-     * Loads a class from the provided file, potentially a Java archive.
-     *
-     * @param file File containing the Java bytecode (namely, a JAR).
-     * @param name The canonical name of the class.
-     * @return A pair representing the status and the class.
-     */
+    /** Compatibility entry point for [ConditionalLoadingHelpers.loadClass]. */
     @JvmStatic
-    fun loadClass(file: MPPPath, name: String): Pair<ClassLoadingStatus, Class<*>> {
-        ensureClassLoadingAllowed()
-        return ClassLoading.loadClass(file, name)
-    }
+    fun loadClass(file: MPPPath, name: String): Pair<ClassLoadingStatus, Class<*>> =
+        ConditionalLoadingHelpers.loadClass(file, name)
 
-    /**
-     * Loads a class from the provided string reference, representing a file.
-     *
-     * @param ref String reference representing a file.
-     * @param name The canonical name of the class.
-     * @return A pair representing the status and the class.
-     */
+    /** Compatibility entry point for [ConditionalLoadingHelpers.loadClass]. */
     @JvmStatic
     fun loadClass(ref: String, name: String): Pair<ClassLoadingStatus, Class<*>> =
-        loadClass(MPPPath(ref), name)
+        ConditionalLoadingHelpers.loadClass(ref, name)
 
-    /**
-     * Loads a class from the provided file, instantiating it.
-     *
-     * @param file File containing the Java bytecode (namely, a JAR).
-     * @param name The canonical name of the class.
-     * @return A pair representing the status and the class object.
-     */
+    /** Compatibility entry point for [ConditionalLoadingHelpers.loadObject]. */
     @JvmStatic
-    fun loadObject(file: MPPPath, name: String): Pair<ClassLoadingStatus, Any> {
-        ensureClassLoadingAllowed()
-        return ClassLoading.loadObject(file, name)
-    }
+    fun loadObject(file: MPPPath, name: String): Pair<ClassLoadingStatus, Any> =
+        ConditionalLoadingHelpers.loadObject(file, name)
 
-    /**
-     * Loads a class from the provided string reference, instantiating it.
-     *
-     * @param ref String reference representing a file.
-     * @param name The canonical name of the class.
-     * @return A pair representing the status and the class object.
-     */
+    /** Compatibility entry point for [ConditionalLoadingHelpers.loadObject]. */
     @JvmStatic
     fun loadObject(ref: String, name: String): Pair<ClassLoadingStatus, Any> =
-        loadObject(MPPPath(ref), name)
-
-    private fun ensureClassLoadingAllowed() {
-        if (LinearExecutor.executionOptions.executionMode == ExecutionMode.SAFE_RUN) {
-            throw SafeRunViolationException(LanguageController.messages.errorSafeModeClassLoading)
-        }
-    }
-
+        ConditionalLoadingHelpers.loadObject(ref, name)
 }

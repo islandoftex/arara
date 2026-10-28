@@ -43,11 +43,11 @@ class LuaRuleCommand(
     override fun isSuccessful(exitCode: Int): Boolean {
         val code = exitCode
         return exitFunction?.let { fn ->
-            LuaConversion.withLuaErrorHandling(
+            LuaFailures.withLuaErrorHandling(
                 LanguageController.messages
                     .errorInterpreterExitRuntimeError
             ) {
-                LuaConversion.booleanResult(
+                LuaResults.booleanResult(
                     fn.call(LuaValue.valueOf(code)),
                     "exit"
                 )
@@ -58,19 +58,19 @@ class LuaRuleCommand(
     /** Evaluate the Lua command closure with processed parameters and reference metadata. */
     @Throws(AraraException::class)
     override fun evaluate(parameters: Map<String, Any>): List<Any> =
-        LuaConversion.withLuaErrorHandling(
+        LuaFailures.withLuaErrorHandling(
             LanguageController.messages
                 .errorInterpreterCommandRuntimeError
         ) {
             val context = LuaValue.tableOf()
             parameters.forEach { (key, value) ->
                 if (key == "reference" && value is MPPPath) {
-                    context.set(key, LuaConversion.referenceToLua(value))
+                    context.set(key, LuaValues.referenceToLua(value))
                 } else {
                     context.set(key, LuaConversion.toLua(value))
                 }
             }
-            LuaConversion.commandResultToList(commandFunction.call(context))
+            LuaResults.commandResultToList(commandFunction.call(context))
         }
 }
 
@@ -95,7 +95,7 @@ class LuaRuleArgument(
     /** Convert a value to flag strings using the optional Lua flag closure and raw parameter context. */
     override val processor: (Any?, Map<String, Any>) -> List<String> =
         { input, context ->
-            LuaConversion.withLuaErrorHandling(
+            LuaFailures.withLuaErrorHandling(
                 LanguageController.messages
                     .errorInterpreterFlagRuntimeException
             ) {
@@ -113,10 +113,10 @@ class LuaRuleArgument(
                     (context["reference"] as? MPPPath)?.let { reference ->
                         luaContext.set(
                             "reference",
-                            LuaConversion.referenceToLua(reference)
+                            LuaValues.referenceToLua(reference)
                         )
                     }
-                    LuaConversion.flagResultToList(
+                    LuaResults.flagResultToList(
                         fn.call(luaContext, LuaConversion.toLua(input))
                     )
                 } ?: listOf(input.toString())

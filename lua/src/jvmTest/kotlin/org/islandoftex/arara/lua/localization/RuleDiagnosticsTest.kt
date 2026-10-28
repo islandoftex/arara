@@ -17,9 +17,11 @@ import org.islandoftex.arara.core.localization.GermanMessages
 import org.islandoftex.arara.core.localization.ItalianMessages
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.localization.NorfolkMessages
+import org.islandoftex.arara.lua.rules.LuaArguments
 import org.islandoftex.arara.lua.rules.LuaConversion
 import org.islandoftex.arara.lua.rules.LuaHelperException
 import org.islandoftex.arara.lua.rules.LuaInterpolation
+import org.islandoftex.arara.lua.rules.LuaResults
 import org.islandoftex.arara.lua.rules.LuaRuleParser
 import org.luaj.vm2.LuaValue
 
@@ -107,10 +109,10 @@ class RuleDiagnosticsTest {
     @Test
     fun helperDiagnosticsPreserveNamesTypesAndValuesInEveryLocale() = eachLocale { messages ->
         val name = "helper-${'$'}1-%s-\\"
-        val argument = LuaConversion.badArgument(name, 2, "string", LuaValue.NIL)
+        val argument = LuaArguments.badArgument(name, 2, "string", LuaValue.NIL)
         assertEquals(messages.errorLuaBadArgument(2, name, "string", "nil"), argument.message)
         val result = assertFailsWith<AraraException> {
-            LuaConversion.booleanResult(LuaValue.NIL, name)
+            LuaResults.booleanResult(LuaValue.NIL, name)
         }
         assertEquals(messages.errorLuaBooleanResult(name, "nil"), result.exception?.message)
         val number = assertFailsWith<LuaHelperException> { LuaConversion.toLua(Long.MAX_VALUE) }

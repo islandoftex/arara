@@ -7,7 +7,7 @@ import org.islandoftex.arara.core.configuration.LocalConfiguration
 import org.islandoftex.arara.core.configuration.SerialFileType
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.lua.LuaScriptEnvironment
-import org.islandoftex.arara.lua.rules.LuaConversion
+import org.islandoftex.arara.lua.rules.LuaFailures
 import org.luaj.vm2.LuaBoolean
 import org.luaj.vm2.LuaError
 import org.luaj.vm2.LuaNumber
@@ -36,7 +36,7 @@ object LuaLocalConfiguration {
         extract(Fields.table(value, "configuration"))
     }.getOrElse {
         val cause = when (it) {
-            is LuaError -> Exception(LuaConversion.diagnostic(it), it)
+            is LuaError -> Exception(LuaFailures.diagnostic(it), it)
             is Exception -> it
             else -> RuntimeException(it)
         }

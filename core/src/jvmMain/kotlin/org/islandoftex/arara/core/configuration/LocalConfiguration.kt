@@ -61,7 +61,29 @@ data class LocalConfiguration(
         currentProject: Project,
         baseOptions: ExecutionOptions = org.islandoftex.arara.core.configuration.ExecutionOptions()
     ): ExecutionOptions {
-        val preprocessedPaths = paths.asSequence()
+        val preprocessedPaths = resolveRulePaths(currentProject)
+        val databaseName = resolveDatabaseName(currentProject, baseOptions.databaseName)
+        val maxLoops = loops?.also { value ->
+            if (value <= 0) throw AraraException(LanguageController.messages.errorConfigurationLoopsInvalidRange)
+        } ?: baseOptions.maxLoops
+
+        return org.islandoftex.arara.core.configuration.ExecutionOptions
+            .from(baseOptions)
+            .copy(
+                maxLoops = maxLoops,
+                verbose = verbose ?: baseOptions.verbose,
+                databaseName = databaseName,
+                fileTypes = filetypes.map { it.toFileType() }
+                    .plus(baseOptions.fileTypes),
+                rulePaths = preprocessedPaths
+                    .plus(baseOptions.rulePaths),
+                parseOnlyHeader = header ?: baseOptions.parseOnlyHeader,
+                warnDeprecatedYaml = warnDeprecatedYaml ?: baseOptions.warnDeprecatedYaml
+            )
+    }
+
+    private fun resolveRulePaths(currentProject: Project): Set<MPPPath> {
+        return paths.asSequence()
             .map { it.trim() }
             .map { input ->
                 if (!expandPathTokens) input else input.replace(
@@ -86,7 +108,10 @@ data class LocalConfiguration(
             }
             .map { it.normalize() }
             .toSet()
-        val databaseName = dbname?.let { name ->
+    }
+
+    private fun resolveDatabaseName(currentProject: Project, fallback: MPPPath): MPPPath {
+        return dbname?.let { name ->
             if (name.isBlank()) throw AraraException(
                 LanguageController.messages.errorScriptNonblank("dbname/database")
             )
@@ -94,30 +119,7 @@ data class LocalConfiguration(
                 throw AraraException(LanguageController.messages.errorConfigurationGenericError,
                     it as? Exception ?: RuntimeException(it))
             }
-        } ?: baseOptions.databaseName
-        val maxLoops = loops?.let {
-            if (loops > 0) {
-                loops
-            } else {
-                throw AraraException(
-                    LanguageController.messages.errorConfigurationLoopsInvalidRange
-                )
-            }
-        } ?: baseOptions.maxLoops
-
-        return org.islandoftex.arara.core.configuration.ExecutionOptions
-            .from(baseOptions)
-            .copy(
-                maxLoops = maxLoops,
-                verbose = verbose ?: baseOptions.verbose,
-                databaseName = databaseName,
-                fileTypes = filetypes.map { it.toFileType() }
-                    .plus(baseOptions.fileTypes),
-                rulePaths = preprocessedPaths
-                    .plus(baseOptions.rulePaths),
-                parseOnlyHeader = header ?: baseOptions.parseOnlyHeader,
-                warnDeprecatedYaml = warnDeprecatedYaml ?: baseOptions.warnDeprecatedYaml
-            )
+        } ?: fallback
     }
 
     /**

@@ -2,11 +2,11 @@
 package org.islandoftex.arara.lua.rules
 
 import org.islandoftex.arara.api.files.MPPPath
-import org.islandoftex.arara.lua.rules.LuaConversion.badArgument
-import org.islandoftex.arara.lua.rules.LuaConversion.booleanArgument
-import org.islandoftex.arara.lua.rules.LuaConversion.luaFunction
-import org.islandoftex.arara.lua.rules.LuaConversion.stringArgument
+import org.islandoftex.arara.lua.rules.LuaArguments.badArgument
+import org.islandoftex.arara.lua.rules.LuaArguments.booleanArgument
+import org.islandoftex.arara.lua.rules.LuaArguments.stringArgument
 import org.islandoftex.arara.lua.rules.LuaConversion.toLua
+import org.islandoftex.arara.lua.rules.LuaValues.luaFunction
 import org.luaj.vm2.LuaString
 import org.luaj.vm2.LuaUserdata
 import org.luaj.vm2.LuaValue
@@ -14,46 +14,66 @@ import org.luaj.vm2.Varargs
 
 /** Explicit path operations without reflective access to the underlying runtime. */
 internal class LuaPath(private val path: MPPPath) : LuaUserdata(path) {
-    // Each branch is one member of the limited Lua path API; numbers are argument positions.
-    @Suppress("CyclomaticComplexMethod", "LongMethod", "MagicNumber")
-    override fun get(key: LuaValue): LuaValue = when (key.tojstring()) {
-        "file_name", "fileName" -> toLua(path.fileName)
-        "file_size", "fileSize" -> toLua(path.fileSize)
-        "parent" -> toLua(path.parent)
-        "exists" -> toLua(path.exists)
-        "is_absolute", "isAbsolute" -> toLua(path.isAbsolute)
-        "is_directory", "isDirectory" -> toLua(path.isDirectory)
-        "is_regular_file", "isRegularFile" -> toLua(path.isRegularFile)
-        "normalize" -> method(key) { receiver, _, _ -> toLua(receiver.normalize()) }
-        "resolve" -> method(key) { receiver, args, name ->
-            val child = args.arg(2)
+    override fun get(key: LuaValue): LuaValue {
+        val name = key.tojstring()
+        return properties[name]?.invoke(path)?.let(::toLua)
+            ?: operations[name]?.let { method(key, it) }
+            ?: LuaValue.NIL
+    }
+
+    private val properties: Map<String, (MPPPath) -> Any> = aliases(mapOf(
+        "fileName" to { it.fileName },
+        "fileSize" to { it.fileSize },
+        "parent" to { it.parent },
+        "exists" to { it.exists },
+        "isAbsolute" to { it.isAbsolute },
+        "isDirectory" to { it.isDirectory },
+        "isRegularFile" to { it.isRegularFile }
+    ))
+
+    private val operations = aliases(algebra() + reading() + writing())
+
+    private fun algebra(): Map<String, PathOperation> = mapOf(
+        "normalize" to { receiver, _, _ -> toLua(receiver.normalize()) },
+        "resolve" to { receiver, args, name ->
+            val child = args.arg(LuaArgumentIndex.SECOND)
             toLua(if (child is LuaString) receiver.resolve(child.tojstring())
-                else receiver.resolve(child.pathReceiver(name, 2)))
-        }
-        "resolve_sibling", "resolveSibling" -> method(key) { receiver, args, name ->
-            val sibling = args.arg(2)
+            else receiver.resolve(child.pathReceiver(name, LuaArgumentIndex.SECOND)))
+        },
+        "resolveSibling" to { receiver, args, name ->
+            val sibling = args.arg(LuaArgumentIndex.SECOND)
             toLua(if (sibling is LuaString) receiver.resolveSibling(sibling.tojstring())
-                else receiver.resolveSibling(sibling.pathReceiver(name, 2)))
+            else receiver.resolveSibling(sibling.pathReceiver(name, LuaArgumentIndex.SECOND)))
+        },
+        "startsWith" to { receiver, args, name ->
+            toLua(receiver.startsWith(args.arg(LuaArgumentIndex.SECOND).pathReceiver(name, LuaArgumentIndex.SECOND)))
         }
-        "starts_with", "startsWith" -> method(key) { receiver, args, name ->
-            toLua(receiver.startsWith(args.arg(2).pathReceiver(name, 2)))
+    )
+
+    private fun reading(): Map<String, PathOperation> = mapOf(
+        "readText" to { receiver, _, _ -> toLua(receiver.readText()) },
+        "readLines" to { receiver, _, _ -> toLua(receiver.readLines()) },
+        "listEntries" to { receiver, _, _ -> toLua(receiver.listEntries()) },
+        "listFiles" to { receiver, args, name ->
+            toLua(receiver.listFiles(args.optionalBoolean(name, LuaArgumentIndex.SECOND)))
         }
-        "read_text", "readText" -> method(key) { receiver, _, _ -> toLua(receiver.readText()) }
-        "read_lines", "readLines" -> method(key) { receiver, _, _ -> toLua(receiver.readLines()) }
-        "write_text", "writeText" -> method(key) { receiver, args, name ->
-            receiver.writeText(args.arg(2).stringArgument(name, 2), args.optionalBoolean(name, 3))
+    )
+
+    private fun writing(): Map<String, PathOperation> = mapOf(
+        "writeText" to { receiver, args, name ->
+            receiver.writeText(args.arg(LuaArgumentIndex.SECOND).stringArgument(name, LuaArgumentIndex.SECOND),
+                args.optionalBoolean(name, LuaArgumentIndex.THIRD))
             LuaValue.NIL
-        }
-        "create_directories", "createDirectories" -> method(key) { receiver, _, _ ->
+        },
+        "createDirectories" to { receiver, _, _ ->
             receiver.createDirectories()
             LuaValue.NIL
         }
-        "list_entries", "listEntries" -> method(key) { receiver, _, _ -> toLua(receiver.listEntries()) }
-        "list_files", "listFiles" -> method(key) { receiver, args, name ->
-            toLua(receiver.listFiles(args.optionalBoolean(name, 2)))
-        }
-        else -> LuaValue.NIL
-    }
+    )
+
+    private fun <T> aliases(values: Map<String, T>): Map<String, T> = values.flatMap { (name, value) ->
+        listOf(name to value, name.replace(Regex("([a-z])([A-Z])"), "$1_$2").lowercase() to value)
+    }.toMap()
 
     private fun method(key: LuaValue, body: (MPPPath, Varargs, String) -> LuaValue): LuaValue =
         luaFunction { args ->
@@ -68,3 +88,5 @@ internal class LuaPath(private val path: MPPPath) : LuaUserdata(path) {
     private fun Varargs.optionalBoolean(name: String, index: Int): Boolean =
         if (arg(index).isnil()) false else arg(index).booleanArgument(name, index)
 }
+
+private typealias PathOperation = (MPPPath, Varargs, String) -> LuaValue

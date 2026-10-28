@@ -1,29 +1,39 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.lua.rules
 
-import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
-import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.core.localization.LanguageController
 import org.luaj.vm2.LuaBoolean
-import org.luaj.vm2.LuaError
 import org.luaj.vm2.LuaNumber
 import org.luaj.vm2.LuaString
 import org.luaj.vm2.LuaTable
 import org.luaj.vm2.LuaValue
-import org.luaj.vm2.Varargs
-import org.luaj.vm2.lib.VarArgFunction
 
 /** The typed boundary between runtime values and the Luak interpreter. */
-@Suppress("TooManyFunctions")
+
 internal object LuaConversion {
     // Lua numbers above this exclusive bound cannot be converted to a Kotlin Long.
     private const val LONG_UPPER_BOUND = 9223372036854775808.0
 
     fun toLua(value: Any?): LuaValue = toLua(value, mutableListOf())
 
-    @Suppress("CyclomaticComplexMethod")
     private fun toLua(value: Any?, visiting: MutableList<Any>): LuaValue = when (value) {
+        is List<*> -> within(value, visiting) {
+            LuaValue.tableOf().apply {
+                value.forEachIndexed { index, element -> set(index + 1, toLua(element, visiting)) }
+            }
+        }
+        is Map<*, *> -> within(value, visiting) {
+            val keys = value.keys.map { it.toString() }
+            if (keys.toSet().size != keys.size) throw LuaHelperException(LanguageController.messages.errorLuaMapKeys)
+            LuaValue.tableOf().apply {
+                value.forEach { (key, element) -> set(key.toString(), toLua(element, visiting)) }
+            }
+        }
+        else -> scalar(value)
+    }
+
+    private fun scalar(value: Any?): LuaValue = when (value) {
         null -> LuaValue.NIL
         is LuaValue -> value
         is MPPPath -> LuaPath(value)
@@ -33,18 +43,6 @@ internal object LuaConversion {
         is Long -> longToLua(value)
         is Float -> LuaValue.valueOf(value.toDouble())
         is Double -> LuaValue.valueOf(value)
-        is List<*> -> within(value, visiting) {
-            LuaValue.tableOf().also { table ->
-                value.forEachIndexed { index, element -> table.set(index + 1, toLua(element, visiting)) }
-            }
-        }
-        is Map<*, *> -> within(value, visiting) {
-            val keys = value.keys.map { it.toString() }
-            if (keys.toSet().size != keys.size) throw LuaHelperException(LanguageController.messages.errorLuaMapKeys)
-            LuaValue.tableOf().also { table ->
-                value.forEach { (key, element) -> table.set(key.toString(), toLua(element, visiting)) }
-            }
-        }
         else -> LuaValue.userdataOf(value)
     }
 
@@ -59,7 +57,6 @@ internal object LuaConversion {
 
     fun fromLua(value: LuaValue): Any? = fromLua(value, mutableListOf())
 
-    @Suppress("CyclomaticComplexMethod")
     private fun fromLua(value: LuaValue, visiting: MutableList<Any>): Any? = when {
         value.isnil() -> null
         value is LuaBoolean -> value.toboolean()
@@ -90,14 +87,14 @@ internal object LuaConversion {
     }
 
     /** Sequence order comes from indices, not the table's key enumeration. */
-    private fun sequence(table: LuaTable): List<LuaValue>? {
+    fun sequence(table: LuaTable): List<LuaValue>? {
         val keys = table.keys()
         return if (keys.all { it is LuaNumber && it.isint() && it.toint() in 1..keys.size }) {
             (1..keys.size).map { table[it] }
         } else null
     }
 
-    private inline fun <T> within(value: Any, visiting: MutableList<Any>, block: () -> T): T {
+    inline fun <T> within(value: Any, visiting: MutableList<Any>, block: () -> T): T {
         if (visiting.any { it === value }) {
             throw LuaHelperException(LanguageController.messages.errorLuaCyclicValues)
         }
@@ -109,93 +106,4 @@ internal object LuaConversion {
         }
     }
 
-    fun badArgument(helper: String, index: Int, expected: String, actual: LuaValue): LuaHelperException =
-        LuaHelperException(
-            LanguageController.messages.errorLuaBadArgument(index, helper, expected, actual.typename())
-        )
-
-    fun LuaValue.stringArgument(helper: String, index: Int): String =
-        (this as? LuaString)?.tojstring() ?: throw badArgument(helper, index, "string", this)
-
-    fun LuaValue.numberArgument(helper: String, index: Int): Int =
-        (this as? LuaNumber)?.takeIf { it.isint() }?.toint()
-            ?: throw badArgument(helper, index, "32-bit integer", this)
-
-    fun LuaValue.booleanArgument(helper: String, index: Int): Boolean =
-        (this as? LuaBoolean)?.toboolean() ?: throw badArgument(helper, index, "boolean", this)
-
-    fun LuaValue.pathArgument(helper: String, index: Int): MPPPath = when {
-        isuserdata() -> touserdata() as? MPPPath ?: throw badArgument(helper, index, "path", this)
-        this is LuaString -> MPPPath(tojstring())
-        else -> throw badArgument(helper, index, "path", this)
-    }
-
-    fun LuaValue.stringListArgument(helper: String, index: Int): List<String> {
-        val values = (this as? LuaTable)?.let { sequence(it) }
-            ?: throw badArgument(helper, index, "list of strings", this)
-        return values.map {
-            (it as? LuaString)?.tojstring() ?: throw badArgument(helper, index, "list of strings", this)
-        }
-    }
-
-    fun booleanResult(value: LuaValue, source: String): Boolean =
-        (value as? LuaBoolean)?.toboolean() ?: throw AraraException(
-            LanguageController.messages.errorInterpreterWrongExitClosureReturn,
-            LuaHelperException(
-                LanguageController.messages.errorLuaBooleanResult(source, value.typename())
-            )
-        )
-
-    fun flagResultToList(value: LuaValue): List<String> = when {
-        value.isnil() -> emptyList()
-        value is LuaTable -> flatten(value, mutableListOf()).map { it.toString() }
-        else -> listOf(value.tojstring())
-    }
-
-    fun commandResultToList(value: LuaValue): List<Any> = when {
-        value.isnil() -> emptyList()
-        value is LuaTable -> flatten(value, mutableListOf())
-        else -> listOfNotNull(fromLua(value))
-    }
-
-    private fun flatten(table: LuaTable, visiting: MutableList<Any>): List<Any> = within(table, visiting) {
-        val values = sequence(table) ?: table.keys().map { table[it] }
-        values.flatMap { value ->
-            if (value is LuaTable) flatten(value, visiting) else listOfNotNull(fromLua(value))
-        }
-    }
-
-    fun referenceToLua(path: MPPPath): LuaTable = LuaValue.tableOf().also { table ->
-        table.set("file_name", LuaValue.valueOf(path.fileName))
-        table.set("path", LuaValue.valueOf(path.toString()))
-        table.set("parent", LuaValue.valueOf(path.parent.toString()))
-    }
-
-    fun luaFunction(body: (Varargs) -> LuaValue): LuaValue = object : VarArgFunction() {
-        override fun invoke(args: Varargs): Varargs = body(args)
-    }
-
-    fun toCommand(value: LuaValue): Command? = value.takeIf { it.isuserdata() }?.touserdata() as? Command
-
-    fun diagnostic(error: LuaError): String {
-        val text = error.getLuaMessage() ?: error.message ?: error.toString()
-        val location = error.fileline
-        return if (location.isNullOrBlank() || text.contains(location)) text else "$location: $text"
-    }
-
-    /** Luak keeps wrapped callback failures in luaCause rather than Throwable.cause. */
-    fun <T> withLuaErrorHandling(message: String, block: () -> T): T = try {
-        block()
-    } catch (exception: LuaHelperException) {
-        throw AraraException(message, exception)
-    } catch (exception: LuaError) {
-        val araraCause = generateSequence<Throwable>(exception) {
-            if (it is LuaError) it.luaCause ?: it.cause else it.cause
-        }.filterIsInstance<AraraException>().firstOrNull()
-        throw when (araraCause) {
-            is LuaHelperException -> AraraException(message, araraCause)
-            null -> AraraException(message, Exception(diagnostic(exception), exception))
-            else -> araraCause
-        }
-    }
 }

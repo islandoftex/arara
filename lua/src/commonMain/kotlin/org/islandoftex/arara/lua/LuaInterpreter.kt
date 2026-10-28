@@ -7,7 +7,7 @@ import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.core.configuration.ConfigurationUtils
 import org.islandoftex.arara.core.files.UNKNOWN_TYPE
 import org.islandoftex.arara.core.localization.LanguageController
-import org.islandoftex.arara.lua.rules.LuaConversion
+import org.islandoftex.arara.lua.rules.LuaFailures
 import org.luaj.vm2.LuaError
 import org.luaj.vm2.LuaNumber
 import org.luaj.vm2.LuaString
@@ -20,14 +20,10 @@ import org.luaj.vm2.LuaValue
  */
 class LuaInterpreter(private val appWorkingDir: MPPPath) {
     // Each throw identifies a distinct field violation at the format boundary.
-    @Suppress("ThrowsCount")
+
     private fun fileType(table: LuaTable, context: String): FileType {
         ProjectFields.keys(table, setOf("extension", "pattern"), context)
-        val extension = ProjectFields.string(table["extension"], "$context.extension")
-            ?: throw ProjectParseException(messages.errorScriptRequired("$context.extension"))
-        if (extension.isBlank()) throw ProjectParseException(
-            messages.errorScriptNonblank("$context.extension")
-        )
+        val extension = ProjectFields.requiredString(table["extension"], "$context.extension")
         val pattern = ProjectFields.string(table["pattern"], "$context.pattern")
             ?: ConfigurationUtils.defaultFileTypePatterns[extension]
             ?: throw ProjectParseException(messages.errorScriptRequired("$context.pattern ($extension)"))
@@ -50,35 +46,16 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
         }
     }
 
-    @Suppress("ThrowsCount")
     private fun project(table: LuaTable, context: String, defaultName: String): Project {
         ProjectFields.keys(table,
             setOf("name", "working_directory", "files", "dependencies", "build", "watch"), context)
         val name = ProjectFields.string(table["name"], "$context.name") ?: defaultName
-        if (name.isBlank()) throw ProjectParseException(messages.errorScriptNonblank("$context.name"))
+        ProjectFields.nonblank(name, "$context.name")
         val directory = ProjectFields.string(table["working_directory"], "$context.working_directory")
             ?.let { appWorkingDir.resolve(it).normalize() } ?: appWorkingDir.normalize()
         val files = ProjectFields.table(table["files"], "$context.files")
             ?: throw ProjectParseException(messages.errorScriptRequired("$context.files"))
-        val paths = mutableSetOf<MPPPath>()
-        val entries = files.keys().map { key ->
-            val reference = ProjectFields.string(key, "$context.files key")
-                ?: throw ProjectParseException(messages.errorScriptStringKeys("$context.files"))
-            if (reference.isBlank()) throw ProjectParseException(
-                messages.errorScriptNonblank("$context.files key")
-            )
-            val path = directory.resolve(reference).normalize()
-            if (!paths.add(path)) throw ProjectParseException(
-                messages.errorScriptDuplicate("$context.files", path.toString())
-            )
-            if (path.isDirectory) throw ProjectParseException(
-                messages.errorScriptDirectory("$context.files[$reference]")
-            )
-            val spec = ProjectFields.table(files[key], "$context.files[$reference]")
-                ?: throw ProjectParseException(messages.errorScriptTable("$context.files[$reference]"))
-            file(path, spec, "$context.files[$reference]")
-        }.toSet()
-        if (entries.isEmpty()) throw ProjectParseException(messages.errorScriptEmpty("$context.files"))
+        val entries = projectFiles(files, directory, context)
         val dependencies = ProjectFields.table(table["dependencies"], "$context.dependencies")
             ?.let { ProjectFields.strings(it, "$context.dependencies").toSet() } ?: emptySet()
         return org.islandoftex.arara.core.files.Project(
@@ -87,13 +64,27 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
         )
     }
 
+    private fun projectFiles(files: LuaTable, directory: MPPPath, context: String): Set<LuaProjectFile> {
+        val paths = mutableSetOf<MPPPath>()
+        val entries = files.keys().map { key ->
+            val reference = ProjectFileFields.requiredKey(key, "$context.files")
+            val path = directory.resolve(reference).normalize()
+            ProjectFileFields.validatePath(path, paths, "$context.files", reference)
+            val spec = ProjectFields.table(files[key], "$context.files[$reference]")
+                ?: throw ProjectParseException(messages.errorScriptTable("$context.files[$reference]"))
+            file(path, spec, "$context.files[$reference]")
+        }.toSet()
+        if (entries.isEmpty()) throw ProjectParseException(messages.errorScriptEmpty("$context.files"))
+        return entries
+    }
+
     private fun build(table: LuaTable, directory: MPPPath, context: String) =
         ProjectFields.table(table["build"], "$context.build")?.let {
             ProjectBuildFields.parse(it, directory, "$context.build")
         }
 
     /** A table with named fields denotes one project; a positional table denotes a project list. */
-    @Suppress("ThrowsCount")
+
     fun parseProjectsFromLua(
         luaScript: String,
         defaultName: String = "Untitled project",
@@ -102,7 +93,7 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
         val root = kotlin.runCatching {
             LuaScriptEnvironment.newGlobals(appWorkingDir).load(luaScript, chunkName).call()
         }.getOrElse {
-            val detail = if (it is LuaError) LuaConversion.diagnostic(it) else it.message.orEmpty()
+            val detail = if (it is LuaError) LuaFailures.diagnostic(it) else it.message.orEmpty()
             throw ProjectParseException(
                 messages.errorProjectInvalidLua(chunkName, detail),
                 it as? Exception ?: RuntimeException(it)
@@ -115,21 +106,21 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
             listOf(project(table, "project", defaultName))
         } else {
             ProjectFields.list(table, "projects").mapIndexed { index, value ->
-                val entry = value as? LuaTable
-                    ?: throw ProjectParseException(messages.errorScriptTable("projects[${index + 1}]"))
-                if (entry["name"].isnil()) throw ProjectParseException(
-                    messages.errorScriptRequired("projects[${index + 1}].name")
-                )
+                val entry = ProjectFields.namedProject(value, "projects[${index + 1}]")
                 project(entry, "projects[${index + 1}]", defaultName)
             }
         }
+        validateProjects(projects)
+        return projects
+    }
+
+    private fun validateProjects(projects: List<Project>) {
         if (projects.isEmpty()) throw ProjectParseException(messages.errorScriptEmpty("projects"))
         val names = projects.map { it.name }
         if (names.toSet().size != names.size) {
             val duplicates = names.groupBy { it }.filterValues { it.size > 1 }.keys.joinToString(", ")
             throw ProjectValidationException(messages.errorProjectDuplicateNames(duplicates))
         }
-        return projects
     }
 
     /** Project preparation after configuration has supplied the available file types. */
@@ -159,6 +150,19 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
 
 /** Strict conversions for the project format's data boundary. */
 internal object ProjectFields {
+    fun requiredString(value: LuaValue, context: String): String =
+        nonblank(string(value, context) ?: throw ProjectParseException(messages.errorScriptRequired(context)), context)
+
+    fun nonblank(value: String, context: String): String = value.also {
+        if (it.isBlank()) throw ProjectParseException(messages.errorScriptNonblank(context))
+    }
+
+    fun namedProject(value: LuaValue, context: String): LuaTable {
+        val entry = value as? LuaTable ?: throw ProjectParseException(messages.errorScriptTable(context))
+        if (entry["name"].isnil()) throw ProjectParseException(messages.errorScriptRequired("$context.name"))
+        return entry
+    }
+
     fun keys(table: LuaTable, allowed: Set<String>, context: String) {
         table.keys().firstOrNull { it !is LuaString || it.toString() !in allowed }?.let {
             throw ProjectParseException(messages.errorScriptUnknownKey("$context.$it"))

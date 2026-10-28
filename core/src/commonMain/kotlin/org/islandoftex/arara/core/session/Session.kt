@@ -1,11 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.session
 
-import org.islandoftex.arara.api.AraraException
-import org.islandoftex.arara.api.configuration.LoggingOptions
-import org.islandoftex.arara.api.configuration.UserInterfaceOptions
 import org.islandoftex.arara.api.session.Session
-import org.islandoftex.arara.core.localization.LanguageController
 
 /**
  * Implements the session, i.e. one single run of the whole arara tool.

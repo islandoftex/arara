@@ -13,6 +13,8 @@ import org.islandoftex.arara.core.localization.LanguageController
  * Implements directive auxiliary methods.
  */
 object Directives {
+    private const val PARAMETERS_GROUP = 3
+
     /** Hooks used to transform potential directives and construct engine-specific directive objects. */
     @JvmStatic
     var hooks = DirectiveFetchingHooks()
@@ -73,7 +75,6 @@ object Directives {
      */
     @JvmStatic
     @Throws(AraraException::class)
-    @Suppress("MagicNumber")
     fun extractDirectives(
         lines: List<String>,
         parseOnlyHeader: Boolean,
@@ -121,7 +122,6 @@ object Directives {
      * higher levels.
      */
     @Throws(AraraException::class)
-    @Suppress("MagicNumber")
     internal fun generateDirective(assembler: DirectiveAssembler): Directive =
         directivePattern.find(assembler.text)?.let { match ->
             // NOTE: in match.groupValues all capture group have a string value;
@@ -131,7 +131,7 @@ object Directives {
                 // identifier
                 match.groupValues[1],
                 // parameters
-                match.groupValues[3].takeIf { it.isNotEmpty() },
+                match.groupValues[PARAMETERS_GROUP].takeIf { it.isNotEmpty() },
                 // conditional
                 DirectiveConditional(
                     type = match.groupValues[5]

@@ -11,28 +11,20 @@ import org.mvel2.templates.TemplateRuntime
 /** Keeps MVEL expressions and helper bindings outside the execution loop. */
 class MvelCommandEvaluator(private val command: SerialRuleCommand) : CommandEvaluator {
     /** Evaluate the command template with processed parameters and the shared rule helpers. */
-    @Suppress("TooGenericExceptionCaught")
-    override fun evaluate(parameters: Map<String, Any>): Any? = try {
+    override fun evaluate(parameters: Map<String, Any>): Any? = withMvelErrorHandling(header = true,
+        message = { LanguageController.messages.errorInterpreterCommandRuntimeError }
+    ) {
         TemplateRuntime.eval(command.commandString!!, parameters.plus(MvelState.ruleMethods))
-    } catch (exception: RuntimeException) {
-        throw AraraExceptionWithHeader(
-            LanguageController.messages.errorInterpreterCommandRuntimeError,
-            exception
-        )
     }
 
     /** Evaluate the exit predicate as a strict boolean; only zero succeeds when none is supplied. */
-    @Suppress("TooGenericExceptionCaught")
     override fun isSuccessful(exitCode: Int): Boolean {
-        val check = try {
+        val check = withMvelErrorHandling(header = true,
+            message = { LanguageController.messages.errorInterpreterExitRuntimeError }
+        ) {
             TemplateRuntime.eval(
                 "@{ " + (command.exit ?: "value == 0") + " }",
                 mapOf("value" to exitCode)
-            )
-        } catch (exception: RuntimeException) {
-            throw AraraExceptionWithHeader(
-                LanguageController.messages.errorInterpreterExitRuntimeError,
-                exception
             )
         }
         return check as? Boolean ?: throw AraraExceptionWithHeader(

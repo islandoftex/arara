@@ -60,7 +60,7 @@ class LuaSessionTest {
         globals.set("session", LuaSession.table(MemorySession()))
         for (script in listOf("session.put('nil', nil)", "session.get(1)")) {
             val error = assertFailsWith<AraraException> {
-                LuaConversion.withLuaErrorHandling("rule context") { globals.load(script).call() }
+                LuaFailures.withLuaErrorHandling("rule context") { globals.load(script).call() }
             }
             assertEquals("rule context", error.message)
             assertTrue(error.exception is LuaHelperException)
@@ -72,22 +72,22 @@ class LuaSessionTest {
     fun luakWrappedErrorsKeepHelperAndAuthoredFailuresDistinct() {
         val helper = LuaHelperException("helper sentinel")
         val converted = assertFailsWith<AraraException> {
-            LuaConversion.withLuaErrorHandling("context") { throw LuaError(LuaError(helper)) }
+            LuaFailures.withLuaErrorHandling("context") { throw LuaError(LuaError(helper)) }
         }
         assertSame(helper, converted.exception)
         val authored = AraraExceptionWithHeader("authored sentinel")
         val preserved = assertFailsWith<AraraExceptionWithHeader> {
-            LuaConversion.withLuaErrorHandling("context") { throw LuaError(authored) }
+            LuaFailures.withLuaErrorHandling("context") { throw LuaError(authored) }
         }
         assertSame(authored, preserved)
         val direct = assertFailsWith<AraraExceptionWithHeader> {
-            LuaConversion.withLuaErrorHandling("context") { throw authored }
+            LuaFailures.withLuaErrorHandling("context") { throw authored }
         }
         assertSame(authored, direct)
         val globals = CommonPlatform.standardGlobals()
-        globals.set("fail", LuaConversion.luaFunction { throw authored })
+        globals.set("fail", LuaValues.luaFunction { throw authored })
         val callback = assertFailsWith<AraraExceptionWithHeader> {
-            LuaConversion.withLuaErrorHandling("context") { globals.load("fail()").call() }
+            LuaFailures.withLuaErrorHandling("context") { globals.load("fail()").call() }
         }
         assertSame(authored, callback)
     }
@@ -96,7 +96,7 @@ class LuaSessionTest {
     fun ordinaryLuaErrorsCarryTheirSourceAsTheUnderlyingFailure() {
         for ((script, detail) in listOf("error('sentinel')" to "sentinel", "return {" to "probe.lua")) {
             val error = assertFailsWith<AraraException> {
-                LuaConversion.withLuaErrorHandling("rule context") {
+                LuaFailures.withLuaErrorHandling("rule context") {
                     CommonPlatform.standardGlobals().load(script, "probe.lua").call()
                 }
             }

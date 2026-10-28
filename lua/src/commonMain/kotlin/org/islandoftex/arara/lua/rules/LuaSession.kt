@@ -2,8 +2,8 @@
 package org.islandoftex.arara.lua.rules
 
 import org.islandoftex.arara.api.session.Session
-import org.islandoftex.arara.lua.rules.LuaConversion.luaFunction
-import org.islandoftex.arara.lua.rules.LuaConversion.stringArgument
+import org.islandoftex.arara.lua.rules.LuaArguments.stringArgument
+import org.islandoftex.arara.lua.rules.LuaValues.luaFunction
 import org.luaj.vm2.LuaValue
 
 /** Session operations use Lua values while preserving opaque runtime handles. */
@@ -15,7 +15,7 @@ internal object LuaSession {
         table.set("put", luaFunction { args ->
             val key = args.arg(1).stringArgument("session.put", 1)
             val value = LuaConversion.fromLua(args.arg(2))
-                ?: throw LuaConversion.badArgument("session.put", 2, "value", args.arg(2))
+                ?: throw LuaArguments.badArgument("session.put", 2, "value", args.arg(2))
             session.put(key, value)
             LuaValue.NIL
         })

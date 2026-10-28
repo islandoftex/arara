@@ -76,7 +76,6 @@ data class Rule(
          * higher levels.
          */
         @Throws(AraraException::class)
-        @Suppress("ThrowsCount")
         private fun validateHeader(rule: Rule, identifier: String, ruleErrorHeader: String) {
             if (rule.identifier != identifier) {
                 throw AraraException(
@@ -100,7 +99,6 @@ data class Rule(
          * higher levels.
          */
         @Throws(AraraException::class)
-        @Suppress("ThrowsCount")
         private fun validateBody(rule: org.islandoftex.arara.mvel.rules.Rule, ruleErrorHeader: String) {
             if (rule.commands.any { it.commandString == null })
                 throw AraraException(
@@ -111,6 +109,9 @@ data class Rule(
             val arguments = rule.arguments.filter { it.validate(ruleErrorHeader) }
                 .map { it.identifier }
 
+            validateArgumentNames(arguments, ruleErrorHeader)
+        }
+        private fun validateArgumentNames(arguments: List<String>, ruleErrorHeader: String) {
             arguments.intersect(listOf("files", "reference")).forEach {
                 throw AraraException(
                     ruleErrorHeader + LanguageController
@@ -125,5 +126,6 @@ data class Rule(
                 )
             }
         }
+
     }
 }

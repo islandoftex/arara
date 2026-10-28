@@ -17,7 +17,7 @@ import org.luaj.vm2.LuaBoolean
 class LuaConditionalEvaluator(executionOptions: ExecutionOptions) : DirectiveConditionalEvaluator(executionOptions) {
     /** Evaluate the expression as a strict Lua boolean, inverting unless and until results. */
     override fun evaluateCondition(conditional: DirectiveConditional): Boolean {
-        val result = LuaConversion.withLuaErrorHandling(LanguageController.messages.errorEvaluateCompilationFailed) {
+        val result = LuaFailures.withLuaErrorHandling(LanguageController.messages.errorEvaluateCompilationFailed) {
             LuaConditionalEnvironment.newGlobals()
                 .load("return (" + conditional.condition + ")", "directive-conditional").call()
         }

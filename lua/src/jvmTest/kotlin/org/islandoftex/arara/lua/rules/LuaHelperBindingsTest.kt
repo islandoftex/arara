@@ -16,7 +16,7 @@ class LuaHelperBindingsTest {
         assertEquals("a-b", globals.load("return join({'a', 'b'}, '-')").call().tojstring())
         assertTrue(globals.load("return is_string(trim_spaces(' a '))").call().toboolean())
         val command = globals.load("return get_command_with_working_directory('.', 'echo', {'a', 'b'})").call()
-        assertTrue(LuaConversion.toCommand(command) != null)
+        assertTrue(LuaValues.toCommand(command) != null)
         assertTrue(globals.get("show_list").isfunction())
         assertTrue(globals.get("showList").isfunction())
     }
@@ -26,9 +26,9 @@ class LuaHelperBindingsTest {
         val globals = LuaRuleEnvironment.newGlobals()
         val original = globals.load("return get_command_with_working_directory('.', 'echo', 'a b')").call()
         globals.set("original", original)
-        val command = LuaConversion.toCommand(original)!!
+        val command = LuaValues.toCommand(original)!!
         for (helper in listOf("named_command", "namedCommand")) {
-            val named = LuaConversion.toCommand(globals.load("return $helper('Cleaning aux', original)").call())!!
+            val named = LuaValues.toCommand(globals.load("return $helper('Cleaning aux', original)").call())!!
             assertEquals("Cleaning aux", named.displayName)
             assertEquals(command.elements, named.elements)
             assertEquals(command.workingDirectory, named.workingDirectory)
@@ -54,7 +54,7 @@ class LuaHelperBindingsTest {
         val error = assertFailsWith<Exception> { globals.load("return trim_spaces(3)").call() }
         assertTrue(error.toString().contains("trim_spaces"))
         val authored = assertFailsWith<AraraExceptionWithHeader> {
-            LuaConversion.withLuaErrorHandling("evaluation") {
+            LuaFailures.withLuaErrorHandling("evaluation") {
                 globals.load("throw_error('authored')").call()
             }
         }
