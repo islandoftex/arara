@@ -168,6 +168,9 @@ Run `nix develop -c ./gradlew :docs:buildDocs` to build the website and PDFs;
 `:docs:buildWebsite` writes `website/public`; staging and book HTML go under
 `docs/build`. Remove any old Nix-store symlink at `website/public` first.
 
+Website and PDF font declarations are shared in `website/static/fonts/identity.css`;
+PDF builds reuse the rendered site's font assets; licences remain in that font directory.
+
 The Kotlin helpers in `buildSrc` extract `data-arara-document-*` regions and
 validate local assets. `./gradlew -p buildSrc check` runs their regression
 checks. `nix build .#website` compiles the same helpers and runs the same checks

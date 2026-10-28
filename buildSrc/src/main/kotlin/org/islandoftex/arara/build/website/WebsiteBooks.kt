@@ -37,11 +37,14 @@ class WebsiteBooks(private val site: File, private val resources: File,
             val content = demoteHeadings(WebsiteContent.localizeAssets(document.body, site, siteUrl))
             "<article>$heading\n$content</article>"
         }
+        val siteRoot = site.toURI().toASCIIString().trimEnd('/')
         val resourceRoot = resources.toURI().toASCIIString().trimEnd('/')
         val header = if (manual) resources.resolve("manual-cover.html").readText()
-            .replace("@RESOURCE_ROOT@", resourceRoot).replace("@VERSION@", version)
+            .replace("@RESOURCE_ROOT@", resourceRoot)
+            .replace("@SITE_ROOT@", siteRoot).replace("@VERSION@", version)
         else """<!DOCTYPE html>
 <html lang="en-US"><head><meta charset="UTF-8"><title>arara</title>
+<link href="$siteRoot/fonts/identity.css" rel="stylesheet">
 <link href="$resourceRoot/manual.css" rel="stylesheet"></head><body>
 """
         var html = header + (if (manual) contents(body) else "") + body + "\n</body></html>\n"

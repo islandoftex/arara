@@ -118,7 +118,8 @@ on.
 * YAML parsing uses Kotaml, the supported Kaml fork.
 * The `animate` and `convert` rules use ImageMagick's `magick` by default.
 * Updated Kotlin to 2.4, Gradle and dependencies.
-* Website and PDF builds use Gradle with Kotlin helpers.
+* Website and PDF builds use Gradle with Kotlin helpers. PDF typography and
+  branding match the website.
 
 ### Fixed
 

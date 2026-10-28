@@ -24,6 +24,9 @@ fun main(args: Array<String>) {
             val directory = root.resolve(name)
             Files.createDirectories(directory.resolve("site/quickstart"))
             Files.createDirectories(directory.resolve("resources"))
+            Files.createDirectories(directory.resolve("site/fonts"))
+            Files.writeString(directory.resolve("site/fonts/identity.css"), "/* shared fonts */")
+            Files.writeString(directory.resolve("site/fonts/body.woff2"), "font fixture")
             Files.writeString(directory.resolve("site/quickstart/index.html"),
                 "<h1 data-arara-document-title>Quickstart</h1><div data-arara-document-content>Text</div>")
             Files.writeString(directory.resolve("resources/manual.css"), "body { color: black; }")
@@ -69,7 +72,9 @@ fun main(args: Array<String>) {
         Files.writeString(second.resolve("site/quickstart/index.html"),
             "<h1 data-arara-document-title>Quickstart</h1><div data-arara-document-content>Updated</div>")
         check(run(second) == TaskOutcome.SUCCESS)
-        check(Files.readAllLines(counter).size == 6)
+        Files.writeString(second.resolve("site/fonts/body.woff2"), "updated font fixture")
+        check(run(second) == TaskOutcome.SUCCESS)
+        check(Files.readAllLines(counter).size == 7)
         println("PASS relocated documentation cache and rendering-input invalidation")
     } finally {
         root.toFile().deleteRecursively()

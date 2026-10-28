@@ -110,7 +110,9 @@ fun main(args: Array<String>) {
         temporary { root ->
             val site = root.resolve("site")
             val resources = root.resolve("resources").apply { mkdirs() }
-            resources.resolve("manual-cover.html").writeText("<html><body><span>@VERSION@</span>")
+            resources.resolve("manual-cover.html").writeText(
+                "<html><head><link href=\"@SITE_ROOT@/fonts/identity.css\" rel=\"stylesheet\"></head>" +
+                    "<body><span>@VERSION@</span>")
             val source = "<nav>Not in the book</nav><h1 data-arara-document-title>Chapter</h1>" +
                 "<div data-arara-document-content><h1 id=\"section\">Section</h1><p>Keep this example.</p>" +
                 "<a href=\"${WebsiteContent.SITE_URL}/manual/rules/\">Rules</a></div>"
@@ -123,6 +125,8 @@ fun main(args: Array<String>) {
                 check("Keep this example." in html.readText())
                 check("Not in the book" !in html.readText())
                 check("<h2 id=\"section\">" in html.readText())
+                check(site.resolve("fonts/identity.css").toURI().toASCIIString() in html.readText())
+                check("@SITE_ROOT@" !in html.readText())
                 if (manual) {
                     check("test-version" in html.readText())
                     check("href=\"#chapter-rules\"" in html.readText())
@@ -135,6 +139,20 @@ fun main(args: Array<String>) {
             fails { WebsiteContent.checkSite(site) }
             fails { WebsiteBooks(site, resources).assemble(root.resolve("missing.html"), true, "version") }
         }
+    }
+    test("shared identity fonts are local resolved WOFF2 assets") {
+        val fonts = repo.resolve("website/static/fonts")
+        val css = fonts.resolve("identity.css").readText()
+        val references = Regex("""url\("([^"]+)"\)""").findAll(css)
+            .map { it.groupValues[1] }.toList()
+        check(references.isNotEmpty())
+        references.forEach { name ->
+            check('/' !in name) { "Font must be beside the shared stylesheet: $name" }
+            val signature = fonts.resolve(name).inputStream().use { it.readNBytes(4).toString(Charsets.US_ASCII) }
+            check(signature == "wOF2") { "Missing or unresolved LFS font: $name" }
+        }
+        check("fonts/identity.css" in repo.resolve("website/static/arara.css").readText())
+        check("@font-face" !in repo.resolve("docs/resources/manual.css").readText())
     }
     println("Website build checks: $count passed")
 }

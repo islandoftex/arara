@@ -2,77 +2,16 @@
   * Based on the report example of weasyprint:
   * https://github.com/CourtBouillon/weasyprint-samples/tree/master/report
   */
-@font-face {
-  font-family: 'Fira Sans';
-  font-weight: 400;
-  src: url('firasans-regular.otf');
-}
-@font-face {
-  font-family: 'Fira Sans';
-  font-style: italic;
-  font-weight: 400;
-  src: url('firasans-italic.otf');
-}
-@font-face {
-  font-family: 'Fira Sans';
-  font-weight: 300;
-  src: url('firasans-light.otf');
-}
-@font-face {
-  font-family: 'Fira Sans';
-  font-style: italic;
-  font-weight: 300;
-  src: url('firasans-lightitalic.otf');
-}
-@font-face {
-  font-family: 'Fira Sans';
-  font-weight: 700;
-  src: url('firasans-bold.otf');
-}
-
-@font-face {
-  font-family: 'Cascadia Mono';
-  font-weight: 200;
-  src: url('CascadiaMono-ExtraLight.otf');
-}
-@font-face {
-  font-family: 'Cascadia Mono';
-  font-style: italic;
-  font-weight: 200;
-  src: url('CascadiaMono-ExtraLightItalic.otf');
-}
-@font-face {
-  font-family: 'Cascadia Mono';
-  font-weight: 300;
-  src: url('CascadiaMono-Light.otf');
-}
-@font-face {
-  font-family: 'Cascadia Mono';
-  font-style: italic;
-  font-weight: 300;
-  src: url('CascadiaMono-LightItalic.otf');
-}
-@font-face {
-  font-family: 'Cascadia Mono';
-  font-weight: 400;
-  src: url('CascadiaMono-Regular.otf');
-}
-@font-face {
-  font-family: 'Cascadia Mono';
-  font-style: italic;
-  font-weight: 400;
-  src: url('CascadiaMono-Italic.otf');
-}
-
 :root {
-  --highlight-bg-color: #cbe368;
-  --highlight-link-color: #719b25;
+  --highlight-bg-color: #a84a0f;
+  --highlight-link-color: #a84a0f;
   --table-cell-top-padding: 2mm;
 }
 
 @page {
   @bottom-right {
     background-color: var(--highlight-bg-color);
+    color: white;
     content: counter(page);
     height: 1cm;
     text-align: center;
@@ -106,23 +45,31 @@
 }
 @page cover {
   margin: 0;
+  @bottom-left { content: none }
+  @bottom-center { background: none; content: none }
+  @bottom-right { background: none; content: none }
 }
 
 html {
-  color: #393939;
-  font-family: 'Fira Sans';
+  color: #102542;
+  font-family: 'Karla', sans-serif;
   font-size: 11pt;
-  font-weight: 300;
+  font-weight: 400;
   line-height: 1.5;
   font-variant-ligatures: common-ligatures;
   font-variant-numeric: oldstyle-nums tabular-nums;
   text-align: justify;
   hyphens: auto;
+  hyphenate-character: "-";
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Rosario', sans-serif;
 }
 
 h1 {
   break-before: always;
-  color: var(--highlight-bg-color);
+  color: #102542;
   font-size: 38pt;
   margin: 2cm 0 1cm 0;
   page: no-chapter;
@@ -131,8 +78,8 @@ h1 {
   width: 100%;
 }
 h2, h3, h4 {
-  color: black;
-  font-weight: 400;
+  color: #102542;
+  font-weight: 300;
   bookmark-state: closed;
 }
 h2 {
@@ -151,14 +98,17 @@ pre {
   break-inside: avoid;
   background-color: #fcfcfc !important;
   padding: 1.25em 1.5em;
-  white-space: pre;
-  word-wrap: normal;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-wrap: break-word;
   font-size: .875em;
 }
 
 code {
-  font-family: 'Cascadia Mono';
-  font-weight: 200;
+  overflow-wrap: anywhere;
+  hyphens: none;
+  font-family: 'Cascadia Code', monospace;
+  font-weight: 300;
 }
 
 a {
@@ -235,21 +185,33 @@ th:last-of-type, td:last-of-type {
 }
 
 #cover {
+  background: #f5f0e3;
   align-content: space-between;
   display: flex;
   flex-wrap: wrap;
   height: 297mm;
   page: cover;
 }
+#cover #coverimg {
+  width: 14cm;
+  margin: 2.5cm 3.5cm 0;
+  text-align: center;
+}
 #cover #coverimg img {
   display: block;
-  width: 14cm;
-  margin-left: 3.5cm;
-  margin-top: 3cm;
+  width: 7cm;
+  margin: 0 auto;
+}
+#cover .wordmark {
+  font-family: 'Expletus Sans', sans-serif;
+  font-size: 76pt;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-top: .5cm;
 }
 #cover #refbox {
   width: 12cm;
-  background-color: #00b847;
+  background-color: #102542;
   color: #ffffff;
   font-size: 24pt;
   margin-left: 3.5cm;
@@ -359,4 +321,14 @@ th:last-of-type, td:last-of-type {
 }
 #skills section {
   padding: .5cm 0;
+}
+
+.arara-note {
+  background-color: #e3edf5 !important;
+  border-left-color: #449dd1 !important;
+}
+
+.arara-tip {
+  background-color: #e6f1e3 !important;
+  border-left-color: #2c6e49 !important;
 }
