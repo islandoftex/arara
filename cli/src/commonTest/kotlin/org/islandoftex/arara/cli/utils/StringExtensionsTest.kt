@@ -28,4 +28,19 @@ class StringExtensionsTest {
     fun shouldWrapStringsCorrectly() {
         assertEquals("This text\nshould be\nwrapped", "This text should be wrapped".wrap(10))
     }
+
+    @Test
+    fun wrappingPreservesEmptyTextAndUnbrokenWords() {
+        assertEquals("", "".wrap(10))
+        assertEquals("supercalifragilistic", "supercalifragilistic".wrap(10))
+    }
+
+    @Test
+    fun explicitLineBreaksResetTheWrappingBudgetAndPreserveLists() {
+        assertEquals("one item\nsecond item wraps\nalone here",
+            "one item\nsecond item wraps alone here".wrap(19))
+        val list = "in order of priority:\n  - /first/path\n  - /second/path"
+        assertEquals(list, list.wrap(30))
+        assertEquals("first\n\nlast\n", "first\n\nlast\n".wrap(10))
+    }
 }

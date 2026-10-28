@@ -51,6 +51,10 @@ internal fun String.center(width: Int, padChar: Char): String {
  * @return Wrapped text.
  */
 internal fun String.wrap(width: Int): String {
+    return lines().joinToString("\n") { it.wrapLine(width) }
+}
+
+private fun String.wrapLine(width: Int): String {
     val words = this.split(" ")
     var wrapped = words[0]
     var spaceLeft = width - wrapped.length

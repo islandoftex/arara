@@ -123,6 +123,8 @@ on.
 
 ### Fixed
 
+* Plain console text wrapping preserves explicit line breaks and indented lists.
+
 * Stop active command descendants on shutdown and timeout; Windows CLI processes
   also use a Job Object to clean up after forced termination. (see #39)
 

@@ -50,6 +50,20 @@ class LinearExecutorRegressionTest {
     }
 
     @Test
+    fun executionOptionsCannotChangeInsideAFileButCanChangeAfterward() {
+        val options = LinearExecutor.executionOptions
+        val replacement = ExecutionOptions.from(options).copy(haltOnErrors = true)
+        val project = Project("Options", MPPPath("."), setOf(file("options.tex", {
+            assertFailsWith<AraraException> { LinearExecutor.executionOptions = replacement }
+            assertEquals(options, LinearExecutor.executionOptions)
+            0
+        })))
+        assertEquals(0, LinearExecutor.execute(listOf(project)).exitCode)
+        LinearExecutor.executionOptions = replacement
+        assertEquals(replacement, LinearExecutor.executionOptions)
+    }
+
+    @Test
     fun watchStopHookPreservesExistingPositionalLifecycleArguments() {
         var started = false
         val hooks = ExecutorHooks({ started = true })
@@ -94,6 +108,23 @@ class LinearExecutorRegressionTest {
         assertNull(results["other"])
         assertNull(LinearExecutor.currentFile)
         assertNull(LinearExecutor.currentProject)
+    }
+
+    @Test
+    fun haltOnErrorStopsAtTheFirstFailure() {
+        LinearExecutor.executionOptions = ExecutionOptions(haltOnErrors = true)
+        val visited = mutableListOf<Int>()
+        val project = Project("Halt", MPPPath("."), setOf(file("halt.tex",
+            { visited.add(0); 0 }, { visited.add(7); 7 }, { visited.add(9); 9 }
+        )))
+        assertEquals(7, LinearExecutor.execute(listOf(project)).exitCode)
+        assertEquals(listOf(0, 7), visited)
+    }
+
+    @Test
+    fun continuedExecutionReportsTheLastFailureRatherThanTheLastResult() {
+        val project = Project("Continue", MPPPath("."), setOf(file("continue.tex", { 7 }, { 9 }, { 0 })))
+        assertEquals(9, LinearExecutor.execute(listOf(project)).exitCode)
     }
 
     @Test
