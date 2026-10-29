@@ -66,7 +66,6 @@ boolean and decimal numeric conversion for plain scalars.
   by the `:api:createAraraAPIObject` Gradle task (writes the current
   `project.version` into `AraraAPI.version`). It is matched by `.gitignore`
   (`api/src/**/AraraAPI.kt`). Never edit or commit it; run the task instead.
-- `docs/**/version.txt` is written by `:docs:writeVersionFile`, also gitignored.
 - `website/public/`, `result/` (Nix), and `**/build/*` are gitignored; the only
   `build/` directories tracked are under `buildSrc/src/**/build/*`.
 - `website/themes/devlab-theme` is a pinned submodule; CI checks it out recursively.
@@ -171,8 +170,10 @@ Run `nix develop -c ./gradlew :docs:buildDocs` to build the website and PDFs;
 Website and PDF font declarations are shared in `website/static/fonts/identity.css`;
 PDF builds reuse the rendered site's font assets; licences remain in that font directory.
 
-The Kotlin helpers in `buildSrc` extract `data-arara-document-*` regions and
-validate local assets. `./gradlew -p buildSrc check` runs their regression
+Zola renders the same Markdown into website pages and dedicated book layouts
+(`website/templates/book.html`). The Kotlin helpers in `buildSrc` validate local
+assets and anchors, resolve PDF asset URLs and insert the release version; they
+do not extract content from website pages. `./gradlew -p buildSrc check` runs their regression
 checks. `nix build .#website` compiles the same helpers and runs the same checks
 without downloading Gradle dependencies.
 

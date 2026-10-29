@@ -285,6 +285,14 @@ For runtime or packaging changes, also run `./gradlew processSmoke`. The combine
 API reference is built with `./gradlew dokkaGeneratePublicationHtml`; undocumented
 public declarations and unresolved documentation links fail the build.
 
+The website and PDF guides share the Markdown chapters. Zola renders separate
+website and book layouts; WeasyPrint produces the PDFs using the shared Island
+of TeX fonts and print styles. Build both with the documentation tools available:
+
+```sh
+$ nix develop -c ./gradlew :docs:buildDocs
+```
+
 The following optional Gradle phase is used to handle the project cleaning,
 including the complete removal of the `build/` directory. As a result, the
 project is then restored to the initial state without any generated Java

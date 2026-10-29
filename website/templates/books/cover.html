@@ -1,20 +1,6 @@
-<!DOCTYPE html>
-<html lang="en-US">
-<head>
-  <meta charset="UTF-8">
-  <title>arara</title>
-
-  <meta name="keywords" content="tex, latex, context, build tool, automation">
-  <meta name="name" content="The cool TeX automation tool">
-  <meta name="description" content="arara is a TeX automation tool based on directives and rules.">
-
-  <link href="@SITE_ROOT@/fonts/identity.css" rel="stylesheet">
-  <link href="@RESOURCE_ROOT@/manual.css" rel="stylesheet">
-</head>
-<body>
 <article id="cover">
   <div id="coverimg">
-    <img src="@SITE_ROOT@/brand/arara-logo.svg"
+    <img src="{{ get_url(path="brand/arara-logo.svg") }}"
          alt="arara logo" />
     <div class="wordmark">arara</div>
   </div>
@@ -22,10 +8,10 @@
   <div id="metadata">
     <span>The Island of TeX</span>
     <a href="https://gitlab.com/islandoftex/arara">
-      <img src="@RESOURCE_ROOT@/gitlab-icon.svg"
+      <img src="{{ get_url(path="books/gitlab-icon.svg") }}"
            alt="GitLab" />
     </a>
-    <span>Version @VERSION@</span>
+    <span><!-- arara-book-version --></span>
   </div>
 </article>
 <article id="license">

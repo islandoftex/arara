@@ -56,8 +56,6 @@ abstract class CheckWebsiteTask : DefaultTask() {
 abstract class BuildWebsiteBookTask @Inject constructor(private val execOperations: ExecOperations) : DefaultTask() {
     @get:InputDirectory @get:PathSensitive(PathSensitivity.RELATIVE)
     abstract val siteDirectory: DirectoryProperty
-    @get:InputDirectory @get:PathSensitive(PathSensitivity.RELATIVE)
-    abstract val resourcesDirectory: DirectoryProperty
     @get:Input abstract val manual: Property<Boolean>
     @get:Input abstract val bookVersion: Property<String>
     @get:Input abstract val siteUrl: Property<String>
@@ -80,8 +78,8 @@ abstract class BuildWebsiteBookTask @Inject constructor(private val execOperatio
     @TaskAction fun buildBook() {
         val site = siteDirectory.get().asFile
         val html = htmlFile.get().asFile
-        WebsiteBooks(site, resourcesDirectory.get().asFile, siteUrl.get())
-            .assemble(html, manual.get(), bookVersion.get())
+        WebsiteBooks(site, siteUrl.get())
+            .prepare(html, manual.get(), bookVersion.get())
         val pdf = pdfFile.get().asFile
         pdf.parentFile.mkdirs()
         execOperations.exec { commandLine(converter.get(), "-u", site.toURI().toASCIIString(), html, pdf) }

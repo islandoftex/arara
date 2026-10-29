@@ -22,14 +22,14 @@ fun main(args: Array<String>) {
         }
         fun fixture(name: String): Path {
             val directory = root.resolve(name)
-            Files.createDirectories(directory.resolve("site/quickstart"))
-            Files.createDirectories(directory.resolve("resources"))
+            Files.createDirectories(directory.resolve("site/books/quickstart"))
+            Files.createDirectories(directory.resolve("site/books"))
             Files.createDirectories(directory.resolve("site/fonts"))
             Files.writeString(directory.resolve("site/fonts/identity.css"), "/* shared fonts */")
             Files.writeString(directory.resolve("site/fonts/body.woff2"), "font fixture")
-            Files.writeString(directory.resolve("site/quickstart/index.html"),
-                "<h1 data-arara-document-title>Quickstart</h1><div data-arara-document-content>Text</div>")
-            Files.writeString(directory.resolve("resources/manual.css"), "body { color: black; }")
+            Files.writeString(directory.resolve("site/books/quickstart/index.html"),
+                "<html><link href=\"https://example.invalid/books/manual.css\" rel=\"stylesheet\"><body>Text</body></html>")
+            Files.writeString(directory.resolve("site/books/manual.css"), "body { color: black; }")
             Files.writeString(directory.resolve("flake.lock"), "pinned tools")
             Files.writeString(directory.resolve("settings.gradle.kts"), """
                 rootProject.name = "docs-fixture"
@@ -39,7 +39,6 @@ fun main(args: Array<String>) {
                 buildscript { dependencies { classpath(files($classpath)) } }
                 tasks.register<org.islandoftex.arara.build.BuildWebsiteBookTask>("book") {
                     siteDirectory.set(layout.projectDirectory.dir("site"))
-                    resourcesDirectory.set(layout.projectDirectory.dir("resources"))
                     toolchainLock.set(layout.projectDirectory.file("flake.lock"))
                     manual.set(false)
                     bookVersion.set(providers.gradleProperty("bookVersion").orElse("1.2.3"))
@@ -67,10 +66,10 @@ fun main(args: Array<String>) {
         check(run(second, "-PbookVersion=1.2.3-SNAPSHOT", "-PconverterVersion=fixture-2") == TaskOutcome.SUCCESS)
         Files.writeString(second.resolve("flake.lock"), "updated tools")
         check(run(second) == TaskOutcome.SUCCESS)
-        Files.writeString(second.resolve("resources/manual.css"), "body { color: blue; }")
+        Files.writeString(second.resolve("site/books/manual.css"), "body { color: blue; }")
         check(run(second) == TaskOutcome.SUCCESS)
-        Files.writeString(second.resolve("site/quickstart/index.html"),
-            "<h1 data-arara-document-title>Quickstart</h1><div data-arara-document-content>Updated</div>")
+        Files.writeString(second.resolve("site/books/quickstart/index.html"),
+            "<html><body>Updated</body></html>")
         check(run(second) == TaskOutcome.SUCCESS)
         Files.writeString(second.resolve("site/fonts/body.woff2"), "updated font fixture")
         check(run(second) == TaskOutcome.SUCCESS)

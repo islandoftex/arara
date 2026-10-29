@@ -19,10 +19,6 @@ fun main(args: Array<String>) {
         try { body() } catch (_: Exception) { failed = true }
         check(failed) { "Expected failure" }
     }
-    fun document(body: String) = WebsiteContent.read(
-        "<nav>Not in the book</nav><h1 data-arara-document-title>Chapter</h1>" +
-            "<div data-arara-document-content>$body</div><footer>Footer</footer>"
-    )
     fun temporary(body: (File) -> Unit) {
         val root = Files.createTempDirectory("arara website checks ").toFile()
         try { body(root) } finally { root.deleteRecursively() }
@@ -72,30 +68,24 @@ fun main(args: Array<String>) {
             check(output.resolve("content/_index.md").readText().contains("arara"))
         }
     }
-    test("extraction keeps only article regions") {
-        val body = "<h1 id=\"example\">Example</h1><p>Keep <em>this</em>.</p>"
-        check(document(body) == WebsiteContent("Chapter", body))
-    }
-    test("code, comments, entities, void elements, and quoted brackets stay intact") {
-        val body = "<!--example--><pre>&lt;rule&gt; &amp; value\n  indented</pre><br><img alt=\"a > b\" src=\"example.svg\"/>"
-        check(document(body).body == body)
-    }
-    test("markers in scripts do not count as regions") {
-        val body = "<script>var example = '<div data-arara-document-content>';</script><p>Body</p>"
-        check(document(body).body == body)
-    }
-    test("missing, duplicate, empty, and incomplete regions fail") {
-        listOf("<div>Old theme</div>", "<h1 data-arara-document-title>Title</h1><div data-arara-document-content>Missing end",
-            "<h1 data-arara-document-title>Title</h1><h1 data-arara-document-title>Again</h1><div data-arara-document-content>Body</div>")
-            .forEach { source -> fails { WebsiteContent.read(source) } }
-        fails { document("  \n") }
-    }
     test("PDF images are local and percent-encoded paths work") {
         temporary { root ->
             val asset = root.resolve("image with spaces.svg").apply { writeText("<svg/>") }
             val body = "<img src='https://example.org/arara/image%20with%20spaces.svg'>"
             check(asset.toURI().toASCIIString() in WebsiteContent.localizeAssets(body, root, "https://example.org/arara"))
             fails { WebsiteContent.localizeAssets(body.replace("image%20with%20spaces", "missing"), root, "https://example.org/arara") }
+        }
+    }
+    test("book stylesheets are local but ordinary website links stay public") {
+        temporary { root ->
+            val style = root.resolve("print.css").apply { writeText("body { color: black; }") }
+            val html = "<link href='https://example.org/arara/print.css' rel='stylesheet'>" +
+                "<a href='https://example.org/arara/manual/rules/'>Rules</a>"
+            val result = WebsiteContent.localizeAssets(html, root, "https://example.org/arara")
+            check(style.toURI().toASCIIString() in result)
+            check("href='https://example.org/arara/manual/rules/'" in result)
+            style.delete()
+            fails { WebsiteContent.localizeAssets(html, root, "https://example.org/arara") }
         }
     }
     test("missing and unresolved LFS assets fail") {
@@ -106,38 +96,40 @@ fun main(args: Array<String>) {
             fails { WebsiteContent.localizeAssets(body, root) }
         }
     }
-    test("book assembly reads immutable pages without navigation") {
+    test("book preparation uses immutable Zola books without reading website pages") {
         temporary { root ->
             val site = root.resolve("site")
-            val resources = root.resolve("resources").apply { mkdirs() }
-            resources.resolve("manual-cover.html").writeText(
-                "<html><head><link href=\"@SITE_ROOT@/fonts/identity.css\" rel=\"stylesheet\"></head>" +
-                    "<body><span>@VERSION@</span>")
-            val source = "<nav>Not in the book</nav><h1 data-arara-document-title>Chapter</h1>" +
-                "<div data-arara-document-content><h1 id=\"section\">Section</h1><p>Keep this example.</p>" +
-                "<a href=\"${WebsiteContent.SITE_URL}/manual/rules/\">Rules</a></div>"
-            val paths = WebsiteContent.chapters.map { "manual/$it/index.html" } + "quickstart/index.html"
-            val pages = paths.map { path -> site.resolve(path).apply { parentFile.mkdirs(); writeText(source); setWritable(false) } }
-            WebsiteContent.checkSite(site)
-            for (manual in listOf(true, false)) {
-                val html = root.resolve("$manual.html")
-                WebsiteBooks(site, resources).assemble(html, manual, "test-version")
-                check("Keep this example." in html.readText())
-                check("Not in the book" !in html.readText())
-                check("<h2 id=\"section\">" in html.readText())
-                check(site.resolve("fonts/identity.css").toURI().toASCIIString() in html.readText())
-                check("@SITE_ROOT@" !in html.readText())
-                if (manual) {
-                    check("test-version" in html.readText())
-                    check("href=\"#chapter-rules\"" in html.readText())
-                    check("id=\"contents\"" in html.readText())
-                }
+            site.resolve("fonts").mkdirs()
+            site.resolve("fonts/identity.css").writeText("/* shared fonts */")
+            for (book in WebsiteContent.books) {
+                val page = site.resolve("books/$book/index.html").apply { parentFile.mkdirs() }
+                val source = "<html><head><link href=\"${WebsiteContent.SITE_URL}/fonts/identity.css\" " +
+                    "rel=\"stylesheet\"></head><body data-arara-book=\"$book\">" +
+                    "<!-- <h1 id='chapter'> -->" +
+                    "<script>const text = \"<h1 id='chapter'>\";</script>" +
+                    "<!-- arara-book-version --><article data-arara-book-chapter=\"/source/\">" +
+                    "<h1 id=\"chapter\">Title</h1><a href=\"#chapter\">Section</a>" +
+                    "<pre>&lt;rule&gt; &amp; value\n  indented</pre></article></body></html>"
+                page.writeText(source)
+                page.setWritable(false)
+                val output = root.resolve("$book.html")
+                WebsiteBooks(site).prepare(output, book == "manual", "test<&version")
+                check("Version test&lt;&amp;version" in output.readText())
+                check("<pre>&lt;rule&gt; &amp; value\n  indented</pre>" in output.readText())
+                check(site.resolve("fonts/identity.css").toURI().toASCIIString() in output.readText())
+                check(page.readText() == source)
             }
-            check(pages.all { it.readText() == source })
-            pages.first().setWritable(true)
-            pages.first().delete()
             fails { WebsiteContent.checkSite(site) }
-            fails { WebsiteBooks(site, resources).assemble(root.resolve("missing.html"), true, "version") }
+            site.resolve("source/index.html").apply { parentFile.mkdirs(); writeText("Website layout is independent") }
+            WebsiteContent.checkSite(site)
+            val manual = site.resolve("books/manual/index.html").apply { setWritable(true) }
+            val valid = manual.readText()
+            manual.writeText(valid.replace("href=\"#chapter\"", "href=\"#missing\""))
+            fails { WebsiteContent.checkSite(site) }
+            manual.writeText(valid.replace("</article>", "<h2 id=\"chapter\">Duplicate</h2></article>"))
+            fails { WebsiteContent.checkSite(site) }
+            manual.delete()
+            fails { WebsiteBooks(site).prepare(root.resolve("missing.html"), true, "version") }
         }
     }
     test("shared identity fonts are local resolved WOFF2 assets") {
@@ -152,7 +144,7 @@ fun main(args: Array<String>) {
             check(signature == "wOF2") { "Missing or unresolved LFS font: $name" }
         }
         check("fonts/identity.css" in repo.resolve("website/static/arara.css").readText())
-        check("@font-face" !in repo.resolve("docs/resources/manual.css").readText())
+        check("@font-face" !in repo.resolve("website/static/books/manual.css").readText())
     }
     println("Website build checks: $count passed")
 }

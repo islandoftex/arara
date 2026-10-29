@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ page.title }}</title>
+  <link href="{{ get_url(path='fonts/identity.css') }}" rel="stylesheet">
+  <link href="{{ get_url(path='books/manual.css') }}" rel="stylesheet">
+</head>
+<body data-arara-book="{% if page.extra.manual %}manual{% else %}quickstart{% endif %}">
+{% set chapters = [get_page(path="Quickstart.md")] %}
+{% if page.extra.manual %}
+{% set manual = get_section(path="manual/_index.md") %}
+{% set chapters = manual.pages %}
+{% include "books/cover.html" %}
+<article id="contents"><h1>Contents</h1><ul>
+{% for chapter in chapters %}
+<li><a href="#chapter-{{ chapter.slug }}"></a>
+{{< book.contents items={chapter.toc} prefix={"chapter-" ~ chapter.slug ~ "-"} />}}
+</li>
+{% endfor %}
+</ul></article>
+{% endif %}
+{% for chapter in chapters %}
+{% set prefix = "chapter-" ~ chapter.slug ~ "-" %}
+{% set_global book_content = chapter.content
+    | replace(from='id="', to='id="' ~ prefix)
+    | replace(from='href="#', to='href="#' ~ prefix) %}
+{% for target in chapters %}
+{% set_global book_content = book_content
+    | replace(from='href="' ~ target.permalink ~ '#', to='href="#chapter-' ~ target.slug ~ '-')
+    | replace(from='href="' ~ target.permalink ~ '"', to='href="#chapter-' ~ target.slug ~ '"') %}
+{% endfor %}
+{% for level in [5, 4, 3, 2, 1] %}
+{% set_global book_content = book_content
+    | replace(from='<h' ~ level, to='<h' ~ (level + 1))
+    | replace(from='</h' ~ level ~ '>', to='</h' ~ (level + 1) ~ '>') %}
+{% endfor %}
+<article data-arara-book-chapter="{{ chapter.path }}">
+<h1 id="chapter-{{ chapter.slug }}">{% if page.extra.manual %}{{ chapter.title }}{% else %}A quickstart guide to arara{% endif %}</h1>
+{{ book_content | safe }}
+</article>
+{% endfor %}
+</body>
+</html>

@@ -6,10 +6,10 @@
 {% if docs_section %}<div class="docs-shell">{% include "partials/docs-sidebar.html" %}{% endif %}
 <article class="content{% if docs_section %} docs-content{% endif %}">
   <header class="page-header">
-    <h1 data-arara-document-title>{{ page.title }}</h1>
+    <h1>{{ page.title }}</h1>
     {% if page.description and page.description != page.title %}<p class="page-description">{{ page.description }}</p>{% endif %}
   </header>
-  <div data-arara-document-content>
+  <div>
     {{ page.content | safe }}
   </div>
   {% if docs_section %}

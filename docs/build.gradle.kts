@@ -43,18 +43,10 @@ val checkWebsite = tasks.register<CheckWebsiteTask>("checkWebsite") {
     siteUrl.set(websiteBaseUrl)
 }
 
-val writeVersionFile = tasks.register("writeVersionFile") {
-    val output = layout.projectDirectory.file("resources/version.txt")
-    inputs.property("version", project.version.toString())
-    outputs.file(output)
-    doLast { output.asFile.writeText(project.version.toString()) }
-}
-
 fun registerBook(name: String, isManual: Boolean, baseName: String) = tasks.register<BuildWebsiteBookTask>(name) {
     group = "documentation"
-    dependsOn(checkWebsite, writeVersionFile)
+    dependsOn(checkWebsite)
     siteDirectory.set(website.dir("public"))
-    resourcesDirectory.set(layout.projectDirectory.dir("resources"))
     manual.set(isManual)
     bookVersion.set(project.version.toString())
     siteUrl.set(websiteBaseUrl)

@@ -1,0 +1,9 @@
+{% component book.contents(items: array, prefix: string) -%}
+{% if items %}<ul>
+{% for item in items %}
+<li><a href="#{{ prefix }}{{ item.id }}"></a>
+{{< book.contents items={item.children} prefix={prefix} />}}
+</li>
+{% endfor %}
+</ul>{% endif %}
+{%- endcomponent %}
