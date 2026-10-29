@@ -395,7 +395,7 @@ private object GermanLuaMessages : LuaMessages {
 
 private object GermanFileDataMessages : FileDataMessages {
     override fun errorLoadCouldNotLoadDatabase(name: String): String =
-        "Die Datenbank '${name}' konnte nicht geladen werden. Prüfen Sie Zugriffsrechte und den Inhalt des YAML-Caches."
+        "Die Datenbank '${name}' konnte nicht geladen werden. Prüfen Sie Zugriffsrechte und den Inhalt des Caches."
 
     override fun errorSaveCouldNotSaveDatabase(name: String): String =
         "Die Datenbank '${name}' konnte nicht gespeichert werden. Prüfen Sie, ob das übergeordnete " +

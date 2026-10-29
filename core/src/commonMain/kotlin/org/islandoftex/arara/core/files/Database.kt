@@ -3,6 +3,7 @@ package org.islandoftex.arara.core.files
 
 import com.charleskorn.kaml.Yaml
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.Database
 import org.islandoftex.arara.api.files.MPPPath
@@ -78,7 +79,7 @@ data class Database(
     }
 
     /**
-     * Save the database as YAML with entries sorted by path.
+     * Save the versioned JSON database with entries sorted by path.
      *
      * @param path Where to save it.
      */
@@ -86,7 +87,7 @@ data class Database(
     override fun save(path: MPPPath) {
         runCatching {
             val sorted = map.entries.sortedBy { it.key }.associate { it.toPair() }.toMutableMap()
-            val content = "!database\n" + Yaml.default.encodeToString(serializer(), Database(sorted))
+            val content = Json.encodeToString(StoredDatabase.serializer(), StoredDatabase(FORMAT_VERSION, sorted))
             path.normalize().writeText(content)
         }.getOrElse {
             throw AraraException(
@@ -96,10 +97,12 @@ data class Database(
         }
     }
 
-    /** Loading the persisted YAML database. */
+    /** Loading JSON databases and legacy YAML databases. */
     companion object {
+        private const val FORMAT_VERSION = 1
+
         /**
-         * Loads the YAML file representing the database.
+         * Loads a versioned JSON database or an existing YAML database without rewriting it.
          *
          * @return The database object.
          * @throws AraraException Something wrong happened, to be caught in the
@@ -112,13 +115,7 @@ data class Database(
             } else {
                 runCatching {
                     val text = path.normalize().readText()
-                    if (!text.startsWith("!database"))
-                        throw AraraException("Database should start with !database")
-                    Yaml.default.decodeFromString(
-                        serializer(),
-                        text.lines()
-                            .drop(1).joinToString("\n")
-                    )
+                    decode(text)
                 }.getOrElse {
                     throw AraraException(
                         LanguageController
@@ -128,5 +125,17 @@ data class Database(
                 }
             }
         }
+
+        private fun decode(text: String): Database {
+            if (text.lineSequence().first() == "!database") {
+                return Yaml.default.decodeFromString(serializer(), text.lines().drop(1).joinToString("\n"))
+            }
+            val stored = Json.decodeFromString(StoredDatabase.serializer(), text)
+            require(stored.version == FORMAT_VERSION) { "Unsupported database version: ${stored.version}" }
+            return Database(stored.map)
+        }
     }
 }
+
+@Serializable
+private data class StoredDatabase(val version: Int, val map: MutableMap<String, Long>)

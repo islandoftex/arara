@@ -392,7 +392,7 @@ private object DutchLuaMessages : LuaMessages {
 
 private object DutchFileDataMessages : FileDataMessages {
     override fun errorLoadCouldNotLoadDatabase(name: String): String =
-        "Database '${name}' kon niet worden geladen. Controleer bestandstoegang en de inhoud van de YAML-cache."
+        "Database '${name}' kon niet worden geladen. Controleer bestandstoegang en de inhoud van de cache."
 
     override fun errorSaveCouldNotSaveDatabase(name: String): String =
         "Database '${name}' kon niet worden opgeslagen. Controleer of de bovenliggende map bestaat en schrijfbaar is."

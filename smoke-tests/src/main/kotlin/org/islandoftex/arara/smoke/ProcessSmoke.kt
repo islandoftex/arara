@@ -166,7 +166,7 @@ internal class SmokeContext(override val jar: MPPPath, override val java: MPPPat
             "json_events_keep_native_and_application_outcomes_distinct",
             "json_events_describe_process_failures_without_fake_exit_codes",
             "database_changes_persist_between_processes",
-            "configured_database_rejects_malformed_yaml_without_overwriting",
+            "configured_database_rejects_malformed_cache_without_overwriting",
             "ordinary_lua_is_not_executed_as_a_specification",
             "malformed_project_is_an_application_error",
             "mixed_projects_and_loose_inputs_run_with_separate_configuration",

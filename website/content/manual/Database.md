@@ -58,21 +58,22 @@ The default name is `arara.yaml`, relative to the project's working directory.
 Change it with Lua `database` or YAML `dbname`, as described in
 [Configuration file](@/manual/Configuration.md):
 
+```lua
+return { database = "cache/arara.yaml" }
+```
+
+The corresponding legacy YAML configuration is:
+
 ```yaml
 !config
 dbname: cache/arara.yaml
 ```
 
-The corresponding Lua configuration is:
-
-```lua
-return { database = "cache/arara.yaml" }
-```
-
-{% messagebox(title="Database paths in version 8") %}
+{% messagebox(title="Databases in version 8") %}
 Earlier versions discarded the directory part of the configured database path.
 The complete path is now honored, so an existing cache may need to be moved to
-that location. The YAML format is unchanged; no conversion is required.
+that location. Existing YAML caches remain readable and are converted to JSON
+on their next save. Older arara versions cannot read the converted databases.
 {% end %}
 
 The complete configured path is used. Relative paths resolve against the
@@ -83,10 +84,12 @@ path makes them consult the same records.
 
 # Stored records and errors
 
-The database keeps its YAML format, including the `!database` header. Existing
-YAML databases remain readable. Saved entries are ordered by path so that an
-unchanged set of records has deterministic output. There is usually no reason
-to edit these generated records by hand.
+The database is stored as versioned JSON. Existing YAML databases remain
+readable and are converted on their next save. The configured filename stays
+unchanged, including the default `arara.yaml`; the file contents determine the
+format. Saved entries are ordered by path so that an unchanged set of records
+has deterministic output. There is usually no reason to edit these generated
+records by hand.
 
 A missing database starts empty. Other load and save errors identify the path;
 malformed files are not silently replaced. Restore a valid copy or remove the

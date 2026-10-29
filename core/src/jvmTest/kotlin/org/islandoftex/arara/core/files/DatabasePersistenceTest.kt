@@ -49,7 +49,7 @@ class DatabasePersistenceTest {
         assertEquals(Database(), Database.load(cache))
         assertFalse(cache.exists)
         Database().save(cache)
-        assertTrue(cache.readText().startsWith("!database\n"))
+        assertTrue(cache.readText().startsWith("{\"version\":1,\"map\":"))
         assertEquals(Database(), Database.load(cache))
         val database = Database()
         database[root.resolve("min")] = Long.MIN_VALUE
@@ -61,7 +61,7 @@ class DatabasePersistenceTest {
     }
 
     @Test
-    fun yamlPreservesUnusualPathsAndOrderingIsDeterministic() = fixture { root, cache ->
+    fun jsonPreservesUnusualPathsAndOrderingIsDeterministic() = fixture { root, cache ->
         val victim = root.resolve("victim.tex")
         val hostile = mutableMapOf(
             victim.toString() + " 123\nforged.tex" to 7L,
@@ -71,7 +71,7 @@ class DatabasePersistenceTest {
         val database = Database(hostile)
         database.save(cache)
         val first = cache.readText()
-        assertTrue(first.startsWith("!database\n"))
+        assertTrue(first.startsWith("{\"version\":1,\"map\":"))
         assertEquals(database, Database.load(cache))
         assertNull(Database.load(cache)[victim])
         Database(hostile.entries.reversed().associate { it.toPair() }.toMutableMap()).save(cache)
@@ -83,7 +83,13 @@ class DatabasePersistenceTest {
         val source = root.resolve("file.tex")
         val key = source.toString().replace("\\", "\\\\").replace("\"", "\\\"")
         cache.writeText("!database\nmap:\n  \"$key\": 123\n")
-        assertEquals(123L, Database.load(cache)[source])
+        val legacy = cache.readText()
+        val loaded = Database.load(cache)
+        assertEquals(123L, loaded[source])
+        assertEquals(legacy, cache.readText())
+        loaded.save(cache)
+        assertTrue(cache.readText().startsWith("{\"version\":1,"))
+        assertEquals(loaded, Database.load(cache))
     }
 
     @Test
@@ -106,7 +112,12 @@ class DatabasePersistenceTest {
     @Test
     fun malformedCachesAreRejectedWithoutChangingTheirContents() = fixture { root, cache ->
         val invalid = listOf(
-            "foreign: content", "not-a-database",
+            "foreign: content", "not-a-database", "", "{}", "[]", "null",
+            "{\"version\":2,\"map\":{}}", "{\"version\":1}", "{\"map\":{}}",
+            "{\"version\":1,\"map\":{\"file\":null}}",
+            "{\"version\":1,\"map\":{\"file\":9223372036854775808}}",
+            "{\"version\":1,\"map\":{}} trailing",
+            "!database-extra\nmap: {}\n",
             "!database\nmap: [unterminated\n",
             "!database\nmap:\n  file: not-a-number\n",
             "!database\nmap:\n  file: 9223372036854775808\n"

@@ -25,8 +25,8 @@ private class LocalConfigurationChecks(context: SmokeFixture) : SmokeFixture by 
         "lua_configuration_supports_both_rule_engines" to ::luaConfigurationSupportsBothRuleEngines,
         "invalid_lua_configuration_is_an_application_error" to ::invalidLuaConfigurationIsAnApplicationError,
         "database_changes_persist_between_processes" to ::databaseChangesPersistBetweenProcesses,
-        "configured_database_rejects_malformed_yaml_without_overwriting" to
-            ::configuredDatabaseRejectsMalformedYamlWithoutOverwriting,
+        "configured_database_rejects_malformed_cache_without_overwriting" to
+            ::configuredDatabaseRejectsMalformedCacheWithoutOverwriting,
     )
 
     private fun luaConfigurationPrecedesYamlIndependentlyOfRuleEngine(
@@ -150,12 +150,15 @@ private class LocalConfigurationChecks(context: SmokeFixture) : SmokeFixture by 
         val flags = listOf("--preferred-engine", "lua")
         execute(root, 0, flags)
         check(root.resolve("arara.yaml").isRegularFile) { "Missing default arara.yaml cache" }
+        check(root.resolve("arara.yaml").readText().startsWith("{\"version\":1,")) {
+            "Legacy database was not migrated to versioned JSON"
+        }
         execute(root, FAILURE_STATUS, flags)
         root.resolve("run.tex").writeText("\n% updated source\n", append = true)
         execute(root, 0, flags)
     }
 
-    private fun configuredDatabaseRejectsMalformedYamlWithoutOverwriting(
+    private fun configuredDatabaseRejectsMalformedCacheWithoutOverwriting(
         root: MPPPath
     ) {
 
@@ -169,11 +172,12 @@ private class LocalConfigurationChecks(context: SmokeFixture) : SmokeFixture by 
         val cache = root.resolve("cache/custom.yaml")
         check(cache.isRegularFile) { "Configured database path was not used" }
         check(!root.resolve("custom.yaml").exists) { "Database parent directory was discarded" }
-        val malformed = "!database\nmap: [unterminated\n"
-        cache.writeText(malformed)
-        val output = execute(root, APPLICATION_ERROR, flags).replace(Regex("\\s+"), " ")
-        contains(output, "YAML cache integrity")
-        check(cache.readText() == malformed) { "Malformed cache was overwritten" }
+        listOf("!database\nmap: [unterminated\n", "{\"version\":2,\"map\":{}}").forEach { malformed ->
+            cache.writeText(malformed)
+            val output = execute(root, APPLICATION_ERROR, flags).replace(Regex("\\s+"), " ")
+            contains(output, "cache integrity")
+            check(cache.readText() == malformed) { "Malformed cache was overwritten" }
+        }
     }
 
 }

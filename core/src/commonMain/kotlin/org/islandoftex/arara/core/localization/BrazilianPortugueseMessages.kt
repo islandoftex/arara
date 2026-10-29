@@ -397,7 +397,7 @@ private object BrazilianPortugueseLuaMessages : LuaMessages {
 private object BrazilianPortugueseFileDataMessages : FileDataMessages {
     override fun errorLoadCouldNotLoadDatabase(name: String): String =
         "Não foi possível carregar o banco de dados '${name}'. Verifique o acesso ao arquivo e a integridade " +
-            "do cache YAML."
+            "do cache."
 
     override fun errorSaveCouldNotSaveDatabase(name: String): String =
         "Não foi possível salvar o banco de dados '${name}'. Verifique se o diretório existe e permite escrita."

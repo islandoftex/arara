@@ -390,7 +390,7 @@ private object NorfolkLuaMessages : LuaMessages {
 
 private object NorfolkFileDataMessages : FileDataMessages {
     override fun errorLoadCouldNotLoadDatabase(name: String): String =
-        "I couldn't load that database '${name}', bor. Check the file access and YAML cache content."
+        "I couldn't load that database '${name}', bor. Check the file access and cache content."
 
     override fun errorSaveCouldNotSaveDatabase(name: String): String =
         "I couldn't save that database '${name}', bor. Check its directory exists and yew can write there."

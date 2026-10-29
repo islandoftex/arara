@@ -382,7 +382,7 @@ private object FrenchLuaMessages : LuaMessages {
 private object FrenchFileDataMessages : FileDataMessages {
     override fun errorLoadCouldNotLoadDatabase(name: String): String =
         "Impossible de charger la base de données « ${name} ». Vérifiez les droits d’accès et l’intégrité du " +
-            "cache YAML."
+            "cache."
 
     override fun errorSaveCouldNotSaveDatabase(name: String): String =
         "Impossible d’enregistrer la base de données « ${name} ». Vérifiez que son répertoire parent existe " +

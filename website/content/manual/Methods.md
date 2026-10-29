@@ -286,7 +286,7 @@ overwrites. File-reading errors produce an empty list; write errors produce
 - **[C|R]** `changed(File file): boolean` This method returns a boolean value
     according to whether the provided `File` reference has changed since last
     verification, based on a traditional cyclic redundancy check. The file
-    reference, as well as the associated hash, is stored in a YAML database file
+    reference, as well as the associated hash, is stored in a database file
     named `arara.yaml` located in the project's working directory (the
     database name can be overridden in the configuration file). The method
     semantics (including the return values) is presented as follows.
@@ -332,7 +332,7 @@ overwrites. File-reading errors produce an empty list; write errors produce
     reference (i.e, the name without the associated extension) as a string
     concatenated with the provided `String` extension has changed since last
     verification, based on a traditional cyclic redundancy check. The file
-    reference, as well as the associated hash, is stored in a YAML database file
+    reference, as well as the associated hash, is stored in a database file
     named `arara.yaml` located in the project's working directory (the
     database name can be overridden in the configuration file, as discussed in
     [Configuration](@/manual/Configuration.md). The method semantics (including the
@@ -358,7 +358,7 @@ overwrites. File-reading errors produce an empty list; write errors produce
 - **[C|R]** `unchanged(File file): boolean` This method returns a boolean value
     according to whether the provided `File` reference has not changed since
     last verification, based on a traditional cyclic redundancy check. The file
-    reference, as well as the associated hash, is stored in a YAML database file
+    reference, as well as the associated hash, is stored in a database file
     named `arara.yaml` located in the project's working directory (the
     database name can be overridden in the configuration file, as discussed in
     [Configuration](@/manual/Configuration.md). The method semantics (including the
@@ -386,7 +386,7 @@ overwrites. File-reading errors produce an empty list; write errors produce
     reference (i.e, the name without the associated extension) as a string
     concatenated with the provided `String` extension has not changed since last
     verification, based on a traditional cyclic redundancy check. The file
-    reference, as well as the associated hash, is stored in a YAML database file
+    reference, as well as the associated hash, is stored in a database file
     named `arara.yaml` located in the project's working directory (the
     database name can be overridden in the configuration file, as discussed in
     [Configuration](@/manual/Configuration.md). The method semantics (including the

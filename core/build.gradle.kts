@@ -27,6 +27,7 @@ kotlin {
                 implementation(libs.kotlin.logging)
                 implementation(libs.kotaml)
                 implementation(libs.kotlinx.serialization)
+                implementation(libs.kotlinx.serialization.json)
             }
         }
 

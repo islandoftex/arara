@@ -71,6 +71,10 @@ on.
 
 ### Changed
 
+* **Breaking change:** The change database is saved as versioned JSON. Existing
+  YAML databases remain readable and migrate on their next save; older arara
+  versions cannot read the converted files. Configured filenames stay unchanged.
+
 * **Breaking change:** Lua is the preferred rule engine by default. YAML/MVEL
   rules remain available but are deprecated and will be discontinued in v9.
   Each YAML rule used produces a log warning and a compatibility warning in the

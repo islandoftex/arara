@@ -389,7 +389,7 @@ private object EnglishLuaMessages : LuaMessages {
 
 private object EnglishFileDataMessages : FileDataMessages {
     override fun errorLoadCouldNotLoadDatabase(name: String): String =
-        "Could not load database '${name}'. Check file access and YAML cache integrity."
+        "Could not load database '${name}'. Check file access and cache integrity."
 
     override fun errorSaveCouldNotSaveDatabase(name: String): String =
         "Could not save database '${name}'. Check that its parent directory exists and is writable."

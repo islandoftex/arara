@@ -390,7 +390,7 @@ private object ItalianLuaMessages : LuaMessages {
 
 private object ItalianFileDataMessages : FileDataMessages {
     override fun errorLoadCouldNotLoadDatabase(name: String): String =
-        "Impossibile caricare il database '${name}'. Verificare l'accesso al file e l'integrità della cache YAML."
+        "Impossibile caricare il database '${name}'. Verificare l'accesso al file e l'integrità della cache."
 
     override fun errorSaveCouldNotSaveDatabase(name: String): String =
         "Impossibile salvare il database '${name}'. Verificare che la cartella esista e sia scrivibile."

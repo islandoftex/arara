@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.files
 
+import com.charleskorn.kaml.Yaml
 import java.nio.file.Path
 import kotlin.random.Random
 import kotlin.test.Test
@@ -22,7 +23,10 @@ class DatabaseFilenameTest {
             "${root}/$name" to index.toLong()
         }.toMap().toMutableMap()
         val database = Database(entries)
-        database.save(cache)
+        cache.writeText("!database\n" + Yaml.default.encodeToString(Database.serializer(), database))
+        val legacy = Database.load(cache)
+        assertEquals(database, legacy)
+        legacy.save(cache)
         assertEquals(database, Database.load(cache))
         val content = cache.readText()
         Database(entries.entries.reversed().associate { it.toPair() }.toMutableMap()).save(cache)
@@ -30,7 +34,7 @@ class DatabaseFilenameTest {
     }
 
     @Test
-    fun yamlSyntaxAndScalarLookingNamesRemainLiteralKeys() {
+    fun syntaxAndScalarLookingNamesRemainLiteralKeys() {
         assertRoundTrip(listOf(
             "true", "false", "null", "~", "001", "1e3", ".nan", "2026-10-29",
             "'single'", "\"double\"", "colon: value", "hash # comment", "[a, b]", "{a: b}",
