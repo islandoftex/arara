@@ -14,7 +14,9 @@ the changes to rules, configuration and project specifications. Developers
 embedding the tool can start with [arara as a library](@/manual/Library.md).
 
 For a first workflow, start with the [quickstart guide](@/Quickstart.md).
-This reference manual describes the features and rule interfaces in detail.
+The [rule development quickstart](@/manual/RuleDevelopment.md) walks through
+creating a Lua rule. This reference manual describes the features and rule
+interfaces in detail.
 
 # What is this tool?
 

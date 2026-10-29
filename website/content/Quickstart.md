@@ -12,8 +12,8 @@ learning adventure. He is very excited about it! Hello, Peter!
 These examples use the default Lua engine and the supplied rule pack. For older
 custom YAML/MVEL rules, arara detects their format automatically; that legacy
 engine is deprecated
-and will be discontinued in v9. See [Lua rules](@/manual/Lua.md) for writing new
-rules.
+and will be discontinued in v9. See the [rule development quickstart](@/manual/RuleDevelopment.md) for writing
+your own Lua rules.
 
 ***Peter:** Hello, nice to meet you, person from the Island of {{ tex() }}! I am
 Peter, the anteater. So I heard about this tool named arara, what is it? Is

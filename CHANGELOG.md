@@ -16,6 +16,9 @@ on.
 
 ### Added
 
+* A Lua rule development quickstart covering validated arguments, command
+  construction and custom rule directories. (see #9)
+
 * Explicit supplied path spelling through `MPPPath.suppliedSpelling` and Lua
   `supplied_spelling`, alongside normalized path exports.
 

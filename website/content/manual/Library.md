@@ -1,7 +1,7 @@
 +++
 title = "arara as a library"
 description = "Modules and responsibilities of an embedding application"
-weight = 15
+weight = 16
 +++
 
 The command line application is built on modules which can also be used from

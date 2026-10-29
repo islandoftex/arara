@@ -1,7 +1,7 @@
 +++
 title = "Lua rules"
 description = "Lua rule format and expressions"
-weight = 12
+weight = 13
 +++
 
 `arara document.tex` uses Lua rule files and expressions by default.
@@ -15,6 +15,9 @@ still use YAML. Project specifications remain separate `.proj.lua` files.
 
 Rule validation and helper diagnostics use the selected language. Field names,
 helper names, Lua type names and errors supplied by scripts remain literal.
+
+For a guided first rule, see the
+[rule development quickstart](@/manual/RuleDevelopment.md).
 
 # Rule structure
 

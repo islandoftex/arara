@@ -189,3 +189,10 @@ kover {
         }
     }
 }
+
+// Test the published tutorial examples directly, so prose edits invalidate the tests.
+tasks.named<Copy>("jvmTestProcessResources") {
+    from(rootProject.layout.projectDirectory.file("website/content/manual/RuleDevelopment.md")) {
+        into("tutorials")
+    }
+}
