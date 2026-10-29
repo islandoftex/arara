@@ -1,5 +1,10 @@
 name: Run Gradle on repo activity
-on: [push, pull_request]
+on:
+  push:
+    branches-ignore: [gh-pages]
+    tags: ['**']
+  pull_request:
+
 jobs:
   gradle:
     strategy:
@@ -17,12 +22,10 @@ jobs:
         distribution: corretto
     - uses: gradle/actions/wrapper-validation@v6
     - uses: gradle/actions/setup-gradle@v6
-      with:
-        gradle-version: current
     - name: Build
-      run: ./gradlew build -PwarningsAsErrors=true -PtestJavaVersion=${{ matrix.java }}
+      run: ./gradlew --build-cache build -PwarningsAsErrors=true -PtestJavaVersion=${{ matrix.java }}
     - name: Check runnable jar
-      run: ./gradlew processSmoke
+      run: ./gradlew --build-cache processSmoke -PwarningsAsErrors=true
     - name: Upload smoke results
       if: always()
       uses: actions/upload-artifact@v7
@@ -47,3 +50,10 @@ jobs:
         path: |
           cli/build/libs/*-with-deps-*.jar
           cli/build/native/jna.jar
+
+  pages:
+    needs: gradle
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    uses: ./.github/workflows/zola.yml
+    secrets:
+      PAGE_GEN_TOKEN: ${{ secrets.PAGE_GEN_TOKEN }}

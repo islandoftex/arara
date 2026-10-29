@@ -2,10 +2,26 @@ variables:
   # disable the Gradle daemon for Continuous Integration servers
   GRADLE_OPTS: "-Dorg.gradle.daemon=false -Xmx6g"
   GIT_SUBMODULE_STRATEGY: recursive
+  AST_ENABLE_MR_PIPELINES: "true"
 
 include:
-  - template: SAST.gitlab-ci.yml
-  - template: Dependency-Scanning.gitlab-ci.yml
+  - template: Jobs/SAST.gitlab-ci.yml
+  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
+
+# Prefer an MR pipeline over a duplicate feature-branch pipeline for the same push.
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_TAG'
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH || $CI_COMMIT_BRANCH == "master"'
+    - if: '$CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS && $CI_PIPELINE_SOURCE == "push"'
+      when: never
+    - if: '$CI_COMMIT_BRANCH'
+
+.pipeline-job:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH || $CI_COMMIT_TAG'
 
 stages:
   - build
@@ -14,29 +30,38 @@ stages:
   - publish
 
 before_script:
-  - export GRADLE_USER_HOME=`pwd`/.gradle
+  - export GRADLE_USER_HOME="$CI_PROJECT_DIR/.gradle"
 
 # The application requires Java 21; CI also verifies the latest LTS, Java 25.
 # Minimal Corretto images omit xargs, which the Gradle wrapper requires.
 .corretto:
+  extends: .pipeline-job
   before_script:
     - yum install -y findutils
-    - export GRADLE_USER_HOME=`pwd`/.gradle
+    - export GRADLE_USER_HOME="$CI_PROJECT_DIR/.gradle"
 
 .cachetemplate: &cachedefinition
-  key: "$CI_COMMIT_REF_NAME-$JAVA_VERSION"
+  key: "gradle-linux-$CI_COMMIT_REF_SLUG"
   paths:
-    - build
-    - api/build
-    - core/build
-    - cli/build
-    - .gradle
+    - .gradle/caches/
+    - .gradle/wrapper/
+    - .gradle/build-cache/
+
+# Each test runtime caches its test dependencies and task outputs; only the build job writes
+# the shared compilation/dependency cache. Gradle keys also include task inputs.
+.testcache: &testcachedefinition
+  key: "gradle-tests-linux-$CI_COMMIT_REF_SLUG-$JAVA_VERSION"
+  paths:
+    - .gradle/caches/
+    - .gradle/build-cache/
+  policy: pull-push
+  when: always
 
 .buildtemplate: &builddefinition
   stage: build
   script:
     # create the executables for distribution
-    - ./gradlew --build-cache assembleDist stageProcessSmokeJar --info
+    - ./gradlew --build-cache assembleDist stageProcessSmokeJar -PwarningsAsErrors=true --info
     - mkdir bin
     - cp cli/build/libs/*.jar bin/
     - cp cli/build/native/jna.jar bin/
@@ -54,7 +79,7 @@ before_script:
     expire_in: 1 week
   cache:
     <<: *cachedefinition
-    policy: push
+    policy: pull-push
 
 build:linux:jdk21:
   extends: .corretto
@@ -64,14 +89,14 @@ build:linux:jdk21:
 .testtemplate: &testdefinition
   stage: test
   script:
-    - ./gradlew checkRuntimeDependencies allTests -PwarningsAsErrors=true -PtestJavaVersion="$JAVA_VERSION"
-    - ./gradlew -p buildSrc check
-    - ./gradlew detekt
-    - ./gradlew koverXmlReport koverHtmlReport koverVerify -PtestJavaVersion="$JAVA_VERSION"
+    - ./gradlew --build-cache allTests -PwarningsAsErrors=true -PtestJavaVersion="$JAVA_VERSION"
+    - ./gradlew --build-cache koverXmlReport koverHtmlReport koverVerify -PwarningsAsErrors=true -PtestJavaVersion="$JAVA_VERSION"
   cache:
-    <<: *cachedefinition
-    policy: pull
+    - <<: *cachedefinition
+      policy: pull
+    - <<: *testcachedefinition
   artifacts:
+    name: "tests-java$JAVA_VERSION"
     when: always
     reports:
       junit:
@@ -86,6 +111,7 @@ build:linux:jdk21:
     expire_in: 1 week
 
 test:process-smoke:
+  extends: .pipeline-job
   stage: test
   needs: ["build:linux:jdk21"]
   image: amazoncorretto:$JAVA_VERSION
@@ -105,6 +131,7 @@ test:process-smoke:
 
 # The TeX Live image includes Java; the staged runner needs no compiler or Gradle.
 test:tex-integration:
+  extends: .pipeline-job
   stage: test
   needs: ["build:linux:jdk21"]
   image: registry.gitlab.com/islandoftex/images/texlive:latest
@@ -127,10 +154,12 @@ test:tex-integration:
 test:publications:
   extends: .corretto
   stage: test
-  needs: ["build:linux:jdk21"]
+  needs:
+    - job: build:linux:jdk21
+      artifacts: false
   image: amazoncorretto:21
   script:
-    - ./gradlew checkPublications dokkaGeneratePublicationHtml
+    - ./gradlew --build-cache checkPublications dokkaGeneratePublicationHtml -PwarningsAsErrors=true
   cache:
     <<: *cachedefinition
     policy: pull
@@ -142,21 +171,39 @@ test:publications:
 test:dependencies:
   extends: .corretto
   stage: test
-  needs: ["build:linux:jdk21"]
+  needs:
+    - job: build:linux:jdk21
+      artifacts: false
   image: amazoncorretto:21
   script:
-    - ./gradlew dependencyUpdates
+    - ./gradlew --build-cache dependencyUpdates
   cache:
     <<: *cachedefinition
     policy: pull
 
-test:spotless:
+test:static:
   extends: .corretto
   stage: test
-  needs: ["build:linux:jdk21"]
+  needs:
+    - job: build:linux:jdk21
+      artifacts: false
   image: amazoncorretto:21
   script:
-    - ./gradlew spotlessCheck
+    - ./gradlew --build-cache spotlessCheck detekt -PwarningsAsErrors=true
+  cache:
+    <<: *cachedefinition
+    policy: pull
+
+test:build-logic:
+  extends: .corretto
+  stage: test
+  needs:
+    - job: build:linux:jdk21
+      artifacts: false
+  image: amazoncorretto:21
+  script:
+    - ./gradlew --build-cache checkRuntimeDependencies -PwarningsAsErrors=true
+    - ./gradlew --build-cache -p buildSrc check
   cache:
     <<: *cachedefinition
     policy: pull
@@ -165,7 +212,9 @@ test:linux:jdk21:
   variables:
     JAVA_VERSION: "21"
   extends: .corretto
-  needs: ["build:linux:jdk21"]
+  needs:
+    - job: build:linux:jdk21
+      artifacts: false
   image: amazoncorretto:21
   <<: *testdefinition
 
@@ -173,38 +222,39 @@ test:linux:jdk25:
   variables:
     JAVA_VERSION: "25"
   extends: .corretto
-  needs: ["build:linux:jdk21"]
+  needs:
+    - job: build:linux:jdk21
+      artifacts: false
   image: amazoncorretto:25
   <<: *testdefinition
   cache:
     - <<: *cachedefinition
       policy: pull
+    - <<: *testcachedefinition
     - key: "java21-toolchain-linux-amd64-v1"
       paths:
         - .gradle/jdks/
       policy: pull-push
       when: always
 
-.pagestemplate: &pagesdefinition
-  stage: pages
+build:docs:
+  stage: build
   image: nixpkgs/nix-flakes:latest-x86_64-linux
   needs: []
   variables:
     PRELEASE: "false"
   script:
-    - nix develop -c ./gradlew --build-cache :docs:buildDocs -Prelease=$PRELEASE
-    - cp -r website/public ./public
+    - nix develop -c ./gradlew --build-cache :docs:buildDocs -Prelease=$PRELEASE -PwarningsAsErrors=true
   cache:
     key: "documentation-$CI_COMMIT_REF_SLUG"
     paths:
-      - .gradle/
+      - .gradle/caches/
+      - .gradle/wrapper/
+      - .gradle/build-cache/
     policy: pull-push
-
-pages:
-  <<: *pagesdefinition
   artifacts:
+    name: "$CI_COMMIT_REF_SLUG-documentation"
     paths:
-      - public
       - website/public
       - docs/*.pdf
       - .gradle/build-cache/
@@ -213,25 +263,31 @@ pages:
     - if: '$CI_COMMIT_TAG'
       variables:
         PRELEASE: "true"
-    - if: '$CI_COMMIT_REF_NAME == "master"'
+    - when: on_success
 
-pages:for-manual:
-  <<: *pagesdefinition
-  artifacts:
-    paths:
-      - website/public
-      - docs/*.pdf
-      - .gradle/build-cache/
-    expire_in: 1 week
+# No needs: keep the stage barrier so every required verification gates deployment.
+pages:deploy:
+  stage: pages
+  image: alpine:3.23
+  variables:
+    GIT_STRATEGY: empty
+  dependencies:
+    - build:docs
+  script:
+    - test -s website/public/index.html
+  pages:
+    publish: website/public
   rules:
-    - if: '$CI_COMMIT_REF_NAME != "master" && $CI_COMMIT_TAG == null'
+    - if: '$CI_COMMIT_TAG'
+    - if: '$CI_COMMIT_BRANCH == "master"'
 
 publish:gitlab:
+  dependencies: []
   extends: .corretto
   image: amazoncorretto:21
   stage: publish
   script:
-    - ./gradlew publishAllPublicationsToGitLabRepository -PjobToken=$CI_JOB_TOKEN -Prelease=true
+    - ./gradlew --build-cache publishAllPublicationsToGitLabRepository -PwarningsAsErrors=true -PjobToken=$CI_JOB_TOKEN -Prelease=true
   cache:
     <<: *cachedefinition
     policy: pull
@@ -242,7 +298,7 @@ publish:gitlab:
   stage: publish
   image: nixpkgs/nix-flakes:latest-x86_64-linux
   script:
-    - nix develop -c ./gradlew --build-cache -Prelease=$PRELEASE assembleCTAN --info
+    - nix develop -c ./gradlew --build-cache -Prelease=$PRELEASE assembleCTAN -PwarningsAsErrors=true --info
     - cp build/*.zip ./
   artifacts:
     name: "$CI_COMMIT_REF_NAME-ctan"
@@ -255,17 +311,8 @@ publish:gitlab:
     policy: pull
 
 publish:snapshot_tdszip:
-  needs:
-    - build:linux:jdk21
-    - test:linux:jdk21
-    - test:linux:jdk25
-    - test:process-smoke
-    - job: pages:for-manual
-      optional: true
-      artifacts: true
-    - job: pages
-      optional: true
-      artifacts: true
+  dependencies:
+    - build:docs
   variables:
     PRELEASE: "false"
   <<: *ctandefinition
@@ -275,7 +322,7 @@ publish:snapshot_tdszip:
 
 publish:tdszip:
   dependencies:
-    - pages
+    - build:docs
   variables:
     PRELEASE: "true"
   <<: *ctandefinition

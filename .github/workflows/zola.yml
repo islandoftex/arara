@@ -1,19 +1,32 @@
+name: Publish GitHub Pages
 on:
-  push:
-    branches:
-      - master
+  workflow_call:
+    secrets:
+      PAGE_GEN_TOKEN:
+        required: true
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - name: 'Checkout'
+      - name: Checkout
         uses: actions/checkout@v7
         with:
           submodules: recursive
           lfs: true
-      - name: 'Build and deploy'
-        uses: shalzz/zola-deploy-action@v0.23.6
-        env:
-          PAGES_BRANCH: gh-pages
-          BUILD_DIR: website
-          TOKEN: ${{ secrets.PAGE_GEN_TOKEN }}
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and check the website
+        run: nix build .#website
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          personal_token: ${{ secrets.PAGE_GEN_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ./result/public

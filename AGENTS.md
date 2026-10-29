@@ -104,9 +104,9 @@ Detekt parses sources against the configured `arara.jvm.target`.
 
 ### Required verification order (matches CI)
 
-CI (`testtemplate` in `.gitlab-ci.yml`) runs `./gradlew allTests` **then**
-`./gradlew detekt` as separate jobs, and `spotlessCheck` is its own job. The
-full local pre-push sequence is:
+CI runs formatting/static analysis once in `test:static` and build-logic/runtime
+dependency checks once in `test:build-logic`. Unit tests and coverage gates run
+on both Java 21 and 25. The full local pre-push sequence is:
 
 ```
 ./gradlew spotlessCheck detekt allTests
@@ -164,6 +164,9 @@ by default) — do not rely on it; run `./gradlew spotlessCheck` manually.
 
 Run `nix develop -c ./gradlew :docs:buildDocs` to build the website and PDFs;
 `assembleCTAN` includes this step. Zola and WeasyPrint come from the dev shell.
+GitLab's `build:docs` produces the site, PDFs and PDF task-cache artifacts;
+Pages deployment and CTAN packaging consume them after required verification.
+GitHub Pages calls the pinned Nix website build after its test matrix succeeds.
 `:docs:buildWebsite` writes `website/public`; staging and book HTML go under
 `docs/build`. Remove any old Nix-store symlink at `website/public` first.
 
